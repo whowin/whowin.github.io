@@ -442,15 +442,15 @@ Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopene
 <ul>
 <li>ubuntu 的1号进程是 systemd，这是 ubuntu 在加载完 Linux 内核后启动的第一个进程，是所有其它进程的祖宗</li>
 <li>你可能用 <em>ps aux(ps -ef)</em> 命令发现1号进程是 <strong>/sbin/init</strong>，而不是 <strong>systemd</strong>，但你用 <em>ls -l /sbin/init</em> 看一下就会恍然大悟
-<img src="./first_process.png" alt="1号进程">
+<img src="../first_process.png" alt="1号进程"><!-- raw HTML omitted -->
 <strong>图1：1号进程</strong>
-<img src="./init_point_to_systemd.png" alt="init进程指向systemd">
+<img src="../init_point_to_systemd.png" alt="init进程指向systemd"><!-- raw HTML omitted -->
 <strong>图2：/sbin/init指向systemd</strong></li>
 <li>当你在 ubuntu 桌面版上启动一个终端时，会启动一个 <strong>gnome-terminal</strong> 进程，gnome-terminal 进程启动了 <strong>bash</strong> 进程，这样你就看到可爱的提示符了，这个过程使用 <em>pstree</em> 命令一目了然
-<img src="./terminal-bash.png" alt="gnome-terminal进程启动bash">
+<img src="../terminal-bash.png" alt="gnome-terminal进程启动bash"><!-- raw HTML omitted -->
 <strong>图3：gnome-terminal进程启动bash</strong></li>
 <li>当你使用 ssh 客户端远程登录到 Linux 系统时，<strong>bash</strong> 进程是由 <strong>sshd</strong> 进程启动的，这个也可以用 <em>pstree</em> 命令看到
-<img src="./sshd-bash.png" alt="sshd进程启动bash">
+<img src="../sshd-bash.png" alt="sshd进程启动bash"><!-- raw HTML omitted -->
 <strong>图4：sshd进程启动bash</strong></li>
 <li>只有启动了 bash 你才拥有了一个 shell 环境，你才能够在终端上输入命令，你从键盘输入的任何内容都必须由 bash 进行解释并做出进一步的处理</li>
 </ul>
