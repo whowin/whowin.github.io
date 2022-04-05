@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on whowin Blog</title>
+    <link>https://whowin.github.io/posts/</link>
+    <description>Recent content in Posts on whowin Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Sun, 03 Apr 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>bash 的环境变量和 shell 变量</title>
+      <link>https://whowin.github.io/posts/environment_variables_and_shell_variables/</link>
+      <pubDate>Sun, 03 Apr 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.github.io/posts/environment_variables_and_shell_variables/</guid>
+      <description>; # bash 的环境变量和 shell 变量
+导言  shell 是一个 Linux 的命令行解释器，Linux 下有很多 shell，其中 ubuntu 中默认的 shell 是 bash(Bourne-Again SHell)，bash 是 GNU (Gnu&amp;rsquo;s Not Unix)开发的 使用 cat /etc/shells 命令可以看到在你的 Linux 下有那些 shell；使用 echo $SHELL 可以看到当前你正在使用的 shell 本文中如无特别说明，shell 指的是 bash，所有范例在 ubuntu 16.04 下完成，在更高版本的 ubuntu 上，可能会有些微区别；在较低版本的 ubuntu 上不能保证有相同的效果  终端是如何启动 shell 的  ubuntu 的1号进程是 systemd，这是 ubuntu 在加载完 Linux 内核后启动的第一个进程，是所有其它进程的祖宗 你可能用 ps aux(ps -ef) 命令发现1号进程是 /sbin/init，而不是 systemd，但你用 ls -l /sbin/init 看一下就会恍然大悟 图1：1号进程 图2：/sbin/init指向systemd 当你在 ubuntu 桌面版上启动一个终端时，会启动一个 gnome-terminal 进程，gnome-terminal 进程启动了 bash 进程，这样你就看到可爱的提示符了，这个过程使用 pstree 命令一目了然 图3：gnome-terminal进程启动bash 当你使用 ssh 客户端远程登录到 Linux 系统时，bash 进程是由 sshd 进程启动的，这个也可以用 pstree 命令看到 图4：sshd进程启动bash 只有启动了 bash 你才拥有了一个 shell 环境，你才能够在终端上输入命令，你从键盘输入的任何内容都必须由 bash 进行解释并做出进一步的处理  shell 变量和环境变量   shell 变量</description>
+    </item>
+    
+  </channel>
+</rss>
