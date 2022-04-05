@@ -1,0 +1,17 @@
+baseURL = 'https://whowin.github.io/'
+languageCode = 'zh'
+title = 'whowin Blog'
+
+theme = 'diary'
+
+[menu]
+[[menu.main]]
+  identifier = "About"
+  name = "About me"
+  url = "/about/about/"
+  weight = 100
+[[menu.main]]
+  name = "Articles"
+  url = "/posts/"
+  weight = 110
+
