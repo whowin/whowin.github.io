@@ -77,15 +77,15 @@
 &lt;ul&gt;
 &lt;li&gt;ubuntu 的1号进程是 systemd，这是 ubuntu 在加载完 Linux 内核后启动的第一个进程，是所有其它进程的祖宗&lt;/li&gt;
 &lt;li&gt;你可能用 &lt;em&gt;ps aux(ps -ef)&lt;/em&gt; 命令发现1号进程是 &lt;strong&gt;/sbin/init&lt;/strong&gt;，而不是 &lt;strong&gt;systemd&lt;/strong&gt;，但你用 &lt;em&gt;ls -l /sbin/init&lt;/em&gt; 看一下就会恍然大悟
-&lt;img src=&#34;first_process.png&#34; alt=&#34;1号进程&#34;&gt;
+&lt;img src=&#34;./first_process.png&#34; alt=&#34;1号进程&#34;&gt;
 &lt;strong&gt;图1：1号进程&lt;/strong&gt;
-&lt;img src=&#34;init_point_to_systemd.png&#34; alt=&#34;init进程指向systemd&#34;&gt;
+&lt;img src=&#34;./init_point_to_systemd.png&#34; alt=&#34;init进程指向systemd&#34;&gt;
 &lt;strong&gt;图2：/sbin/init指向systemd&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;当你在 ubuntu 桌面版上启动一个终端时，会启动一个 &lt;strong&gt;gnome-terminal&lt;/strong&gt; 进程，gnome-terminal 进程启动了 &lt;strong&gt;bash&lt;/strong&gt; 进程，这样你就看到可爱的提示符了，这个过程使用 &lt;em&gt;pstree&lt;/em&gt; 命令一目了然
-&lt;img src=&#34;terminal-bash.png&#34; alt=&#34;gnome-terminal进程启动bash&#34;&gt;
+&lt;img src=&#34;./terminal-bash.png&#34; alt=&#34;gnome-terminal进程启动bash&#34;&gt;
 &lt;strong&gt;图3：gnome-terminal进程启动bash&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;当你使用 ssh 客户端远程登录到 Linux 系统时，&lt;strong&gt;bash&lt;/strong&gt; 进程是由 &lt;strong&gt;sshd&lt;/strong&gt; 进程启动的，这个也可以用 &lt;em&gt;pstree&lt;/em&gt; 命令看到
-&lt;img src=&#34;sshd-bash.png&#34; alt=&#34;sshd进程启动bash&#34;&gt;
+&lt;img src=&#34;./sshd-bash.png&#34; alt=&#34;sshd进程启动bash&#34;&gt;
 &lt;strong&gt;图4：sshd进程启动bash&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;只有启动了 bash 你才拥有了一个 shell 环境，你才能够在终端上输入命令，你从键盘输入的任何内容都必须由 bash 进行解释并做出进一步的处理&lt;/li&gt;
 &lt;/ul&gt;
