@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on whowin&#39;s blog</title>
+    <link>https://whowin.gitee.io/categories/</link>
+    <description>Recent content in Categories on whowin&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 06 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Development</title>
+      <link>https://whowin.gitee.io/categories/development/</link>
+      <pubDate>Wed, 06 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/categories/development/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Bash</title>
+      <link>https://whowin.gitee.io/categories/bash/</link>
+      <pubDate>Sun, 03 Apr 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/categories/bash/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>https://whowin.gitee.io/categories/linux/</link>
+      <pubDate>Sun, 03 Apr 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/categories/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Shell</title>
+      <link>https://whowin.gitee.io/categories/shell/</link>
+      <pubDate>Sun, 03 Apr 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/categories/shell/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>golang</title>
+      <link>https://whowin.gitee.io/categories/golang/</link>
+      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/categories/golang/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

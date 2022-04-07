@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>whowin&#39;s blog</title>
+    <link>https://whowin.gitee.io/</link>
+    <description>Recent content on whowin&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 06 Apr 2022 14:00:00 +0000</lastBuildDate><atom:link href="https://whowin.gitee.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ANSI转义序列</title>
+      <link>https://whowin.gitee.io/blog/ansi-escape-code/</link>
+      <pubDate>Wed, 06 Apr 2022 14:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/ansi-escape-code/</guid>
+      <description>&lt;p&gt;本文叫完整第介绍了ANSI的转义序列，大多数都可以用于在普通终端上显示出较为漂亮的界面&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>完整的PS1控制码</title>
+      <link>https://whowin.gitee.io/blog/ps1_control_codes/</link>
+      <pubDate>Wed, 06 Apr 2022 14:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/ps1_control_codes/</guid>
+      <description>&lt;p&gt;PS1变量是在shell下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，工参考&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Basic HTML Elements</title>
+      <link>https://whowin.gitee.io/posts/basic-elements/</link>
+      <pubDate>Wed, 06 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/posts/basic-elements/</guid>
+      <description>&lt;p&gt;The main purpose of this article is to make sure that all basic HTML Elements are decorated with CSS so as to not miss any possible elements when creating new themes for Hugo.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Getting Start</title>
+      <link>https://whowin.gitee.io/getting-start/getting-start/</link>
+      <pubDate>Mon, 04 Apr 2022 11:52:02 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/getting-start/getting-start/</guid>
+      <description>Getting start  这是一个测试页面  </description>
+    </item>
+    
+    <item>
+      <title>About me</title>
+      <link>https://whowin.gitee.io/about/about/</link>
+      <pubDate>Mon, 04 Apr 2022 11:51:22 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/about/about/</guid>
+      <description>&lt;p&gt;简单介绍了一下个人经历&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>bash 的环境变量和 shell 变量</title>
+      <link>https://whowin.gitee.io/blog/environment_variables_and_shell_variables/</link>
+      <pubDate>Sun, 03 Apr 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/environment_variables_and_shell_variables/</guid>
+      <description>&lt;p&gt;本文简单介绍了bash的启动过程；shell变量和环境变量的区别；以及环境变量传递给子进程的过程&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>bash 的环境变量和 shell 变量</title>
+      <link>https://whowin.gitee.io/posts/environment_variables_and_shell_variables/</link>
+      <pubDate>Sun, 03 Apr 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/posts/environment_variables_and_shell_variables/</guid>
+      <description>&lt;p&gt;本文简单介绍了bash的启动过程；shell变量和环境变量的区别；以及环境变量传递给子进程的过程&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>(Hu)go Template Primer</title>
+      <link>https://whowin.gitee.io/posts/hugo-template-primer/</link>
+      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/posts/hugo-template-primer/</guid>
+      <description>&lt;p&gt;Hugo uses the excellent &lt;a href=&#34;https://golang.org/&#34;&gt;Go&lt;/a&gt; &lt;a href=&#34;https://golang.org/pkg/html/template/&#34;&gt;html/template&lt;/a&gt; library for
+its template engine. It is an extremely lightweight engine that provides a very
+small amount of logic. In our experience that it is just the right amount of
+logic to be able to create a good static website. If you have used other
+template systems from different languages or frameworks you will find a lot of
+similarities in Go templates.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

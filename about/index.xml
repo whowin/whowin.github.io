@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Abouts on whowin&#39;s blog</title>
+    <link>https://whowin.gitee.io/about/</link>
+    <description>Recent content in Abouts on whowin&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 04 Apr 2022 11:51:22 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/about/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>About me</title>
+      <link>https://whowin.gitee.io/about/about/</link>
+      <pubDate>Mon, 04 Apr 2022 11:51:22 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/about/about/</guid>
+      <description>&lt;p&gt;简单介绍了一下个人经历&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
