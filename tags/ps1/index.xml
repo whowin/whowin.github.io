@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>PS1 on whowin&#39;s blog</title>
+    <link>https://whowin.gitee.io/tags/ps1/</link>
+    <description>Recent content in PS1 on whowin&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language><atom:link href="https://whowin.gitee.io/tags/ps1/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>完整的PS1控制码</title>
+      <link>https://whowin.gitee.io/blog/ps1_control_codes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/ps1_control_codes/</guid>
+      <description>&lt;p&gt;PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

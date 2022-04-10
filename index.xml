@@ -6,23 +6,23 @@
     <description>Recent content on whowin&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 06 Apr 2022 14:00:00 +0000</lastBuildDate><atom:link href="https://whowin.gitee.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 10 Apr 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>bash 的环境变量和 shell 变量</title>
+      <link>https://whowin.gitee.io/blog/environment_variables_and_shell_variables/</link>
+      <pubDate>Sun, 10 Apr 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/environment_variables_and_shell_variables/</guid>
+      <description>&lt;p&gt;本文简单介绍了bash的启动过程；shell变量和环境变量的区别及相互转换；环境变量传递给子进程的过程；当前环境执行脚本机器实际应用&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>ANSI转义序列</title>
       <link>https://whowin.gitee.io/blog/ansi-escape-code/</link>
       <pubDate>Wed, 06 Apr 2022 14:00:00 +0000</pubDate>
       
       <guid>https://whowin.gitee.io/blog/ansi-escape-code/</guid>
-      <description>&lt;p&gt;本文叫完整第介绍了ANSI的转义序列，大多数都可以用于在普通终端上显示出较为漂亮的界面&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>完整的PS1控制码</title>
-      <link>https://whowin.gitee.io/blog/ps1_control_codes/</link>
-      <pubDate>Wed, 06 Apr 2022 14:00:00 +0000</pubDate>
-      
-      <guid>https://whowin.gitee.io/blog/ps1_control_codes/</guid>
-      <description>&lt;p&gt;PS1变量是在shell下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，工参考&lt;/p&gt;</description>
+      <description>&lt;p&gt;本文较完整第介绍了ANSI的转义序列，大多数都可以用于在普通终端上显示出较为漂亮的界面，本文可以作为一个资料备查。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -44,30 +44,21 @@
     </item>
     
     <item>
-      <title>About me</title>
-      <link>https://whowin.gitee.io/about/about/</link>
-      <pubDate>Mon, 04 Apr 2022 11:51:22 +0800</pubDate>
-      
-      <guid>https://whowin.gitee.io/about/about/</guid>
-      <description>&lt;p&gt;简单介绍了一下个人经历&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>bash 的环境变量和 shell 变量</title>
-      <link>https://whowin.gitee.io/blog/environment_variables_and_shell_variables/</link>
-      <pubDate>Sun, 03 Apr 2022 16:43:29 +0800</pubDate>
-      
-      <guid>https://whowin.gitee.io/blog/environment_variables_and_shell_variables/</guid>
-      <description>&lt;p&gt;本文简单介绍了bash的启动过程；shell变量和环境变量的区别；以及环境变量传递给子进程的过程&lt;/p&gt;</description>
-    </item>
-    
-    <item>
       <title>bash 的环境变量和 shell 变量</title>
       <link>https://whowin.gitee.io/posts/environment_variables_and_shell_variables/</link>
       <pubDate>Sun, 03 Apr 2022 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/posts/environment_variables_and_shell_variables/</guid>
       <description>&lt;p&gt;本文简单介绍了bash的启动过程；shell变量和环境变量的区别；以及环境变量传递给子进程的过程&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>About me</title>
+      <link>https://whowin.gitee.io/about/about/</link>
+      <pubDate>Fri, 01 Apr 2022 11:51:22 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/about/about/</guid>
+      <description>个人介绍  84年毕业获得了工程学士学位，这在当时还是稀缺资源，现在满大街都是 85年底开始有幸接触到IBM PC，开始学习使用BASIC、86汇编编程，一晃已过35年以上 36年的职业历程，终于可以退休，不再朝九晚五，还有些不习惯 闲来无事，开个博客，让自己觉得自己还不是个一无是处的人 曾经接触过的有历史记忆的计算机系统有  PDP-11 VAX II IBM PC/XT, PC/AT PC-9801 APPLE II 剩下的就都是大家熟知的一些常规机器了   曾经接触过的有历史沧桑的操作系统有：  DOS (PC-DOS, MS-DOS, FreeDOS) UNIX VMS Linux iRMX 其他大家都知道的就不写了   曾经使用过的编程语言：  BASIC X86汇编 PASCAL C C++ JAVA PL/M 等   在职业生涯的最后15-20年主要在Linux下使用C做嵌入式开发 曾在军队服役13年，曾赴云南参战；退役中国陆军少校  联系我  email: hengch@163.com  </description>
     </item>
     
     <item>
@@ -82,6 +73,15 @@ small amount of logic. In our experience that it is just the right amount of
 logic to be able to create a good static website. If you have used other
 template systems from different languages or frameworks you will find a lot of
 similarities in Go templates.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>完整的PS1控制码</title>
+      <link>https://whowin.gitee.io/blog/ps1_control_codes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/ps1_control_codes/</guid>
+      <description>&lt;p&gt;PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考&lt;/p&gt;</description>
     </item>
     
   </channel>

@@ -6,76 +6,112 @@
     <description>Recent content in Tags on whowin&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 06 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 10 Apr 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Basic Elements</title>
-      <link>https://whowin.gitee.io/tags/basic-elements/</link>
-      <pubDate>Wed, 06 Apr 2022 00:00:00 +0000</pubDate>
+      <title>bash</title>
+      <link>https://whowin.gitee.io/tags/bash/</link>
+      <pubDate>Sun, 10 Apr 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/tags/basic-elements/</guid>
+      <guid>https://whowin.gitee.io/tags/bash/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>CSS</title>
-      <link>https://whowin.gitee.io/tags/css/</link>
-      <pubDate>Wed, 06 Apr 2022 00:00:00 +0000</pubDate>
+      <title>declare</title>
+      <link>https://whowin.gitee.io/tags/declare/</link>
+      <pubDate>Sun, 10 Apr 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/tags/css/</guid>
+      <guid>https://whowin.gitee.io/tags/declare/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>HTML</title>
-      <link>https://whowin.gitee.io/tags/html/</link>
-      <pubDate>Wed, 06 Apr 2022 00:00:00 +0000</pubDate>
+      <title>export</title>
+      <link>https://whowin.gitee.io/tags/export/</link>
+      <pubDate>Sun, 10 Apr 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/tags/html/</guid>
+      <guid>https://whowin.gitee.io/tags/export/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>development</title>
-      <link>https://whowin.gitee.io/tags/development/</link>
-      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
+      <title>printenv</title>
+      <link>https://whowin.gitee.io/tags/printenv/</link>
+      <pubDate>Sun, 10 Apr 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/tags/development/</guid>
+      <guid>https://whowin.gitee.io/tags/printenv/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>go</title>
-      <link>https://whowin.gitee.io/tags/go/</link>
-      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
+      <title>shell</title>
+      <link>https://whowin.gitee.io/tags/shell/</link>
+      <pubDate>Sun, 10 Apr 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/tags/go/</guid>
+      <guid>https://whowin.gitee.io/tags/shell/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>golang</title>
-      <link>https://whowin.gitee.io/tags/golang/</link>
-      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
+      <title>source</title>
+      <link>https://whowin.gitee.io/tags/source/</link>
+      <pubDate>Sun, 10 Apr 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/tags/golang/</guid>
+      <guid>https://whowin.gitee.io/tags/source/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>templates</title>
-      <link>https://whowin.gitee.io/tags/templates/</link>
-      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
+      <title>环境变量</title>
+      <link>https://whowin.gitee.io/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/</link>
+      <pubDate>Sun, 10 Apr 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/tags/templates/</guid>
+      <guid>https://whowin.gitee.io/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>themes</title>
-      <link>https://whowin.gitee.io/tags/themes/</link>
-      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
+      <title>ANSI转义</title>
+      <link>https://whowin.gitee.io/tags/ansi%E8%BD%AC%E4%B9%89/</link>
+      <pubDate>Wed, 06 Apr 2022 14:00:00 +0000</pubDate>
       
-      <guid>https://whowin.gitee.io/tags/themes/</guid>
+      <guid>https://whowin.gitee.io/tags/ansi%E8%BD%AC%E4%B9%89/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CSI序列</title>
+      <link>https://whowin.gitee.io/tags/csi%E5%BA%8F%E5%88%97/</link>
+      <pubDate>Wed, 06 Apr 2022 14:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/csi%E5%BA%8F%E5%88%97/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SGR参数</title>
+      <link>https://whowin.gitee.io/tags/sgr%E5%8F%82%E6%95%B0/</link>
+      <pubDate>Wed, 06 Apr 2022 14:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/sgr%E5%8F%82%E6%95%B0/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>颜色编码</title>
+      <link>https://whowin.gitee.io/tags/%E9%A2%9C%E8%89%B2%E7%BC%96%E7%A0%81/</link>
+      <pubDate>Wed, 06 Apr 2022 14:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/%E9%A2%9C%E8%89%B2%E7%BC%96%E7%A0%81/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>PS1</title>
+      <link>https://whowin.gitee.io/tags/ps1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/ps1/</guid>
       <description></description>
     </item>
     

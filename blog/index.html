@@ -35,7 +35,7 @@
 	<div class="logo logo--mixed">
 		<a class="logo__link" href="/" title="whowin" rel="home">
 			<div class="logo__item logo__imagebox">
-					<img class="logo__img" src="/img/placeholder.png">
+					<img class="logo__img" src="/images/blog_logo.jpg">
 				</div><div class="logo__item logo__text">
 					<div class="logo__title">whowin</div>
 					<div class="logo__tagline">whowin的个人技术博客</div>
@@ -77,6 +77,25 @@
 	
 	<header class="list__header">
 		<h2 class="list__title post__title">
+			<a href="/blog/environment_variables_and_shell_variables/" rel="bookmark">
+			bash 的环境变量和 shell 变量
+			</a>
+		</h2>
+		<div class="list__meta meta"><div class="meta__item-author meta__item">
+	<svg class="meta__icon icon icon-author" width="16" height="16" viewBox="0 0 12 16"><path d="M6 1c2.2 0 3.5 2 3.5 4.5C9.5 7 8.9 8.2 8 9c2.9.8 4 2.5 4 5v1H0v-1c0-2.5 1.1-4.2 4-5-.9-.8-1.5-2-1.5-3.5C2.5 3 3.8 1 6 1z"/></svg><span class="meta__text">whowin</span>
+</div>
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-04-10T16:43:29&#43;08:00">2022-04-10</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/linux/" rel="category">Linux</a>, <a class="meta__link" href="/categories/shell/" rel="category">Shell</a>, <a class="meta__link" href="/categories/bash/" rel="category">Bash</a>
+	</span>
+</div></div>
+	</header>
+	<div class="content list__excerpt post__content clearfix">
+		<p>本文简单介绍了bash的启动过程；shell变量和环境变量的区别及相互转换；环境变量传递给子进程的过程；当前环境执行脚本机器实际应用</p>
+	</div>
+</article><article class="list__item post">
+	
+	<header class="list__header">
+		<h2 class="list__title post__title">
 			<a href="/blog/ansi-escape-code/" rel="bookmark">
 			ANSI转义序列
 			</a>
@@ -85,10 +104,12 @@
 	<svg class="meta__icon icon icon-author" width="16" height="16" viewBox="0 0 12 16"><path d="M6 1c2.2 0 3.5 2 3.5 4.5C9.5 7 8.9 8.2 8 9c2.9.8 4 2.5 4 5v1H0v-1c0-2.5 1.1-4.2 4-5-.9-.8-1.5-2-1.5-3.5C2.5 3 3.8 1 6 1z"/></svg><span class="meta__text">whowin</span>
 </div>
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-04-06T14:00:00Z">2022-04-06</time></div></div>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-04-06T14:00:00Z">2022-04-06</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/linux/" rel="category">Linux</a>
+	</span>
+</div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		<p>本文叫完整第介绍了ANSI的转义序列，大多数都可以用于在普通终端上显示出较为漂亮的界面</p>
+		<p>本文较完整第介绍了ANSI的转义序列，大多数都可以用于在普通终端上显示出较为漂亮的界面，本文可以作为一个资料备查。</p>
 	</div>
 </article><article class="list__item post">
 	
@@ -100,31 +121,12 @@
 		</h2>
 		<div class="list__meta meta"><div class="meta__item-author meta__item">
 	<svg class="meta__icon icon icon-author" width="16" height="16" viewBox="0 0 12 16"><path d="M6 1c2.2 0 3.5 2 3.5 4.5C9.5 7 8.9 8.2 8 9c2.9.8 4 2.5 4 5v1H0v-1c0-2.5 1.1-4.2 4-5-.9-.8-1.5-2-1.5-3.5C2.5 3 3.8 1 6 1z"/></svg><span class="meta__text">whowin</span>
-</div>
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-04-06T14:00:00Z">2022-04-06</time></div></div>
-	</header>
-	<div class="content list__excerpt post__content clearfix">
-		<p>PS1变量是在shell下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，工参考</p>
-	</div>
-</article><article class="list__item post">
-	
-	<header class="list__header">
-		<h2 class="list__title post__title">
-			<a href="/blog/environment_variables_and_shell_variables/" rel="bookmark">
-			bash 的环境变量和 shell 变量
-			</a>
-		</h2>
-		<div class="list__meta meta"><div class="meta__item-author meta__item">
-	<svg class="meta__icon icon icon-author" width="16" height="16" viewBox="0 0 12 16"><path d="M6 1c2.2 0 3.5 2 3.5 4.5C9.5 7 8.9 8.2 8 9c2.9.8 4 2.5 4 5v1H0v-1c0-2.5 1.1-4.2 4-5-.9-.8-1.5-2-1.5-3.5C2.5 3 3.8 1 6 1z"/></svg><span class="meta__text">whowin</span>
-</div>
-<div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-04-03T16:43:29&#43;08:00">2022-04-03</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/linux/" rel="category">Linux</a>, <a class="meta__link" href="/categories/shell/" rel="category">Shell</a>, <a class="meta__link" href="/categories/bash/" rel="category">Bash</a>
+</div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/linux/" rel="category">Linux</a>
 	</span>
 </div></div>
 	</header>
 	<div class="content list__excerpt post__content clearfix">
-		<p>本文简单介绍了bash的启动过程；shell变量和环境变量的区别；以及环境变量传递给子进程的过程</p>
+		<p>PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考</p>
 	</div>
 </article>
 </main>
@@ -147,9 +149,9 @@
 	<h4 class="widget__title">近期文章</h4>
 	<div class="widget__content">
 		<ul class="widget__list">
+			<li class="widget__item"><a class="widget__link" href="/blog/environment_variables_and_shell_variables/">bash 的环境变量和 shell 变量</a></li>
 			<li class="widget__item"><a class="widget__link" href="/blog/ansi-escape-code/">ANSI转义序列</a></li>
 			<li class="widget__item"><a class="widget__link" href="/blog/ps1_control_codes/">完整的PS1控制码</a></li>
-			<li class="widget__item"><a class="widget__link" href="/blog/environment_variables_and_shell_variables/">bash 的环境变量和 shell 变量</a></li>
 		</ul>
 	</div>
 </div>
@@ -160,27 +162,29 @@
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/bash/">Bash</a></li>
 			<li class="widget__item">
-				<a class="widget__link" href="/categories/development/">Development</a></li>
-			<li class="widget__item">
-				<a class="widget__link" href="/categories/golang/">golang</a></li>
-			<li class="widget__item">
 				<a class="widget__link" href="/categories/linux/">Linux</a></li>
 			<li class="widget__item">
 				<a class="widget__link" href="/categories/shell/">Shell</a></li>
+			<li class="widget__item">
+				<a class="widget__link" href="/categories/%E4%B8%AA%E4%BA%BA%E4%BB%8B%E7%BB%8D/">个人介绍</a></li>
 		</ul>
 	</div>
 </div>
 <div class="widget-taglist widget">
 	<h4 class="widget__title">标签</h4>
 	<div class="widget__content">
-		<a class="widget-taglist__link widget__link btn" href="/tags/basic-elements/" title="Basic Elements">Basic Elements</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/css/" title="CSS">CSS</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/development/" title="development">development</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/go/" title="go">go</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/golang/" title="golang">golang</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/html/" title="HTML">HTML</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/templates/" title="templates">templates</a>
-		<a class="widget-taglist__link widget__link btn" href="/tags/themes/" title="themes">themes</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ansi%E8%BD%AC%E4%B9%89/" title="ANSI转义">ANSI转义</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/bash/" title="bash">bash</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/csi%E5%BA%8F%E5%88%97/" title="CSI序列">CSI序列</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/declare/" title="declare">declare</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/export/" title="export">export</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/printenv/" title="printenv">printenv</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/ps1/" title="PS1">PS1</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/sgr%E5%8F%82%E6%95%B0/" title="SGR参数">SGR参数</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/shell/" title="shell">shell</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/source/" title="source">source</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" title="环境变量">环境变量</a>
+		<a class="widget-taglist__link widget__link btn" href="/tags/%E9%A2%9C%E8%89%B2%E7%BC%96%E7%A0%81/" title="颜色编码">颜色编码</a>
 	</div>
 </div>
 <div class="widget-social widget">
