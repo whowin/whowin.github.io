@@ -1,15 +1,20 @@
 ---
 title: "完整的PS1控制码"
-date: 2022-04-06T14:00:00.000Z
-authorbox: false
+date: 2022-04-01T14:00:00+8:00
+authorbox: true
 sidebar: right
 pager: true
 toc: true
 comments: true
+categories:
+  - Linux
+tags:
+  - 环境变量
+  - PS1
 postid: 100002
 ---
 
-PS1变量是在shell下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，工参考
+PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考
 <!--more-->
 
 > 不同于其它文章中给出的常用控制码，以下内容完全转自man手册，应该是比较完整的

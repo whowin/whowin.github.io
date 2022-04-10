@@ -1,7 +1,12 @@
 ---
 title: "About me"
-date: 2022-04-04T11:51:22+08:00
+date: 2022-04-01T11:51:22+08:00
 draft: false
+thumbnail:
+  src: "/images/whowin-photo.jpg"
+  visibility: 
+    - list
+    - post
 authorbox: false
 sidebar: right
 toc: false
@@ -11,11 +16,10 @@ togs:
 ---
 
 
-简单介绍了一下个人经历
-<!--more-->
+
 
 ## 个人介绍
-* 84年毕业获得了工程学士学位，这在当时还是稀缺资源，选择满大街都是
+* 84年毕业获得了工程学士学位，这在当时还是稀缺资源，现在满大街都是
 * 85年底开始有幸接触到IBM PC，开始学习使用BASIC、86汇编编程，一晃已过35年以上
 * 36年的职业历程，终于可以退休，不再朝九晚五，还有些不习惯
 * 闲来无事，开个博客，让自己觉得自己还不是个一无是处的人

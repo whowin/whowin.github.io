@@ -7,11 +7,18 @@ date: 2022-04-06T14:00:00.000Z
 #  visibility: 
 #    - list
 #    - post
-authorbox: false
+authorbox: true
 sidebar: right
 pager: true
 toc: true
 comments: true
+categories:
+  - Linux
+tags:
+  - ANSI转义
+  - CSI序列
+  - SGR参数
+  - 颜色编码
 #weight: 2
 #menu: main
 postid: 100002
@@ -143,7 +150,6 @@ postid: 100002
     ESC[ 48;2;⟨r⟩;⟨g⟩;⟨b⟩ m ---- 选择 RGB 背景色
     ```
 * 
-
 
 ## 参考文献
 * 英文版维基百科之[ANSI escape code](https://en.wikipedia.org/wiki/ANSI_escape_code)

@@ -46,7 +46,8 @@ googleAnalytics = "" # Enable Google Analytics by entering your tracking id
   fontFamilySecondary = "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
 
 [Params.logo]
-  image = "img/placeholder.png" # Logo image. Path relative to "static"
+  image = "/images/blog_logo.jpg"
+  #image = "img/placeholder.png" # Logo image. Path relative to "static"
   title = "whowin" # Logo title, otherwise will use site title
   subtitle = "whowin的个人技术博客" # Logo subtitle
 
