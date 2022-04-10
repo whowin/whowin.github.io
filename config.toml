@@ -3,13 +3,13 @@ title = "whowin's blog"
 languageCode = "zh-cn"
 paginate = "10" # Number of posts per page
 theme = "mainroad"
-disqusShortname = "whowin" # Enable Disqus comments by entering your Disqus shortname
+disqusShortname = "" # Enable Disqus comments by entering your Disqus shortname
 googleAnalytics = "" # Enable Google Analytics by entering your tracking id
 
 [Author] # Used in authorbox
   name = "whowin"
   bio = "没有人知道whowin的真实身份！或许他就是一个没人认识的退休老头；如果你认识他，记得告诉我，谢谢！"
-  avatar = "img/avatar.png"
+  avatar = "/images/whowin-photo.jpg"
 
 [Params]
   description = "whowin的个人博客，主要是技术文章，也许也会有散文什么的，who knows" # Site description. Used in meta description
@@ -97,7 +97,13 @@ googleAnalytics = "" # Enable Google Analytics by entering your tracking id
   url = "/about/about/"
   weight = 100
 [[menu.main]]
-  title = ""
+  title = "Categories"
+  name = "Categories"
+  url = "/categories/"
+  weight = 110
+[[menu.main]]
+  title = "List"
   name = "Article List"
   url = "/blog/"
-  weight = 110
+  weight = 120
+  
