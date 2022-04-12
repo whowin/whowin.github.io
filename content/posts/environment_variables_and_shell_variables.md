@@ -7,7 +7,7 @@ categories:
   - "Linux"
   - "Shell"
   - "Bash"
-draft: false
+draft: true
 
 ---
 

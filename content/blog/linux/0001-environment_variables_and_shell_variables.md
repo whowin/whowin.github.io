@@ -5,6 +5,8 @@ author: 华松青
 description: shell变量和环境变量相关的一些概念
 sidebar: false
 authorbox: false
+toc: true
+pager: true
 categories:
   - "Linux"
   - "Shell"

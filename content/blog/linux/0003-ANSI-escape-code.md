@@ -8,10 +8,9 @@ date: 2022-04-06T14:00:00.000Z
 #    - list
 #    - post
 authorbox: true
-sidebar: right
+sidebar: false
 pager: true
 toc: true
-comments: true
 categories:
   - Linux
 tags:
@@ -21,7 +20,7 @@ tags:
   - 颜色编码
 #weight: 2
 #menu: main
-postid: 100002
+postid: 100003
 ---
 
 本文较完整第介绍了ANSI的转义序列，大多数都可以用于在普通终端上显示出较为漂亮的界面，本文可以作为一个资料备查。

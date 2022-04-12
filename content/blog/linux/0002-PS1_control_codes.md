@@ -2,10 +2,8 @@
 title: "完整的PS1控制码"
 date: 2022-04-01T14:00:00+8:00
 authorbox: true
-sidebar: right
+sidebar: false
 pager: true
-toc: true
-comments: true
 categories:
   - Linux
 tags:

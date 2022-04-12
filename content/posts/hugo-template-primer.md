@@ -11,6 +11,7 @@ thumbnail: "img/placeholder.png"
 #categories:
 #  - "Development"
 #  - "golang"
+draft: true
 ---
 
 Hugo uses the excellent [Go][] [html/template][gohtmltemplate] library for
