@@ -9,19 +9,19 @@
     <lastBuildDate>Sun, 10 Apr 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>bash 的环境变量和 shell 变量</title>
-      <link>https://whowin.gitee.io/blog/environment_variables_and_shell_variables/</link>
+      <link>https://whowin.gitee.io/blog/linux/0001-environment_variables_and_shell_variables/</link>
       <pubDate>Sun, 10 Apr 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/blog/environment_variables_and_shell_variables/</guid>
+      <guid>https://whowin.gitee.io/blog/linux/0001-environment_variables_and_shell_variables/</guid>
       <description>&lt;p&gt;本文简单介绍了bash的启动过程；shell变量和环境变量的区别及相互转换；环境变量传递给子进程的过程；当前环境执行脚本机器实际应用&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>完整的PS1控制码</title>
-      <link>https://whowin.gitee.io/blog/ps1_control_codes/</link>
+      <link>https://whowin.gitee.io/blog/linux/0002-ps1_control_codes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://whowin.gitee.io/blog/ps1_control_codes/</guid>
+      <guid>https://whowin.gitee.io/blog/linux/0002-ps1_control_codes/</guid>
       <description>&lt;p&gt;PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考&lt;/p&gt;</description>
     </item>
     

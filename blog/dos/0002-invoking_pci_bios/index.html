@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>调用PCI BIOS - whowin&#39;s blog</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+		<meta property="og:title" content="调用PCI BIOS" />
+<meta property="og:description" content="通过执行INT 1AH指令可以调用16位的PCI BIOS，也可以直接在物理寄存器位置000FFE6EH调用PCI BIOS。32位BIOS的调用要通过一个远程调用来实现。在这两种情况下，调用这都必须首先将需要的请求参数装入处理器的寄存器组。在入口AH寄存器必须包含PCI的功能ID：B1H，AL寄存器必须包含PCI下级功能识别器。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/blog/dos/0002-invoking_pci_bios/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2008-03-18T15:10:28+08:00" />
+<meta property="article:modified_time" content="2008-03-18T15:10:28+08:00" />
+
+
+		<meta itemprop="name" content="调用PCI BIOS">
+<meta itemprop="description" content="通过执行INT 1AH指令可以调用16位的PCI BIOS，也可以直接在物理寄存器位置000FFE6EH调用PCI BIOS。32位BIOS的调用要通过一个远程调用来实现。在这两种情况下，调用这都必须首先将需要的请求参数装入处理器的寄存器组。在入口AH寄存器必须包含PCI的功能ID：B1H，AL寄存器必须包含PCI下级功能识别器。"><meta itemprop="datePublished" content="2008-03-18T15:10:28+08:00" />
+<meta itemprop="dateModified" content="2008-03-18T15:10:28+08:00" />
+<meta itemprop="wordCount" content="117">
+<meta itemprop="keywords" content="DOS,BIOS,PCI," />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo logo--mixed">
+		<a class="logo__link" href="/" title="whowin" rel="home">
+			<div class="logo__item logo__imagebox">
+					<img class="logo__img" src="/images/blog_logo.jpg">
+				</div><div class="logo__item logo__text">
+					<div class="logo__title">whowin</div>
+					<div class="logo__tagline">whowin的个人技术博客</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">菜单</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/about/about/">
+				
+				<span class="menu__text">About me</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/categories/">
+				
+				<span class="menu__text">Categories</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/blog/">
+				
+				<span class="menu__text">Article List</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">调用PCI BIOS</h1>
+			<div class="post__meta meta"><div class="meta__item-author meta__item">
+	<svg class="meta__icon icon icon-author" width="16" height="16" viewBox="0 0 12 16"><path d="M6 1c2.2 0 3.5 2 3.5 4.5C9.5 7 8.9 8.2 8 9c2.9.8 4 2.5 4 5v1H0v-1c0-2.5 1.1-4.2 4-5-.9-.8-1.5-2-1.5-3.5C2.5 3 3.8 1 6 1z"/></svg><span class="meta__text">whowin</span>
+</div>
+<div class="meta__item-datetime meta__item">
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2008-03-18T15:10:28&#43;08:00">2008-03-18</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/dos/" rel="category">DOS</a>
+	</span>
+</div></div>
+		</header>
+		
+<div class="post__toc toc">
+	<div class="toc__title">目录</div>
+	<div class="toc__menu">
+		<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1pci-bios的存在性">1、PCI BIOS的存在性</a></li>
+    <li><a href="#2pci设备检测">2、PCI设备检测</a></li>
+    <li><a href="#3pci分类代码检测">3、PCI分类代码检测</a></li>
+    <li><a href="#4特殊周期的产生">4、特殊周期的产生</a></li>
+    <li><a href="#5读配置字节">5、读配置字节</a></li>
+    <li><a href="#6读配置字">6、读配置字</a></li>
+    <li><a href="#7读配置双字">7、读配置双字</a></li>
+    <li><a href="#8写配置字节">8、写配置字节</a></li>
+    <li><a href="#9写配置字">9、写配置字</a></li>
+    <li><a href="#10写配置双字">10、写配置双字</a></li>
+  </ul>
+</nav>
+	</div>
+</div><div class="content post__content clearfix">
+			<p>通过执行INT 1AH指令可以调用16位的PCI BIOS，也可以直接在物理寄存器位置000FFE6EH调用PCI BIOS。32位BIOS的调用要通过一个远程调用来实现。在这两种情况下，调用这都必须首先将需要的请求参数装入处理器的寄存器组。在入口AH寄存器必须包含PCI的功能ID：B1H，AL寄存器必须包含PCI下级功能识别器。</p>
+<h2 id="1pci-bios的存在性">1、PCI BIOS的存在性</h2>
+<ul>
+<li>
+<p>入口参数：</p>
+<pre tabindex="0"><code>  AH=B1H
+  AL=01H
+</code></pre></li>
+<li>
+<p>出口参数：</p>
+<pre tabindex="0"><code>  EDX：返回值为“PCI”。字符“P”存放在DL；字符“C”存放在DH；字符“I”存放在EL；EH中方一个空格符
+  AH：存在状态。如果EDX设置适当，则00H表示存在PCI BIOS。
+  AL：硬件机制
+  BL：接口版本
+  CL：系统中最后一个PCI局部中线的号码
+  CF：状态标志。为1表示没有PCI BIOS，为0表示存在PCI BIOS。
+</code></pre><blockquote>
+<p>如果CF被清除且AH的内容为00H时，为了确定PCI功能设置的有效性，对EDX内容的检查仍然是必须的。BX进一步指出版本号，版本号以BCD码形式存在。如v2.10，BH将返回02H，BL将返回10H。</p>
+</blockquote>
+<blockquote>
+<p>AL的返回值标识与访问配置空间和产生PCI特殊周期相关的支持平台的特定硬件字符。PCI规范为访问配置空间定义了两种硬件机制，AL返回值的位0与位1表示当前平台支持那种机制。位0等于1时支持1#机制，位1等于1时表示支持2#机制，位2、3、6、7是保留位，返回值必须是0。</p>
+</blockquote>
+<blockquote>
+<p>PCI规范中也为特殊周期的产生定义了硬件机制，AL的返回值的位4、5两位指出机制类型。位4为1表示支持基于1#配置机制的特殊周期产生；位5为1表示支持基于2#配置机制的特殊周期产生。</p>
+</blockquote>
+<blockquote>
+<p>CL的返回值表示系统中最后一个PCI局部总线的号码，PCI局部中线的号码从0开始，到CL中的返回值为止。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="2pci设备检测">2、PCI设备检测</h2>
+<ul>
+<li>
+<p>入口参数：</p>
+<pre tabindex="0"><code>  AH=B1H
+  AL=02H
+  CX=设备识别号，从0~~65535
+  DX=供应商识别代码，从0~~65534
+  SI=索引号，0~~N
+</code></pre></li>
+<li>
+<p>出口参数：</p>
+<pre tabindex="0"><code>  BH=总线号
+  BL=高5位为设备号，低3位为功能号
+  AH=返回3种不同的代码。00H表示检测成功，86H表示未发现要检测的设备，83H表示入口参数中的供应商代码无效
+  CF=状态标志。为1表示检测错误，为0表示检测成功。
+</code></pre><blockquote>
+<p>如果在该功能调用中，使索引号从0开始以1为增量递增，直到AH中的返回码为86H为止，便可检测出供应商识别码与设备识别码相同的所有设备。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="3pci分类代码检测">3、PCI分类代码检测</h2>
+<ul>
+<li>入口参数：
+<pre tabindex="0"><code>  AH=B1H
+  AL=03H
+  ECX=低三个字节为分类代码
+  SI=索引号，0~~N
+</code></pre></li>
+<li>出口参数：
+<pre tabindex="0"><code>  BH=总线号，0~~255
+  BL=高5位为设备号，低3位为功能号
+  AH=00H表示检测成功，86H表示未发现要检测的设备
+  CF=1表示检测错误，0表示检测成功
+</code></pre></li>
+</ul>
+<blockquote>
+<p>如果在该功能调用中，使索引号从1开始以1位增量递增，直到AH中的返回码为86H为止，便可检测出具有相同分类代码的所有设备。</p>
+</blockquote>
+<h2 id="4特殊周期的产生">4、特殊周期的产生</h2>
+<ul>
+<li>入口参数：
+<pre tabindex="0"><code>  AH=B1H
+  AL=06H
+  BH=总线号，0~~255
+  EDX=特殊周期数据
+</code></pre></li>
+<li>出口参数：
+<pre tabindex="0"><code>  AH=00H表示特殊周期产生成功，81H表示不支持该功能
+  CF=1表示错误，0表示成功
+</code></pre></li>
+</ul>
+<h2 id="5读配置字节">5、读配置字节</h2>
+<ul>
+<li>入口参数：
+<pre tabindex="0"><code>  AX=B108H
+  BH=总线号，0~~255
+  BL=高5位为设备号，低3位为功能号
+  DI=寄存器号，0~~255
+</code></pre></li>
+<li>出口参数
+<pre tabindex="0"><code>  CL：读出的配置字节
+  AH=00H表示成功
+  CF=1表示错误，0表示成功
+</code></pre></li>
+</ul>
+<h2 id="6读配置字">6、读配置字</h2>
+<ul>
+<li>入口参数：
+<pre tabindex="0"><code>  AX=B109H
+  BH=总线号，0~~255
+  BL=高5位为设备号，低3位为功能号
+  DI=寄存器号，取值为0、2、4、6、8
+</code></pre></li>
+<li>出口参数
+<pre tabindex="0"><code>  CX=读出的配置字
+  AH=00H表示成功，87H表示寄存器无效
+  CF=1表示错误，0表示成功
+</code></pre></li>
+</ul>
+<h2 id="7读配置双字">7、读配置双字</h2>
+<ul>
+<li>入口参数：
+<pre tabindex="0"><code>  AX=B10AH
+  BH=总线号，0~~255
+  BL=高5位为设备号，低3位为功能号
+  DI=寄存器号，0、4、8、12
+</code></pre></li>
+<li>出口参数
+<pre tabindex="0"><code>  ECX=读出的配置双字
+  AH=00H表示成功，87H表示寄存器无效
+  CF=1表示错误，0表示成功
+</code></pre></li>
+</ul>
+<h2 id="8写配置字节">8、写配置字节</h2>
+<ul>
+<li>入口参数：
+<pre tabindex="0"><code>  AX=B10BH
+  BH=总线号，0~~255
+  BL=高5位为设备号，低3位为功能号
+  DI=寄存器号，0~~255
+  CL=写入的字节值
+</code></pre></li>
+<li>出口参数
+<pre tabindex="0"><code>  AH=00H表示成功
+  CF=1表示错误，0表示成功
+</code></pre></li>
+</ul>
+<h2 id="9写配置字">9、写配置字</h2>
+<ul>
+<li>入口参数：
+<pre tabindex="0"><code>  AX=B10CH
+  BH=总线号，0~~255
+  BL=高5位为设备号，低3位为功能号
+  DI=寄存器号，0、2、4、6
+  CX=写入字的值
+</code></pre></li>
+<li>出口参数
+<pre tabindex="0"><code>  AH=00H表示成功，87H表示寄存器无效
+  CF=1表示错误，0表示成功
+</code></pre></li>
+</ul>
+<h2 id="10写配置双字">10、写配置双字</h2>
+<ul>
+<li>入口参数：
+<pre tabindex="0"><code>  AX=B10DH
+  BH=总线号，0~~255
+  BL=高5位为设备号，低3位为功能号
+  DI=寄存器号，0、4、8、12
+  ECX=写入双字的值
+</code></pre></li>
+<li>出口参数
+<pre tabindex="0"><code>  AH=00H表示成功，87H表示寄存器无效
+  CF=1表示错误，0表示成功
+</code></pre></li>
+</ul>
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/dos/" rel="tag">DOS</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/bios/" rel="tag">BIOS</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/pci/" rel="tag">PCI</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+
+<nav class="pager flex">
+	<div class="pager__item pager__item--prev">
+		<a class="pager__link" href="/blog/dos/0001-32bit_bios_introduction/" rel="prev">
+			<span class="pager__subtitle">«&thinsp;上一篇</span>
+			<p class="pager__title">32位 BIOS说明</p>
+		</a>
+	</div>
+	<div class="pager__item pager__item--next">
+		<a class="pager__link" href="/blog/dos/0003-djgpp_installation/" rel="next">
+			<span class="pager__subtitle">下一篇&thinsp;»</span>
+			<p class="pager__title">在 DOS 下安装 DJGPP</p>
+		</a>
+	</div>
+</nav>
+
+
+			</div>
+			
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2022 whowin.
+			<span class="footer__copyright-credits">基于 <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> 引擎和 <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> 主题</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+</body>
+</html>

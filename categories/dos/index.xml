@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DOS on whowin&#39;s blog</title>
+    <link>https://whowin.gitee.io/categories/dos/</link>
+    <description>Recent content in DOS on whowin&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 02 Apr 2008 09:15:23 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/dos/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>遍历 PCI 设备</title>
+      <link>https://whowin.gitee.io/blog/dos/0005-traverse_pci_devices/</link>
+      <pubDate>Wed, 02 Apr 2008 09:15:23 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/dos/0005-traverse_pci_devices/</guid>
+      <description>&lt;p&gt;PC机在启动的时候，都会看到一个PCI设备清单，可以看到机器中的所有PCI设备，其实搜索PCI设备的程序并不难编，本文通过一个实例说明如何遍历PCI设备。本文程序的工作环境：MS-DOS 6.22，djgpp+RHIDE。本文初次发表于2008年4月2日，2011年3月11日做过修改，将其中的代码片段换为完整代码。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在 DOS 下的 DJGPP &#43; RHIDE 安装实作</title>
+      <link>https://whowin.gitee.io/blog/dos/0004-install_djgpp_rhide_under_dos/</link>
+      <pubDate>Fri, 28 Mar 2008 13:48:41 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/dos/0004-install_djgpp_rhide_under_dos/</guid>
+      <description>&lt;p&gt;本文介绍在一个纯DOS构建一个C、C++和汇编的保护模式开发环境，编写的程序可以在纯DOS环境下运行在保护模式下&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在 DOS 下安装 DJGPP</title>
+      <link>https://whowin.gitee.io/blog/dos/0003-djgpp_installation/</link>
+      <pubDate>Thu, 27 Mar 2008 14:27:38 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/dos/0003-djgpp_installation/</guid>
+      <description>&lt;p&gt;该文翻译自 &lt;strong&gt;djgpp version 2.03&lt;/strong&gt; 的 &lt;em&gt;.readme&lt;/em&gt; 文件。本文中包含获得、安装、使用 &lt;strong&gt;DJGPP&lt;/strong&gt; 的信息，在寻求帮助之前请完整阅读该文档。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>调用PCI BIOS</title>
+      <link>https://whowin.gitee.io/blog/dos/0002-invoking_pci_bios/</link>
+      <pubDate>Tue, 18 Mar 2008 15:10:28 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/dos/0002-invoking_pci_bios/</guid>
+      <description>&lt;p&gt;通过执行INT 1AH指令可以调用16位的PCI BIOS，也可以直接在物理寄存器位置000FFE6EH调用PCI BIOS。32位BIOS的调用要通过一个远程调用来实现。在这两种情况下，调用这都必须首先将需要的请求参数装入处理器的寄存器组。在入口AH寄存器必须包含PCI的功能ID：B1H，AL寄存器必须包含PCI下级功能识别器。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>32位 BIOS说明</title>
+      <link>https://whowin.gitee.io/blog/dos/0001-32bit_bios_introduction/</link>
+      <pubDate>Tue, 18 Mar 2008 13:15:48 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/dos/0001-32bit_bios_introduction/</guid>
+      <description>&lt;p&gt;PCI BIOS在PCI编程中起着一定的作用，PCI BIOS的资料也不是很好找，把找到的集中到这里，供参考。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

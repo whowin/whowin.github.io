@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>完整的PS1控制码 - whowin&#39;s blog</title>
+	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
+	<meta name="description" content="">
+		<meta property="og:title" content="完整的PS1控制码" />
+<meta property="og:description" content="PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/blog/linux/0002-ps1_control_codes/" /><meta property="article:section" content="blog" />
+
+
+
+
+		<meta itemprop="name" content="完整的PS1控制码">
+<meta itemprop="description" content="PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考">
+
+<meta itemprop="wordCount" content="93">
+<meta itemprop="keywords" content="环境变量,PS1," />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="dns-prefetch" href="//fonts.googleapis.com">
+	<link rel="dns-prefetch" href="//fonts.gstatic.com">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700">
+
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/custom.css">
+
+	<link rel="shortcut icon" href="/favicon.ico">
+		
+</head>
+<body class="body">
+	<div class="container container--outer">
+		<header class="header">
+	<div class="container header__container">
+		
+	<div class="logo logo--mixed">
+		<a class="logo__link" href="/" title="whowin" rel="home">
+			<div class="logo__item logo__imagebox">
+					<img class="logo__img" src="/images/blog_logo.jpg">
+				</div><div class="logo__item logo__text">
+					<div class="logo__title">whowin</div>
+					<div class="logo__tagline">whowin的个人技术博客</div>
+				</div>
+		</a>
+	</div>
+		
+<nav class="menu">
+	<button class="menu__btn" aria-haspopup="true" aria-expanded="false" tabindex="0">
+		<span class="menu__btn-title" tabindex="-1">菜单</span>
+	</button>
+	<ul class="menu__list">
+		<li class="menu__item">
+			<a class="menu__link" href="/about/about/">
+				
+				<span class="menu__text">About me</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/categories/">
+				
+				<span class="menu__text">Categories</span>
+				
+			</a>
+		</li>
+		<li class="menu__item">
+			<a class="menu__link" href="/blog/">
+				
+				<span class="menu__text">Article List</span>
+				
+			</a>
+		</li>
+	</ul>
+</nav>
+
+	</div>
+</header>
+		<div class="wrapper flex">
+			<div class="primary">
+			
+<main class="main" role="main">
+	<article class="post">
+		<header class="post__header">
+			<h1 class="post__title">完整的PS1控制码</h1>
+			<div class="post__meta meta"><div class="meta__item-author meta__item">
+	<svg class="meta__icon icon icon-author" width="16" height="16" viewBox="0 0 12 16"><path d="M6 1c2.2 0 3.5 2 3.5 4.5C9.5 7 8.9 8.2 8 9c2.9.8 4 2.5 4 5v1H0v-1c0-2.5 1.1-4.2 4-5-.9-.8-1.5-2-1.5-3.5C2.5 3 3.8 1 6 1z"/></svg><span class="meta__text">whowin</span>
+</div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/linux/" rel="category">Linux</a>
+	</span>
+</div></div>
+		</header>
+		<div class="content post__content clearfix">
+			<p>PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考</p>
+<blockquote>
+<p>不同于其它文章中给出的常用控制码，以下内容完全转自man手册，应该是比较完整的</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">序号</th>
+<th style="text-align:center">参数</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">\a</td>
+<td style="text-align:left">ASCII字符(07)，响铃bell</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">\d</td>
+<td style="text-align:left">代表日期，格式为weekday month date，例如：&ldquo;Mon Aug 1&rdquo;</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">\D{format}</td>
+<td style="text-align:left">format会作为参数传给strftime()，返回的结果将插入提示符，大括号是必须的</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">\e</td>
+<td style="text-align:left">ASCII字符(033)</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">\h</td>
+<td style="text-align:left">仅取主机的第一个名字</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">\H</td>
+<td style="text-align:left">完整的主机名称</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">\j</td>
+<td style="text-align:left">shell当前管理的任务数</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">\l</td>
+<td style="text-align:left">shell终端设备名的主名(最后一个斜杠后面的部分)</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">\n</td>
+<td style="text-align:left">换行</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">\r</td>
+<td style="text-align:left">回车</td>
+</tr>
+<tr>
+<td style="text-align:center">11</td>
+<td style="text-align:center">\s</td>
+<td style="text-align:left">shell的名称，$0是主名(最后一个斜杠后面的部分)</td>
+</tr>
+<tr>
+<td style="text-align:center">12</td>
+<td style="text-align:center">\t</td>
+<td style="text-align:left">显示时间为24小时，格式：HH:MM:SS</td>
+</tr>
+<tr>
+<td style="text-align:center">13</td>
+<td style="text-align:center">\T</td>
+<td style="text-align:left">显示时间为12小时，格式：HH:MM:SS</td>
+</tr>
+<tr>
+<td style="text-align:center">14</td>
+<td style="text-align:center">\@</td>
+<td style="text-align:left">显示时间为12小时，am/pm格式</td>
+</tr>
+<tr>
+<td style="text-align:center">15</td>
+<td style="text-align:center">\A</td>
+<td style="text-align:left">显示时间为24小时，格式：HH:MM</td>
+</tr>
+<tr>
+<td style="text-align:center">16</td>
+<td style="text-align:center">\u</td>
+<td style="text-align:left">当前用户的用户名</td>
+</tr>
+<tr>
+<td style="text-align:center">17</td>
+<td style="text-align:center">\v</td>
+<td style="text-align:left">BASH的版本信息(比如：2.00)</td>
+</tr>
+<tr>
+<td style="text-align:center">18</td>
+<td style="text-align:center">\V</td>
+<td style="text-align:left">bash的发行版本，版本号+补丁级别(比如：2.00.0)</td>
+</tr>
+<tr>
+<td style="text-align:center">19</td>
+<td style="text-align:center">\w</td>
+<td style="text-align:left">完整的工作目录名称，home目录会以 ~代替</td>
+</tr>
+<tr>
+<td style="text-align:center">20</td>
+<td style="text-align:center">\W</td>
+<td style="text-align:left">工作目录的主名(最后一个斜杠后面的部分</td>
+</tr>
+<tr>
+<td style="text-align:center">21</td>
+<td style="text-align:center">\!</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:center">22</td>
+<td style="text-align:center">\#</td>
+<td style="text-align:left">下达的第几个命令</td>
+</tr>
+<tr>
+<td style="text-align:center">23</td>
+<td style="text-align:center">\$</td>
+<td style="text-align:left">提示字符，如果是root时，提示符为：# ，普通用户则为：$</td>
+</tr>
+<tr>
+<td style="text-align:center">24</td>
+<td style="text-align:center">\nnn</td>
+<td style="text-align:left">用八进制数nnn表示的字符</td>
+</tr>
+<tr>
+<td style="text-align:center">25</td>
+<td style="text-align:center">\\</td>
+<td style="text-align:left">反斜杠</td>
+</tr>
+<tr>
+<td style="text-align:center">26</td>
+<td style="text-align:center">\[</td>
+<td style="text-align:left">一串非打印字符的开始符，可用于在提示符中嵌入终端控制字符串</td>
+</tr>
+<tr>
+<td style="text-align:center">27</td>
+<td style="text-align:center">\]</td>
+<td style="text-align:left">一串非打印字符的结束符</td>
+</tr>
+</tbody>
+</table>
+		</div>
+		<footer class="post__footer">
+			
+<div class="post__tags tags clearfix">
+	<svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5 0 11V3C0 1.5.8.8.8.8S1.5 0 3 0h8c1.5 0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg>
+	<ul class="tags__list">
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" rel="tag">环境变量</a>
+		</li>
+		<li class="tags__item">
+			<a class="tags__link btn" href="/tags/ps1/" rel="tag">PS1</a>
+		</li>
+	</ul>
+</div>
+		</footer>
+	</article>
+</main>
+
+<div class="authorbox clearfix">
+	<figure class="authorbox__avatar">
+		<img alt="whowin avatar" src="/images/whowin-photo.jpg" class="avatar" height="90" width="90">
+	</figure>
+	<div class="authorbox__header">
+		<span class="authorbox__name">关于 whowin</span>
+	</div>
+	<div class="authorbox__description">
+		没有人知道whowin的真实身份！或许他就是一个没人认识的退休老头；如果你认识他，记得告诉我，谢谢！
+	</div>
+</div>
+
+<nav class="pager flex">
+	<div class="pager__item pager__item--next">
+		<a class="pager__link" href="/blog/dos/0001-32bit_bios_introduction/" rel="next">
+			<span class="pager__subtitle">下一篇&thinsp;»</span>
+			<p class="pager__title">32位 BIOS说明</p>
+		</a>
+	</div>
+</nav>
+
+
+			</div>
+			
+		</div>
+		<footer class="footer">
+	<div class="container footer__container flex">
+		
+		<div class="footer__copyright">
+			&copy; 2022 whowin.
+			<span class="footer__copyright-credits">基于 <a href="https://gohugo.io/" rel="nofollow noopener" target="_blank">Hugo</a> 引擎和 <a href="https://github.com/Vimux/Mainroad/" rel="nofollow noopener" target="_blank">Mainroad</a> 主题</span>
+		</div>
+	</div>
+</footer>
+	</div>
+<script async defer src="/js/menu.js"></script>
+<script src="/js/custom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+</body>
+</html>
