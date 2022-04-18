@@ -10,9 +10,8 @@ thumbnail:
 authorbox: false
 sidebar: right
 toc: false
-categories:
-  - 个人介绍
-togs:
+#categories:
+#togs:
 ---
 
 

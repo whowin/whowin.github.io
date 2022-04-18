@@ -49,7 +49,7 @@ googleAnalytics = "" # Enable Google Analytics by entering your tracking id
   image = "/images/blog_logo.jpg"
   #image = "img/placeholder.png" # Logo image. Path relative to "static"
   title = "whowin" # Logo title, otherwise will use site title
-  subtitle = "whowin的个人技术博客" # Logo subtitle
+  subtitle = "开源和分享是技术发展的源泉和动力；本博客所有文章均为原创" # Logo subtitle
 
 [Params.thumbnail]
   visibility = ["list", "post"] # Control thumbnail visibility
