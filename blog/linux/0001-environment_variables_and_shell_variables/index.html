@@ -18,7 +18,7 @@
 		<meta itemprop="name" content="bash 的环境变量和 shell 变量">
 <meta itemprop="description" content="shell变量和环境变量相关的一些概念"><meta itemprop="datePublished" content="2022-04-10T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-04-10T16:43:29+08:00" />
-<meta itemprop="wordCount" content="789">
+<meta itemprop="wordCount" content="812">
 <meta itemprop="keywords" content="shell,bash,source,printenv,环境变量,declare,export," />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
@@ -42,7 +42,7 @@
 					<img class="logo__img" src="/images/blog_logo.jpg">
 				</div><div class="logo__item logo__text">
 					<div class="logo__title">whowin</div>
-					<div class="logo__tagline">whowin的个人技术博客</div>
+					<div class="logo__tagline">开源和分享是技术发展的源泉和动力；本博客所有文章均为原创</div>
 				</div>
 		</a>
 	</div>
@@ -176,7 +176,7 @@
 </ul>
 </li>
 <li>
-<p>关于 <em>env</em> 命令的两个例子</p>
+<p><strong>关于 <em>env</em> 命令的两个例子</strong></p>
 <ul>
 <li><em>env 环境变量名=变量值 命令</em> 和 <em>env -u 环境变量名 命令</em> 都只能临时在一个新的环境中改变或者删除一个变量，用于在一个指定的环境中执行命令，这一点在很多文章中都没有明确说明</li>
 <li>下面的例子设置了一个临时环境变量 <strong>ENV_VAR_1</strong>，并且在这个临时环境中将这个变量的值打印出来
@@ -238,6 +238,9 @@ $
 </ul>
 </li>
 </ul>
+<blockquote>
+<p>在 Bourne Shell 家族中(bash - Bourne-Again SHell)对变量和环境变量的区分确实不是很严格，很容易混为一谈，比如：两者按惯例都是用大写字母表示，设置和删除方法相同；但是在 C Shell(csh) 是进行了严格区分的，在 csh 中，按惯例 shell 变量使用小写字母，环境变量使用大写字母，shell 变量使用 <em>set</em> 和 <em>unset</em> 命令进行设置和删除，而环境变量必须用 <em>setenv</em> 和 <em>unsetenv</em> 命令进行设置和删除</p>
+</blockquote>
 <h2 id="bash-如何将环境变量传给子进程">bash 如何将环境变量传给子进程</h2>
 <ul>
 <li><strong>bash 如何执行一个命令</strong>
@@ -493,7 +496,13 @@ whowin@ubuntu:~$
 	<div class="pager__item pager__item--prev">
 		<a class="pager__link" href="/blog/linux/0003-ansi-escape-code/" rel="prev">
 			<span class="pager__subtitle">«&thinsp;上一篇</span>
-			<p class="pager__title">ANSI转义序列</p>
+			<p class="pager__title">ANSI的ESC转义序列</p>
+		</a>
+	</div>
+	<div class="pager__item pager__item--next">
+		<a class="pager__link" href="/blog/linux/0004-setup_ps1/" rel="next">
+			<span class="pager__subtitle">下一篇&thinsp;»</span>
+			<p class="pager__title">bash下变量PS1的完整理解</p>
 		</a>
 	</div>
 </nav>

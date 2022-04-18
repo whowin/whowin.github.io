@@ -4,21 +4,21 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ANSI转义序列 - whowin&#39;s blog</title>
+	<title>ANSI的ESC转义序列 - whowin&#39;s blog</title>
 	<script>(function(d,e){d[e]=d[e].replace("no-js","js");})(document.documentElement,"className");</script>
 	<meta name="description" content="">
-		<meta property="og:title" content="ANSI转义序列" />
+		<meta property="og:title" content="ANSI的ESC转义序列" />
 <meta property="og:description" content="本文较完整第介绍了ANSI的转义序列，大多数都可以用于在普通终端上显示出较为漂亮的界面，本文可以作为一个资料备查。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/blog/linux/0003-ansi-escape-code/" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2022-04-06T14:00:00+00:00" />
-<meta property="article:modified_time" content="2022-04-06T14:00:00+00:00" />
+<meta property="article:published_time" content="2022-04-06T14:00:00+08:00" />
+<meta property="article:modified_time" content="2022-04-06T14:00:00+08:00" />
 
 
-		<meta itemprop="name" content="ANSI转义序列">
-<meta itemprop="description" content="本文较完整第介绍了ANSI的转义序列，大多数都可以用于在普通终端上显示出较为漂亮的界面，本文可以作为一个资料备查。"><meta itemprop="datePublished" content="2022-04-06T14:00:00+00:00" />
-<meta itemprop="dateModified" content="2022-04-06T14:00:00+00:00" />
-<meta itemprop="wordCount" content="441">
+		<meta itemprop="name" content="ANSI的ESC转义序列">
+<meta itemprop="description" content="本文较完整第介绍了ANSI的转义序列，大多数都可以用于在普通终端上显示出较为漂亮的界面，本文可以作为一个资料备查。"><meta itemprop="datePublished" content="2022-04-06T14:00:00+08:00" />
+<meta itemprop="dateModified" content="2022-04-06T14:00:00+08:00" />
+<meta itemprop="wordCount" content="538">
 <meta itemprop="keywords" content="ANSI转义,CSI序列,SGR参数,颜色编码," />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link rel="dns-prefetch" href="//fonts.googleapis.com">
@@ -42,7 +42,7 @@
 					<img class="logo__img" src="/images/blog_logo.jpg">
 				</div><div class="logo__item logo__text">
 					<div class="logo__title">whowin</div>
-					<div class="logo__tagline">whowin的个人技术博客</div>
+					<div class="logo__tagline">开源和分享是技术发展的源泉和动力；本博客所有文章均为原创</div>
 				</div>
 		</a>
 	</div>
@@ -84,12 +84,12 @@
 <main class="main" role="main">
 	<article class="post">
 		<header class="post__header">
-			<h1 class="post__title">ANSI转义序列</h1>
+			<h1 class="post__title">ANSI的ESC转义序列</h1>
 			<div class="post__meta meta"><div class="meta__item-author meta__item">
 	<svg class="meta__icon icon icon-author" width="16" height="16" viewBox="0 0 12 16"><path d="M6 1c2.2 0 3.5 2 3.5 4.5C9.5 7 8.9 8.2 8 9c2.9.8 4 2.5 4 5v1H0v-1c0-2.5 1.1-4.2 4-5-.9-.8-1.5-2-1.5-3.5C2.5 3 3.8 1 6 1z"/></svg><span class="meta__text">whowin</span>
 </div>
 <div class="meta__item-datetime meta__item">
-	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-04-06T14:00:00Z">2022-04-06</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/linux/" rel="category">Linux</a>
+	<svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class="meta__text" datetime="2022-04-06T14:00:00&#43;08:00">2022-04-06</time></div><div class="meta__item-categories meta__item"><svg class="meta__icon icon icon-category" width="16" height="16" viewBox="0 0 16 16"><path d="m7 2l1 2h8v11h-16v-13z"/></svg><span class="meta__text"><a class="meta__link" href="/categories/linux/" rel="category">Linux</a>
 	</span>
 </div></div>
 		</header>
@@ -102,7 +102,7 @@
     <li><a href="#csi序列">CSI序列</a></li>
     <li><a href="#sgr参数">SGR参数</a></li>
     <li><a href="#颜色编码">颜色编码</a></li>
-    <li><a href="#参考文献">参考文献</a></li>
+    <li><a href="#osc-序列">OSC 序列</a></li>
   </ul>
 </nav>
 	</div>
@@ -110,7 +110,7 @@
 			<p>本文较完整第介绍了ANSI的转义序列，大多数都可以用于在普通终端上显示出较为漂亮的界面，本文可以作为一个资料备查。</p>
 <h2 id="csi序列">CSI序列</h2>
 <ul>
-<li>CSI(Control Sequence Introducer)序列由ESC [开始，后面跟若干个参数字节(可以没有)，规定范围为0x30-0x3F(ASCII 0–9:;&lt;=&gt;?)；在跟若干个中间字节，规定范围为0x20-0x2F(ASCII 空格以及!&quot;#$%&amp;&rsquo;()*+,-./)；然后再跟一个结束字符(单个字符)，规定范围为0x40-0x7E(ASCII @A–Z[]^_`a–z{|}~)
+<li><strong>CSI</strong>(Control Sequence Introducer)序列由 <code>ESC [</code> 开始，后面跟若干个参数字节(可以没有)，规定范围为 <code>0x30-0x3F(ASCII 0–9:;&lt;=&gt;?)</code>；再跟若干个中间字节，规定范围为 <code>0x20-0x2F(ASCII 空格以及!&quot;#$%&amp;'()*+,-./)</code>；然后再跟一个结束字符(单个字符)，规定范围为 <code>0x40-0x7E(ASCII @A–Z[\]^_`a–z{|}~)</code>
 <table>
 <thead>
 <tr>
@@ -123,12 +123,12 @@
 <tr>
 <td style="text-align:center">参数字节</td>
 <td style="text-align:center">0x30–0x3F</td>
-<td style="text-align:left">0–9:;&lt;=&gt;?</td>
+<td style="text-align:left"><code>0–9:;&lt;=&gt;?</code></td>
 </tr>
 <tr>
 <td style="text-align:center">中间字节</td>
 <td style="text-align:center">0x20–0x2F</td>
-<td style="text-align:left">空格、!&quot;#$%&amp;&rsquo;()*+,-./</td>
+<td style="text-align:left"><code>空格、!&quot;#$%&amp;'()*+,-./</code></td>
 </tr>
 <tr>
 <td style="text-align:center">最终字节</td>
@@ -138,13 +138,14 @@
 </tbody>
 </table>
 </li>
-<li>常见的序列通常是把一些数字用分号分隔开，例如1;2;3，缺少的数字视为0(比如：1;;3被视为1;0;3)，ESC[m这样没有参数的情况相当于参数为0；</li>
+<li>常见的序列通常是把一些数字用分号分隔开，例如 1;2;3，缺少的数字视为 0(比如：1;;3被视为1;0;3)，<code>ESC[m</code> 这样没有参数的情况相当于参数为 0；</li>
 <li>某些序列（如下表中的CUU - 光标上移一行）把0视为1，以使在缺少参数的情况下有意义；</li>
-<li>下表摘自维基百科中<a href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#CSI%E5%BA%8F%E5%88%97">CSI序列部分</a></li>
+<li>下表摘自维基百科中 <a href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#CSI%E5%BA%8F%E5%88%97">CSI序列部分</a></li>
 <li>一些ANSI控制序列（不完整列表）
 <table>
 <thead>
 <tr>
+<th style="text-align:center">编号</th>
 <th style="text-align:left">代码</th>
 <th style="text-align:left">名称</th>
 <th style="text-align:left">作用</th>
@@ -152,98 +153,117 @@
 </thead>
 <tbody>
 <tr>
+<td style="text-align:center">1</td>
 <td style="text-align:left">CSI n A</td>
-<td style="text-align:left">CUU – 光标上移（Cursor Up）</td>
-<td style="text-align:left">光标向指定的方向移动n（默认1）格。如果光标已在屏幕边缘，则无效</td>
+<td style="text-align:left">CUU – 光标上移(Cursor Up)</td>
+<td style="text-align:left">光标向指定的方向移动n(默认1)格。如果光标已在屏幕边缘，则无效</td>
 </tr>
 <tr>
+<td style="text-align:center">2</td>
 <td style="text-align:left">CSI n B</td>
-<td style="text-align:left">CUD – 光标下移（Cursor Down）</td>
-<td></td>
+<td style="text-align:left">CUD – 光标下移(Cursor Down)</td>
+<td style="text-align:left">同上</td>
 </tr>
 <tr>
+<td style="text-align:center">3</td>
 <td style="text-align:left">CSI n C</td>
-<td style="text-align:left">CUF – 光标前移（Cursor Forward）</td>
-<td></td>
+<td style="text-align:left">CUF – 光标前移(Cursor Forward)</td>
+<td style="text-align:left">同上</td>
 </tr>
 <tr>
+<td style="text-align:center">4</td>
 <td style="text-align:left">CSI n D</td>
-<td style="text-align:left">CUB – 光标后移（Cursor Back）</td>
-<td></td>
+<td style="text-align:left">CUB – 光标后移(Cursor Back)</td>
+<td style="text-align:left">同上</td>
 </tr>
 <tr>
+<td style="text-align:center">5</td>
 <td style="text-align:left">CSI n E</td>
-<td style="text-align:left">CNL – 光标移到下一行（Cursor Next Line）</td>
-<td style="text-align:left">光标移动到下面第n（默认1）行的开头。（非ANSI.SYS）</td>
+<td style="text-align:left">CNL – 光标移到下一行(Cursor Next Line)</td>
+<td style="text-align:left">光标移动到下面第n(默认1)行的开头。(非ANSI.SYS)</td>
 </tr>
 <tr>
+<td style="text-align:center">6</td>
 <td style="text-align:left">CSI n F</td>
-<td style="text-align:left">CPL – 光标移到上一行（Cursor Previous Line）</td>
-<td style="text-align:left">光标移动到上面第n（默认1）行的开头。（非ANSI.SYS）</td>
+<td style="text-align:left">CPL – 光标移到上一行(Cursor Previous Line)</td>
+<td style="text-align:left">光标移动到上面第n(默认1)行的开头。(非ANSI.SYS)</td>
 </tr>
 <tr>
+<td style="text-align:center">7</td>
 <td style="text-align:left">CSI n G</td>
-<td style="text-align:left">CHA – 光标水平绝对（Cursor Horizontal Absolute）</td>
-<td style="text-align:left">光标移动到第n（默认1）列。（非ANSI.SYS）</td>
+<td style="text-align:left">CHA – 光标水平绝对(Cursor Horizontal Absolute)</td>
+<td style="text-align:left">光标移动到第n(默认1)列。(非ANSI.SYS)</td>
 </tr>
 <tr>
+<td style="text-align:center">8</td>
 <td style="text-align:left">CSI n ; m H</td>
-<td style="text-align:left">CUP – 光标位置（Cursor Position）</td>
-<td style="text-align:left">光标移动到第n行、第m列。值从1开始，且默认为1（左上角）。例如CSI ;5H和CSI 1;5H含义相同；CSI 17;H、CSI 17H和CSI 17;1H三者含义相同</td>
+<td style="text-align:left">CUP – 光标位置(Cursor Position)</td>
+<td style="text-align:left">光标移动到第n行、第m列。值从1开始，且默认为1(左上角)。例如CSI ;5H和CSI 1;5H含义相同；CSI 17;H、CSI 17H和CSI 17;1H三者含义相同</td>
 </tr>
 <tr>
+<td style="text-align:center">9</td>
 <td style="text-align:left">CSI n J</td>
-<td style="text-align:left">ED – 擦除显示（Erase in Display）</td>
-<td style="text-align:left">清除屏幕的部分区域。如果n是0（或缺失），则清除从光标位置到屏幕末尾的部分。如果n是1，则清除从光标位置到屏幕开头的部分。如果n是2，则清除整个屏幕（在DOS ANSI.SYS中，光标还会向左上方移动）。如果n是3，则清除整个屏幕，并删除回滚缓存区中的所有行（这个特性是xterm添加的，其他终端应用程序也支持）</td>
+<td style="text-align:left">ED – 擦除显示(Erase in Display)</td>
+<td style="text-align:left">清除屏幕的部分区域。如果n是0(或缺失)，则清除从光标位置到屏幕末尾的部分。如果n是1，则清除从光标位置到屏幕开头的部分。如果n是2，则清除整个屏幕(在DOS ANSI.SYS中，光标还会向左上方移动)。如果n是3，则清除整个屏幕，并删除回滚缓存区中的所有行(这个特性是xterm添加的，其他终端应用程序也支持)</td>
 </tr>
 <tr>
+<td style="text-align:center">10</td>
 <td style="text-align:left">CSI n K</td>
-<td style="text-align:left">EL – 擦除行（Erase in Line）</td>
-<td style="text-align:left">清除行内的部分区域。如果n是0（或缺失），清除从光标位置到该行末尾的部分。如果n是1，清除从光标位置到该行开头的部分。如果n是2，清除整行，光标位置不变</td>
+<td style="text-align:left">EL – 擦除行(Erase in Line)</td>
+<td style="text-align:left">清除行内的部分区域。如果n是0(或缺失)，清除从光标位置到该行末尾的部分。如果n是1，清除从光标位置到该行开头的部分。如果n是2，清除整行，光标位置不变</td>
 </tr>
 <tr>
+<td style="text-align:center">11</td>
 <td style="text-align:left">CSI n S</td>
-<td style="text-align:left">SU – 向上滚动（Scroll Up）</td>
-<td style="text-align:left">整页向上滚动n（默认1）行。新行添加到底部。（非ANSI.SYS）</td>
+<td style="text-align:left">SU – 向上滚动(Scroll Up)</td>
+<td style="text-align:left">整页向上滚动n(默认1)行。新行添加到底部。(非ANSI.SYS)</td>
 </tr>
 <tr>
+<td style="text-align:center">12</td>
 <td style="text-align:left">CSI n T</td>
-<td style="text-align:left">SD – 向下滚动（Scroll Down）</td>
-<td style="text-align:left">整页向下滚动n（默认1）行。新行添加到顶部。（非ANSI.SYS）</td>
+<td style="text-align:left">SD – 向下滚动(Scroll Down)</td>
+<td style="text-align:left">整页向下滚动n（默认1）行。新行添加到顶部。(非ANSI.SYS)</td>
 </tr>
 <tr>
+<td style="text-align:center">13</td>
 <td style="text-align:left">CSI n ; m f</td>
-<td style="text-align:left">HVP – 水平垂直位置（Horizontal Vertical Position）</td>
+<td style="text-align:left">HVP – 水平垂直位置(Horizontal Vertical Position)</td>
 <td style="text-align:left">同CUP</td>
 </tr>
 <tr>
+<td style="text-align:center">14</td>
 <td style="text-align:left">CSI n m</td>
-<td style="text-align:left">SGR – 选择图形再现（Select Graphic Rendition）</td>
-<td style="text-align:left">设置SGR参数，包括文字颜色。CSI后可以是0或者更多参数，用分号分隔。如果没有参数，则视为CSI 0 m（重置/常规）</td>
+<td style="text-align:left">SGR – 选择图形渲染(Select Graphic Rendition)</td>
+<td style="text-align:left">设置SGR参数，包括文字颜色。<!-- raw HTML omitted -->CSI后可以是0或者更多参数，用分号分隔。如果没有参数，则视为CSI 0 m(重置/常规)</td>
 </tr>
 <tr>
+<td style="text-align:center">15</td>
 <td style="text-align:left">CSI 5i</td>
 <td style="text-align:left">打开辅助端口</td>
 <td style="text-align:left">启用辅助串行端口，通常用于本地串行打印机</td>
 </tr>
 <tr>
+<td style="text-align:center">16</td>
 <td style="text-align:left">CSI 4i</td>
 <td style="text-align:left">关闭辅助端口</td>
 <td style="text-align:left">禁用辅助串行端口，通常用于本地串行打印机</td>
 </tr>
 <tr>
+<td style="text-align:center">17</td>
 <td style="text-align:left">CSI 6n</td>
-<td style="text-align:left">DSR – 设备状态报告（Device Status Report）</td>
-<td style="text-align:left">以ESC[n;mR（就像在键盘上输入）向应用程序报告光标位置（CPR），其中{\displaystyle n}n是行，m是列</td>
+<td style="text-align:left">DSR – 设备状态报告(Device Status Report)</td>
+<td style="text-align:left">以ESC[n;mR(就像在键盘上输入)向应用程序报告光标位置(CPR)，其中n是行，m是列</td>
 </tr>
 <tr>
+<td style="text-align:center">18</td>
 <td style="text-align:left">CSI s</td>
-<td style="text-align:left">SCP – 保存光标位置（Save Cursor Position）</td>
+<td style="text-align:left">SCP – 保存光标位置(Save Cursor Position)</td>
 <td style="text-align:left">保存光标的当前位置</td>
 </tr>
 <tr>
+<td style="text-align:center">19</td>
 <td style="text-align:left">CSI u</td>
-<td style="text-align:left">RCP – 恢复光标位置（Restore Cursor Position）</td>
+<td style="text-align:left">RCP – 恢复光标位置(Restore Cursor Position)</td>
 <td style="text-align:left">恢复保存的光标位置</td>
 </tr>
 </tbody>
@@ -470,12 +490,12 @@
 <h2 id="颜色编码">颜色编码</h2>
 <ul>
 <li>以下内容摘自维基百科中<a href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#%E9%A2%9C%E8%89%B2">颜色部分</a></li>
-<li>3bit和4bit色彩
+<li>3bit 和 4bit 色彩
 <ul>
-<li>因为最早的终端的颜色在硬件上只有3bits，颜色只有8种，所以早期的规范中只给这8种颜色做了命名；SRG参数的30-37用于选择前景色，40-47用于选择背景色；SGR编码中1表示字体加粗，但那时许多终端并不是把粗体字(SGR码为1)当成一个字体，而是使用更明亮的色彩来实现所谓&quot;粗体&quot;，通常你无法把这种加亮的色彩用作背景色</li>
-<li>例如：使用ESC[30;47m是白底黑字的效果，使用ESC[31m变成红字，使用ESC[1;31m会变成加亮的红字；ESC[39;49m将恢复到默认的前景、背景色(有些终端不支持)，使用ESC[0m关闭所有属性也可以恢复默认设置</li>
-<li>后来随着技术的进步，终端都增加了直接设置高亮前景色和背景色的功能，前景色使用代码90-97，背景色使用代码100-107</li>
-<li>随着硬件的进步，开始使用8bits的DAC(Digital-to-Analog Converters 数模转换器)，许多软件开始使用24bit的颜色编码
+<li>因为最早的终端的颜色在硬件上只有 3bits，颜色只有 8 种，所以早期的规范中只给这 8 种颜色做了命名；SRG参数的 30-37 用于选择前景色，40-47 用于选择背景色；SGR 编码中 1 表示字体加粗，但那时许多终端并不是把粗体字(SGR码为 1)当成一个字体，而是使用更明亮的色彩来实现所谓&quot;粗体&quot;，通常你无法把这种加亮的色彩用作背景色</li>
+<li>例如：使用 <code>ESC[30;47m</code> 是白底黑字的效果，使用 <code>ESC[31m</code> 变成红字，使用 <code>ESC[1;31m</code> 会变成加亮的红字；<code>ESC[39;49m</code> 将恢复到默认的前景、背景色(有些终端不支持)，使用 <code>ESC[0m</code> 关闭所有属性也可以恢复默认设置</li>
+<li>后来随着技术的进步，终端都增加了直接设置高亮前景色和背景色的功能，前景色使用代码 90-97，背景色使用代码 100-107</li>
+<li>随着硬件的进步，开始使用 8bits 的 DAC(Digital-to-Analog Converters 数模转换器)，许多软件开始使用 24bit 的颜色编码
 <table>
 <thead>
 <tr>
@@ -571,32 +591,32 @@
 <li>这部分在维基百科中看会更加直观</li>
 </ul>
 </li>
-<li>8bit色彩
+<li>8bit 色彩
 <ul>
-<li>随着256色的图形卡越来越普遍，相应的转义序列也跟着做了变更，可以从预定义的256种颜色中选择色彩
+<li>随着 256 色的图形卡越来越普遍，相应的转义序列也跟着做了变更，可以从预定义的 256 种颜色中选择色彩
 <pre tabindex="0"><code>ESC[38;5;⟨n⟩m ---- 选择前景色
 ESC[48;5;⟨n⟩m ---- 选择背景色
   0-  7:  标准色彩 (相当于 ESC [ 30–37 m)
   8- 15:  高亮色彩 (相当于 ESC [ 90–97 m)
 16-231:  6 × 6 × 6 RGB (216 种颜色): 16 + 36 × r + 6 × g + b (0 ≤ r, g, b ≤ 5)
-232-255:  从黑到白工24级灰度
+232-255:  从黑到白工 24 级灰度
 </code></pre></li>
 </ul>
 </li>
 <li>24bit色彩
 <ul>
-<li>随着有着16-24bit种颜色的&quot;真彩&quot;图像卡越来越普遍，应用程序开始支持24bit的色彩，Xterm等终端仿真器开始支持使用转义序列设置24位前景和背景颜色
+<li>随着有着 16-24bit 种颜色的&quot;真彩&quot;图像卡越来越普遍，应用程序开始支持 24bit 的色彩，Xterm 等终端仿真器开始支持使用转义序列设置24位前景和背景颜色
 <pre tabindex="0"><code>ESC[ 38;2;⟨r⟩;⟨g⟩;⟨b⟩ m ---- 选择 RGB 前景色
 ESC[ 48;2;⟨r⟩;⟨g⟩;⟨b⟩ m ---- 选择 RGB 背景色
 </code></pre></li>
 </ul>
 </li>
-<li></li>
 </ul>
-<h2 id="参考文献">参考文献</h2>
+<h2 id="osc-序列">OSC 序列</h2>
 <ul>
-<li>英文版维基百科之<a href="https://en.wikipedia.org/wiki/ANSI_escape_code">ANSI escape code</a></li>
-<li>中文版维基百科之<a href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97">ANSI转义序列</a></li>
+<li>以下内容译自wikipedia<a href="https://en.wikipedia.org/wiki/ANSI_escape_code#OSC_(Operating_System_Command)_sequences">OSC (Operating System Command) sequences</a></li>
+<li>在另一篇文章<a href="article1">《关于bash下变量PS1的完整理解》</a>会用到这个说明</li>
+<li>大多数 OSC(Operating System Command)序列都是由 Xterm 定义的，但许多其他仿真终端也支持 OSC 序列。由于历史原因，Xterm 可以使用 BEL(ASCII 007) 结束命令，也可以使用标准 ST(ESC ) 结束命令。例如，Xterm 允许使用 <strong><code>\033]0；window title\007</code></strong> 设置窗口标题</li>
 </ul>
 		</div>
 		<footer class="post__footer">
@@ -622,23 +642,12 @@ ESC[ 48;2;⟨r⟩;⟨g⟩;⟨b⟩ m ---- 选择 RGB 背景色
 	</article>
 </main>
 
-<div class="authorbox clearfix">
-	<figure class="authorbox__avatar">
-		<img alt="whowin avatar" src="/images/whowin-photo.jpg" class="avatar" height="90" width="90">
-	</figure>
-	<div class="authorbox__header">
-		<span class="authorbox__name">关于 whowin</span>
-	</div>
-	<div class="authorbox__description">
-		没有人知道whowin的真实身份！或许他就是一个没人认识的退休老头；如果你认识他，记得告诉我，谢谢！
-	</div>
-</div>
 
 <nav class="pager flex">
 	<div class="pager__item pager__item--prev">
-		<a class="pager__link" href="/blog/dos/0005-traverse_pci_devices/" rel="prev">
+		<a class="pager__link" href="/blog/linux/0002-ps1_control_codes/" rel="prev">
 			<span class="pager__subtitle">«&thinsp;上一篇</span>
-			<p class="pager__title">遍历 PCI 设备</p>
+			<p class="pager__title">完整的PS1控制码</p>
 		</a>
 	</div>
 	<div class="pager__item pager__item--next">

@@ -6,7 +6,16 @@
     <description>Recent content on whowin&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 10 Apr 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 12 Apr 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>bash下变量PS1的完整理解</title>
+      <link>https://whowin.gitee.io/blog/linux/0004-setup_ps1/</link>
+      <pubDate>Tue, 12 Apr 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/linux/0004-setup_ps1/</guid>
+      <description>&lt;p&gt;本文并不会讲解如何设置PS1以获得你喜欢的提示符；本文会围绕PS1这个变量，就其涉及到的一些概念展开讨论&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>bash 的环境变量和 shell 变量</title>
       <link>https://whowin.gitee.io/blog/linux/0001-environment_variables_and_shell_variables/</link>
@@ -17,9 +26,9 @@
     </item>
     
     <item>
-      <title>ANSI转义序列</title>
+      <title>ANSI的ESC转义序列</title>
       <link>https://whowin.gitee.io/blog/linux/0003-ansi-escape-code/</link>
-      <pubDate>Wed, 06 Apr 2022 14:00:00 +0000</pubDate>
+      <pubDate>Wed, 06 Apr 2022 14:00:00 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/blog/linux/0003-ansi-escape-code/</guid>
       <description>&lt;p&gt;本文较完整第介绍了ANSI的转义序列，大多数都可以用于在普通终端上显示出较为漂亮的界面，本文可以作为一个资料备查。&lt;/p&gt;</description>
@@ -32,6 +41,15 @@
       
       <guid>https://whowin.gitee.io/getting-start/getting-start/</guid>
       <description>Getting start  这是一个测试页面  </description>
+    </item>
+    
+    <item>
+      <title>完整的PS1控制码</title>
+      <link>https://whowin.gitee.io/blog/linux/0002-ps1_control_codes/</link>
+      <pubDate>Fri, 01 Apr 2022 14:00:00 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/linux/0002-ps1_control_codes/</guid>
+      <description>&lt;p&gt;PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -86,15 +104,6 @@
       
       <guid>https://whowin.gitee.io/blog/dos/0001-32bit_bios_introduction/</guid>
       <description>&lt;p&gt;PCI BIOS在PCI编程中起着一定的作用，PCI BIOS的资料也不是很好找，把找到的集中到这里，供参考。&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>完整的PS1控制码</title>
-      <link>https://whowin.gitee.io/blog/linux/0002-ps1_control_codes/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://whowin.gitee.io/blog/linux/0002-ps1_control_codes/</guid>
-      <description>&lt;p&gt;PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考&lt;/p&gt;</description>
     </item>
     
   </channel>

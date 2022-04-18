@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>PS4 on whowin&#39;s blog</title>
+    <link>https://whowin.gitee.io/tags/ps4/</link>
+    <description>Recent content in PS4 on whowin&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 12 Apr 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/ps4/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>bash下变量PS1的完整理解</title>
+      <link>https://whowin.gitee.io/blog/linux/0004-setup_ps1/</link>
+      <pubDate>Tue, 12 Apr 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/linux/0004-setup_ps1/</guid>
+      <description>&lt;p&gt;本文并不会讲解如何设置PS1以获得你喜欢的提示符；本文会围绕PS1这个变量，就其涉及到的一些概念展开讨论&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

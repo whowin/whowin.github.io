@@ -6,7 +6,16 @@
     <description>Recent content in bash on whowin&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 10 Apr 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/bash/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 12 Apr 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/bash/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>bash下变量PS1的完整理解</title>
+      <link>https://whowin.gitee.io/blog/linux/0004-setup_ps1/</link>
+      <pubDate>Tue, 12 Apr 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/blog/linux/0004-setup_ps1/</guid>
+      <description>&lt;p&gt;本文并不会讲解如何设置PS1以获得你喜欢的提示符；本文会围绕PS1这个变量，就其涉及到的一些概念展开讨论&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>bash 的环境变量和 shell 变量</title>
       <link>https://whowin.gitee.io/blog/linux/0001-environment_variables_and_shell_variables/</link>
