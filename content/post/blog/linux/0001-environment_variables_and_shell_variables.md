@@ -3,9 +3,10 @@ title: "bash 的环境变量和 shell 变量"
 date: 2022-04-10T16:43:29+08:00
 author: 华松青
 description: shell变量和环境变量相关的一些概念
-sidebar: false
-authorbox: false
-toc: true
+#sidebar: false
+#authorbox: false
+toc: false
+autoCollapseToc: true
 pager: true
 categories:
   - "Linux"
