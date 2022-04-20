@@ -2,44 +2,44 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Linux on Whowin - A tech blog that publishes my own original articles</title>
-    <link>http://localhost:1313/categories/linux/</link>
+    <link>https://whowin.gitee.io/categories/linux/</link>
     <description>Recent content in Linux on Whowin - A tech blog that publishes my own original articles</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 18 Apr 2022 13:30:29 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 18 Apr 2022 13:30:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/linux/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>bash下变量PS1的完整理解</title>
-      <link>http://localhost:1313/post/blog/linux/0004-setup_ps1/</link>
+      <link>https://whowin.gitee.io/post/blog/linux/0004-setup_ps1/</link>
       <pubDate>Mon, 18 Apr 2022 13:30:29 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/blog/linux/0004-setup_ps1/</guid>
+      <guid>https://whowin.gitee.io/post/blog/linux/0004-setup_ps1/</guid>
       <description>&lt;p&gt;本文并不会讲解如何设置PS1以获得你喜欢的提示符；本文会围绕PS1这个变量，就其涉及到的一些概念展开讨论&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>bash 的环境变量和 shell 变量</title>
-      <link>http://localhost:1313/post/blog/linux/0001-environment_variables_and_shell_variables/</link>
+      <link>https://whowin.gitee.io/post/blog/linux/0001-environment_variables_and_shell_variables/</link>
       <pubDate>Sun, 10 Apr 2022 16:43:29 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/blog/linux/0001-environment_variables_and_shell_variables/</guid>
+      <guid>https://whowin.gitee.io/post/blog/linux/0001-environment_variables_and_shell_variables/</guid>
       <description>&lt;p&gt;本文简单介绍了bash的启动过程；shell变量和环境变量的区别及相互转换；环境变量传递给子进程的过程；当前环境执行脚本及其实际应用&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>ANSI的ESC转义序列</title>
-      <link>http://localhost:1313/post/blog/linux/0003-ansi-escape-code/</link>
+      <link>https://whowin.gitee.io/post/blog/linux/0003-ansi-escape-code/</link>
       <pubDate>Wed, 06 Apr 2022 14:00:00 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/blog/linux/0003-ansi-escape-code/</guid>
+      <guid>https://whowin.gitee.io/post/blog/linux/0003-ansi-escape-code/</guid>
       <description>&lt;p&gt;本文较完整第介绍了ANSI的转义序列，大多数都可以用于在普通终端上显示出较为漂亮的界面，本文可以作为一个资料备查。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>完整的PS1控制码</title>
-      <link>http://localhost:1313/post/blog/linux/0002-ps1_control_codes/</link>
+      <link>https://whowin.gitee.io/post/blog/linux/0002-ps1_control_codes/</link>
       <pubDate>Fri, 01 Apr 2022 14:00:00 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/blog/linux/0002-ps1_control_codes/</guid>
+      <guid>https://whowin.gitee.io/post/blog/linux/0002-ps1_control_codes/</guid>
       <description>&lt;p&gt;PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考&lt;/p&gt;</description>
     </item>
     

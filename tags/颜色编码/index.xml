@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>颜色编码 on Whowin - A tech blog that publishes my own original articles</title>
-    <link>http://localhost:1313/tags/%E9%A2%9C%E8%89%B2%E7%BC%96%E7%A0%81/</link>
+    <link>https://whowin.gitee.io/tags/%E9%A2%9C%E8%89%B2%E7%BC%96%E7%A0%81/</link>
     <description>Recent content in 颜色编码 on Whowin - A tech blog that publishes my own original articles</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 06 Apr 2022 14:00:00 +0800</lastBuildDate><atom:link href="http://localhost:1313/tags/%E9%A2%9C%E8%89%B2%E7%BC%96%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 06 Apr 2022 14:00:00 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E9%A2%9C%E8%89%B2%E7%BC%96%E7%A0%81/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ANSI的ESC转义序列</title>
-      <link>http://localhost:1313/post/blog/linux/0003-ansi-escape-code/</link>
+      <link>https://whowin.gitee.io/post/blog/linux/0003-ansi-escape-code/</link>
       <pubDate>Wed, 06 Apr 2022 14:00:00 +0800</pubDate>
       
-      <guid>http://localhost:1313/post/blog/linux/0003-ansi-escape-code/</guid>
+      <guid>https://whowin.gitee.io/post/blog/linux/0003-ansi-escape-code/</guid>
       <description>&lt;p&gt;本文较完整第介绍了ANSI的转义序列，大多数都可以用于在普通终端上显示出较为漂亮的界面，本文可以作为一个资料备查。&lt;/p&gt;</description>
     </item>
     
