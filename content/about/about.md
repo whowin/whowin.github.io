@@ -47,6 +47,9 @@ toc: false
   - 等
 * 在职业生涯的最后15-20年主要在Linux下使用C做嵌入式开发
 * 曾在军队服役13年，曾赴云南参战；退役中国陆军少校
-
 ## 联系我
 * email: hengch@163.com
+
+## It's me
+  ![Me](/images/whowin-photo.jpg) 
+

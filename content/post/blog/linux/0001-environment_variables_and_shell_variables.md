@@ -1,11 +1,11 @@
 ---
 title: "bash 的环境变量和 shell 变量"
 date: 2022-04-10T16:43:29+08:00
-author: 华松青
+author: whowin
 description: shell变量和环境变量相关的一些概念
 #sidebar: false
 #authorbox: false
-toc: false
+toc: true
 autoCollapseToc: true
 pager: true
 categories:
@@ -24,7 +24,7 @@ draft: false
 postid: 100001
 ---
 
-本文简单介绍了bash的启动过程；shell变量和环境变量的区别及相互转换；环境变量传递给子进程的过程；当前环境执行脚本机器实际应用
+本文简单介绍了bash的启动过程；shell变量和环境变量的区别及相互转换；环境变量传递给子进程的过程；当前环境执行脚本及其实际应用
 <!--more-->
 ## 导言
 * shell 是一个 Linux 的命令行解释器，Linux 下有很多 shell，其中 ubuntu 中默认的 shell 是应该是 **dash**，因为我们看到 */bin/sh* 被链接到了 **dash**

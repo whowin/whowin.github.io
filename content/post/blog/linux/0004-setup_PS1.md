@@ -1,7 +1,7 @@
 ---
 title: "bash下变量PS1的完整理解"
 date: 2022-04-18T13:30:29+08:00
-author: 华松青
+author: whowin
 sidebar: false
 authorbox: false
 toc: true
@@ -640,9 +640,9 @@ postid: 100004
 2. [《ANSI 的 ESCAPE 转义》][article03]
 
 
-[article01]: ./0001-environment_variables_and_shell_variables.md
-[article02]: ./0002-PS1_control_codes.md
-[article03]: ./0003-ANSI-escape-code.md
+[article01]: ../0001-environment_variables_and_shell_variables/
+[article02]: ../0002-ps1_control_codes/
+[article03]: ../0003-ansi-escape-code/
 
 
 <!-- -->

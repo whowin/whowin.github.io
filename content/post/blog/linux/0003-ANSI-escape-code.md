@@ -7,6 +7,7 @@ date: 2022-04-06T14:00:00+08:00
 #  visibility: 
 #    - list
 #    - post
+author: whowin
 authorbox: false
 sidebar: false
 pager: true
@@ -155,7 +156,7 @@ postid: 100003
 
 ## OSC 序列
 * 以下内容译自wikipedia[OSC (Operating System Command) sequences](https://en.wikipedia.org/wiki/ANSI_escape_code#OSC_(Operating_System_Command)_sequences)
-* 在另一篇文章[《关于bash下变量PS1的完整理解》](article1)会用到这个说明
+* 在另一篇文章[《关于bash下变量PS1的完整理解》][article01]会用到这个说明
 * 大多数 OSC(Operating System Command)序列都是由 Xterm 定义的，但许多其他仿真终端也支持 OSC 序列。由于历史原因，Xterm 可以使用 BEL(ASCII 007) 结束命令，也可以使用标准 ST(ESC \) 结束命令。例如，Xterm 允许使用 **```\033]0；window title\007```** 设置窗口标题
 
-[article01]: ./0001-environment_variables_and_shell_variables.md
+[article01]: ../0001-environment_variables_and_shell_variables/

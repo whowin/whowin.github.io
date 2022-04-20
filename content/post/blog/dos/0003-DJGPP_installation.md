@@ -1,7 +1,7 @@
 ---
 title: "在 DOS 下安装 DJGPP"
 date: 2008-03-27T14:27:38+08:00
-author: 华松青
+author: whowin
 sidebar: false
 authorbox: false
 pager: true

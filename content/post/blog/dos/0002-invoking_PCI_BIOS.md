@@ -1,7 +1,7 @@
 ---
 title: "调用PCI BIOS"
 date: 2008-03-18T15:10:28+08:00
-author: 华松青
+author: whowin
 sidebar: false
 authorbox: false
 pager: true

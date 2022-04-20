@@ -1,8 +1,10 @@
 ---
 title: "完整的PS1控制码"
 date: 2022-04-01T14:00:00+08:00
+author: whowin
 authorbox: false
 sidebar: false
+toc: false
 pager: true
 categories:
   - Linux

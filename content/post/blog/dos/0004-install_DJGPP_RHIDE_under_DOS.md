@@ -1,7 +1,7 @@
 ---
 title: "在 DOS 下的 DJGPP + RHIDE 安装实作"
 date: 2008-03-28T13:48:41+08:00
-author: 华松青
+author: whowin
 sidebar: false
 authorbox: false
 pager: true

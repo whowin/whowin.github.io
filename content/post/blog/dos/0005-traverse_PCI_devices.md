@@ -1,7 +1,7 @@
 ---
 title: "遍历 PCI 设备"
 date: 2008-04-02T09:15:23+08:00
-author: 华松青
+author: whowin
 sidebar: false
 authorbox: false
 pager: true
@@ -156,8 +156,8 @@ PC机在启动的时候，都会看到一个PCI设备清单，可以看到机器
   * 这是一个完整的遍历PCI设备的程序，本代码可以DJGPP下编译通过并正常执行（测试环境：DOS 6.22 DJGPP2.2+RHIDE1.5）。
 
 
-[article01]:./0001-32bit_BIOS_introduction.md
-[article02]:./0002-invoking_PCI_BIOS.md
+[article01]:../0001-32bit_bios_introduction/
+[article02]:../0002-invoking_pci_bios/
 
 [img01]:/images/160005/traverse_PCI_devices_01.jpg
 [-img01]:../../../static/images/160005/traverse_PCI_devices_01.jpg

@@ -1,7 +1,7 @@
 ---
 title: "32位 BIOS说明"
 date: 2008-03-18T13:15:48+08:00
-author: 华松青
+author: whowin
 sidebar: false
 authorbox: false
 pager: true
