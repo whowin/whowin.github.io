@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on whowin&#39;s blog</title>
-    <link>https://whowin.gitee.io/categories/</link>
-    <description>Recent content in Categories on whowin&#39;s blog</description>
+    <title>Categories on Whowin - A tech blog that publishes my own original articles</title>
+    <link>http://localhost:1313/categories/</link>
+    <description>Recent content in Categories on Whowin - A tech blog that publishes my own original articles</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Mon, 18 Apr 2022 13:30:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <lastBuildDate>Mon, 18 Apr 2022 13:30:29 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Bash</title>
-      <link>https://whowin.gitee.io/categories/bash/</link>
+      <link>http://localhost:1313/categories/bash/</link>
       <pubDate>Mon, 18 Apr 2022 13:30:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/categories/bash/</guid>
+      <guid>http://localhost:1313/categories/bash/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Linux</title>
-      <link>https://whowin.gitee.io/categories/linux/</link>
+      <link>http://localhost:1313/categories/linux/</link>
       <pubDate>Mon, 18 Apr 2022 13:30:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/categories/linux/</guid>
+      <guid>http://localhost:1313/categories/linux/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Shell</title>
-      <link>https://whowin.gitee.io/categories/shell/</link>
+      <link>http://localhost:1313/categories/shell/</link>
       <pubDate>Mon, 18 Apr 2022 13:30:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/categories/shell/</guid>
+      <guid>http://localhost:1313/categories/shell/</guid>
       <description></description>
     </item>
     
     <item>
       <title>DOS</title>
-      <link>https://whowin.gitee.io/categories/dos/</link>
+      <link>http://localhost:1313/categories/dos/</link>
       <pubDate>Wed, 02 Apr 2008 09:15:23 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/categories/dos/</guid>
+      <guid>http://localhost:1313/categories/dos/</guid>
       <description></description>
     </item>
     

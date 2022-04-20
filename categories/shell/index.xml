@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Shell on whowin&#39;s blog</title>
-    <link>https://whowin.gitee.io/categories/shell/</link>
-    <description>Recent content in Shell on whowin&#39;s blog</description>
+    <title>Shell on Whowin - A tech blog that publishes my own original articles</title>
+    <link>http://localhost:1313/categories/shell/</link>
+    <description>Recent content in Shell on Whowin - A tech blog that publishes my own original articles</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
-    <lastBuildDate>Mon, 18 Apr 2022 13:30:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/shell/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language>
+    <lastBuildDate>Mon, 18 Apr 2022 13:30:29 +0800</lastBuildDate><atom:link href="http://localhost:1313/categories/shell/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>bash下变量PS1的完整理解</title>
-      <link>https://whowin.gitee.io/blog/linux/0004-setup_ps1/</link>
+      <link>http://localhost:1313/post/blog/linux/0004-setup_ps1/</link>
       <pubDate>Mon, 18 Apr 2022 13:30:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/blog/linux/0004-setup_ps1/</guid>
+      <guid>http://localhost:1313/post/blog/linux/0004-setup_ps1/</guid>
       <description>&lt;p&gt;本文并不会讲解如何设置PS1以获得你喜欢的提示符；本文会围绕PS1这个变量，就其涉及到的一些概念展开讨论&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>bash 的环境变量和 shell 变量</title>
-      <link>https://whowin.gitee.io/blog/linux/0001-environment_variables_and_shell_variables/</link>
+      <link>http://localhost:1313/post/blog/linux/0001-environment_variables_and_shell_variables/</link>
       <pubDate>Sun, 10 Apr 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/blog/linux/0001-environment_variables_and_shell_variables/</guid>
-      <description>&lt;p&gt;本文简单介绍了bash的启动过程；shell变量和环境变量的区别及相互转换；环境变量传递给子进程的过程；当前环境执行脚本机器实际应用&lt;/p&gt;</description>
+      <guid>http://localhost:1313/post/blog/linux/0001-environment_variables_and_shell_variables/</guid>
+      <description>&lt;p&gt;本文简单介绍了bash的启动过程；shell变量和环境变量的区别及相互转换；环境变量传递给子进程的过程；当前环境执行脚本及其实际应用&lt;/p&gt;</description>
     </item>
     
   </channel>
