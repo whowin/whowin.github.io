@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Whowin - A tech blog that publishes my own original articles</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 18 Apr 2022 13:30:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 06 May 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>安装一个好用的Ubuntu桌面</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0007-ubuntu-desktop/</link>
+      <pubDate>Fri, 06 May 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0007-ubuntu-desktop/</guid>
+      <description>&lt;p&gt;本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>bash下变量PS1的完整理解</title>
       <link>https://whowin.gitee.io/post/blog/linux/0004-setup_ps1/</link>
@@ -41,6 +50,33 @@
       
       <guid>https://whowin.gitee.io/post/blog/linux/0002-ps1_control_codes/</guid>
       <description>&lt;p&gt;PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在DOS下进行网络编程（下）</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0008-network_programming_on_dos_2/</link>
+      <pubDate>Fri, 11 Apr 2008 10:10:33 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0008-network_programming_on_dos_2/</guid>
+      <description>&lt;p&gt;该文在上一篇文章的基础上，用一个完整的例子讲解在DOS下的网络编程方法&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在DOS下进行网络编程（上）</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0007-network_programming_on_dos_1/</link>
+      <pubDate>Wed, 09 Apr 2008 10:06:26 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0007-network_programming_on_dos_1/</guid>
+      <description>&lt;p&gt;该文介绍了在 DOS 下的进行网络编程的基本方法，该文写于2008年4月，2022年重新发表修了一些修改&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>DOS的系统杂项服务INT 15H介绍</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0006-dos_int15h_introduction/</link>
+      <pubDate>Fri, 04 Apr 2008 09:32:48 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0006-dos_int15h_introduction/</guid>
+      <description>&lt;p&gt;该文介绍了 DOS 下的 int 15h 的功能，可以作为资料备查&lt;/p&gt;</description>
     </item>
     
     <item>

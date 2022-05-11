@@ -6,7 +6,16 @@
     <description>Recent content in Linux on Whowin - A tech blog that publishes my own original articles</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 18 Apr 2022 13:30:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 06 May 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>安装一个好用的Ubuntu桌面</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0007-ubuntu-desktop/</link>
+      <pubDate>Fri, 06 May 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0007-ubuntu-desktop/</guid>
+      <description>&lt;p&gt;本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>bash下变量PS1的完整理解</title>
       <link>https://whowin.gitee.io/post/blog/linux/0004-setup_ps1/</link>
