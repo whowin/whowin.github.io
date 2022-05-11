@@ -34,24 +34,24 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
   url = "/"
   weight = 100
 [[menu.main]]
-  identifier = "about"
-  name = "About me"
-  url = "/about/about/"
-  weight = 110
-[[menu.main]]
   identifier = "archives"
   name = "Archives"
   url = "/post/"
-  weight = 120
+  weight = 110
 [[menu.main]]
   name = "Categories"
   identifier = "categories"
   url = "/categories/"
-  weight = 130
+  weight = 120
 [[menu.main]]
   identifier = "tags"
   name = "Tags"
   url = "/tags/"
+  weight = 130
+[[menu.main]]
+  identifier = "about"
+  name = "About me"
+  url = "/about/about/"
   weight = 140
 
 [params]
@@ -158,9 +158,9 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
   # You can get your appid and appkey from https://leancloud.cn
   # more info please open https://valine.js.org
   [params.valine]
-    enable = false
-    appId = '你的appId'
-    appKey = '你的appKey'
+    enable = true
+    appId = 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz'
+    appKey = 'v7P29kPAEbsmaavaYPNhGhnF'
     notify = false  # mail notifier , https://github.com/xCss/Valine/wiki
     verify = false # Verification code
     avatar = 'mm'

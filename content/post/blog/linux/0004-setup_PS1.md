@@ -33,9 +33,6 @@ draft: false
 #  - [中文维基百科中环境变量的定义](https://zh.wikipedia.org/wiki/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F)
 #  - [Shell Variables and Environment Variables](https://web.archive.org/web/20170713001430/http://sc.tamu.edu/help/general/unix/vars.html)
 #  - [GNU Coreutils](https://www.gnu.org/software/coreutils/manual/html_node/)
-#  - [chroot](https://wiki.debian.org/chroot)
-#  - [建立 debian 的 chroot 環境](https://datahunter.org/chroot)
-#  - [chroot环境搭建](https://www.cnblogs.com/abnk/p/15127456.html)
 postid: 100004
 ---
 
