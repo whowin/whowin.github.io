@@ -11,7 +11,8 @@
     |14|Tutorial|tutorial|
     |15|Hugo|hugo|
     |16|DOS|dos|
-    |17|Others|others|
+    |17|Travel|travel|
+    |99|Others|others|
   * 文章编码
     ```
     分类ID + 本类文章4位顺序号(0001开始)
