@@ -2,6 +2,83 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://whowin.gitee.io/categories/</loc>
+    <lastmod>2022-07-30T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/categories/grass-skyline/</loc>
+    <lastmod>2022-07-30T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/</loc>
+    <lastmod>2022-07-30T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/</loc>
+    <lastmod>2022-07-30T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/travel/</loc>
+    <lastmod>2022-07-30T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/categories/travel/</loc>
+    <lastmod>2022-07-30T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/</loc>
+    <lastmod>2022-07-30T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/%E8%8D%89%E5%8E%9F%E5%A4%A9%E8%B7%AF/</loc>
+    <lastmod>2022-07-30T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/%E6%94%BB%E7%95%A5/</loc>
+    <lastmod>2022-07-30T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/%E6%97%85%E6%B8%B8/</loc>
+    <lastmod>2022-07-30T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/travel/0001-grass-skyline/</loc>
+    <lastmod>2022-07-30T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://whowin.gitee.io/tags/apt/</loc>
     <lastmod>2022-07-10T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -23,13 +100,6 @@
   </url>
   
   <url>
-    <loc>https://whowin.gitee.io/categories/</loc>
-    <lastmod>2022-07-10T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://whowin.gitee.io/tags/linux/</loc>
     <lastmod>2022-07-10T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -44,20 +114,6 @@
   </url>
   
   <url>
-    <loc>https://whowin.gitee.io/post/</loc>
-    <lastmod>2022-07-10T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/</loc>
-    <lastmod>2022-07-10T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://whowin.gitee.io/tags/ubuntu/</loc>
     <lastmod>2022-07-10T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -66,13 +122,6 @@
   
   <url>
     <loc>https://whowin.gitee.io/categories/ubuntu/</loc>
-    <lastmod>2022-07-10T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/</loc>
     <lastmod>2022-07-10T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
