@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>bash on Whowin - A tech blog that publishes my own original articles</title>
+    <title>bash on whowin - 发表我个人原创作品的技术博客</title>
     <link>https://whowin.gitee.io/tags/bash/</link>
-    <description>Recent content in bash on Whowin - A tech blog that publishes my own original articles</description>
+    <description>Recent content in bash on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Mon, 18 Apr 2022 13:30:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/bash/index.xml" rel="self" type="application/rss+xml" />

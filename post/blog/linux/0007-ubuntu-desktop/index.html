@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>安装一个好用的Ubuntu桌面 - Whowin - A tech blog that publishes my own original articles</title>
+  <title>安装一个好用的Ubuntu桌面 - whowin - 发表我个人原创作品的技术博客</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -50,7 +50,7 @@
 <meta itemprop="name" content="安装一个好用的Ubuntu桌面">
 <meta itemprop="description" content="本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助"><meta itemprop="datePublished" content="2022-05-06T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-05-06T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4626">
+<meta itemprop="wordCount" content="4683">
 <meta itemprop="keywords" content="Ubuntu,Desktop," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="安装一个好用的Ubuntu桌面"/>
 <meta name="twitter:description" content="本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助"/>
@@ -180,9 +180,9 @@
 <h2 id="导言">导言</h2>
 <ul>
 <li>手里一台 Lenovo T430，CPU: <em>i5-3320M</em>，<em>8G DDR3</em> 内存，<em>500G</em> 机械硬盘，废弃许久，准备重新启用</li>
-<li>这个配置，装个 windows 7，其实应该也能用，于是装了个 win7，但装 Qv2ray 的时候出错，各种的补丁装了半天还是搞不定，一生气就不用 windows 了，反正我也有好几个桌面是 Ubuntu</li>
-<li>不过这次，我把整个过程记录了一下，记录在这里，给也想使用 Ubuntu 桌面的朋友们做个参考</li>
-<li>使用 Ubuntu 最大的乐趣就在满满的掌控欲，一切尽在掌握中，绝大多数问题都能找到原因并找出解决方案；不像 windows，一遇到问题就经常找不着北，即便解决了问题往往也不知道为什么</li>
+<li>我平常的工作方式是一台ubuntu的服务器，所有内容都在这台服务器上，桌面有一个windows，以备不时之需，其它的都是Ubuntu，我不喜欢去哪儿都背个电脑，也不喜欢笔记本的小屏幕，所以我常去的地方都有一个Ubuntu的终端；</li>
+<li>这次在笔记本上装Ubuntu，我特意做了记录，希望能够给也想使用 Ubuntu 桌面的朋友们做个参考；</li>
+<li>使用 Ubuntu 最大的乐趣就在满满的掌控欲，一切尽在掌握中，绝大多数问题都能找到原因并找出解决方案；</li>
 <li>尽管 Ubuntu 已经发布了 Ubuntu 22.04 LTS，但我习惯使用次新版的稳定版，所以我选择 Ubuntu 20.04 LTS</li>
 <li>目前工作主要是使用 <em>vscode</em> 远程连接服务器工作，文档主要是用 <em>markdown</em>，有时也会使用思维导图和流程图，这些都会使用 <em>vscode</em> 实现；对桌面的其它要求包括：
 <ul>
@@ -200,19 +200,18 @@
 <h2 id="在-ubuntu-下制作一个-ubuntu-2004-的安装-u-盘">在 Ubuntu 下制作一个 Ubuntu 20.04 的安装 U 盘</h2>
 <ul>
 <li>
-<p>可以在虚拟机上装一个 ubuntu，任何版本的都可以，但最好是官方仍然支持的版本</p>
+<p>你需要有一个正常的Ubuntu系统，运行在虚拟机上的也可以，任何版本的都可以，但最好是官方仍然支持的版本</p>
 </li>
 <li>
 <p>在 Ubuntu 下做一个 Ubuntu 的安装 U 盘还是非常简单的</p>
 <ol>
-<li>下载一个 Ubuntu 20.04 的 iso 镜像</li>
-</ol>
+<li>下载一个 Ubuntu 20.04 的 iso 镜像
 <ul>
 <li><a href="https://cn.ubuntu.com/">Ubuntu 中文官网</a></li>
 <li><a href="https://cn.ubuntu.com/download/desktop">Ubuntu 桌面版的下载页面</a></li>
 <li><a href="https://releases.ubuntu.com/20.04/ubuntu-20.04.4-desktop-amd64.iso.torrent">Ubuntu 20.04.4 桌面版（64位）下载种子</a></li>
 </ul>
-<ol start="2">
+</li>
 <li>插上 U 盘</li>
 </ol>
 <blockquote>
@@ -236,7 +235,7 @@
 <li>将 iso 的镜像写入 U 盘</li>
 </ol>
 <blockquote>
-<p>假定 iso 文件放在当前用户 HOME 目录下的 Downloads 目录下，也就是 <em>~/Downloads/</em>(或者 <em>$HOME/Downloads/</em>) 下，文件名为：<em>ubuntu-20.04.4-desktop-amd64.iso</em>；U 盘的设备名为：<em>/dev/sdd</em>；则下面命令会把 iso 镜像写入 U 盘</p>
+<p>假定 iso 文件放在当前用户 HOME 目录下的 Downloads 目录下，也就是 <em>~/Downloads/</em>(或者 <em>$HOME/Downloads/</em>) 下，文件名为：<em>ubuntu-20.04.4-desktop-amd64.iso</em>；U 盘的设备名(fdisk -l列出的)为：<em>/dev/sdd</em>；则下面命令会把 iso 镜像写入 U 盘</p>
 </blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -257,7 +256,7 @@
 <p>这个过程没有什么可说的，Ubuntu 的安装还是很友好的，并没有什么难度</p>
 </li>
 <li>
-<p>安装到这里，已经有桌面了</p>
+<p>安装完毕，已经有桌面了</p>
 </li>
 <li>
 <p>先做一些简单的设置，以便用起来顺手些</p>
@@ -353,7 +352,7 @@
 <li><strong>将 Dock 移到底部并修改图标大小</strong>
 <ul>
 <li>
-<p>Ubuntu 把快捷图标栏称作 <strong>Dock</strong></p>
+<p>Ubuntu 把快捷图标栏称作 <strong>Dock</strong>，Dock 就是下图红框里的图标，Ubuntu 默认放在左边</p>
 <p><img src="/images/100007/dock.png" alt="Dock"></p>
 <ul>
 <li><strong>图12：Ubuntu的Dock</strong></li>
@@ -387,7 +386,7 @@
 <h2 id="安装-qv2ray">安装 Qv2ray</h2>
 <ul>
 <li>
-<p>v2ray 是一个科学上网工具，在 Linux 下工作，为了能访问 google、github 等，科学上网是必要的，账号自己去想办法</p>
+<p>v2ray 是一个科学上网工具，在 Linux 下工作，为了能访问 google、github 等，科学上网是必要的</p>
 </li>
 <li>
 <p>Qv2ray 是一个用 qt 开发的 v2ray 客户端软件，开源的，使用它只是出于习惯，你可以有别的选择</p>
@@ -652,7 +651,7 @@
 </blockquote>
 <p><img src="/images/100007/not-install-language-support.png" alt="不要安装语言支持"></p>
 <ul>
-<li><strong>图10：不要安装语言支持</strong></li>
+<li><strong>图20：不要安装语言支持</strong></li>
 </ul>
 <blockquote>
 </blockquote>
@@ -957,7 +956,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>卸载
+<li>卸载远程设备
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
