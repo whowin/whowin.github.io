@@ -22,9 +22,9 @@ postid: 100007
 
 ## 导言
 * 手里一台 Lenovo T430，CPU: *i5-3320M*，*8G DDR3* 内存，*500G* 机械硬盘，废弃许久，准备重新启用
-* 这个配置，装个 windows 7，其实应该也能用，于是装了个 win7，但装 Qv2ray 的时候出错，各种的补丁装了半天还是搞不定，一生气就不用 windows 了，反正我也有好几个桌面是 Ubuntu
-* 不过这次，我把整个过程记录了一下，记录在这里，给也想使用 Ubuntu 桌面的朋友们做个参考
-* 使用 Ubuntu 最大的乐趣就在满满的掌控欲，一切尽在掌握中，绝大多数问题都能找到原因并找出解决方案；不像 windows，一遇到问题就经常找不着北，即便解决了问题往往也不知道为什么
+* 我平常的工作方式是一台ubuntu的服务器，所有内容都在这台服务器上，桌面有一个windows，以备不时之需，其它的都是Ubuntu，我不喜欢去哪儿都背个电脑，也不喜欢笔记本的小屏幕，所以我常去的地方都有一个Ubuntu的终端；
+* 这次在笔记本上装Ubuntu，我特意做了记录，希望能够给也想使用 Ubuntu 桌面的朋友们做个参考；
+* 使用 Ubuntu 最大的乐趣就在满满的掌控欲，一切尽在掌握中，绝大多数问题都能找到原因并找出解决方案；
 * 尽管 Ubuntu 已经发布了 Ubuntu 22.04 LTS，但我习惯使用次新版的稳定版，所以我选择 Ubuntu 20.04 LTS
 * 目前工作主要是使用 *vscode* 远程连接服务器工作，文档主要是用 *markdown*，有时也会使用思维导图和流程图，这些都会使用 *vscode* 实现；对桌面的其它要求包括：
   - 阅读 windows 下的所有格式的文档，使用 *wps* 实现；
@@ -37,12 +37,12 @@ postid: 100007
 * 但是手机与电脑之间的文件交换还是很有必要的，我们通过安装一个开源软件 *qrcp*，很好地解决了这个问题。
 
 ## 在 Ubuntu 下制作一个 Ubuntu 20.04 的安装 U 盘
-* 可以在虚拟机上装一个 ubuntu，任何版本的都可以，但最好是官方仍然支持的版本
+* 你需要有一个正常的Ubuntu系统，运行在虚拟机上的也可以，任何版本的都可以，但最好是官方仍然支持的版本
 * 在 Ubuntu 下做一个 Ubuntu 的安装 U 盘还是非常简单的
   1. 下载一个 Ubuntu 20.04 的 iso 镜像
-    - [Ubuntu 中文官网](https://cn.ubuntu.com/)
-    - [Ubuntu 桌面版的下载页面](https://cn.ubuntu.com/download/desktop)
-    - [Ubuntu 20.04.4 桌面版（64位）下载种子](https://releases.ubuntu.com/20.04/ubuntu-20.04.4-desktop-amd64.iso.torrent) 
+      - [Ubuntu 中文官网](https://cn.ubuntu.com/)
+      - [Ubuntu 桌面版的下载页面](https://cn.ubuntu.com/download/desktop)
+      - [Ubuntu 20.04.4 桌面版（64位）下载种子](https://releases.ubuntu.com/20.04/ubuntu-20.04.4-desktop-amd64.iso.torrent) 
   2. 插上 U 盘
     > 正常情况下，Ubuntu 会自动识别出 U 盘
   3. 找到 U 盘的设备名
@@ -53,7 +53,7 @@ postid: 100007
     > *fdisk -l* 会列出所有的存储设备，包括你刚刚插上的 U 盘
 
   4. 将 iso 的镜像写入 U 盘
-    > 假定 iso 文件放在当前用户 HOME 目录下的 Downloads 目录下，也就是 *~/Downloads/*(或者 *$HOME/Downloads/*) 下，文件名为：*ubuntu-20.04.4-desktop-amd64.iso*；U 盘的设备名为：*/dev/sdd*；则下面命令会把 iso 镜像写入 U 盘
+    > 假定 iso 文件放在当前用户 HOME 目录下的 Downloads 目录下，也就是 *~/Downloads/*(或者 *$HOME/Downloads/*) 下，文件名为：*ubuntu-20.04.4-desktop-amd64.iso*；U 盘的设备名(fdisk -l列出的)为：*/dev/sdd*；则下面命令会把 iso 镜像写入 U 盘
 
     ```
     sudo dd if=~/Downloads/ubuntu-20.04.4-desktop-amd64.iso of=/dev/sdd
@@ -63,7 +63,7 @@ postid: 100007
 
 ## 使用 U 盘安装 Ubuntu 20.04
 * 这个过程没有什么可说的，Ubuntu 的安装还是很友好的，并没有什么难度
-* 安装到这里，已经有桌面了
+* 安装完毕，已经有桌面了
 * 先做一些简单的设置，以便用起来顺手些
   - 设置屏幕分辨率以适应你的屏幕，这个比较容易，不予赘述
   - 将系统语言设为 **汉语**
@@ -133,7 +133,7 @@ postid: 100007
   >
 
   - **将 Dock 移到底部并修改图标大小**
-    + Ubuntu 把快捷图标栏称作 **Dock**
+    + Ubuntu 把快捷图标栏称作 **Dock**，Dock 就是下图红框里的图标，Ubuntu 默认放在左边
 
       ![Dock][img12]
 
@@ -155,7 +155,7 @@ postid: 100007
 * 在安装 *chromium* 浏览器之前，*Firefox* 浏览器是唯一的选择，后面的下载工作主要靠 *Firefox*
 
 ## 安装 Qv2ray
-* v2ray 是一个科学上网工具，在 Linux 下工作，为了能访问 google、github 等，科学上网是必要的，账号自己去想办法
+* v2ray 是一个科学上网工具，在 Linux 下工作，为了能访问 google、github 等，科学上网是必要的
 * Qv2ray 是一个用 qt 开发的 v2ray 客户端软件，开源的，使用它只是出于习惯，你可以有别的选择
 * 安装 Qv2ray 有两个步骤，第一步是安装 v2ray-core，第二步才是安装 Qv2ray；Qv2ray 只是给 v2ray-core 加了个好用的壳
 * 安装 v2ray-core
@@ -296,7 +296,7 @@ postid: 100007
 
     ![不要安装语言支持][img20]
 
-    - **图10：不要安装语言支持**
+    - **图20：不要安装语言支持**
 
     >
 
@@ -442,7 +442,7 @@ postid: 100007
       ```
       sudo sshfs [username]@[remote host]:[remote directory] [local mountpoint]
       ```
-    + 卸载
+    + 卸载远程设备
       ```
       sudo fusermount [local mountpoint]
       ```

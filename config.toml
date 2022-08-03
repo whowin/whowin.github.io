@@ -1,7 +1,7 @@
 baseURL = "https://whowin.gitee.io"
 languageCode = "en"
 defaultContentLanguage = "zh-cn"                             # en / zh-cn / ... (This field determines which i18n file to use)
-title = "Whowin - A tech blog that publishes my own original articles"
+title = "whowin - 发表我个人原创作品的技术博客"
 preserveTaxonomyNames = true
 enableRobotsTXT = true
 enableEmoji = true
