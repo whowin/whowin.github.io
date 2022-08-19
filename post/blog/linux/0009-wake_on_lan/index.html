@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>远程开机-一个简单的嵌入式项目开发 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="本文通过一个简单的需求介绍了在一个 ARM 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 Linux 开发的过程。本文并不会详细介绍网络唤醒的原理以及 Magic Packet。
+" /><meta name="keywords" content="linux, dos, hugo" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/linux/0009-wake_on_lan/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.516346f797f8defaa74f5950ddc0d057c447d9788ab26061323dbca6eb755174.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="远程开机-一个简单的嵌入式项目开发" />
+<meta property="og:description" content="本文通过一个简单的需求介绍了在一个 ARM 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 Linux 开发的过程。本文并不会详细介绍网络唤醒的原理以及 Magic Packet。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/linux/0009-wake_on_lan/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-08-18T16:43:29+08:00" />
+<meta property="article:modified_time" content="2022-08-18T16:43:29+08:00" />
+
+<meta itemprop="name" content="远程开机-一个简单的嵌入式项目开发">
+<meta itemprop="description" content="本文通过一个简单的需求介绍了在一个 ARM 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 Linux 开发的过程。本文并不会详细介绍网络唤醒的原理以及 Magic Packet。"><meta itemprop="datePublished" content="2022-08-18T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2022-08-18T16:43:29+08:00" />
+<meta itemprop="wordCount" content="8816">
+<meta itemprop="keywords" content="openwrt,嵌入式,网络唤醒,远程开机," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="远程开机-一个简单的嵌入式项目开发"/>
+<meta name="twitter:description" content="本文通过一个简单的需求介绍了在一个 ARM 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 Linux 开发的过程。本文并不会详细介绍网络唤醒的原理以及 Magic Packet。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script>
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">About me</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">About me</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">远程开机-一个简单的嵌入式项目开发</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2022-08-18 </span>
+        <div class="post-category">
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/embedded/"> Embedded </a>
+            </div>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-概述">1. 概述</a></li>
+        <li><a href="#2-需求">2. 需求</a></li>
+        <li><a href="#3-简要解决方案">3. 简要解决方案</a></li>
+        <li><a href="#4-技术要点">4. 技术要点</a></li>
+        <li><a href="#5-简单的嵌入式开发步骤">5. 简单的嵌入式开发步骤</a></li>
+        <li><a href="#6-具体实践">6. 具体实践</a></li>
+        <li><a href="#7-后记">7. 后记</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>本文通过一个简单的需求介绍了在一个 <em>ARM</em> 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 <em>Linux</em> 开发的过程。本文并不会详细介绍网络唤醒的原理以及 <em>Magic Packet</em>。</p>
+<hr>
+<h2 id="1-概述">1. 概述</h2>
+<ul>
+<li>本文介绍了一个简单的嵌入式项目的的开发过程；</li>
+<li>从需求到实践，本文对整个过程做了全面的介绍，本文所介绍的设备容易获得且价格低廉；</li>
+<li>本文涉及了 <em>Linux</em> 下 C 语言下的网络编程、网络广播、<em>Magic Packet</em>、内网穿透、反向代理等概念；</li>
+<li>本文所涉及的一些技术概念读者可以自行参考其它的文章；</li>
+<li>本文可能并不适合初学者</li>
+</ul>
+<hr>
+<h2 id="2-需求">2. 需求</h2>
+<ul>
+<li>家里放了一台服务器，差不多我所有的东西都在服务器上，不管在家里还是其它地方，都需要连接这台服务器才能做事情；</li>
+<li>这台服务器白天开着，晚上就关了(省点电:))；每天起床以后要想着按一下服务器的电源开关，每天睡觉前要记得把服务器关了；</li>
+<li>晚上忘记关服务器，通常不会有什么问题；但有时早上没有打开服务器，可能就要有麻烦了；</li>
+<li>尴尬的时候就是早上没有打开服务器，然后外出，然后刚好需要登录服务器，这才想起来服务器没开；</li>
+<li>所以呐，我需要有个机制，可以 <strong>远程打开我的服务器</strong>，这样我就不会再出现尴尬了；</li>
+</ul>
+<hr>
+<h2 id="3-简要解决方案">3. 简要解决方案</h2>
+<ul>
+<li>我们把要完成的这个需求当作一个项目来做，可以把这个项目叫做 <strong>服务器远程开机</strong></li>
+<li>首先要确保服务器的主板支持网络唤醒，否则不太好办，不过现在的绝大多数主板都是支持的(<em>PCI 2.2</em> 以后的主板一般都支持，而 <em>PCI 2.2</em> 的标准是1998年提出的)，有些主板可能需要 <em>BIOS</em> 设置，请自行搜索解决方案；</li>
+<li>第二是在家里的局域网上要有一个小设备是 24 小时运行的，通过这台设备在局域网上广播 <em>Magic Packet</em> 来唤醒服务器，这台设备应该是一台低功耗设备，越小越简单越好；我们姑且把这个设备叫做 <strong>wakener</strong>；</li>
+<li>第三是要在这个 <strong>wakener</strong> 上编写一个简单的程序，这个程序可以在局域网上广播 <em>Magic Packet</em>，以唤醒服务器，这个程序我们称为 <strong>wakeOnLan</strong>；</li>
+<li>第四是要有一个机制可以从互联网上访问到这台 <strong>wakener</strong>，只有这样才能从互联网上操控 <strong>wakener</strong> 上的软件，其实这是一个内网穿透的问题，要做到这一点或许需要一台连接到互联网上的轻量级服务器(VPS就可以)；</li>
+<li>这样我不管在哪里，通过终端(笔记本、台式机、手机、平板等)登录家里24小时开机的 <strong>wakener</strong>，运行 <strong>wakeOnLan</strong>，就可以打开我的服务器；</li>
+<li>这台24小时运行的设备(<em>wakener</em>)有可能为你完成更多的事情，比如 NAS、远程开空调等等，但是重要的是完成眼前这个第一步。</li>
+</ul>
+<hr>
+<h2 id="4-技术要点">4. 技术要点</h2>
+<blockquote>
+<p>上面的解决方案显然非常粗糙，但是这个项目本身确实也比较简单，没有必要做非常详尽的设计方案，所以我们下面仅列出一些可能的要点及解决方法</p>
+</blockquote>
+<ul>
+<li>
+<p><strong>本项目的基本网络架构</strong></p>
+<ul>
+<li>
+<p>下面是一个简单的示意图，表达了这个项目中各个设备是如何连接和互相影响的，其中 <em>Local Server</em> 是我们要远程开机的服务器，<em>Server</em> 是一台连接在互联网上的 <em>VPS</em>，用于内网穿透</p>
+<p><img src="/images/100009/wake_on_lan_architecture.png" alt="wake on lan架构"></p>
+<ul>
+<li><strong>图1：wake on lan架构图</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Magic Packet</strong></p>
+<ul>
+<li>远程唤醒其实是网卡的一个功能，在 <em>PCI 2.2</em> 之后，信号线上多了一个 <em>PME</em> 信号，主机关闭电源后进入休眠状态，可以继续为网卡供电，网卡在收到一个叫做 <em>Magic Packet</em> 的数据包后，检测出该数据包是发给自己的，则会在 <em>PCI</em> 上发出 <em>PME</em> 信号，从而控制电脑启动，这个功能被称为 <strong>网络唤醒</strong></li>
+<li>网络唤醒其实并不复杂，在局域网中，从一台电脑以广播的形式发送 <em>Magic Packet</em>，那么在 <em>Magic Packet</em> 中指定的 <em>MAC</em> 地址对应的电脑就会被唤醒；</li>
+<li><em>Magic Packet</em> 就是一个指定格式的数据包，其格式为：6 个 <em>0xff</em>，然后 16 组需要被网络唤醒的电脑的 <em>MAC</em> 地址，比如需要被唤醒的电脑的 <em>MAC</em> 为：<em>00:e0:2b:69:00:03</em>，则 <em>Magic Packet</em> 为(16进制表述)：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ff ff ff ff ff ff 
+</span></span><span class="line"><span class="cl">00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 
+</span></span><span class="line"><span class="cl">00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 
+</span></span><span class="line"><span class="cl">00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 
+</span></span><span class="line"><span class="cl">00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>通常 <em>Magic Packet</em> 的广播使用 <em>UDP</em> 发送，端口号可以任意，通常使用 7 或者 9</li>
+<li>关于 <em>Magic Packet</em> 的更多的信息请参考
+<ul>
+<li><a href="https://zh.wikipedia.org/zh-cn/%E7%B6%B2%E8%B7%AF%E5%96%9A%E9%86%92">wikipidia-网络唤醒</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Wake-on-LAN">wikipedia-Wake-On-Lan</a></li>
+</ul>
+</li>
+<li>从图1中可以看出，<em>Wakener</em> 通过路由器向局域网内广播 <em>Magic Packet</em>，从而唤醒 <em>Local Server</em>；</li>
+<li>要注意的是，<em>Magic Packet</em> 只对有线网卡有效，所以，服务器要使用网线连接到路由器上；</li>
+</ul>
+</li>
+<li>
+<p><strong>内网穿透</strong></p>
+<ul>
+<li>在这个项目里，<strong>内网穿透</strong>指的是：使用一定的技术手段让我们可以从互联网上直接访问到家里的一台设备上，这台设备通过普通家用宽带连接互联网，家用宽带可能没有公网 IP；</li>
+<li>如果家里的宽带有公网 IP，穿透内网并不是一个很困难的事，大致需要三个步骤：
+<ol>
+<li>在家里路由器上设置一个 <em>NAT</em> 让外网的访问直接转发到局域网内某个指定设备的指定端口上；</li>
+<li>局域网中的一个设备(或者路由器本身)向某个有权限的公网服务器发送心跳包，使这个服务器可以知道家里宽带的公网 IP；</li>
+<li>互联网上的终端设备通过服务器获知家里宽带的公网 IP，直接访问即可；</li>
+</ol>
+</li>
+<li>如果家里的宽带没有公网 IP(大多数宽带应该是这样的)，穿透内网就要麻烦一些，通常需要使用<strong>反向代理</strong>来实现，这需要一个公网服务器；
+<ul>
+<li>公网服务器上安装有支持反向代理的服务器端软件，比如 <em>sshd</em>；</li>
+<li>局域网的设备上装有反向代理的客户端软件，比如 <em>ssh</em>，通过向公网服务器发送反向代理的指令可以建立一个反向代理隧道(<em>tunnel</em>)，<em>tunnel</em> 建立起来以后，访问公网服务器的某个指定端口将被映射到访问局域网中某个 IP 地址下的某个端口，从而实现内网穿透；</li>
+</ul>
+</li>
+<li>目前有很多的内网穿透的工具，其原理其实都是反向代理，但通常比直接用 <em>ssh</em> 要好用的多，至少 <em>ssh</em> 在意外断开后不会自动重连，这些工具都会解决这些问题；</li>
+<li>本文所使用的嵌入式 <em>Linux</em> 系统将是 <em>openwrt</em>，理论上可以使用向日葵的内网穿透插件，愿意折腾的读者可以尝试折腾一下向日葵插件；</li>
+<li>本文在内网穿透上将使用一个叫 <em>frp</em> 的开源项目，后面会给出这个项目的具体网址</li>
+</ul>
+</li>
+<li>
+<p><strong>其它要面对的麻烦</strong></p>
+<ul>
+<li>为硬件烧录或编译一个定制的 <em>Linux</em> 操作系统，还好本文的例子并不需要自己编译一个 <em>Linux</em>，烧录就好了；</li>
+<li>交叉编译环境，这个是做嵌入式开发必须面对的，无法回避。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="5-简单的嵌入式开发步骤">5. 简单的嵌入式开发步骤</h2>
+<ol>
+<li>需求分析</li>
+<li>概要设计和详细设计</li>
+<li>硬件开发及验证</li>
+<li>编译与硬件相适应的操作系统及所需工具</li>
+<li>建立在相应硬件上进行软件开发的交叉编译环境；</li>
+<li>嵌入式软件开发；</li>
+<li>调试</li>
+</ol>
+<blockquote>
+<p>下面我们会依照这个开发步骤去实现我们的方案</p>
+</blockquote>
+<hr>
+<h2 id="6-具体实践">6. 具体实践</h2>
+<ul>
+<li>
+<p><strong>需求分析和设计</strong></p>
+<blockquote>
+<p>本项目的开发的需求分析和设计已经在前面完成，鉴于该项目比较简单，就不做更详细设计了</p>
+</blockquote>
+</li>
+<li>
+<p><strong>硬件开发和验证</strong></p>
+<ul>
+<li>
+<p>要找一个<strong>24小时运行的设备</strong></p>
+<ul>
+<li>我有一个早就不用的 <em>迅雷一代赚钱宝(以下简称<strong>赚钱宝</strong>)</em>，不知道为何物的自己去百度一下</li>
+<li>赚钱宝这个玩意 <em>CPU</em> 用的是 <em>Amlogic S805</em>，<em>ARM Cortex-A5</em> 架构，4核1.5GHz，功耗非常低，记住这个 CPU 的型号，记住这个 CPU 是32位的；</li>
+</ul>
+<p><img src="/images/100009/money_maker.png" alt="一代赚钱宝外观"></p>
+<ul>
+<li><strong>图2：赚钱宝外观</strong></li>
+</ul>
+<hr>
+<p><img src="/images/100009/money_maker_board.jpg" alt="S805主板"></p>
+<ul>
+<li><strong>图3：赚钱宝主板</strong></li>
+</ul>
+<hr>
+<ul>
+<li>这个玩意有 <em>256M</em> 内存，1G 的 <em>Flash</em>，<em>100M</em> 网口和一个 <em>USB</em> 口，足够用了；以前有一些厂家用这个 <em>CPU</em> 做网络机顶盒，现在应该没人用了；</li>
+<li>淘宝上查了一下，赚钱宝一代是买不到了，但三代(玩客云)还有二手卖，大概在45 - 55元，用的CPU和一代一样，只是内存大了，如果你想折腾，也可以买一个来玩；</li>
+</ul>
+</li>
+<li>
+<p>这个设备的硬件显然不需要验证，迅雷已经帮我们验证了；</p>
+</li>
+<li>
+<p>实际上，这个设备可以有多种选择，如果你的路由器是 OEM 的，上面通常运行的都是 openwrt，那么你可以直接使用它；或者你手头有闲置的机顶盒等，都有可能用得上；但是通常不建议使用平板，一是太耗电，二是把安卓刷成 <em>Linux</em> 有难度。</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>操作系统</strong>
+<ul>
+<li>
+<p>赚钱宝上原有的 <em>Linux</em> 应该是迅雷自己编译的，很难知道迅雷在这个系统上做了什么，所以还是不用为好，需要刷个新的系统，<em>CPU</em> 为 <em>S805</em> 的设备通常都是支持 <em>USB</em> 刷机的，所以其实根本不用把它拆开，直接一条 <em>USB</em> 线就可以刷新系统了；</p>
+</li>
+<li>
+<p>刷个 <em>openwrt</em> 是比较现实的，有现成的教程，而且 <em>openwrt</em> 资料丰富，便于今后折腾；</p>
+</li>
+<li>
+<p>刷机教程：<a href="https://post.smzdm.com/p/axlkkz64/">赚钱宝一代刷OpenWrt固件</a>；</p>
+</li>
+<li>
+<p>刷机包及相应软件：<a href="https://pan.baidu.com/s/1E4Ls05lPHHHhv0Ou8fb7GA">百度网盘</a>；提取码：ow2l</p>
+</li>
+<li>
+<p>刷机包提供了 <em>openwrt 18</em> 和 <em>19</em> 两个，建议刷 <em>openwrt 19</em>(因为我刷的是 <em>openwrt 19</em>)</p>
+</li>
+<li>
+<p>具体刷机过程自己去享受吧；</p>
+</li>
+<li>
+<p>刷好的机器应该是可以使用 <em>ssh</em> 登录的</p>
+<blockquote>
+<p>首先要从你的路由器上找到这台 <em>openwrt</em> 的 IP 地址，比如为：<em>192.168.2.100</em>，然后用 <em>ssh</em> 登录，新刷的 <em>openwrt</em> 没有密码</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ssh root@192.168.2.100
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>我这里登录以后的样子，登录以后一定要改一下 root 的密码</p>
+</blockquote>
+<p><img src="/images/100009/login_openwrt_first.png" alt="ssh登录openwrt"></p>
+<ul>
+<li><strong>图4：ssh登录openwrt</strong></li>
+</ul>
+<hr>
+</li>
+<li>
+<p><em>openwrt</em> 还会有一个 <em>web</em> 界面，直接在浏览器上输入 IP 即可进入</p>
+<p><img src="/images/100009/web_openwrt_1.png" alt="登录openwrt的web"></p>
+<ul>
+<li><strong>图5：登录openwrt的web界面</strong></li>
+</ul>
+<p><img src="/images/100009/web_openwrt_2.png" alt="openwrt的web界面"></p>
+<ul>
+<li><strong>图6：openwrt的web界面</strong></li>
+</ul>
+<hr>
+</li>
+<li>
+<p>这台设备最好不要使用 <em>DHCP</em>,而是使用固定 IP，这样便于以后远程登录，有三种方法设置固定 IP</p>
+<ol>
+<li>
+<p><strong>直接修改配置文件</strong></p>
+<blockquote>
+<p><em>openwrt</em> 的网络配置文件放在 <em>/etc/config/network</em> 文件中，可以直接修改这个文件，改成下面这个样子：</p>
+</blockquote>
+<p><img src="/images/100009/openwrt_fixed_ip_config.png" alt="固定IP"></p>
+<ul>
+<li><strong>图7：openwrt 改成固定 IP</strong></li>
+</ul>
+</li>
+</ol>
+<hr>
+<ol start="2">
+<li>
+<p><strong>使用 <em>openwrt</em> 的 <em>web</em> 界面修改</strong></p>
+<blockquote>
+<p>从浏览器登录 <em>openwrt</em> 的 <em>web</em> 页面，其密码与 <em>ssh</em> 的密码一致，选择：<em>Network &ndash;&gt; Interfaces &ndash;&gt; Edit</em></p>
+</blockquote>
+<p><img src="/images/100009/openwrt_fixed_ip_web_1.png" alt="通过openwrt的web界面修改固定IP"></p>
+<ul>
+<li><strong>图8：通过openwrt的web界面修改固定IP</strong></li>
+</ul>
+<p><img src="/images/100009/openwrt_fixed_ip_web_2.png" alt="通过openwrt的web界面修改固定IP"></p>
+<ul>
+<li><strong>图9：通过openwrt的web界面修改固定IP</strong></li>
+</ul>
+<p><img src="/images/100009/openwrt_fixed_ip_web_3.png" alt="通过openwrt的web界面修改固定IP"></p>
+<ul>
+<li><strong>图10：通过openwrt的web界面修改固定IP</strong></li>
+</ul>
+</li>
+</ol>
+<hr>
+<ol start="3">
+<li>
+<p><strong>在路由器上用 <em>MAC</em> 地址绑定 IP</strong></p>
+<blockquote>
+<p>实际上就是在路由器上设置 <em>DHCP</em> 每次分配 IP 时，给指定 <em>MAC</em> 地址的设备分配一个固定的 IP，这样，你的 <em>openwrt</em> 设备就不必设置固定 IP了，每种路由器的设置方法不一样，我的路由器的界面像这个样子</p>
+</blockquote>
+<p><img src="/images/100009/openwrt_fixed_ip_router.png" alt="通过路由器设定openwrt的固定IP"></p>
+<ul>
+<li><strong>图11：通过路由器设定openwrt的固定IP</strong></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>建立交叉编译环境</strong>
+<ul>
+<li>
+<p>要在赚钱宝上写程序，需要我们在本地电脑完成编程，然后用交叉编译的工具编译成在赚钱宝上可以运行的程序，传到赚钱宝上才可以在赚钱宝上运行；</p>
+</li>
+<li>
+<p>所以我们需要有一个工具链，对我们编写的程序进行交叉编译；</p>
+</li>
+<li>
+<p>这个工具链不是放在 <em>wakener</em> 上的，因为 <em>wakener</em> 通常性能比较差，而且为了节省存储空间，上面通常只放一些运行时(<em>runtime</em>)库，不具备开发的能力；所以这个工具链要放在另外一台运行着 <em>Linux</em> 的机器上，也可以运行在虚拟机上，我们把这台电脑叫做 <strong>开发机</strong>，建议在<strong>开发机</strong>上运行 <em>ubuntu</em>；</p>
+</li>
+<li>
+<p>下面是建立这个编译环境的过程</p>
+</li>
+<li>
+<p>首先 <em>ssh</em> 登录你刚刷的 <em>openwrt</em>，查看你刷的 <em>openwrt</em> 的版本号：</p>
+<p><img src="/images/100009/openwrt_version.png" alt="openwrt的版本号"></p>
+<ul>
+<li><strong>图12：查看openwrt的版本号</strong></li>
+</ul>
+<hr>
+</li>
+<li>
+<p>去 <a href="https://downloads.openwrt.org">openwrt官网</a> 找到你所需要的版本号下的 <em>sdk</em>，要选择 <em>at91/sama5</em> 目录下的，这个是 <em>cortex-A5</em> 架构(<em>CPU S805</em> 的架构)的工具链</p>
+<ul>
+<li><a href="https://downloads.openwrt.org/releases/19.07.7/targets/at91/sama5/openwrt-sdk-19.07.7-at91-sama5_gcc-7.5.0_musl_eabi.Linux-x86_64.tar.xz">我的工具链的下载地址</a></li>
+</ul>
+</li>
+<li>
+<p>注意这个工具链只能运行在 <em>Linux</em> 下，我是运行在 <em>Ubuntu</em> 下，而且 <em>openwrt-19.07.7</em> 的 <em>SDK</em> 只有 64 位 X86 版本；</p>
+</li>
+<li>
+<p>先将这个工具链下载到 *~/<em>Downloads/</em> 目录下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">wget https://downloads.openwrt.org/releases/19.07.7/targets/at91/sama5/openwrt-sdk-19.07.7-at91-sama5_gcc-7.5.0_musl_eabi.Linux-x86_64.tar.xz -C ~/Downloads/
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>再将其解压出来</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/Downloads
+</span></span><span class="line"><span class="cl">tar -xvf openwrt-sdk-19.07.7-at91-sama5_gcc-7.5.0_musl_eabi.Linux-x86_64.tar.xz
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在 <em>~/Downloads/</em> 目录下会建立一个新目录 <em>openwrt-sdk-19.07.7-at91-sama5_gcc-7.5.0_musl_eabi.Linux-x86_64</em>，进入到这个目录，可以看到一个 <strong>staging_dir</strong> 目录</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd openwrt-sdk-19.07.7-at91-sama5_gcc-7.5.0_musl_eabi.Linux-x86_64/
+</span></span><span class="line"><span class="cl">ls
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>这个 <strong>staging_dir</strong> 目录下的所有内容就是一个完整的工具链，我们可以把这个工具链单独拿出来使用；</p>
+</li>
+<li>
+<p>我把这个目录拷贝到了 <em>~/tooschain/openwrt-a5/</em> 下，我们之所以放到 <em>~/toolschain/</em> 下，是因为我们还可能有别的设备的工具链，都放到这个目录下便于管理</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">mkdir -p ~/toolschain/openwrt-a5/
+</span></span><span class="line"><span class="cl">cp -fr ~/Downloads/openwrt-sdk-19.07.7-at91-sama5_gcc-7.5.0_musl_eabi.Linux-x86_64/staging_dir/* ~/toolschain/openwrt-a5/
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>现在我们已经有了一个完整的工具链，但这个工具链基本上是没办法用的，我们需要简单的配置一下，其实就是设置一些环境变量；</p>
+<ul>
+<li>
+<p>在 <em>HOME</em> 目录下编辑一个文件 <em>a5.sh</em>，内容如下:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">#A5 arm-linux-musl-eabi工具链，用于一代赚钱宝openwrt</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span>/home/whowin/toolschain/openwrt-a5/toolchain-arm_cortex-a5+vfpv4_gcc-7.5.0_musl_eabi/bin:<span class="nv">$PATH</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">STAGING_DIR</span><span class="o">=</span>/home/whowin/toolschain/openwrt-a5
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>其中 <em>/home/whowin</em> 为我的 <em>HOME</em> 目录，你要更改为你的 <em>HOME</em> 目录；</p>
+</li>
+<li>
+<p>其实这个文件就是修改了环境变量 <em>PATH</em>，然后增加了一个环境变量 <em>STAGING_DIR</em>，这些设置都是为了能够正常使用这个工具链；</p>
+</li>
+<li>
+<p>将这个文件设置为可执行，然后把这个文件拷贝到 <em>/bin/</em> 下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~
+</span></span><span class="line"><span class="cl">vi a5.sh
+</span></span><span class="line"><span class="cl">(编辑内容并存盘)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">chmod 755 a5.sh
+</span></span><span class="line"><span class="cl">sudo cp a5.sh /bin/
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>放到 <em>/bin/</em> 目录下只是为了用起来方便，并没有特别的含义；</p>
+</li>
+<li>
+<p>下面我们可以试一下这个工具链</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">source /bin/a5.sh
+</span></span><span class="line"><span class="cl">arm-openwrt-linux-gcc -v
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>下面是在我的机器上的输出</p>
+<p><img src="/images/100009/toolschain_test.png" alt="测试一下工具链"></p>
+<ul>
+<li><strong>图13：测试工具链</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>源程序</strong>
+<ul>
+<li>
+<p>有了工具链就可以编程了，编程的过程要在<strong>开发机</strong>上完成，不是在 <em>openwrt</em> 下，但是用这个源程序编译出来的可执行文件是要在 <em>openwrt</em> 下运行的；</p>
+</li>
+<li>
+<p>下面是这个项目中需要在 <em>openwrt</em> 下运行的程序 <em>wakeOnLan</em> 的源程序</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">/******************************************************************************
+</span></span><span class="line"><span class="cl">  File Name: wakeOnLan.c
+</span></span><span class="line"><span class="cl">  Description:  向局域网中的计算机发出远程唤醒的指令
+</span></span><span class="line"><span class="cl">                该程序将运行在迅雷一代赚钱宝上(已刷openwrt)，用于唤醒主机
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  Compile:  source /bin/a5.sh
+</span></span><span class="line"><span class="cl">            arm-openwrt-linux-gcc -Wall wakeOnLan.c -o wakeOnLan
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  Usage: wakeOnLan [boradcast IP] [MAC]
+</span></span><span class="line"><span class="cl">  Example: sudo ./wakeOnLan 192.168.2.255 00:e0:2b:68:00:03
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  Date: 2022-07-26
+</span></span><span class="line"><span class="cl">*******************************************************************************/
+</span></span><span class="line"><span class="cl">#include &lt;stdio.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;signal.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;   ////inet_ntop
+</span></span><span class="line"><span class="cl">#include &lt;netinet/in.h&gt;  //inet_addr
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#define  BIND_PORT         7                   // 端口号
+</span></span><span class="line"><span class="cl">#define  MSG_LEN           102                 // magic packet的长度
+</span></span><span class="line"><span class="cl">#define  USAGE             &#34;wakeOnLan [broadcast IP] [MAC]\n&#34; \
+</span></span><span class="line"><span class="cl">                           &#34;Example: sudo ./wakeOnLan 192.168.1.255 00:e0:2b:69:00:03\n&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">/*****************************************************
+</span></span><span class="line"><span class="cl">* Function: int is_IP(char *IP)
+</span></span><span class="line"><span class="cl">* Description: 检查IP是否为一个合法的IPv4
+</span></span><span class="line"><span class="cl">* Return: 1    合法的IPv4
+</span></span><span class="line"><span class="cl">*         0    非法的IPv4
+</span></span><span class="line"><span class="cl">*****************************************************/
+</span></span><span class="line"><span class="cl">int is_IP(char *IP) {
+</span></span><span class="line"><span class="cl">    int a, b, c, d;
+</span></span><span class="line"><span class="cl">    char e;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if (4 == sscanf(IP, &#34;%d.%d.%d.%d%c&#34;, &amp;a, &amp;b, &amp;c, &amp;d, &amp;e)) {
+</span></span><span class="line"><span class="cl">        if (a &gt;= 0 &amp;&amp; a &lt; 256 &amp;&amp;
+</span></span><span class="line"><span class="cl">            b &gt;= 0 &amp;&amp; b &lt; 256 &amp;&amp;
+</span></span><span class="line"><span class="cl">            c &gt;= 0 &amp;&amp; c &lt; 256 &amp;&amp;
+</span></span><span class="line"><span class="cl">            d &gt;= 0 &amp;&amp; d &lt; 256) {
+</span></span><span class="line"><span class="cl">            return 1;
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    return 0;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">/*************************************************************************
+</span></span><span class="line"><span class="cl">* Function: int is_MAC(char *mac_str, char *mac)
+</span></span><span class="line"><span class="cl">* Description: 检查MAC是否为合法的MAC格式，如果合法，将其转换成6组数字放到mac中
+</span></span><span class="line"><span class="cl">* 
+</span></span><span class="line"><span class="cl">* Return: 1    合法的MAC，char *mac中为转换后的mac地址
+</span></span><span class="line"><span class="cl">*         0    非法的MAC
+</span></span><span class="line"><span class="cl">*************************************************************************/
+</span></span><span class="line"><span class="cl">int is_MAC(char *mac_str, char *mac) {
+</span></span><span class="line"><span class="cl">    int temp[6];
+</span></span><span class="line"><span class="cl">    char e;
+</span></span><span class="line"><span class="cl">    int i;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if (6 == sscanf(mac_str, &#34;%x:%x:%x:%x:%x:%x%c&#34;, &amp;temp[0], &amp;temp[1], &amp;temp[2], &amp;temp[3], &amp;temp[4], &amp;temp[5], &amp;e)) {
+</span></span><span class="line"><span class="cl">        for (i = 0; i &lt; 6; ++i) {
+</span></span><span class="line"><span class="cl">            if (temp[i] &lt; 0 || temp[i] &gt; 255) break;
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        if (i == 6) {
+</span></span><span class="line"><span class="cl">            for (i = 0; i &lt; 6; ++i) {
+</span></span><span class="line"><span class="cl">                mac[i] = temp[i];
+</span></span><span class="line"><span class="cl">            }
+</span></span><span class="line"><span class="cl">            return 1;
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    return 0;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// ===================主程序================================================
+</span></span><span class="line"><span class="cl">int main(int argc, char *argv[]) {
+</span></span><span class="line"><span class="cl">    struct sockaddr_in sin;
+</span></span><span class="line"><span class="cl">    char *broadcast_ip;
+</span></span><span class="line"><span class="cl">    char wol_msg[MSG_LEN + 2];                           // magic packet
+</span></span><span class="line"><span class="cl">    char mac[6];
+</span></span><span class="line"><span class="cl">    int socket_fd;
+</span></span><span class="line"><span class="cl">    int i, j;
+</span></span><span class="line"><span class="cl">    int on = 1;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // 检查参数数量
+</span></span><span class="line"><span class="cl">    if (argc &lt; 3) {
+</span></span><span class="line"><span class="cl">        // 参数数量不对
+</span></span><span class="line"><span class="cl">        printf(&#34;Incorrect input parameters.\n&#34;);
+</span></span><span class="line"><span class="cl">        printf(USAGE);
+</span></span><span class="line"><span class="cl">        return -1;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // 检查第一个参数是否为一个IP地址
+</span></span><span class="line"><span class="cl">    if (! is_IP(argv[1])) {
+</span></span><span class="line"><span class="cl">        printf(&#34;%s is an invalid IPv4.\n&#34;, argv[1]);
+</span></span><span class="line"><span class="cl">        printf(USAGE);
+</span></span><span class="line"><span class="cl">        return -1;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // 检查第二个参数是否为一个MAC地址
+</span></span><span class="line"><span class="cl">    if (! is_MAC(argv[2], mac)) {
+</span></span><span class="line"><span class="cl">        printf(&#34;%s is an invalid MAC address.\n&#34;, argv[2]);
+</span></span><span class="line"><span class="cl">        printf(USAGE);
+</span></span><span class="line"><span class="cl">        return -1;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    printf(&#34;MAC is %02x:%02x:%02x:%02x:%02x:%02x\n&#34;, mac[0], mac[1],mac[2],mac[3],mac[4],mac[5]);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // 建立socket
+</span></span><span class="line"><span class="cl">    socket_fd = socket(AF_INET, SOCK_DGRAM, 0);
+</span></span><span class="line"><span class="cl">    if (socket_fd &lt; 0) {
+</span></span><span class="line"><span class="cl">        printf(&#34;Can not set up socket. Program exits(%d).\n&#34;, socket_fd);
+</span></span><span class="line"><span class="cl">        return -1;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // 为IP地址分配内存
+</span></span><span class="line"><span class="cl">    broadcast_ip = calloc(strlen(argv[1]) + 1, sizeof(char));
+</span></span><span class="line"><span class="cl">    if (! broadcast_ip) {
+</span></span><span class="line"><span class="cl">        printf(&#34;Can not allocate memory. Program exits\n&#34;);
+</span></span><span class="line"><span class="cl">        return -1;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    // 允许在 socket_fd 上发送广播消息
+</span></span><span class="line"><span class="cl">    setsockopt(socket_fd, SOL_SOCKET, SO_BROADCAST, &amp;on, sizeof(on));
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    memset((void *)&amp;sin, 0, sizeof(sin));
+</span></span><span class="line"><span class="cl">    sin.sin_family = AF_INET;
+</span></span><span class="line"><span class="cl">    sin.sin_addr.s_addr = inet_addr(broadcast_ip);       // 广播IP
+</span></span><span class="line"><span class="cl">    sin.sin_port = htons(BIND_PORT);                     // 端口号
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // 6个 ff
+</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; 6; i++) {
+</span></span><span class="line"><span class="cl">        wol_msg[i] = 0xFF;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    // 16遍 mac 地址
+</span></span><span class="line"><span class="cl">    for (j = 0; j &lt; 16; j++) {
+</span></span><span class="line"><span class="cl">        for (i = 0; i &lt; 6; i++) {
+</span></span><span class="line"><span class="cl">            wol_msg[6 + j * 6 + i] = mac[i];
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    // 发送 magic packet
+</span></span><span class="line"><span class="cl">    sendto(socket_fd, &amp;wol_msg, MSG_LEN, 0, (struct sockaddr *)&amp;sin, sizeof(sin));
+</span></span><span class="line"><span class="cl">    close(socket_fd);
+</span></span><span class="line"><span class="cl">    // 释放前面分配的内存空间
+</span></span><span class="line"><span class="cl">    free(broadcast_ip);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    printf(&#34;Magic Packet has been sended.\n&#34;);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    return 0;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>这个程序本身比较简单，注释比较完整，也没什么好说明的</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>交叉编译</strong>
+<ul>
+<li>交叉编译当然也是在<strong>开发机</strong>上完成；</li>
+<li>假定我们把上面这个源程序放在 <em>~/wake_on_lan/</em> 目录下，下面是交叉编译的过程
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/wake_on_lan
+</span></span><span class="line"><span class="cl">source /bin/a5.sh
+</span></span><span class="line"><span class="cl">arm-openwrt-linux-gcc -Wall wakeOnLan.c -o wakeOnLan
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>交叉编译的过程难免出错，请自行排错；</li>
+<li>交叉编译完成的程序是不能在<strong>开发机</strong>上运行的，需要拷贝到 <em>openwrt</em> 上才能运行，仍然假定 <em>openwrt</em> 的 IP 地址为：<em>192.168.2.100</em>，则可以这样将已经编译好的程序拷贝到 <em>openwrt</em> 上，操作在开发机上完成
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~/wake_on_lan
+</span></span><span class="line"><span class="cl">scp wakeOnLan root@192.168.2.100:/root/
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>在 openwrt 上运行程序</strong>
+<ul>
+<li>
+<p>用 <em>ssh</em> 登录到 <em>openwrt</em>，登录后应该就在 <em>/root/</em> 目录下，因为 <em>/root/</em> 是 <em>root</em> 用户的 <em>HOME</em> 目录，然后运行程序</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ssh root@192.168.2.100
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">./wakeOnLan 192.168.2.255 00:e0:2b:69:00:03
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>第一个参数是局域网上的广播 IP，第二个参数是要被远程唤醒的机器的 <em>MAC</em> 地址，请根据你的具体情况进行修改</p>
+</li>
+<li>
+<p>在我的机器上运行效果是这样的</p>
+<p><img src="/images/100009/openwrt_run_wakeonlan.png" alt="在openwrt上运行wakeOnLan"></p>
+<ul>
+<li><strong>图14：在openwrt上运行wakeOnLan</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>软件调试</strong>
+<ul>
+<li>
+<p>这个程序的调试主要是确保程序能够正确地发出 <em>magic packet</em>，需要在局域网上找另一台机器进行数据包的监听，这台监听的机器既可以运行 <em>windows</em> 也可以运行 <em>Linux</em>，最好是使用准备远程唤醒机器作为监听的机器，我们以一台运行 <em>ubuntu</em> 的机器为例来完成调试</p>
+</li>
+<li>
+<p>使用 <em>ubuntu</em> 下的工具 <em>tcpdump</em> 来进行数据包的监听，<em>tcpdump</em> 必须在 <em>root</em> 权限下运行；</p>
+</li>
+<li>
+<p>首先在监听机器上运行 <em>tcpdump</em></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo tcpdump -vv -x udp port 7
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>这行命令的意思就是监听 <em>udp</em> 端口 7 的数据包，<em>-vv</em> 的意思是显示详细的信息，<em>-x</em> 的意思是按照 16 进制显示，这两个参数也可以写成 <em>-vvx</em></p>
+</li>
+<li>
+<p>在 <em>openwrt</em> 上运行 <em>wakeOnLan</em></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">./wakeOnLan 192.168.2.255 00:e0:2b:69:00:03
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>其中的广播 IP 和 <em>MAC</em> 地址请按照实际情况填写</p>
+</li>
+<li>
+<p>正常情况下，在监听机器上可以看到程序发出的 <em>Magic Packet</em>，仔细看一下这个数据包的格式是否正确</p>
+</li>
+<li>
+<p>在我的环境下，看到的输出如下：</p>
+<p><img src="/images/100009/listen_magic_packet.png" alt="侦听magic packet"></p>
+<ul>
+<li><strong>图15：侦听Magic Packet</strong></li>
+</ul>
+</li>
+<li>
+<p>其中黄线标识的部分是 IP 头，占 20 个字节；绿线标识的部分是 UDP 头，占 8 个字节，剩下的就是 <em>Magic Packet</em>；</p>
+</li>
+<li>
+<p>如果你正常地侦听到了一个完整且正确的 <em>Magic Packet</em>，那么恭喜你，就快要成功了；</p>
+</li>
+<li>
+<p>如果你使用 <em>windows</em> 侦听 <em>Magic Packet</em> 数据包，通常使用著名的 <em>Wireshark</em></p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>局域网内的网络唤醒测试</strong>
+<ul>
+<li>把需要网络唤醒的机器关机，如果需要设置 <em>BIOS</em>，要先设置好 <em>BIOS</em> 再关机；</li>
+<li>使用局域网内的另一台电脑 <em>ssh</em> 登录 <em>openwrt</em>，或者使用手机登录 <em>openwrt</em>，如果使用手机登录，需要在手机上安装一个终端 <em>app</em>，我使用安卓手机，安装的 <em>app</em> 叫 <em>ConnetcBot</em>，推荐大家试一下；</li>
+<li>在 <em>openwrt</em> 运行你编写的程序 <em>wakeOnLan</em>，如果你运气好，你那台刚刚关机的电脑应该被默默的打开了电源</li>
+<li>但是，通常都没有那么好的运气，那么可能的问题如下：
+<ol>
+<li>程序里的广播 IP 是不是正确？</li>
+<li><em>Magic Packet</em> 中的 <em>MAC</em> 地址是否正确？</li>
+<li><em>Magic Packet</em> *的格式是否正确？</li>
+<li>被唤醒的机器是否与 <em>openwrt</em> 在同一个网段？</li>
+<li>路由器是否限制了 <em>UDP</em> 的端口 7？</li>
+<li>如果以上都没有问题，恐怕只能怀疑你那台要被唤醒的机器不支持网络唤醒，或者 <em>BIOS</em> 设置的不正确</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>内网穿透</strong>
+<ul>
+<li>做到现在这样，我们已经完成了大部分工作，下面唯一要做的是如何从外网上访问到这台 <em>openwrt</em> 的设备，这就是前面说过的 <strong>内网穿透</strong>；</li>
+<li>搞内网穿透是需要在互联网上有一台服务器(<em>VPS</em>)的，可以是那种很便宜性能很弱的VPS，因为我们不干别的事，就是转发一下数据而已；</li>
+<li>我自己使用的是一台俄罗斯的 <em>VPS</em>，价格只有 <strong>US$13.04/年</strong>，512M内存，5G的SSD，运行 <em>ubuntu 20.04</em>，虽然配置低，但是用起来感觉还是不错的，我很乐意推荐给大家：
+<ul>
+<li><a href="https://justhost.ru/?ref=149230">俄罗斯VPS</a></li>
+</ul>
+</li>
+<li>前面说过我使用的内网穿透的工具是一个开源项目，叫做 <em>frp</em>，项目地址如下：
+<ul>
+<li>
+<p><a href="https://github.com/fatedier/frp">frp内网穿透项目</a></p>
+</li>
+<li>
+<p>该项目有中文文档，大家可以按照文档下载适当的 <em>release</em>，其服务器软件 <em>frps</em> 运行在服务器(VPS)上，客户端 <em>frpc</em> 运行在 <em>openwrt</em> 上；</p>
+</li>
+<li>
+<p>通常服务器端软件都是 64 位的 X86 架构，比较容易搞定；</p>
+</li>
+<li>
+<p>要注意的是，要看清楚运行 <em>openwrt</em> 的设备是什么架构，是 32 位的还是 64 位的，比如本文中的设备 <em>CPU</em> 为 <em>S805</em>，就是一个 32 位的 <em>arm</em> 架构，否则你下载的客户端软件可能无法运行；</p>
+</li>
+<li>
+<p>这个软件的设置还是要费一些功夫，请认真阅读该项目的文档，并参考其范例；这里我给出我的实例</p>
+<blockquote>
+<p>服务器端配置文件：<em>frps.ini</em>，其中的 <em>xxx.xxx.xxx.xxx</em> 请按照实际情况设置，<em>frp_log_path</em> 请指向实际存放 <em>frp</em> 日志的目录</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[common]
+</span></span><span class="line"><span class="cl">bind_addr = xxx.xxx.xxx.xxx
+</span></span><span class="line"><span class="cl">bind_port = 57000
+</span></span><span class="line"><span class="cl">bind_udp_port = 57001
+</span></span><span class="line"><span class="cl">kcp_bind_port = 57000
+</span></span><span class="line"><span class="cl">proxy_bind_addr = xxx.xxx.xxx.xxx
+</span></span><span class="line"><span class="cl">vhost_http_port = 58080
+</span></span><span class="line"><span class="cl">vhost_https_port = 58443
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">log_file = /frp_log_path/frps.log
+</span></span><span class="line"><span class="cl">log_level = info
+</span></span><span class="line"><span class="cl">log_max_days = 3
+</span></span><span class="line"><span class="cl">disable_log_color = false
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">detailed_errors_to_client = true
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">authentication_method = token
+</span></span><span class="line"><span class="cl">authenticate_heartbeats = false
+</span></span><span class="line"><span class="cl">authenticate_new_work_conns = false
+</span></span><span class="line"><span class="cl">token = skyline.admin
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">oidc_client_id =
+</span></span><span class="line"><span class="cl">oidc_client_secret = 
+</span></span><span class="line"><span class="cl">oidc_audience = 
+</span></span><span class="line"><span class="cl">oidc_token_endpoint_url = 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">allow_ports = 58000-59000,50000-53000
+</span></span><span class="line"><span class="cl">max_pool_count = 15
+</span></span><span class="line"><span class="cl">max_ports_per_client = 0
+</span></span><span class="line"><span class="cl">tls_only = false
+</span></span><span class="line"><span class="cl">subdomain_host = frps.com
+</span></span><span class="line"><span class="cl">tcp_mux = true
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>客户端配置文件：<em>frpc.ini</em>，其中的 <em>xxx.xxx.xxx.xxx</em> 请按照实际情况设置；<em>openwrt.aaa.com</em> 是一个 A 记录指向 <em>VPS</em> 的域名(子域名)，也要根据实际情况进行设置</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[common]
+</span></span><span class="line"><span class="cl">server_addr=xxx.xxx.xxx.xxx
+</span></span><span class="line"><span class="cl">server_port=57000
+</span></span><span class="line"><span class="cl">log_file=/tmp/frpc.log
+</span></span><span class="line"><span class="cl">log_level=info
+</span></span><span class="line"><span class="cl">log_max_days=3
+</span></span><span class="line"><span class="cl">disable_log_color=false
+</span></span><span class="line"><span class="cl">token=skyline.admin
+</span></span><span class="line"><span class="cl">pool_count=5
+</span></span><span class="line"><span class="cl">tcp_mux=true
+</span></span><span class="line"><span class="cl">user=whowin
+</span></span><span class="line"><span class="cl">login_fail_exit=false
+</span></span><span class="line"><span class="cl">protocol=tcp
+</span></span><span class="line"><span class="cl">tls_enable=falset
+</span></span><span class="line"><span class="cl">dns_server=8.8.8.8
+</span></span><span class="line"><span class="cl">admin_addr=127.0.0.1
+</span></span><span class="line"><span class="cl">admin_port=7400
+</span></span><span class="line"><span class="cl">admin_user=skyline
+</span></span><span class="line"><span class="cl">admin_pwd=admin
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[ssh]
+</span></span><span class="line"><span class="cl">type=tcp
+</span></span><span class="line"><span class="cl">local_ip=192.168.2.100
+</span></span><span class="line"><span class="cl">local_port=22
+</span></span><span class="line"><span class="cl">use_encryption=false
+</span></span><span class="line"><span class="cl">use_compression=false
+</span></span><span class="line"><span class="cl">custom_domain=openwrt.aaa.com
+</span></span><span class="line"><span class="cl">remote_port=52998
+</span></span><span class="line"><span class="cl">health_check_type=tcp
+</span></span><span class="line"><span class="cl">health_check_timeout_s=3
+</span></span><span class="line"><span class="cl">health_check_max_failed=10
+</span></span><span class="line"><span class="cl">health_check_interval_s=30
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[openwrt_web]
+</span></span><span class="line"><span class="cl">type=http
+</span></span><span class="line"><span class="cl">local_ip=192.168.2.100
+</span></span><span class="line"><span class="cl">local_port=80
+</span></span><span class="line"><span class="cl">use_encryption=false
+</span></span><span class="line"><span class="cl">use_compression=true
+</span></span><span class="line"><span class="cl">custom_domains=openwrt.aaa.com
+</span></span><span class="line"><span class="cl">header_X-From-Where=frp           
+</span></span><span class="line"><span class="cl">health_check_type=http    
+</span></span><span class="line"><span class="cl">health_check_url=/        
+</span></span><span class="line"><span class="cl">health_check_interval_s=90 
+</span></span><span class="line"><span class="cl">health_check_max_failed=3
+</span></span><span class="line"><span class="cl">health_check_timeout_s=3
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>启动 <em>VPS</em> 上的 <em>frps</em>，<em>path_to</em> 指向实际路径
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">/path_to/frps -c /path_to/frps.ini &amp;
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>启动 <em>openwrt</em> 上的 <em>frpc</em>，<em>path_to</em> 指向实际路径
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">/path_to/frpc -c /path_to/frpc.ini &amp;
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>如遇问题，强烈建议认真查看 <em>frps.log</em> 和 <em>frpc.log</em>；</li>
+<li>正常情况下，现在你已经可以在互联网上通过 <em>frp</em> 访问你家里的 <em>openwrt</em> 了，像这样：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ssh root@xxx.xxx.xxx.xxx -p 52998
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>其中：<em>xxx.xxx.xxx.xxx</em> 为 <em>VPS</em> 的 IP 地址，<em>52998</em> 是在 <em>frpc.ini</em> 中设置的端口号，也可以设置一个域名指向 <em>VPS</em> 的 IP，比如设置 <em>vps.aaa.com</em> 的 A 记录指向 <em>VPS</em>，则可以这样登录 <em>openwrt</em>：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ssh root@vps.aaa.com -p 52998
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>同样，按照上面的设置，如果要访问 <em>openwrt</em> 的 <em>web</em> 界面，在浏览器上输入：<em>openwrt.aaa.com:58080</em> 即可，<em>58080</em> 是在 <em>frps.ini</em> 中设置的一个端口号；</li>
+<li>特别要注意的是，要在 <em>VPS</em> 上设置好防火墙，放开可能用到的端口，否则 <em>frp</em> 将无法正常工作</li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>远程开机测试</strong>
+<ul>
+<li>
+<p>测试远程开机使用的电脑、平板或者手机，不能连接到家里的 <em>wifi</em> 上，建议使用手机，关掉 <em>wifi</em>，打开 <em>ConnectBot</em></p>
+</li>
+<li>
+<p>设置连接如下：</p>
+<p><img src="/images/100009/connectbot_setting.jpg" alt="在ConnectBot上设置连接"></p>
+<ul>
+<li><strong>图16：在ConnectBot上设置连接</strong></li>
+</ul>
+<hr>
+</li>
+<li>
+<p>通过 <em>frp</em> 连接到 <em>openwrt</em></p>
+<p><img src="/images/100009/connectbot_login_openwrt.jpg" alt="在ConnectBot上连接openwrt"></p>
+<ul>
+<li><strong>图17：在ConnectBot上连接openwrt</strong></li>
+</ul>
+<hr>
+</li>
+<li>
+<p>在 <em>openwrt</em> 上运行 <em>wakeOnLan</em></p>
+<p><img src="/images/100009/connectbot_run_wakeonlan.jpg" alt="在openwrt上运行wakeOnLan"></p>
+<ul>
+<li><strong>图18：在openwrt上运行wakeOnLan</strong></li>
+</ul>
+<hr>
+</li>
+<li>
+<p>正常情况下，<em>MAC</em> 地址指定的机器应该已经开机了；为了运行方便，你可以在 <em>openwrt</em> 上写一个 <em>shell</em> 脚本，免得每次都要输入 IP 地址和 <em>MAC</em> 地址，像下面这样，注意，<em>openwrt</em> 下的 <em>shell</em> 是 <em>ash</em></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ cat wakeOnLan.sh 
+</span></span><span class="line"><span class="cl">#!/bin/ash
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">/home/whowin/wakeOnLan 192.168.2.255 00:e0:2b:68:00:03
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="7-后记">7. 后记</h2>
+<blockquote>
+<p>前面提过，<em>Magic Packet</em> 可以在任意端口发送，通常使用端口 7 或 9，我们这个例子使用端口 7 发送，读者可以试一下从其他端口发送，比如端口 1234；</p>
+</blockquote>
+<blockquote>
+<p>实际上，<em>openwrt</em> 是有现成的<strong>网络唤醒</strong>模块的，可以在 <em>openwrt</em> 的 <em>web</em> 界面上搜索 <em>luci-app-wol</em>，安装这个软件的同时，还会安装一个 <em>etherwake</em> 的软件，安装好以后，可以使用类似 <em>etherwake -b AA:BB:CC:DD:EE:FF</em> 的命令发送 <em>Magic Packet</em> 唤醒指定的机器，也可以通过 <em>web</em> 界面唤醒指定的电脑</p>
+</blockquote>
+<p><img src="/images/100009/luci_wake_on_lan.png" alt="在web界面上发送Magic Packet"></p>
+<ul>
+<li><strong>图19：在web界面上发送Magic Packet</strong></li>
+</ul>
+<blockquote>
+<p>至此，我们的这个项目就算做完了，我们基本上经历了一个嵌入式开发的全过程，只是每一个阶段都比较简单而已，嵌入式开发，貌似复杂，其实并没有想象的那么难；</p>
+</blockquote>
+<blockquote>
+<p>在嵌入式项目的设计阶段，我们需要有足够的知识储备以便为我们的需求提出最合理的方案，在这个项目的设计中，正是由于我们储备了 <em>Magic Packet</em> 和反向代理的知识，才可以为我们的需求提出这样一个软硬件结合的方案；</p>
+</blockquote>
+<blockquote>
+<p>我们这个项目基本没有硬件开发，但是通常情况下，嵌入式开发的软件工程师是需要参与到硬件开发中去的，包括芯片方案的选择等都要参与意见，以便设计开发的硬件产品在今后的软件开发中可以比较顺利，所以嵌入式软件工程师同样要具备阅读芯片的 <em>datasheet</em> 的能力和看懂硬件原理图的能力，好的嵌入式软件工程师也可以拥有非常不错的焊接技能；</p>
+</blockquote>
+<blockquote>
+<p>嵌入式开发的最关键的地方还是软件开发，但比普通的软件开发所要了解的知识要多很多，比如在我们这个项目中，我们必须要知道我们所用的硬件的 <em>CPU</em> 是什么，甚至要知道这个 <em>CPU</em> 的架构，否则，我们无法为这个硬件构建正确的操作系统，也无法在开发机上为这个硬件构建正确的交叉编译环境；</p>
+</blockquote>
+<blockquote>
+<p>如果你喜欢做嵌入式开发，希望这篇文章能给予你帮助。</p>
+</blockquote>
+<!-- 用于实际发布 -->
+<!-- -->
+<!--用于本地预览
+[img01]:../../../../static/images/100009/money_maker.png
+[img02]:../../../../static/images/100009/money_maker_board.jpg
+[img03]:../../../../static/images/100009/openwrt_version.png
+[img04]:../../../../static/images/100009/toolschain_test.png
+[img05]:../../../../static/images/100009/wake_on_lan_architecture.png
+[img06]:../../../../static/images/100009/login_openwrt_first.png
+[img07]:../../../../static/images/100009/web_openwrt_1.png
+[img08]:../../../../static/images/100009/web_openwrt_2.png
+[img09]:../../../../static/images/100009/openwrt_fixed_ip_config.png
+[img10]:../../../../static/images/100009/openwrt_fixed_ip_web_1.png
+[img11]:../../../../static/images/100009/openwrt_fixed_ip_web_2.png
+[img12]:../../../../static/images/100009/openwrt_fixed_ip_web_3.png
+[img13]:../../../../static/images/100009/openwrt_fixed_ip_router.png
+[img14]:../../../../static/images/100009/openwrt_run_wakeonlan.png
+[img15]:../../../../static/images/100009/listen_magic_packet.png
+[img16]:../../../../static/images/100009/connectbot_setting.jpg
+[img17]:../../../../static/images/100009/connectbot_login_openwrt.jpg
+[img18]:../../../../static/images/100009/connectbot_run_wakeonlan.jpg
+[img19]:../../../../static/images/100009/luci_wake_on_lan.png
+-->
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2022-08-18
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/openwrt/">openwrt</a>
+          <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a>
+          <a href="/tags/%E7%BD%91%E7%BB%9C%E5%94%A4%E9%86%92/">网络唤醒</a>
+          <a href="/tags/%E8%BF%9C%E7%A8%8B%E5%BC%80%E6%9C%BA/">远程开机</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/travel/0001-grass-skyline/">
+            <span class="next-text nav-default">自驾张北草原天路</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/linux/0009-wake_on_lan/" class="leancloud_visitors" data-flag-title="远程开机-一个简单的嵌入式项目开发">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
