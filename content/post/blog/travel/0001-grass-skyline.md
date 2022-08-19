@@ -10,7 +10,6 @@ autoCollapseToc: true
 pager: true
 categories:
   - "travel"
-  - "grass skyline"
 tags:
   - travel
   - "草原天路"

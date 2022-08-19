@@ -8,7 +8,6 @@ toc: true
 pager: true
 categories:
   - "Linux"
-  - "Ubuntu"
 tags:
   - Ubuntu
   - Desktop

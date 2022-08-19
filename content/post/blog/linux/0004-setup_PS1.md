@@ -8,8 +8,6 @@ toc: true
 pager: true
 categories:
   - "Linux"
-  - "Shell"
-  - "Bash"
 tags:
   - "shell"
   - "bash"
