@@ -1,6 +1,6 @@
 ---
 title: "远程开机-一个简单的嵌入式项目开发"
-date: 2022-08-19T16:43:29+08:00
+date: 2022-08-18T16:43:29+08:00
 author: whowin
 sidebar: false
 authorbox: false
