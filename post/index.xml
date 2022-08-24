@@ -8,7 +8,7 @@
     <language>en</language>
     <lastBuildDate>Thu, 18 Aug 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>远程开机-一个简单的嵌入式项目开发</title>
+      <title>远程开机：一个简单的嵌入式项目开发</title>
       <link>https://whowin.gitee.io/post/blog/linux/0009-wake_on_lan/</link>
       <pubDate>Thu, 18 Aug 2022 16:43:29 +0800</pubDate>
       
@@ -143,12 +143,12 @@
     </item>
     
     <item>
-      <title>32位 BIOS说明</title>
+      <title>32位 BIOS 说明</title>
       <link>https://whowin.gitee.io/post/blog/dos/0001-32bit_bios_introduction/</link>
       <pubDate>Tue, 18 Mar 2008 13:15:48 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/dos/0001-32bit_bios_introduction/</guid>
-      <description>&lt;p&gt;PCI BIOS在PCI编程中起着一定的作用，PCI BIOS的资料也不是很好找，把找到的集中到这里，供参考。&lt;/p&gt;</description>
+      <description>&lt;p&gt;PCI BIOS 在 PCI 编程中起着一定的作用，PCI BIOS 的资料也不是很好找，把找到的集中到这里，供参考。&lt;/p&gt;</description>
     </item>
     
   </channel>

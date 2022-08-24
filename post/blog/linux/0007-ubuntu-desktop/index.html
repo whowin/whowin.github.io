@@ -50,7 +50,7 @@
 <meta itemprop="name" content="安装一个好用的Ubuntu桌面">
 <meta itemprop="description" content="本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助"><meta itemprop="datePublished" content="2022-05-06T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-05-06T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4683">
+<meta itemprop="wordCount" content="4698">
 <meta itemprop="keywords" content="Ubuntu,Desktop," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="安装一个好用的Ubuntu桌面"/>
 <meta name="twitter:description" content="本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助"/>
@@ -141,7 +141,6 @@
         <span class="post-time"> 2022-05-06 </span>
         <div class="post-category">
             <a href="/categories/linux/"> Linux </a>
-            <a href="/categories/ubuntu/"> Ubuntu </a>
             </div>
         <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
       </div>
@@ -154,21 +153,21 @@
   <ul>
     <li>
       <ul>
-        <li><a href="#导言">导言</a></li>
-        <li><a href="#在-ubuntu-下制作一个-ubuntu-2004-的安装-u-盘">在 Ubuntu 下制作一个 Ubuntu 20.04 的安装 U 盘</a></li>
-        <li><a href="#使用-u-盘安装-ubuntu-2004">使用 U 盘安装 Ubuntu 20.04</a></li>
-        <li><a href="#安装-qv2ray">安装 Qv2ray</a></li>
-        <li><a href="#安装-chromium-浏览器">安装 chromium 浏览器</a></li>
-        <li><a href="#安装-vscode">安装 vscode</a></li>
-        <li><a href="#安装搜狗拼音">安装搜狗拼音</a></li>
-        <li><a href="#安装向日葵">安装向日葵</a></li>
-        <li><a href="#安装有道词典">安装有道词典</a></li>
-        <li><a href="#安装-wps">安装 wps</a></li>
-        <li><a href="#安装-gimp">安装 gimp</a></li>
-        <li><a href="#安装-qrcp">安装 qrcp</a></li>
-        <li><a href="#安装-filezilla">安装 FileZilla</a></li>
-        <li><a href="#其它">其它</a></li>
-        <li><a href="#后记">后记</a></li>
+        <li><a href="#1-导言">1. 导言</a></li>
+        <li><a href="#2-在-ubuntu-下制作一个-ubuntu-2004-的安装-u-盘">2. 在 Ubuntu 下制作一个 Ubuntu 20.04 的安装 U 盘</a></li>
+        <li><a href="#3-使用-u-盘安装-ubuntu-2004">3. 使用 U 盘安装 Ubuntu 20.04</a></li>
+        <li><a href="#4-安装-qv2ray">4. 安装 Qv2ray</a></li>
+        <li><a href="#5-安装-chromium-浏览器">5. 安装 chromium 浏览器</a></li>
+        <li><a href="#6-安装-vscode">6. 安装 vscode</a></li>
+        <li><a href="#7-安装搜狗拼音">7. 安装搜狗拼音</a></li>
+        <li><a href="#8-安装向日葵">8. 安装向日葵</a></li>
+        <li><a href="#9-安装有道词典">9. 安装有道词典</a></li>
+        <li><a href="#10-安装-wps">10. 安装 wps</a></li>
+        <li><a href="#11-安装-gimp">11. 安装 gimp</a></li>
+        <li><a href="#12-安装-qrcp">12. 安装 qrcp</a></li>
+        <li><a href="#13-安装-filezilla">13. 安装 FileZilla</a></li>
+        <li><a href="#14-其它">14. 其它</a></li>
+        <li><a href="#15-后记">15. 后记</a></li>
       </ul>
     </li>
   </ul>
@@ -177,7 +176,7 @@
 </div>
     <div class="post-content">
       <p>本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助</p>
-<h2 id="导言">导言</h2>
+<h2 id="1-导言">1. 导言</h2>
 <ul>
 <li>手里一台 Lenovo T430，CPU: <em>i5-3320M</em>，<em>8G DDR3</em> 内存，<em>500G</em> 机械硬盘，废弃许久，准备重新启用</li>
 <li>我平常的工作方式是一台ubuntu的服务器，所有内容都在这台服务器上，桌面有一个windows，以备不时之需，其它的都是Ubuntu，我不喜欢去哪儿都背个电脑，也不喜欢笔记本的小屏幕，所以我常去的地方都有一个Ubuntu的终端；</li>
@@ -197,7 +196,7 @@
 <li>并不建议在 Ubuntu 下安装微信，尽管可以安装，但不好用，而且很耗费资源；我们使用 Ubuntu 桌面的其中一个原因就是节省资源，安装一个不好用的微信显得与初衷不符；</li>
 <li>但是手机与电脑之间的文件交换还是很有必要的，我们通过安装一个开源软件 <em>qrcp</em>，很好地解决了这个问题。</li>
 </ul>
-<h2 id="在-ubuntu-下制作一个-ubuntu-2004-的安装-u-盘">在 Ubuntu 下制作一个 Ubuntu 20.04 的安装 U 盘</h2>
+<h2 id="2-在-ubuntu-下制作一个-ubuntu-2004-的安装-u-盘">2. 在 Ubuntu 下制作一个 Ubuntu 20.04 的安装 U 盘</h2>
 <ul>
 <li>
 <p>你需要有一个正常的Ubuntu系统，运行在虚拟机上的也可以，任何版本的都可以，但最好是官方仍然支持的版本</p>
@@ -250,7 +249,7 @@
 <p>等到命令执行完毕(可能时间会比较长)，Ubuntu 的安装 U 盘就做好了</p>
 </li>
 </ul>
-<h2 id="使用-u-盘安装-ubuntu-2004">使用 U 盘安装 Ubuntu 20.04</h2>
+<h2 id="3-使用-u-盘安装-ubuntu-2004">3. 使用 U 盘安装 Ubuntu 20.04</h2>
 <ul>
 <li>
 <p>这个过程没有什么可说的，Ubuntu 的安装还是很友好的，并没有什么难度</p>
@@ -383,7 +382,7 @@
 <p>在安装 <em>chromium</em> 浏览器之前，<em>Firefox</em> 浏览器是唯一的选择，后面的下载工作主要靠 <em>Firefox</em></p>
 </li>
 </ul>
-<h2 id="安装-qv2ray">安装 Qv2ray</h2>
+<h2 id="4-安装-qv2ray">4. 安装 Qv2ray</h2>
 <ul>
 <li>
 <p>v2ray 是一个科学上网工具，在 Linux 下工作，为了能访问 google、github 等，科学上网是必要的</p>
@@ -518,7 +517,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="安装-chromium-浏览器">安装 chromium 浏览器</h2>
+<h2 id="5-安装-chromium-浏览器">5. 安装 chromium 浏览器</h2>
 <ul>
 <li>如果你喜欢使用 <em>Firefox</em> 浏览器，不一定非要安装 <em>Chromium</em></li>
 <li>没有安装 <em>chrome</em>，而是选择安装 <em>chromium</em>，是因为在 Ubuntu 的软件中心中是没有 <em>Chrome</em> 的，但是有 <em>Chromium</em>；所以，安装 <em>Chromium</em> 很容易，但是安装 <em>Chrome</em> 就要大费周折了</li>
@@ -548,7 +547,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="安装-vscode">安装 vscode</h2>
+<h2 id="6-安装-vscode">6. 安装 vscode</h2>
 <ul>
 <li>
 <p><a href="https://code.visualstudio.com/">VSCODE 官网</a></p>
@@ -586,7 +585,7 @@
 </div>
 </div></li>
 </ul>
-<h2 id="安装搜狗拼音">安装搜狗拼音</h2>
+<h2 id="7-安装搜狗拼音">7. 安装搜狗拼音</h2>
 <ul>
 <li>
 <p>如果你能够适应 Ubuntu 自带的输入法，不必安装新的输入法，目前能够在 Ubuntu 下运行的输入法并不多，搜狗算一个</p>
@@ -675,7 +674,7 @@
 <p>重新启动 Ubuntu</p>
 </li>
 </ul>
-<h2 id="安装向日葵">安装向日葵</h2>
+<h2 id="8-安装向日葵">8. 安装向日葵</h2>
 <ul>
 <li>安装 <a href="https://sunlogin.oray.com/">向日葵</a> 是考虑到可能需要远程控制运行 <em>windows</em> 的设备，在 <em>teamviewer</em> 收费以后，<a href="https://sunlogin.oray.com/">向日葵</a> 算是比较好用的一个选择，比 anydesk 似乎好用些</li>
 <li>在 <em>Ubuntu</em> 下控制 <em>windows</em>，没有什么更好的办法，远程桌面比较简单；也可以试试 <em>ssh</em>，不过稍有些麻烦，后面会提到</li>
@@ -704,7 +703,7 @@
 </div>
 </div></li>
 </ul>
-<h2 id="安装有道词典">安装有道词典</h2>
+<h2 id="9-安装有道词典">9. 安装有道词典</h2>
 <ul>
 <li><a href="https://dict.youdao.com/">有道词典官网</a></li>
 <li><a href="http://cidian.youdao.com/multi.html#linuxAll">linux版下载页面</a></li>
@@ -750,7 +749,7 @@
 </div>
 </div></li>
 </ul>
-<h2 id="安装-wps">安装 wps</h2>
+<h2 id="10-安装-wps">10. 安装 wps</h2>
 <ul>
 <li><a href="https://www.wps.cn/">wps官网</a></li>
 <li><a href="https://linux.wps.cn/">linux版wps下载页面</a></li>
@@ -776,7 +775,7 @@
 </div>
 </div></li>
 </ul>
-<h2 id="安装-gimp">安装 gimp</h2>
+<h2 id="11-安装-gimp">11. 安装 gimp</h2>
 <ul>
 <li><a href="https://www.gimp.org/">gimp官网</a> - 一个类似 photoshop 的软件</li>
 <li><a href="https://mdnice.com/writing/c4815f6d995a4fec99749a72c473cb8e">【GIMP教程】基础入门</a></li>
@@ -801,7 +800,7 @@
 </div>
 </div></li>
 </ul>
-<h2 id="安装-qrcp">安装 qrcp</h2>
+<h2 id="12-安装-qrcp">12. 安装 qrcp</h2>
 <ul>
 <li>qrcp 是一个可以方便地和手机互传文件的工具；这个工具可以在屏幕上显示一个二维码，手机通过扫描二维码来完成与电脑之间的文件互传；前面提到过，不建议在 Ubuntu 下安装微信，这个工具可以代替一部分微信的作用</li>
 <li><a href="https://github.com/claudiodangelis/qrcp">qrcp项目</a></li>
@@ -846,7 +845,7 @@
 </blockquote>
 </li>
 </ul>
-<h2 id="安装-filezilla">安装 FileZilla</h2>
+<h2 id="13-安装-filezilla">13. 安装 FileZilla</h2>
 <ul>
 <li>这是一个好用的 <em>ftp、sftp</em> 的开源软件，我喜欢用它在各种 <em>linux/windows</em> 之间传递文件</li>
 <li><em>FileZilla</em> 既有客户端也有服务器版本，我只用它的客户端</li>
@@ -872,7 +871,7 @@
 </div>
 </div></li>
 </ul>
-<h2 id="其它">其它</h2>
+<h2 id="14-其它">14. 其它</h2>
 <ul>
 <li>
 <p>把 <em>terminal</em> 放到桌面上，记得把桌面图标设置为 <strong>允许启动</strong></p>
@@ -926,7 +925,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="后记">后记</h2>
+<h2 id="15-后记">15. 后记</h2>
 <ul>
 <li>至此，整个的环境到这里就安装完成了，希望能给你带来一点帮助</li>
 <li>你现在看到的这篇文章就是在这个环境下使用 <em>vscode</em> 远程完成的，实际的文章放在服务器上，图片是在本机使用 <em>Ubuntu</em> 截图工具获取的，然后用 FileZilla* 传到服务器</li>
