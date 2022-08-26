@@ -19,7 +19,7 @@ postid: 100007
 本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助
 <!--more-->
 
-## 导言
+## 1. 导言
 * 手里一台 Lenovo T430，CPU: *i5-3320M*，*8G DDR3* 内存，*500G* 机械硬盘，废弃许久，准备重新启用
 * 我平常的工作方式是一台ubuntu的服务器，所有内容都在这台服务器上，桌面有一个windows，以备不时之需，其它的都是Ubuntu，我不喜欢去哪儿都背个电脑，也不喜欢笔记本的小屏幕，所以我常去的地方都有一个Ubuntu的终端；
 * 这次在笔记本上装Ubuntu，我特意做了记录，希望能够给也想使用 Ubuntu 桌面的朋友们做个参考；
@@ -35,7 +35,7 @@ postid: 100007
 * 并不建议在 Ubuntu 下安装微信，尽管可以安装，但不好用，而且很耗费资源；我们使用 Ubuntu 桌面的其中一个原因就是节省资源，安装一个不好用的微信显得与初衷不符；
 * 但是手机与电脑之间的文件交换还是很有必要的，我们通过安装一个开源软件 *qrcp*，很好地解决了这个问题。
 
-## 在 Ubuntu 下制作一个 Ubuntu 20.04 的安装 U 盘
+## 2. 在 Ubuntu 下制作一个 Ubuntu 20.04 的安装 U 盘
 * 你需要有一个正常的Ubuntu系统，运行在虚拟机上的也可以，任何版本的都可以，但最好是官方仍然支持的版本
 * 在 Ubuntu 下做一个 Ubuntu 的安装 U 盘还是非常简单的
   1. 下载一个 Ubuntu 20.04 的 iso 镜像
@@ -60,7 +60,7 @@ postid: 100007
 
 * 等到命令执行完毕(可能时间会比较长)，Ubuntu 的安装 U 盘就做好了
 
-## 使用 U 盘安装 Ubuntu 20.04
+## 3. 使用 U 盘安装 Ubuntu 20.04
 * 这个过程没有什么可说的，Ubuntu 的安装还是很友好的，并没有什么难度
 * 安装完毕，已经有桌面了
 * 先做一些简单的设置，以便用起来顺手些
@@ -153,7 +153,7 @@ postid: 100007
 
 * 在安装 *chromium* 浏览器之前，*Firefox* 浏览器是唯一的选择，后面的下载工作主要靠 *Firefox*
 
-## 安装 Qv2ray
+## 4. 安装 Qv2ray
 * v2ray 是一个科学上网工具，在 Linux 下工作，为了能访问 google、github 等，科学上网是必要的
 * Qv2ray 是一个用 qt 开发的 v2ray 客户端软件，开源的，使用它只是出于习惯，你可以有别的选择
 * 安装 Qv2ray 有两个步骤，第一步是安装 v2ray-core，第二步才是安装 Qv2ray；Qv2ray 只是给 v2ray-core 加了个好用的壳
@@ -230,7 +230,7 @@ postid: 100007
 
     >
 
-## 安装 chromium 浏览器
+## 5. 安装 chromium 浏览器
 * 如果你喜欢使用 *Firefox* 浏览器，不一定非要安装 *Chromium*
 * 没有安装 *chrome*，而是选择安装 *chromium*，是因为在 Ubuntu 的软件中心中是没有 *Chrome* 的，但是有 *Chromium*；所以，安装 *Chromium* 很容易，但是安装 *Chrome* 就要大费周折了
 * 安装 *Chromium*
@@ -245,7 +245,7 @@ postid: 100007
   - 经过上面一步后，你就可以在桌面上看到 chromium 的图标了，但是双击还是不能启动，需要你在图标上用鼠标点右键，然后选择 **允许启动**，然后再双击就可以启动了
   - 后面安装的软件都有可能做这个步骤，再不做解释
 
-## 安装 vscode
+## 6. 安装 vscode
 * [VSCODE 官网](https://code.visualstudio.com/)
 * *vscode* 已经加入到 Ubuntu 软件中心，所以安装起来非常方便
   ```
@@ -263,7 +263,7 @@ postid: 100007
   cp /usr/share/applications/code.desktop ~/Desktop/
   ```
 
-## 安装搜狗拼音
+## 7. 安装搜狗拼音
 * 如果你能够适应 Ubuntu 自带的输入法，不必安装新的输入法，目前能够在 Ubuntu 下运行的输入法并不多，搜狗算一个
 * [搜狗输入法 for Linux](https://pinyin.sogou.com/linux)
 * [ubuntu安装指南](https://pinyin.sogou.com/linux/guide)
@@ -308,7 +308,7 @@ postid: 100007
   ```
 * 重新启动 Ubuntu
 
-## 安装向日葵
+## 8. 安装向日葵
 * 安装 [向日葵](https://sunlogin.oray.com/) 是考虑到可能需要远程控制运行 *windows* 的设备，在 *teamviewer* 收费以后，[向日葵](https://sunlogin.oray.com/) 算是比较好用的一个选择，比 anydesk 似乎好用些
 * 在 *Ubuntu* 下控制 *windows*，没有什么更好的办法，远程桌面比较简单；也可以试试 *ssh*，不过稍有些麻烦，后面会提到 
 * [向日葵官网](https://sunlogin.oray.com/)
@@ -324,7 +324,7 @@ postid: 100007
   cp /usr/share/applications/sunlogin.desktop ~/Desktop/
   ```
 
-## 安装有道词典
+## 9. 安装有道词典
 * [有道词典官网](https://dict.youdao.com/)
 * [linux版下载页面](http://cidian.youdao.com/multi.html#linuxAll)
 * 当前下载文件名：youdao-dict_6.0.0-ubuntu-amd64.deb
@@ -344,7 +344,7 @@ postid: 100007
   cp /usr/share/applications/youdao-dict.desktop ~/Desktop/
   ```
 
-## 安装 wps
+## 10. 安装 wps
 * [wps官网](https://www.wps.cn/)
 * [linux版wps下载页面](https://linux.wps.cn/)
 * 当前下载文件：wps-office_11.1.0.10976_amd64.deb
@@ -357,7 +357,7 @@ postid: 100007
   cp /usr/share/applications/wps-office-* ~/Desktop/
   ```
 
-## 安装 gimp
+## 11. 安装 gimp
 * [gimp官网](https://www.gimp.org/) - 一个类似 photoshop 的软件
 * [【GIMP教程】基础入门](https://mdnice.com/writing/c4815f6d995a4fec99749a72c473cb8e)
 * gimp 已经被收录到 Ubuntu 的软件中心中，所以安装非常容易
@@ -369,7 +369,7 @@ postid: 100007
   cp /usr/share/applications/gimp.desktop ~/Desktop/
   ```
 
-## 安装 qrcp
+## 12. 安装 qrcp
 * qrcp 是一个可以方便地和手机互传文件的工具；这个工具可以在屏幕上显示一个二维码，手机通过扫描二维码来完成与电脑之间的文件互传；前面提到过，不建议在 Ubuntu 下安装微信，这个工具可以代替一部分微信的作用
 * [qrcp项目](https://github.com/claudiodangelis/qrcp)
 * [qrcp当前最新版本0.9.1](https://github.com/claudiodangelis/qrcp/releases)
@@ -390,7 +390,7 @@ postid: 100007
   ```
   > *-k* 的含义是保持 server 不退出，否则 server 会马上退出导致传输失败
 
-## 安装 FileZilla
+## 13. 安装 FileZilla
 * 这是一个好用的 *ftp、sftp* 的开源软件，我喜欢用它在各种 *linux/windows* 之间传递文件
 * *FileZilla* 既有客户端也有服务器版本，我只用它的客户端
 * [FileZilla官网](https://filezilla-project.org/)
@@ -403,7 +403,7 @@ postid: 100007
   cp /usr/share/applications/filezilla.desktop ~/Desktop/
   ```
 
-## 其它
+## 14. 其它
 * 把 *terminal* 放到桌面上，记得把桌面图标设置为 **允许启动**
   ```
   cp /usr/share/applications/org.gnome.Terminal.desktop ~/Desktop/
@@ -427,7 +427,7 @@ postid: 100007
     ```
   - 之所以在 */root* 目录下也拷贝了一份 *vi* 的配置，是为了保证你在 *sudo vi* 的时候也是正常的
 
-## 后记
+## 15. 后记
 * 至此，整个的环境到这里就安装完成了，希望能给你带来一点帮助
 * 你现在看到的这篇文章就是在这个环境下使用 *vscode* 远程完成的，实际的文章放在服务器上，图片是在本机使用 *Ubuntu* 截图工具获取的，然后用 FileZilla* 传到服务器
 * 我使用的所有软件都是在 *Ubuntu* 和 *windows* 上均可以使用的开源软件，*Qv2ray、chromium、vscode、搜狗拼音、向日葵、有道词典、wps、gimp、qrcp和FileZilla*，只有 *gimp* 和 *qrcp* 在我的 *windows* 桌面上没有，其它在两种桌面都是一样的，这样可以在不同的桌面保持相同的使用习惯
