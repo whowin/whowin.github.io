@@ -3,7 +3,105 @@
   
   <url>
     <loc>https://whowin.gitee.io/categories/</loc>
-    <lastmod>2022-08-18T16:43:29+08:00</lastmod>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/egid/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/euid/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/gid/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/linux/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/categories/linux/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/linux/0012-setuid/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/setgid/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/setuid/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/sticky-bit/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/uid/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/</loc>
+    <lastmod>2022-08-25T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -16,35 +114,7 @@
   </url>
   
   <url>
-    <loc>https://whowin.gitee.io/categories/linux/</loc>
-    <lastmod>2022-08-18T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://whowin.gitee.io/tags/openwrt/</loc>
-    <lastmod>2022-08-18T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/post/</loc>
-    <lastmod>2022-08-18T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/</loc>
-    <lastmod>2022-08-18T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/</loc>
     <lastmod>2022-08-18T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -129,13 +199,6 @@
   
   <url>
     <loc>https://whowin.gitee.io/post/blog/linux/0008-apt-update-ubuntu/</loc>
-    <lastmod>2022-07-10T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/linux/</loc>
     <lastmod>2022-07-10T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

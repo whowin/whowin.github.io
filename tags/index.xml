@@ -6,7 +6,88 @@
     <description>Recent content in Tags on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 18 Aug 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 25 Aug 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>egid</title>
+      <link>https://whowin.gitee.io/tags/egid/</link>
+      <pubDate>Thu, 25 Aug 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/egid/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>euid</title>
+      <link>https://whowin.gitee.io/tags/euid/</link>
+      <pubDate>Thu, 25 Aug 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/euid/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>gid</title>
+      <link>https://whowin.gitee.io/tags/gid/</link>
+      <pubDate>Thu, 25 Aug 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/gid/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>https://whowin.gitee.io/tags/linux/</link>
+      <pubDate>Thu, 25 Aug 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>setgid</title>
+      <link>https://whowin.gitee.io/tags/setgid/</link>
+      <pubDate>Thu, 25 Aug 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/setgid/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>setuid</title>
+      <link>https://whowin.gitee.io/tags/setuid/</link>
+      <pubDate>Thu, 25 Aug 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/setuid/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>sticky bit</title>
+      <link>https://whowin.gitee.io/tags/sticky-bit/</link>
+      <pubDate>Thu, 25 Aug 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/sticky-bit/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>uid</title>
+      <link>https://whowin.gitee.io/tags/uid/</link>
+      <pubDate>Thu, 25 Aug 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/uid/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>文件权限</title>
+      <link>https://whowin.gitee.io/tags/%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/</link>
+      <pubDate>Thu, 25 Aug 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>openwrt</title>
       <link>https://whowin.gitee.io/tags/openwrt/</link>
@@ -85,15 +166,6 @@
       <pubDate>Sun, 10 Jul 2022 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/apt/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>linux</title>
-      <link>https://whowin.gitee.io/tags/linux/</link>
-      <pubDate>Sun, 10 Jul 2022 16:43:29 +0800</pubDate>
-      
-      <guid>https://whowin.gitee.io/tags/linux/</guid>
       <description></description>
     </item>
     
