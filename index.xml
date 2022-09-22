@@ -6,7 +6,16 @@
     <description>Recent content on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 25 Aug 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 20 Sep 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>C语言函数调用时的参数传递机制</title>
+      <link>https://whowin.gitee.io/post/blog/c/0001-parameters_passing_mechanism/</link>
+      <pubDate>Tue, 20 Sep 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/c/0001-parameters_passing_mechanism/</guid>
+      <description>&lt;p&gt;本文通过实例验证了 C 语言函数调用时参数传递机制在 32 位和 64 位时的不同；阅读本文不仅需要 C 语言的知识，还需要有一些汇编语言的知识。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>Linux文件权限：setuid、setgid和sticky bit</title>
       <link>https://whowin.gitee.io/post/blog/linux/0012-setuid/</link>
@@ -23,15 +32,6 @@
       
       <guid>https://whowin.gitee.io/post/blog/linux/0009-wake_on_lan/</guid>
       <description>&lt;p&gt;本文通过一个简单的需求介绍了在一个 &lt;em&gt;ARM&lt;/em&gt; 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 &lt;em&gt;Linux&lt;/em&gt; 开发的过程。本文并不会详细介绍网络唤醒的原理以及 &lt;em&gt;Magic Packet&lt;/em&gt;。&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>自驾张北草原天路</title>
-      <link>https://whowin.gitee.io/post/blog/travel/0001-grass-skyline/</link>
-      <pubDate>Sat, 30 Jul 2022 16:43:29 +0800</pubDate>
-      
-      <guid>https://whowin.gitee.io/post/blog/travel/0001-grass-skyline/</guid>
-      <description>&lt;p&gt;本文是一篇游记，记录了2022年7月20日-7月22日自驾张北草原天路的过程，也可以作为攻略&lt;/p&gt;</description>
     </item>
     
     <item>

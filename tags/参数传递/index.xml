@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>参数传递 on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92/</link>
+    <description>Recent content in 参数传递 on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 20 Sep 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>C语言函数调用时的参数传递机制</title>
+      <link>https://whowin.gitee.io/post/blog/c/0001-parameters_passing_mechanism/</link>
+      <pubDate>Tue, 20 Sep 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/c/0001-parameters_passing_mechanism/</guid>
+      <description>&lt;p&gt;本文通过实例验证了 C 语言函数调用时参数传递机制在 32 位和 64 位时的不同；阅读本文不仅需要 C 语言的知识，还需要有一些汇编语言的知识。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

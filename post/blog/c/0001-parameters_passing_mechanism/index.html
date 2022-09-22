@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>C语言函数调用时的参数传递机制 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="本文通过实例验证了 C 语言函数调用时参数传递机制在 32 位和 64 位时的不同；阅读本文不仅需要 C 语言的知识，还需要有一些汇编语言的知识。
+" /><meta name="keywords" content="linux, dos, hugo" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/c/0001-parameters_passing_mechanism/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.516346f797f8defaa74f5950ddc0d057c447d9788ab26061323dbca6eb755174.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="C语言函数调用时的参数传递机制" />
+<meta property="og:description" content="本文通过实例验证了 C 语言函数调用时参数传递机制在 32 位和 64 位时的不同；阅读本文不仅需要 C 语言的知识，还需要有一些汇编语言的知识。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/c/0001-parameters_passing_mechanism/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-09-20T16:43:29+08:00" />
+<meta property="article:modified_time" content="2022-09-20T16:43:29+08:00" />
+
+<meta itemprop="name" content="C语言函数调用时的参数传递机制">
+<meta itemprop="description" content="本文通过实例验证了 C 语言函数调用时参数传递机制在 32 位和 64 位时的不同；阅读本文不仅需要 C 语言的知识，还需要有一些汇编语言的知识。"><meta itemprop="datePublished" content="2022-09-20T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2022-09-20T16:43:29+08:00" />
+<meta itemprop="wordCount" content="2983">
+<meta itemprop="keywords" content="C语言,参数传递,函数调用," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C语言函数调用时的参数传递机制"/>
+<meta name="twitter:description" content="本文通过实例验证了 C 语言函数调用时参数传递机制在 32 位和 64 位时的不同；阅读本文不仅需要 C 语言的知识，还需要有一些汇编语言的知识。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">About me</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">About me</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">C语言函数调用时的参数传递机制</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2022-09-20 </span>
+        <div class="post-category">
+            <a href="/categories/c-language/"> C Language </a>
+            </div>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-32位下c语言调用函数时的参数传递">1. 32位下C语言调用函数时的参数传递</a></li>
+        <li><a href="#2-64位下c语言调用函数时的参数传递">2. 64位下C语言调用函数时的参数传递</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>本文通过实例验证了 C 语言函数调用时参数传递机制在 32 位和 64 位时的不同；阅读本文不仅需要 C 语言的知识，还需要有一些汇编语言的知识。</p>
+<blockquote>
+<p>X86的指令集从 16 位的 8086 指令集开始，经历了 40 多年的发展，现在广泛使用的已经是 64 位的 X86-64 指令集，寄存器也从以前的 16 位变成了现在的 64 位，寄存器的数量也大大增加，gcc 当然也必须随着指令集的变化不断升级，在 64 位的时代，C 语言在函数调用时的参数传递也发生了很大的改变，本文通过把 C 语言程序编译成汇编语言的方式来验证这种改变。阅读本文不仅需要 C 语言的知识，还需要有一些汇编语言的知识。本文所有例子在 Ubuntu 20.04 下验证通过，使用的 gcc 版本为 9.4.0。</p>
+</blockquote>
+<h2 id="1-32位下c语言调用函数时的参数传递">1. 32位下C语言调用函数时的参数传递</h2>
+<ul>
+<li>
+<p>32 位时代，C语言在调用函数时，实际是使用堆栈来传递参数的；</p>
+</li>
+<li>
+<p>在执行 call 指令前，会首先把需要传递的参数按反顺序依次压入堆栈，比如有三个参数：func(1, 2, 3)，则先把 3 压入堆栈，再把 2 压入堆栈，然后再把 1 压入堆栈；</p>
+</li>
+<li>
+<p>执行 call 指令时，会首先把函数返回地址(也就是 call 指令的下一条指令地址压入堆栈)，然后将 eip 寄存器设置为函数的起始地址，就完成了函数调用；</p>
+</li>
+<li>
+<p>函数执行完毕执行 ret 指令返回时，会将 call 指令压入堆栈的返回地址放入 eip 寄存器，返回过程就结束了；</p>
+</li>
+<li>
+<p>这个过程和 8086 指令集时基本一样；</p>
+</li>
+<li>
+<p>我们用一段简单 C 语言程序来验证以上的说法，该程序文件名定为：param1.c</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">int func1(int i, int j, char *p) {
+</span></span><span class="line"><span class="cl">    int i1, j1;
+</span></span><span class="line"><span class="cl">    char *str;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    i1 = i;
+</span></span><span class="line"><span class="cl">    j1 = j;
+</span></span><span class="line"><span class="cl">    str = p;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    return 0;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">int main(int argc, char **argv) {
+</span></span><span class="line"><span class="cl">    char *str = &#34;Hello world.&#34;;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    func1(3, 5, str);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    return 0;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><!--```
+001 #include <stdio.h>
+002 #include <stdlib.h>
+003 
+004 int func1(int i, int j, char *p) {
+005     int i1, j1;
+006     char *str;
+007 
+008     i1 = i;
+009     j1 = j;
+010     str = p;
+011 
+012     return 0;
+013 }
+014 
+015 int main(int argc, char **argv) {
+016     char *str = "Hello world.";
+017 
+018     func1(3, 5, str);
+019 
+020     return 0;
+021 }
+```-->
+<ul>
+<li>我们把这段程序编译成 32 位汇编语言，编译时带了一些选项，其目的是去掉一些调试信息，使汇编代码看上去更加清爽</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gcc -S -m32 -no-pie -fno-pic -fno-asynchronous-unwind-tables param1.c -o param1.32s
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>如果你的 64 位机无法编译 32 位程序，可能你需要安装 32 位支持，参考下面的安装</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install g++-multilib libc6-dev-i386
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>我们看看编译出来的 32 位的汇编语言是什么样子的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    .file   &#34;param1.c&#34;
+</span></span><span class="line"><span class="cl">    .text
+</span></span><span class="line"><span class="cl">    .globl  func1
+</span></span><span class="line"><span class="cl">    .type   func1, @function
+</span></span><span class="line"><span class="cl">func1:
+</span></span><span class="line"><span class="cl">    endbr32
+</span></span><span class="line"><span class="cl">    pushl   %ebp
+</span></span><span class="line"><span class="cl">    movl    %esp, %ebp
+</span></span><span class="line"><span class="cl">    subl    $16, %esp
+</span></span><span class="line"><span class="cl">    movl    8(%ebp), %eax         # 第 1 个参数
+</span></span><span class="line"><span class="cl">    movl    %eax, -12(%ebp)
+</span></span><span class="line"><span class="cl">    movl    12(%ebp), %eax        # 第 2 个参数
+</span></span><span class="line"><span class="cl">    movl    %eax, -8(%ebp)
+</span></span><span class="line"><span class="cl">    movl    16(%ebp), %eax        # 第 3 个参数
+</span></span><span class="line"><span class="cl">    movl    %eax, -4(%ebp)
+</span></span><span class="line"><span class="cl">    movl    $0, %eax              # 返回值
+</span></span><span class="line"><span class="cl">    leave
+</span></span><span class="line"><span class="cl">    ret
+</span></span><span class="line"><span class="cl">    .size   func1, .-func1
+</span></span><span class="line"><span class="cl">    .section  .rodata
+</span></span><span class="line"><span class="cl">.LC0:
+</span></span><span class="line"><span class="cl">    .string   &#34;Hello world.&#34;
+</span></span><span class="line"><span class="cl">    .text
+</span></span><span class="line"><span class="cl">    .globl    main
+</span></span><span class="line"><span class="cl">    .type     main, @function
+</span></span><span class="line"><span class="cl">main:
+</span></span><span class="line"><span class="cl">    endbr32
+</span></span><span class="line"><span class="cl">    pushl   %ebp
+</span></span><span class="line"><span class="cl">    movl    %esp, %ebp
+</span></span><span class="line"><span class="cl">    subl    $16, %esp
+</span></span><span class="line"><span class="cl">    movl    $.LC0, -4(%ebp)
+</span></span><span class="line"><span class="cl">    pushl   -4(%ebp)              # 第 3 个参数 str
+</span></span><span class="line"><span class="cl">    pushl   $5                    # 第 2 个参数 5
+</span></span><span class="line"><span class="cl">    pushl   $3                    # 第 1 个参数 3
+</span></span><span class="line"><span class="cl">    call    func1                 # 调用函数 func1
+</span></span><span class="line"><span class="cl">    addl    $12, %esp
+</span></span><span class="line"><span class="cl">    movl    $0, %eax
+</span></span><span class="line"><span class="cl">    leave
+</span></span><span class="line"><span class="cl">    ret
+</span></span><span class="line"><span class="cl">    .size     main, .-main
+</span></span><span class="line"><span class="cl">    .ident    &#34;GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0&#34;
+</span></span><span class="line"><span class="cl">    .section  .note.GNU-stack,&#34;&#34;,@progbits
+</span></span><span class="line"><span class="cl">    .section  .note.gnu.property,&#34;a&#34;
+</span></span><span class="line"><span class="cl">    .align    4
+</span></span><span class="line"><span class="cl">    .long     1f - 0f
+</span></span><span class="line"><span class="cl">    .long     4f - 1f
+</span></span><span class="line"><span class="cl">    .long     5
+</span></span><span class="line"><span class="cl">0:
+</span></span><span class="line"><span class="cl">    .string   &#34;GNU&#34;
+</span></span><span class="line"><span class="cl">1:
+</span></span><span class="line"><span class="cl">    .align    4
+</span></span><span class="line"><span class="cl">    .long     0xc0000002
+</span></span><span class="line"><span class="cl">    .long     3f - 2f
+</span></span><span class="line"><span class="cl">2:
+</span></span><span class="line"><span class="cl">    .long     0x3
+</span></span><span class="line"><span class="cl">3:
+</span></span><span class="line"><span class="cl">    .align    4
+</span></span><span class="line"><span class="cl">4:
+</span></span></code></pre></td></tr></table>
+</div>
+</div><!--```
+001     .file   "param1.c"
+002     .text
+003     .globl  func1
+004     .type   func1, @function
+005 func1:
+006     endbr32
+007     pushl   %ebp
+008     movl    %esp, %ebp
+009     subl    $16, %esp
+010     movl    8(%ebp), %eax         # 第 1 个参数
+011     movl    %eax, -12(%ebp)
+012     movl    12(%ebp), %eax        # 第 2 个参数
+013     movl    %eax, -8(%ebp)
+014     movl    16(%ebp), %eax        # 第 3 个参数
+015     movl    %eax, -4(%ebp)
+016     movl    $0, %eax              # 返回值
+017     leave
+018     ret
+019     .size   func1, .-func1
+020     .section  .rodata
+021 .LC0:
+022     .string   "Hello world."
+023     .text
+024     .globl    main
+025     .type     main, @function
+026 main:
+027     endbr32
+028     pushl   %ebp
+029     movl    %esp, %ebp
+030     subl    $16, %esp
+031     movl    $.LC0, -4(%ebp)
+032     pushl   -4(%ebp)              # 第 3 个参数 str
+033     pushl   $5                    # 第 2 个参数 5
+034     pushl   $3                    # 第 1 个参数 3
+035     call    func1                 # 调用函数 func1
+036     addl    $12, %esp
+037     movl    $0, %eax
+038     leave
+039     ret
+040     .size     main, .-main
+041     .ident    "GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
+042     .section  .note.GNU-stack,"",@progbits
+043     .section  .note.gnu.property,"a"
+044     .align 4
+045     .long     1f - 0f
+046     .long     4f - 1f
+047     .long     5
+048 0:
+049     .string   "GNU"
+050 1:
+051     .align    4
+052     .long     0xc0000002
+053     .long     3f - 2f
+054 2:
+055     .long     0x3
+056 3:
+057     .align    4
+058 4:
+```-->
+</li>
+<li>
+<p>第 26 行开始是 main 函数的汇编代码，第 31 - 35 行在调用函数 func1(3, 5, str)，其中 32 行把第 3 个参数 str 压入堆栈，33行将第 2 个参数 5 压入堆栈；34 行将第 1 个参数 3 压入堆栈；</p>
+</li>
+<li>
+<p>这段汇编程序有两点要注意，一是参数是按照调用顺序的反方向压入堆栈的，即先把第 3 个参数压入堆栈，再把第 2 个参数压入堆栈，最后把第 1 个参数压入堆栈；二是对于整数变量，是直接把整数值压入堆栈，而不是这个整数值存储的地址；</p>
+</li>
+<li>
+<p>第 5 - 18 行是 func1 函数的汇编代码，第 9 行将堆栈的栈顶扩展了 16 个字节，这块地方用于存储 func1 中定义的变量，也就是 C 代码中的 i1、j1 和 str 三个变量，(ebp - 12)存储变量 i1，(ebp - 8)存储变量 j1，(ebp - 4)存储变量 str；</p>
+</li>
+<li>
+<p>第 10 行从堆栈中取出第 1 个参数放入 eax 寄存器；第 12 行从堆栈中取出第 2 个参数；第 14 行从堆栈中取出第 3 个参数；</p>
+</li>
+<li>
+<p>下面这张图，试图描述调用函数 func1 前后堆栈的变化
+<img src="/images/130001/0001-parameters_passing_mechanism.png" alt="调用函数 func1 前后堆栈的变化"></p>
+<ul>
+<li><strong>调用函数 func1 前后堆栈的变化</strong></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-64位下c语言调用函数时的参数传递">2. 64位下C语言调用函数时的参数传递</h2>
+<ul>
+<li>64 位时代，CPU 通用寄存器的数量已经从 32 位时的 6 个(不含 eip, esp, ebp)增加到了 14 个(不含rip, rsp, rbp)；</li>
+<li>为了提高调用函数的性能，gcc 在调用函数时会尽量使用寄存器来传递参数，而不是像 32 位指令集那样全部使用堆栈来传递参数；</li>
+<li>当需要传递的参数少于 6 个时，使用 rdi, rsi, rdx, rcx, r8, r9 这六个寄存器来传递参数；</li>
+<li>当传递的参数多于 6 个时，前 6 个参数使用寄存器传递，6 个以上的参数仍然像 32 位时那样使用堆栈传递参数；</li>
+<li>这一规则提示我们，在编写 C 语言程序时，调用函数时的<strong>参数应该尽量少于 6 个</strong>；</li>
+<li>下面我们仍然用一个简单程序来验证上面的说法，该程序文件名定为：param2.c
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">int func2(char *p, int var1, int var2, int var3, int var4, int var5, int var6, int var7) {
+</span></span><span class="line"><span class="cl">    char *str;
+</span></span><span class="line"><span class="cl">    int int_arr[7];
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    int_arr[0] = var1;
+</span></span><span class="line"><span class="cl">    int_arr[1] = var2;
+</span></span><span class="line"><span class="cl">    int_arr[2] = var3;
+</span></span><span class="line"><span class="cl">    int_arr[3] = var4;
+</span></span><span class="line"><span class="cl">    int_arr[4] = var5;
+</span></span><span class="line"><span class="cl">    int_arr[5] = var6;
+</span></span><span class="line"><span class="cl">    int_arr[6] = var7;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    return 0;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">int main(int argc, char **argv) {
+</span></span><span class="line"><span class="cl">    char *str = &#34;Hello world.&#34;;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    func2(str, 2, 3, 4, 5, 6, 7, 8);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    return 0;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><!--```
+001 #include <stdio.h>
+002 #include <stdlib.h>
+003 
+004 int func2(char *p, int var1, int var2, int var3, int var4, int var5, int var6, int var7) {
+005     char *str;
+006     int int_arr[7];
+007 
+008     int_arr[0] = var1;
+009     int_arr[1] = var2;
+010     int_arr[2] = var3;
+011     int_arr[3] = var4;
+012     int_arr[4] = var5;
+013     int_arr[5] = var6;
+014     int_arr[6] = var7;
+015 
+016     return 0;
+017 }
+018 
+019 int main(int argc, char **argv) {
+020     char *str = "Hello world.";
+021 
+022     func2(str, 2, 3, 4, 5, 6, 7, 8);
+023 
+024     return 0;
+025 }
+```-->
+<ul>
+<li>我们把这段程序编译成 64 位汇编语言，编译时所带的选项，与编译 32 位汇编时相比增加了一个 -fno-stack-protector，禁用了堆栈保护，同样是为了让汇编代码看上去更清爽；</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gcc -S -no-pie -fno-pic -fno-asynchronous-unwind-tables -fno-stack-protector param2.c -o param2.64s
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>我们看看编译出来的 64 位的汇编语言是什么样子的
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">    .file   &#34;param2.c&#34;
+</span></span><span class="line"><span class="cl">    .text
+</span></span><span class="line"><span class="cl">    .globl  func2
+</span></span><span class="line"><span class="cl">    .type   func2, @function
+</span></span><span class="line"><span class="cl">func2:
+</span></span><span class="line"><span class="cl">    endbr64
+</span></span><span class="line"><span class="cl">    pushq   %rbp
+</span></span><span class="line"><span class="cl">    movq    %rsp, %rbp
+</span></span><span class="line"><span class="cl">    movq    %rdi, -40(%rbp)     # (rbp - 40)存放变量str，rdi 为第 1 个参数
+</span></span><span class="line"><span class="cl">    movl    %esi, -44(%rbp)     # (rbp - 44)临时存放 rsi 中的第 2 个参数
+</span></span><span class="line"><span class="cl">    movl    %edx, -48(%rbp)     # (rbp - 48)临时存放 rdx 中的第 3 个参数
+</span></span><span class="line"><span class="cl">    movl    %ecx, -52(%rbp)     # (rbp - 52)临时存放 rcx 中的第 4 个参数
+</span></span><span class="line"><span class="cl">    movl    %r8d, -56(%rbp)     # (rbp - 56)临时存放 r8 中的第 5 个参数
+</span></span><span class="line"><span class="cl">    movl    %r9d, -60(%rbp)     # (rbp - 60)临时存放 r9 中的第 6 个参数
+</span></span><span class="line"><span class="cl">    movl    -44(%rbp), %eax     # 取出第 2 个参数
+</span></span><span class="line"><span class="cl">    movl    %eax, -32(%rbp)     # (rbp - 32)存放变量int_arr[0]
+</span></span><span class="line"><span class="cl">    movl    -48(%rbp), %eax     # 取出第 3 个参数
+</span></span><span class="line"><span class="cl">    movl    %eax, -28(%rbp)     # (rbp - 28)存放变量int_arr[1]
+</span></span><span class="line"><span class="cl">    movl    -52(%rbp), %eax     # 取出第 4 个参数
+</span></span><span class="line"><span class="cl">    movl    %eax, -24(%rbp)     # (rbp - 24)存放变量int_arr[2]
+</span></span><span class="line"><span class="cl">    movl    -56(%rbp), %eax     # 取出第 5 个参数
+</span></span><span class="line"><span class="cl">    movl    %eax, -20(%rbp)     # (rbp - 20)存放变量int_arr[3]
+</span></span><span class="line"><span class="cl">    movl    -60(%rbp), %eax     # 取出第 6 个参数
+</span></span><span class="line"><span class="cl">    movl    %eax, -16(%rbp)     # (rbp - 16)存放变量int_arr[4]
+</span></span><span class="line"><span class="cl">    movl    16(%rbp), %eax      # 第 7 个参数是从堆栈中传过来的
+</span></span><span class="line"><span class="cl">    movl    %eax, -12(%rbp)     # (rbp - 12)存放变量int_arr[5]
+</span></span><span class="line"><span class="cl">    movl    24(%rbp), %eax      # 第 8 个参数是从堆栈中传过来的
+</span></span><span class="line"><span class="cl">    movl    %eax, -8(%rbp)      # (rbp - 8)存放变量int_arr[6]
+</span></span><span class="line"><span class="cl">    movl    $0, %eax
+</span></span><span class="line"><span class="cl">    popq    %rbp
+</span></span><span class="line"><span class="cl">    ret
+</span></span><span class="line"><span class="cl">    .size     func2, .-func2
+</span></span><span class="line"><span class="cl">    .section  .rodata
+</span></span><span class="line"><span class="cl">.LC0:
+</span></span><span class="line"><span class="cl">    .string   &#34;Hello world.&#34;
+</span></span><span class="line"><span class="cl">    .text
+</span></span><span class="line"><span class="cl">    .globl    main
+</span></span><span class="line"><span class="cl">    .type     main, @function
+</span></span><span class="line"><span class="cl">main:
+</span></span><span class="line"><span class="cl">    endbr64
+</span></span><span class="line"><span class="cl">    pushq   %rbp
+</span></span><span class="line"><span class="cl">    movq    %rsp, %rbp
+</span></span><span class="line"><span class="cl">    subq    $32, %rsp
+</span></span><span class="line"><span class="cl">    movl    %edi, -20(%rbp)
+</span></span><span class="line"><span class="cl">    movq    %rsi, -32(%rbp)
+</span></span><span class="line"><span class="cl">    movq    $.LC0, -8(%rbp)
+</span></span><span class="line"><span class="cl">    movq    -8(%rbp), %rax
+</span></span><span class="line"><span class="cl">    pushq   $8                  # 要传递的第 8 个参数，压入堆栈
+</span></span><span class="line"><span class="cl">    pushq   $7                  # 要传递的第 7 个参数，压入堆栈
+</span></span><span class="line"><span class="cl">    movl    $6, %r9d            # 要传递的第 6 个参数，使用 r9 寄存器
+</span></span><span class="line"><span class="cl">    movl    $5, %r8d            # 要传递的第 5 个参数，使用 r8 寄存器
+</span></span><span class="line"><span class="cl">    movl    $4, %ecx            # 要传递的第 4 个参数，使用 rcx 寄存器
+</span></span><span class="line"><span class="cl">    movl    $3, %edx            # 要传递的第 3 个参数，使用 rdx 寄存器
+</span></span><span class="line"><span class="cl">    movl    $2, %esi            # 要传递的第 2 个参数，使用 rsi 寄存器
+</span></span><span class="line"><span class="cl">    movq    %rax, %rdi          # 要传递的第 1 个参数，使用 rdi 寄存器
+</span></span><span class="line"><span class="cl">    call    func2
+</span></span><span class="line"><span class="cl">    addq    $16, %rsp
+</span></span><span class="line"><span class="cl">    movl    $0, %eax
+</span></span><span class="line"><span class="cl">    leave
+</span></span><span class="line"><span class="cl">    ret
+</span></span><span class="line"><span class="cl">    .size     main, .-main
+</span></span><span class="line"><span class="cl">    .ident    &#34;GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0&#34;
+</span></span><span class="line"><span class="cl">    .section  .note.GNU-stack,&#34;&#34;,@progbits
+</span></span><span class="line"><span class="cl">    .section  .note.gnu.property,&#34;a&#34;
+</span></span><span class="line"><span class="cl">    .align    8
+</span></span><span class="line"><span class="cl">    .long     1f - 0f
+</span></span><span class="line"><span class="cl">    .long     4f - 1f
+</span></span><span class="line"><span class="cl">    .long     5
+</span></span><span class="line"><span class="cl">0:
+</span></span><span class="line"><span class="cl">    .string   &#34;GNU&#34;
+</span></span><span class="line"><span class="cl">1:
+</span></span><span class="line"><span class="cl">    .align    8
+</span></span><span class="line"><span class="cl">    .long     0xc0000002
+</span></span><span class="line"><span class="cl">    .long     3f - 2f
+</span></span><span class="line"><span class="cl">2:
+</span></span><span class="line"><span class="cl">    .long     0x3
+</span></span><span class="line"><span class="cl">3:
+</span></span><span class="line"><span class="cl">    .align    8
+</span></span><span class="line"><span class="cl">4:
+</span></span></code></pre></td></tr></table>
+</div>
+</div><!--```
+001     .file   "param2.c"
+002     .text
+003     .globl  func2
+004     .type   func2, @function
+005 func2:
+006     endbr64
+007     pushq   %rbp
+008     movq    %rsp, %rbp
+009     movq    %rdi, -40(%rbp)     # (rbp - 40)存放变量str，rdi 为第 1 个参数
+010     movl    %esi, -44(%rbp)     # (rbp - 44)临时存放 rsi 中的第 2 个参数
+011     movl    %edx, -48(%rbp)     # (rbp - 48)临时存放 rdx 中的第 3 个参数
+012     movl    %ecx, -52(%rbp)     # (rbp - 52)临时存放 rcx 中的第 4 个参数
+013     movl    %r8d, -56(%rbp)     # (rbp - 56)临时存放 r8 中的第 5 个参数
+014     movl    %r9d, -60(%rbp)     # (rbp - 60)临时存放 r9 中的第 6 个参数
+015     movl    -44(%rbp), %eax     # 取出第 2 个参数
+016     movl    %eax, -32(%rbp)     # (rbp - 32)存放变量int_arr[0]
+017     movl    -48(%rbp), %eax     # 取出第 3 个参数
+018     movl    %eax, -28(%rbp)     # (rbp - 28)存放变量int_arr[1]
+019     movl    -52(%rbp), %eax     # 取出第 4 个参数
+020     movl    %eax, -24(%rbp)     # (rbp - 24)存放变量int_arr[2]
+021     movl    -56(%rbp), %eax     # 取出第 5 个参数
+022     movl    %eax, -20(%rbp)     # (rbp - 20)存放变量int_arr[3]
+023     movl    -60(%rbp), %eax     # 取出第 6 个参数
+024     movl    %eax, -16(%rbp)     # (rbp - 16)存放变量int_arr[4]
+025     movl    16(%rbp), %eax      # 第 7 个参数是从堆栈中传过来的
+026     movl    %eax, -12(%rbp)     # (rbp - 12)存放变量int_arr[5]
+027     movl    24(%rbp), %eax      # 第 8 个参数是从堆栈中传过来的
+028     movl    %eax, -8(%rbp)      # (rbp - 8)存放变量int_arr[6]
+029     movl    $0, %eax
+030     popq    %rbp
+031     ret
+032     .size     func2, .-func2
+033     .section  .rodata
+034 .LC0:
+035     .string   "Hello world."
+036     .text
+037     .globl    main
+038     .type     main, @function
+039 main:
+040     endbr64
+041     pushq   %rbp
+042     movq    %rsp, %rbp
+043     subq    $32, %rsp
+044     movl    %edi, -20(%rbp)
+045     movq    %rsi, -32(%rbp)
+046     movq    $.LC0, -8(%rbp)
+047     movq    -8(%rbp), %rax
+048     pushq   $8                  # 要传递的第 8 个参数，压入堆栈
+049     pushq   $7                  # 要传递的第 7 个参数，压入堆栈
+050     movl    $6, %r9d            # 要传递的第 6 个参数，使用 r9 寄存器
+051     movl    $5, %r8d            # 要传递的第 5 个参数，使用 r8 寄存器
+052     movl    $4, %ecx            # 要传递的第 4 个参数，使用 rcx 寄存器
+053     movl    $3, %edx            # 要传递的第 3 个参数，使用 rdx 寄存器
+054     movl    $2, %esi            # 要传递的第 2 个参数，使用 rsi 寄存器
+055     movq    %rax, %rdi          # 要传递的第 1 个参数，使用 rdi 寄存器
+056     call    func2
+057     addq    $16, %rsp
+058     movl    $0, %eax
+059     leave
+060     ret
+061     .size     main, .-main
+062     .ident    "GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
+063     .section  .note.GNU-stack,"",@progbits
+064     .section  .note.gnu.property,"a"
+065     .align    8
+066     .long     1f - 0f
+067     .long     4f - 1f
+068     .long     5
+069 0:
+070     .string   "GNU"
+071 1:
+072     .align    8
+073     .long     0xc0000002
+074     .long     3f - 2f
+075 2:
+076     .long     0x3
+077 3:
+078     .align    8
+079 4:
+```-->
+</li>
+<li>汇编代码中的注释已经可以很清楚的看到，在调用 func2 前准备传递参数时，使用堆栈来传递第 7、8 两个参数(48、49行)，使用 rdi, rsi, rdx, rcx, r8, r9 来传递前 6 个参数(50 - 55行)；</li>
+<li>和 32 位汇编代码一样，对于整数参数是直接把整数值压入堆栈或者放如寄存器，而不是使用指针进行传递；</li>
+<li>在函数 func2 的汇编代码中，也可以清楚地看到其取参数的规则，与 main 中传递参数的规则一致(9 - 28行)；</li>
+<li>再次强调，<strong>在编写 x86-64 的 C 语言程序，把函数调用时的参数限制在 6 个以内，将可以在一定程度上提高程序的性能</strong></li>
+</ul>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2022-09-20
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c%E8%AF%AD%E8%A8%80/">C语言</a>
+          <a href="/tags/%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92/">参数传递</a>
+          <a href="/tags/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8/">函数调用</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/linux/0012-setuid/">
+            <span class="next-text nav-default">Linux文件权限：setuid、setgid和sticky bit</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/c/0001-parameters_passing_mechanism/" class="leancloud_visitors" data-flag-title="C语言函数调用时的参数传递机制">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
