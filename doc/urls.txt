@@ -1,0 +1,8 @@
+https://whowin.gitee.io/post/blog/linux/0002-ps1_control_codes/index.html
+https://whowin.gitee.io/post/blog/linux/0003-ansi-escape-code/index.html
+https://whowin.gitee.io/post/blog/linux/0001-environment_variables_and_shell_variables/index.html
+https://whowin.gitee.io/post/blog/linux/0004-setup_ps1/index.html
+https://whowin.gitee.io/post/blog/linux/0007-ubuntu-desktop/index.html
+https://whowin.gitee.io/post/blog/linux/0008-apt-update-ubuntu/index.html
+https://whowin.gitee.io/post/blog/travel/0001-grass-skyline/index.html
+https://whowin.gitee.io/post/blog/linux/0009-wake_on_lan/index.html
