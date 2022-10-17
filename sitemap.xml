@@ -156,48 +156,6 @@
   </url>
   
   <url>
-    <loc>https://whowin.gitee.io/categories/embedded/</loc>
-    <lastmod>2022-08-18T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/openwrt/</loc>
-    <lastmod>2022-08-18T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/</loc>
-    <lastmod>2022-08-18T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/%E7%BD%91%E7%BB%9C%E5%94%A4%E9%86%92/</loc>
-    <lastmod>2022-08-18T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/%E8%BF%9C%E7%A8%8B%E5%BC%80%E6%9C%BA/</loc>
-    <lastmod>2022-08-18T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/post/blog/linux/0009-wake_on_lan/</loc>
-    <lastmod>2022-08-18T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://whowin.gitee.io/tags/apt/</loc>
     <lastmod>2022-07-10T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
