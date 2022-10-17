@@ -49,7 +49,7 @@
 <meta itemprop="name" content="bash 的环境变量和 shell 变量">
 <meta itemprop="description" content="shell变量和环境变量相关的一些概念"><meta itemprop="datePublished" content="2022-04-10T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-04-10T16:43:29+08:00" />
-<meta itemprop="wordCount" content="5471">
+<meta itemprop="wordCount" content="5479">
 <meta itemprop="keywords" content="shell,bash,source,printenv,环境变量,declare,export," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="bash 的环境变量和 shell 变量"/>
 <meta name="twitter:description" content="shell变量和环境变量相关的一些概念"/>
@@ -155,12 +155,12 @@
   <ul>
     <li>
       <ul>
-        <li><a href="#导言">导言</a></li>
-        <li><a href="#终端是如何启动-shell-的">终端是如何启动 shell 的</a></li>
-        <li><a href="#shell-变量和环境变量">shell 变量和环境变量</a></li>
-        <li><a href="#bash-如何将环境变量传给子进程">bash 如何将环境变量传给子进程</a></li>
-        <li><a href="#在当前环境下运行程序">在当前环境下运行程序</a></li>
-        <li><a href="#结语">结语</a></li>
+        <li><a href="#1-导言">1. 导言</a></li>
+        <li><a href="#2-终端是如何启动-shell-的">2. 终端是如何启动 shell 的</a></li>
+        <li><a href="#3-shell-变量和环境变量">3. shell 变量和环境变量</a></li>
+        <li><a href="#4-bash-如何将环境变量传给子进程">4. bash 如何将环境变量传给子进程</a></li>
+        <li><a href="#5-在当前环境下运行程序">5. 在当前环境下运行程序</a></li>
+        <li><a href="#6-结语">6. 结语</a></li>
       </ul>
     </li>
   </ul>
@@ -168,8 +168,8 @@
   </div>
 </div>
     <div class="post-content">
-      <p>本文简单介绍了bash的启动过程；shell变量和环境变量的区别及相互转换；环境变量传递给子进程的过程；当前环境执行脚本及其实际应用</p>
-<h2 id="导言">导言</h2>
+      <p>本文简单介绍了bash的启动过程；shell变量和环境变量的区别及相互转换；环境变量传递给子进程的过程；在当前环境下执行脚本及其实际应用</p>
+<h2 id="1-导言">1. 导言</h2>
 <ul>
 <li>
 <p>shell 是一个 Linux 的命令行解释器，Linux 下有很多 shell，其中 ubuntu 中默认的 shell 是应该是 <strong>dash</strong>，因为我们看到 <em>/bin/sh</em> 被链接到了 <strong>dash</strong></p>
@@ -186,7 +186,7 @@
 <p>本文中如无特别说明，shell 指的是 bash，所有范例在 ubuntu 16.04 下完成，在更高版本的 ubuntu 上，可能会有些微区别；在较低版本的 ubuntu 上不能保证有相同的效果</p>
 </li>
 </ul>
-<h2 id="终端是如何启动-shell-的">终端是如何启动 shell 的</h2>
+<h2 id="2-终端是如何启动-shell-的">2. 终端是如何启动 shell 的</h2>
 <ul>
 <li>
 <p>ubuntu 的1号进程是 systemd，这是 ubuntu 在加载完 Linux 内核后启动的第一个进程，是所有其它进程的祖宗</p>
@@ -212,7 +212,7 @@
 <p>只有启动了 bash 你才拥有了一个 shell 环境，你才能够在终端上输入命令，你从键盘输入的任何内容都必须由 bash 进行解释并做出进一步的处理</p>
 </li>
 </ul>
-<h2 id="shell-变量和环境变量">shell 变量和环境变量</h2>
+<h2 id="3-shell-变量和环境变量">3. shell 变量和环境变量</h2>
 <ul>
 <li>
 <p><strong>shell 变量</strong></p>
@@ -370,7 +370,7 @@
 <blockquote>
 <p>在 Bourne Shell 家族中(bash - Bourne-Again SHell)对变量和环境变量的区分确实不是很严格，很容易混为一谈，比如：两者按惯例都是用大写字母表示，设置和删除方法相同；但是在 C Shell(csh) 是进行了严格区分的，在 csh 中，按惯例 shell 变量使用小写字母，环境变量使用大写字母，shell 变量使用 <em>set</em> 和 <em>unset</em> 命令进行设置和删除，而环境变量必须用 <em>setenv</em> 和 <em>unsetenv</em> 命令进行设置和删除</p>
 </blockquote>
-<h2 id="bash-如何将环境变量传给子进程">bash 如何将环境变量传给子进程</h2>
+<h2 id="4-bash-如何将环境变量传给子进程">4. bash 如何将环境变量传给子进程</h2>
 <ul>
 <li><strong>bash 如何执行一个命令</strong>
 <ul>
@@ -559,7 +559,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="在当前环境下运行程序">在当前环境下运行程序</h2>
+<h2 id="5-在当前环境下运行程序">5. 在当前环境下运行程序</h2>
 <ul>
 <li>
 <p>我们在前面一再强调，shell 在执行一个程序的时候会先 fork 一个子进程，然后在子进程中执行程序，这实际上是 shell 为执行一个程序新建立了一个环境，然后在这个环境中执行程序，当然这个新环境继承了父进程的环境</p>
@@ -698,7 +698,7 @@
 </div>
 </div></li>
 </ul>
-<h2 id="结语">结语</h2>
+<h2 id="6-结语">6. 结语</h2>
 <ul>
 <li>启动终端程序时启动了 <strong>bash</strong> 进程，使我们可以在 <strong>shell</strong> 下输入命令</li>
 <li>环境变量也是 shell 变量，但又与 shell 变量略有不同</li>

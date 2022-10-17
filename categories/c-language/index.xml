@@ -6,7 +6,16 @@
     <description>Recent content in C Language on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 20 Sep 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/c-language/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 16 Oct 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/c-language/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>C语言如何获取ipv6地址</title>
+      <link>https://whowin.gitee.io/post/blog/c/0003-how_to_get_ipv6_in_c/</link>
+      <pubDate>Sun, 16 Oct 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/c/0003-how_to_get_ipv6_in_c/</guid>
+      <description>&lt;p&gt;使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>C语言函数调用时的参数传递机制</title>
       <link>https://whowin.gitee.io/post/blog/c/0001-parameters_passing_mechanism/</link>
