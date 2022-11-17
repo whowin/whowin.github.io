@@ -22,10 +22,10 @@ draft: false
 postid: 100001
 ---
 
-本文简单介绍了bash的启动过程；shell变量和环境变量的区别及相互转换；环境变量传递给子进程的过程；当前环境执行脚本及其实际应用
+本文简单介绍了bash的启动过程；shell变量和环境变量的区别及相互转换；环境变量传递给子进程的过程；在当前环境下执行脚本及其实际应用
 <!--more-->
-## 导言
-* shell 是一个 Linux 的命令行解释器，Linux 下有很多 shell，其中 ubuntu 中默认的 shell 是应该是 **dash**，因为我们看到 */bin/sh* 被链接到了 **dash**
+## 1. 导言
+* shell 是一个 Linux 的命令行解释器，Linux 下有很多 shell，其中 ubuntu 中默认的 shell 应该是 **dash**，因为我们看到 */bin/sh* 被链接到了 **dash**
   
   ![/bin/sh-->dash][img_01]
 
@@ -35,7 +35,7 @@ postid: 100001
 * 使用 *cat /etc/shells* 命令可以看到在你的 Linux 下有那些 shell；使用 *echo $SHELL* 可以看到当前你正在使用的 shell
 * 本文中如无特别说明，shell 指的是 bash，所有范例在 ubuntu 16.04 下完成，在更高版本的 ubuntu 上，可能会有些微区别；在较低版本的 ubuntu 上不能保证有相同的效果
 
-## 终端是如何启动 shell 的
+## 2. 终端是如何启动 shell 的
 * ubuntu 的1号进程是 systemd，这是 ubuntu 在加载完 Linux 内核后启动的第一个进程，是所有其它进程的祖宗
 * 你可能用 *ps aux(ps -ef)* 命令发现1号进程是 **/sbin/init**，而不是 **systemd**，但你用 *ls -l /sbin/init* 看一下就会恍然大悟
   
@@ -61,7 +61,7 @@ postid: 100001
 
 * 只有启动了 bash 你才拥有了一个 shell 环境，你才能够在终端上输入命令，你从键盘输入的任何内容都必须由 bash 进行解释并做出进一步的处理
 
-## shell 变量和环境变量
+## 3. shell 变量和环境变量
 * **shell 变量**
   - shell 管理着一个变量表，这使得用户可以自己定义变量，这些变量是在 shell 下建立，由 shell 管理，在 shell 下使用
   - 在启动 shell(bash) 的时候，shell 会创建一些变量(不同的 shell 创建的变量会有所不同)，同时，shell 在启动过程中还会去执行一些可以由客户自定义的脚本，比如：在启动bash时会执行：**/etc/bash.bashrc**，在登录时会执行：**~/.bashrc**等，这些脚本通常也会建立一些变量
@@ -138,7 +138,7 @@ postid: 100001
 
 > 在 Bourne Shell 家族中(bash - Bourne-Again SHell)对变量和环境变量的区分确实不是很严格，很容易混为一谈，比如：两者按惯例都是用大写字母表示，设置和删除方法相同；但是在 C Shell(csh) 是进行了严格区分的，在 csh 中，按惯例 shell 变量使用小写字母，环境变量使用大写字母，shell 变量使用 *set* 和 *unset* 命令进行设置和删除，而环境变量必须用 *setenv* 和 *unsetenv* 命令进行设置和删除
 
-## bash 如何将环境变量传给子进程
+## 4. bash 如何将环境变量传给子进程
   * **bash 如何执行一个命令**
     - shell 在收到一个换行符(new line，ASCII码0x0A)时开始解释命令行的命令
     - shell 查找命令是否有别名(alias)，如果有则用别名代替命令
@@ -236,7 +236,7 @@ postid: 100001
       ```
       > 我们看到，在脚本内部执行 *printenv ENV_VAR_1* 时，打印出来的结果已经是 "second value"，说明我们已经修改成功了这个环境变量的值，但当脚本退出，我们再次打印这个变量时，其值仍然是 "first value"，并没有改变，这说明我们在子进程中对环境的修改并不能影响到父进程
 
-## 在当前环境下运行程序
+## 5. 在当前环境下运行程序
   * 我们在前面一再强调，shell 在执行一个程序的时候会先 fork 一个子进程，然后在子进程中执行程序，这实际上是 shell 为执行一个程序新建立了一个环境，然后在这个环境中执行程序，当然这个新环境继承了父进程的环境
   * 其实，shell 也可以不 fork 一个子进程，而是直接在当前进程下执行你的程序，shell 下有一个内建命令 *source* 就是为此而设计的，我们先来看看这个命令的手册
 
@@ -303,7 +303,7 @@ postid: 100001
     export PATH=/home/whowin/toolschain/4.5.1/bin:$PATH
     whowin@ubuntu:~$ 
     ```
-## 结语
+## 6. 结语
   * 启动终端程序时启动了 **bash** 进程，使我们可以在 **shell** 下输入命令
   * 环境变量也是 shell 变量，但又与 shell 变量略有不同
   * 环境变量与普通 shell 变量的主要区别是环境变量会传递给新建的子进程
