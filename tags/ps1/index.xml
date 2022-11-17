@@ -22,7 +22,7 @@
       <pubDate>Fri, 01 Apr 2022 14:00:00 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/linux/0002-ps1_control_codes/</guid>
-      <description>&lt;p&gt;PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考&lt;/p&gt;</description>
+      <description>&lt;p&gt;PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考.&lt;/p&gt;</description>
     </item>
     
   </channel>

@@ -35,6 +35,15 @@
     </item>
     
     <item>
+      <title>远程开机：一个简单的嵌入式项目开发</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0009-wake_on_lan/</link>
+      <pubDate>Thu, 18 Aug 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0009-wake_on_lan/</guid>
+      <description>&lt;p&gt;本文通过一个简单的需求介绍了在一个 &lt;em&gt;ARM&lt;/em&gt; 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 &lt;em&gt;Linux&lt;/em&gt; 开发的过程。本文并不会详细介绍网络唤醒的原理以及 &lt;em&gt;Magic Packet&lt;/em&gt;。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>apt update 如何工作</title>
       <link>https://whowin.gitee.io/post/blog/linux/0008-apt-update-ubuntu/</link>
       <pubDate>Sun, 10 Jul 2022 16:43:29 +0800</pubDate>
@@ -94,7 +103,7 @@
       <pubDate>Fri, 01 Apr 2022 14:00:00 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/linux/0002-ps1_control_codes/</guid>
-      <description>&lt;p&gt;PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考&lt;/p&gt;</description>
+      <description>&lt;p&gt;PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考.&lt;/p&gt;</description>
     </item>
     
     <item>
