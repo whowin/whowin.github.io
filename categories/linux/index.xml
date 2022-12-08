@@ -6,7 +6,16 @@
     <description>Recent content in Linux on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 25 Aug 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 07 Dec 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linux下如何在数据链路层接收原始数据包</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0011-link_layer_programming/</link>
+      <pubDate>Wed, 07 Dec 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0011-link_layer_programming/</guid>
+      <description>&lt;p&gt;大多数的网络编程都是在应用层接收数据和发送数据的，本文介绍在数据链路层的网络编程方法，介绍如何在数据链路层直接接收从物理层发过来的原始数据数据包，文章给出了一个完整的范例程序。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>Linux文件权限：setuid、setgid和sticky bit</title>
       <link>https://whowin.gitee.io/post/blog/linux/0012-setuid/</link>
