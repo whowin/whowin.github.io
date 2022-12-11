@@ -1,5 +1,5 @@
 ---
-title: "C语言如何获取ipv6地址"
+title: "How to get ipv6 address in C language"
 date: 2022-10-16T16:43:29+08:00
 author: whowin
 sidebar: false
@@ -20,12 +20,12 @@ draft: false
 postid: 130003
 ---
 
-使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。
+It is impossible to get an ipv6 address by using the usual method of getting the IP address of ipv4. This article introduces three methods for getting the ipv6 address using the C language. Each method provides the complete source code. All examples in this article are tested under ubuntu 20.04, gcc version 9.4.0.
 <!--more-->
 
-## 1. ipv4的IP地址的获取方法
-* 不论是获取 ipv4 的 IP 地址还是 ipv6 的地址，应用程序都需要与内核通讯才可以完成；
-* ioctl 是和内核通讯的一种常用方法，也是用来获取 ipv4 的 IP 地址的常用方法，下面代码演示了如何使用 ioctl 来获取本机所有接口的 IP 地址：
+## 1. How to get the IP address of ipv4
+* Whether to get an IP address for ipv4 or an address for ipv6, the application needs to communicate with the kernel.
+* ioctl is a common method for communicating with the kernel, and is also a common method for getting the IP address of ipv4. The following code demonstrates how to use ioctl to get the IP addresses of all interfaces on the computer:
     ```
     #include <stdio.h>
     #include <stdlib.h>
@@ -58,7 +58,7 @@ postid: 130003
         }
     }
     ```
-* 但是使用 ioctl 无法获取 ipv6 地址，即便我们建立一个 AF_INET6 的 socket，ioctl 仍然只返回 ipv4 的信息，我们可以试试下面代码；
+* But using ioctl can't get ipv6 address. Even if we create an AF_INET6 socket, the ioctl still only returns ipv4 information. We can try the following code.
     ```
     #include <stdio.h>
     #include <stdlib.h>
@@ -99,33 +99,33 @@ postid: 130003
         }
     }
     ```
-* 这段程序在我的机器上的运行结果是这样的：
+* The result of running this code on my computer looks like this:
 
-    ![ioctl无法获取ipv6地址][img01]
-    - **图1：ioctl无法获取ipv6地址**
+    ![ioctl cannot get ipv6 address][img01]
+    - **Figure 1: ioctl cannot get ipv6 address**
 -----------------------
 
-* 我们看到，不管怎么折腾，返回的仍然只有 ipv4 的地址，所以我们需要一些其他的方法获得 ipv6 地址，下面介绍三种使用 C 语言获得 ipv6 地址的方法。
+* We see that no matter what we do, it still returns only the ipv4 address. So we need some other way to get the ipv6 address. The following describes three methods to obtain ipv6 address using C language.
 
-## 2. 从文件/proc/net/if_inet6中获取ipv6地址
-* 我们先来看看文件/proc/net/if_inet6中有什么内容
+## 2. Get ipv6 address from file /proc/net/if_inet6
+* Let's take a look at what's in the file /proc/net/if_inet6.
 
-    ![文件/proc/net/if_inet6内容][img02]
-    - **图2：文件/proc/net/if_inet6内容**
+    ![Contents of file /proc/net/if_inet6][img02]
+    - **Figure 2: Contents of file /proc/net/if_inet6**
 ----------------------
 
-* 这个文件中，每行为一个网络接口的数据，每行数据分成 6 个字段
+* In this file, each line contains data for one network interface. The data for each row is divided into 6 fields.
 
-    |字段序号|字段名称|字段说明|
+    |Field #|Field Name|Description|
     |:-----:|:------|:-----|
-    |1|ipv6address|IPv6地址，32位16进制一组，中间没有:分隔符|
-    |2|ifindex|接口设备号，每个设备都不同，按 16 进制显示|
-    |3|prefixlen|16进制显示的前缀长度，类似 ipv4 的子网掩码的东西|
+    |1|ipv6address|IPv6 address, each group is a 32-bit hexadecimal number. There are no colons between numbers.|
+    |2|ifindex|Interface index number. Each device is different and is displayed in hexadecimal.|
+    |3|prefixlen|The prefix length displayed in hexadecimal, similar to the subnet mask of ipv4.|
     |4|scopeid|scope id|
-    |5|flags|接口标志，这些标志标识着这个接口的特性|
-    |6|devname|接口设备名称|
+    |5|flags|Interface flags. These flags represent the features of the interface.|
+    |6|devname|Device name.|
 
-* 所以从这个文件中可以很容易地获得所有接口的 ipv6 地址
+* The ipv6 addresses of all interfaces can be easily obtained from this file.
     ```
     #include <stdio.h>
     #include <linux/if.h>
@@ -158,21 +158,21 @@ postid: 130003
         return 0;
     }
     ```
-* fscanf 中的 %2hhx 是一种不多见的用法，hhx 表示后面的指针 &_ipv6[x] 指向一个 unsigned char *，2 表示从文件中读取的长度，这个是常用的；
-* 关于 fscanf 中的 hh 和 h 的用法，可以查看在线手册 man fscanf 了解更多的内容；
-* ipv6 地址一共 128 位，16 位一组，一共 8 组，但是这里为什么不一次从文件中读入 4 个字符(16 位)，读 8 次，而要一次读入 2 个字符读 16 次呢？
-    - 这个要去看 inet_ntop 的参数，我们先使用命令 man inet_ntop 看一下 inet_ntop 的在线手册
+* %2hhx in fscanf is a rare usage. hhx means that the pointer behind &_ipv6[x] points to an unsigned char *. 2 represents the length read from the file.
+* For the usage of hh and h in fscanf, you can check the online manual. Learn more with the command ''man fscanf'';
+* The ipv6 address has a total of 128 bits. 16 bits as a group, a total of 8 groups. But here why not read 4 characters (16 bits) from the file at a time, 8 times, and 2 characters at a time and read 16 times?
+    - Let's look at the parameters of inet_ntop. Use the command 'man inet_ntop' to take a look at the online manual for inet_ntop.
         ```
         const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
         ```
-    - 当第 1 个参数 af = AF_INET6 时，对于第 2 个参数，还有说明：
+    - When the first parameter af = AF_INET6, there is a detailed description for the second parameter:
         ```
         AF_INET6
             src  points  to  a struct in6_addr (in network byte order) which is converted to a representation of
             this address in the most appropriate IPv6 network address format for this address.  The  buffer  dst
             must be at least INET6_ADDRSTRLEN bytes long.
         ```
-    - 很显然，需要第 2 个参数指向一个 struct in6_addr，这个结构在 netinet/in.h 中定义：
+    - Obviously, the second parameter is required to point to a struct in6_addr. This structure is defined in netinet/in.h:
         ```
         /* IPv6 address */
         struct in6_addr
@@ -190,27 +190,29 @@ postid: 130003
         #endif
         };
         ```
-    - 这个结构在一般情况下使用的是 uint8_t  __u6_addr8[16]，也就是 16 个 unsigned char 的数组，只有在"混杂模式"时才使用 8 个 unsigned short int 或者 4 个 unsigned int 的数组；
-    - 所以，实际上 struct in6_addr 的结构如下
+    - This structure generally uses uint8_t __u6_addr8[16], which is an array of 16 unsigned char. Arrays of 8 unsigned short int or 4 unsigned int are only used in "promiscuous mode".
+    - So, in fact, the structure of struct in6_addr is as follows:
         ```
         struct in6_addr {
             unsigned char __u6_addr8[16];
         }
         ```
-    - 这就是我们在读文件时为什么要一次读入 2 个字符，读 16 次，要保证读出的内容符合 struct in6_addr 的定义；
-* 一次从文件中读入 4 个字符(16 位)，读 8 次，和一次读入 2 个字符读 16 次有什么不同呢？我们以 16 进制的 f8e9 为例
-    - 当我们每次读入 2 个字符，读 2 次时，在内存中的排列是这样的
+    - That's why when reading the file only 2 characters are read at a time. To ensure that the read content conforms to the definition of struct in6_addr.
+* What's the difference between reading 4 characters (16 bits) from a file at a time, 8 times, and reading 2 characters at a time, 16 times? Let's take f8e9 in hexadecimal as an example.
+    - When f8e9 is stored in the file in ASCII, it occupies 4 bytes. After converting it into a number according to hexadecimal, there are 16 bits in total, occupying 2 bytes.
+    - When we read 2 characters from the file each time and convert them into numbers, the arrangement of the numbers in memory is like this.
         ```
         unsigned char _ipv6[16];
         fscanf(f, "%2hhx2hhx", &_ipv6[0], &_ipv6[1]);
         unsigned char *p = _ipv6
+        
         f8  e9
         -+  -+
          |   |
          |   +------- p + 1
          +----------- p
         ```
-    - 当我们每次读入 4 个字符，读 1 次时，在内存中的排列是这样的
+    - When we read 4 characters from a file and convert them to numbers, the arrangement of the numbers in memory is like this.
         ```
         unsigned int _ipv6[8]
         fscanf(f, "%4x", &_ipv6[0])
@@ -221,13 +223,13 @@ postid: 130003
          |   +------- p + 1
          +----------- p
         ```
-    - 这是因为 X86 系列 CPU 的存储模式是小端模式，也就是高位字节要存放在高地址上，f8e9 这个数，f8 是高位字节，e9 是低位字节，所以当我们把 f8e9 作为一个整数读出的时候，e9 将存储在低地址，f8 存储在高地址，这和 struct in6_addr 的定义是不相符的；
-    - 所以如果我们一次读 4 个字符， 读 8 次，我们就不能使用 inet_ntop() 去把 ipv6 地址转换成我们所需要的字符串，当然我们可以自己转换，但有些麻烦，参考下面代码
+    - This is because the storage mode of the X86 series CPU is the little endian mode, that is, the high-order byte is stored at the high address. f8e9 This number, f8 is the high-order byte, and e9 is the low-order byte. So when we read f8e9 as an integer, e9 will be stored at a low address, and f8 will be stored at a high address, which is inconsistent with the definition of struct in6_addr.
+    - So if we read 4 characters at a time, 8 times, we can't use inet_ntop() to convert the ipv6 address to the string we need. Of course, you can convert it yourself, but it is a bit troublesome, refer to the code below.
         ```
         unsigned short int _ipv6[8];
         int zero_flag = 0;
         while (11 == fscanf(f,
-                        " %4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx %*x %x %x %*x %s",
+                            " %4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx %*x %x %x %*x %s",
                             &_ipv6[0], &_ipv6[1], &_ipv6[2], &_ipv6[3], &_ipv6[4], &_ipv6[5], &_ipv6[6], &_ipv6[7],
                             &prefix, &scope, dname)) {
             printf("%s: ", dname);
@@ -244,12 +246,12 @@ postid: 130003
             putc('\n', stdout);
         }
         ```
-    - 和上面的代码比较，多了不少麻烦，自己去体会吧。    
+    - Compared with the above code, this code is a bit cumbersome.    
 
-## 3. 使用getifaddrs()获取 ipv6 地址
-* 可以通过在线手册 man getifaddrs 了解详细的关于 getifaddrs 函数的信息；
-* getifaddrs 函数会创建一个本地网络接口的结构链表，该结构链表定义在 struct ifaddrs 中；
-* 关于 ifaddrs 结构有很多文章介绍，本文仅简单介绍一下与本文密切相关的内容，下面是 struct ifaddrs 的定义
+## 3. Use getifaddrs() to get ipv6 address
+* Detailed information on getifaddrs() can be found in the online manual 'man getifaddrs'.
+* getifaddrs() will create a linked list of local network interfaces defined in struct ifaddrs.
+* There are many articles about the structure of ifaddrs. This article only briefly introduces the content that is closely related to this article. The following is the definition of struct ifaddrs.
     ```
     struct ifaddrs {
         struct ifaddrs  *ifa_next;    /* Next item in list */
@@ -268,17 +270,17 @@ postid: 130003
         void            *ifa_data;    /* Address-specific data */
     };
     ```
-* ifa_next 是结构链表的后向指针，指向链表的下一项，当前项为最后一项时，该指针为 NULL；
-* ifa_addr 是本文主要用到的项，这是一个 struct sockaddr， 看一下 struct sockaddr 的定义：
+* ifa_next is the back pointer of the linked list, pointing to the next item in the linked list. When the current item is the last item, the pointer is NULL.
+* ifa_addr is the main item used in this article, which is struct sockaddr. Take a look at the definition of struct sockaddr:
     ```
     struct sockaddr {
         sa_family_t sa_family;
         char        sa_data[14];
     }
     ```
-* 实际上，当 ifa_addr->sa_family 为 AF_INET 时，ifa_addr 指向 struct sockaddr_in；当 ifa_addr->sa_family 为 AF_INET6 时，ifa_addr 指向一个 struct sockaddr_in6；
-* sockaddr_in 和 sockaddr_in6 这两个结构同样可以找到很多介绍文章，这里就不多说了，反正这里面是结构套着结构，要把思路捋顺了才不至于搞乱；
-* 下面是使用 getifaddrs() 获取 ipv6 地址的源程序，可以看到，打印 ipv6 地址的那几行，与上面的那个例子是一样的；
+* Actually, when ifa_addr->sa_family is AF_INET, ifa_addr points to struct sockaddr_in. When ifa_addr->sa_family is AF_INET6, ifa_addr points to a struct sockaddr_in6.
+* The two structures of sockaddr_in and sockaddr_in6 can also find a lot of introduction articles, so I won't talk about them here. There are also structures nested within this structure, and you have to straighten your thinking to avoid confusion.
+* Below is the source code to use getifaddrs() to get ipv6 address. As you can see, the lines that print the ipv6 address are the same as the example above.
     ```
     #include <arpa/inet.h>
     #include <ifaddrs.h>
@@ -297,7 +299,7 @@ postid: 130003
 
         for (ifa = ifap; ifa; ifa = ifa->ifa_next) {
             if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET6) {
-                // 打印ipv6地址
+                // print ipv6 address
                 sa = (struct sockaddr_in6 *)ifa->ifa_addr;
                 if (inet_ntop(AF_INET6, (void *)&sa->sin6_addr, addr, INET6_ADDRSTRLEN) == NULL)
                     continue;
@@ -309,10 +311,10 @@ postid: 130003
         return 0;
     }
     ```
-* 最后要注意的是，使用 getifaddrs() 后，一定要记得使用 freeifaddrs() 释放掉链表所占用的内存。
-* 这个例子中，我们使用 inet_ntop() 将 sin6_addr 结构转换成了字符串形式的 ipv6 地址，还可以使用 getnameinfo() 来获取 ipv6 的字符串形式的地址；
-* 可以通过在线手册 man getnameinfo 了解 getnameinfo() 的详细信息
-* 下面是使用 getifaddrs() 获取 ipv6 地址并使用 getnameinfo() 将将 ipv6 地址转变为字符串的源程序
+* It should be noted that after using getifaddrs(), you must remember to use freeifaddrs() to release the memory occupied by the linked list.
+* In this example, we use inet_ntop() to convert the sin6_addr structure to an ipv6 address in string form, you can also use getnameinfo() to do this conversion.
+* Details of getnameinfo() can be found in the online manual 'man getnameinfo'.
+* Below is the source code that uses getifaddrs() to get the ipv6 address and use getnameinfo() to convert the ipv6 address to a string.
     ```
     #include <arpa/inet.h>
     #include <ifaddrs.h>
@@ -332,7 +334,7 @@ postid: 130003
 
         for (ifa = ifap; ifa; ifa = ifa->ifa_next) {
             if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET6) {
-                // 打印ipv6地址
+                // print ipv6 address
                 if (getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in6), addr, sizeof(addr), NULL, 0, NI_NUMERICHOST))
                     continue;
                 printf("%s: %s\n", ifa->ifa_name, addr);
@@ -343,18 +345,18 @@ postid: 130003
         return 0;
     }
     ```
-* 和前面那个程序相比，这个程序增加了一个包含文件 netdb.h，这里面有 getnameinfo() 的一些相关定义；
-* 在这里使用函数 getnameinfo 时，要明确 ifa->ifa_addr 指向的是一个 struct sockaddr_in6，后面的常数 NI_NUMERICHOST 表示返回的主机地址为数字字符串；
-* 和上面的例子略有不同的是，使用 getnameinfo 获取的 ipv6 地址的最后会使用 ‘%’ 连接一个网络接口的名称，如下图所示：
+* Compared with the previous program, this program adds an include file netdb.h. There are some related definitions of getnameinfo() here.
+* When using getnameinfo(), make sure that ifa->ifa_addr points to a struct sockaddr_in6, and the following constant NI_NUMERICHOST indicates that the returned host address is a numeric string.
+* Slightly different from the above example, the ipv6 address obtained with getnameinfo() will use '%' at the end to connect the name of a network interface, as shown in the following figure:
 
-    ![使用getnameinfo获取ipv6地址][img03]
-    - **图3：使用getnameinfo获取ipv6地址**
+    ![Use getnameinfo() to get the ipv6 address][img03]
+    - **Figure 3: Use getnameinfo() to get the ipv6 address**
 ------------------
 
-## 4. 使用 netlink 获取 ipv6 地址
-* netlink socket 是用户空间与内核空间通信的又一种方法，本文并不讨论 netlink 的编程方法，但给出了使用 netlink 获取 ipv6 地址的源程序；
-* 与上面两个方法比较，使用 netlink 获取 ipv6 地址的方法略显复杂，在实际应用中并不多见，所以本文也就不进行更多的讨论了；
-* 下面是使用 netlink 获取 ipv6 地址的源程序
+## 4. get ipv6 address using netlink
+* netlink socket is another method for user space to communicate with kernel space. This article does not discuss the programming of netlink, but gives the source code to get ipv6 address using netlink.
+* Compared with the above two methods, using netlink to get ipv6 address is slightly more complicated. This method is rare in actual programming, so this article will not discuss it more.
+* Below is the source code to get ipv6 address using netlink.
     ```
     #include <asm/types.h>
     #include <arpa/inet.h>
@@ -449,16 +451,16 @@ postid: 130003
         return 0;
     }
     ```
-## 5. 结语
-* 本文给出了三种获取 ipv6 地址的方法，均给出了完整的源程序；
-* 本文对三种方法并没有展开讨论，以免文章冗长；
-* 仅就获取 ipv6 地址而言，前两种方法比较常用而且简单；
-* 通常认为，用户程序与内核通讯有四种方法
-    1. 系统调用
-    2. 虚拟文件系统(/proc、/sys等)
+## 5. epilogue
+* This article provides three methods for getting ipv6 addresses, all of which provide complete source codes.
+* This article does not discuss the three methods in detail to avoid the article lengthy.
+* To get the ipv6 address, the first two methods are more common and simple.
+* Generally, there are four ways for user programs to communicate with the kernel
+    1. System call
+    2. Virtual file system (/proc, /sys, etc.)
     3. ioctl
     4. netlink
-* 本文所述的三个方法，正是使用了上述 2、3、4 三种方法；而获取 ipv6 地址，简单地使用系统调用无法实现。
+* The source codes in this article use the three methods 2, 3, and 4 above. There is no way to simply use a system call to get an ipv6 address.
 
 
 
