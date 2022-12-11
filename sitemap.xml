@@ -2,6 +2,83 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://whowin.gitee.io/categories/</loc>
+    <lastmod>2022-12-10T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/linux/</loc>
+    <lastmod>2022-12-10T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/categories/linux/</loc>
+    <lastmod>2022-12-10T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/nc/</loc>
+    <lastmod>2022-12-10T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/netcat/</loc>
+    <lastmod>2022-12-10T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/</loc>
+    <lastmod>2022-12-10T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/</loc>
+    <lastmod>2022-12-10T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/ubuntu/</loc>
+    <lastmod>2022-12-10T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/udp-packet/</loc>
+    <lastmod>2022-12-10T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/</loc>
+    <lastmod>2022-12-10T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/linux/0014-send_udp_via_linux_cli/</loc>
+    <lastmod>2022-12-10T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://whowin.gitee.io/categories/c-language/</loc>
     <lastmod>2022-12-07T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -9,35 +86,7 @@
   </url>
   
   <url>
-    <loc>https://whowin.gitee.io/categories/</loc>
-    <lastmod>2022-12-07T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/linux/</loc>
-    <lastmod>2022-12-07T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/categories/linux/</loc>
-    <lastmod>2022-12-07T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://whowin.gitee.io/post/blog/linux/0011-link_layer_programming/</loc>
-    <lastmod>2022-12-07T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/post/</loc>
     <lastmod>2022-12-07T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -52,20 +101,6 @@
   
   <url>
     <loc>https://whowin.gitee.io/tags/socket/</loc>
-    <lastmod>2022-12-07T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/</loc>
-    <lastmod>2022-12-07T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/</loc>
     <lastmod>2022-12-07T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -241,13 +276,6 @@
   
   <url>
     <loc>https://whowin.gitee.io/post/blog/linux/0008-apt-update-ubuntu/</loc>
-    <lastmod>2022-07-10T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/ubuntu/</loc>
     <lastmod>2022-07-10T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

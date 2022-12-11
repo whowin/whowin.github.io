@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>nc on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/nc/</link>
+    <description>Recent content in nc on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 10 Dec 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/nc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何在Linux命令行下发送和接收UDP数据包</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0014-send_udp_via_linux_cli/</link>
+      <pubDate>Sat, 10 Dec 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0014-send_udp_via_linux_cli/</guid>
+      <description>&lt;p&gt;众所周知，在传输层有两个常用的协议 TCP 和 UDP，本文介绍在 Linux 命令行下，如何使用 nc 命令发送或接收 UDP 数据包，这些命令的用法对调试 UDP 通信程序将有所帮助。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
