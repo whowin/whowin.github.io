@@ -23,7 +23,6 @@ draft: false
 # - [linux基础编程 链路层socket](https://blog.csdn.net/ghostyu/article/details/7737966)
 # - [OSI七层与TCP/IP五层网络架构详解](http://www.2cto.com/net/201310/252965.html)
 # - [data link layer programming in c](https://stackoverflow.com/questions/33073506/data-link-layer-programming-in-c)
-# - [How is checksum computed in UDP?](https://www.ques10.com/p/10930/how-is-checksum-computed-in-udp-1/)
 postid: 100011
 ---
 
