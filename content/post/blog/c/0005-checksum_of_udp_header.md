@@ -8,6 +8,7 @@ toc: true
 pager: true
 categories:
   - "C Language"
+  - "Network"
 tags:
   - C语言
   - UDP
@@ -230,9 +231,12 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
     4. 如果最后结果为全1，即：0XFFFF，则表示UDP报文正确，否则应该认为UDP报文有错误，应该丢弃。
 
 
+**欢迎访问我的博客：https://whowin.cn**
+
+
 
 [img01]:/images/130005/udp_packet_structure.png
-[img02]:/images/130005/ip_header.png#pic_center
-[img03]:/images/130005/udp_packet_pseudo_header.png.png#pic_center
-[img04]:/images/130005/udp_checksum_screenshot.png#pic_center
+[img02]:/images/130005/ip_header.png
+[img03]:/images/130005/udp_packet_pseudo_header.png.png
+[img04]:/images/130005/udp_checksum_screenshot.png
 

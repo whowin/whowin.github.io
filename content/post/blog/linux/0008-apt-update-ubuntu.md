@@ -81,6 +81,10 @@ postid: 100008
   * *apt update* 的运行依赖在 *Ubuntu* 上配置的软件源文件 */etc/apt/sources.list*
   * 本地软件仓库存放在 *Ubuntu* 上的 */var/lib/apt/lists/* 目录下
 
+
+**欢迎访问我的博客：https://whowin.cn**
+
+
 <!--实际使用-->
 [img01]:/images/100008/apt-update-screen.png
 

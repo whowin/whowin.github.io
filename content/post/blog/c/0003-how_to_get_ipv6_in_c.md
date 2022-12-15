@@ -8,9 +8,13 @@ toc: true
 pager: true
 categories:
   - "C Language"
+  - "Linux"
+  - "Network"
 tags:
-  - C语言
+  - "C语言"
   - ipv6
+  - "Network Programming"
+  - "网络编程"
 draft: false
 #references: 
 # - [Get IPv6 addresses in linux using ioctl](https://stackoverflow.com/questions/20743709/get-ipv6-addresses-in-linux-using-ioctl)
@@ -460,6 +464,7 @@ postid: 130003
     4. netlink
 * 本文所述的三个方法，正是使用了上述 2、3、4 三种方法；而获取 ipv6 地址，简单地使用系统调用无法实现。
 
+**欢迎访问我的博客：https://whowin.cn**
 
 
 

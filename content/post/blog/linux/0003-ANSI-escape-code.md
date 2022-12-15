@@ -159,4 +159,9 @@ postid: 100003
 * 在另一篇文章[《关于bash下变量PS1的完整理解》][article01]会用到这个说明
 * 大多数 OSC(Operating System Command)序列都是由 Xterm 定义的，但许多其他仿真终端也支持 OSC 序列。由于历史原因，Xterm 可以使用 BEL(ASCII 007) 结束命令，也可以使用标准 ST(ESC \) 结束命令。例如，Xterm 允许使用 **```\033]0；window title\007```** 设置窗口标题
 
+
+**欢迎访问我的博客：https://whowin.cn**
+
+
+
 [article01]: ../0001-environment_variables_and_shell_variables/

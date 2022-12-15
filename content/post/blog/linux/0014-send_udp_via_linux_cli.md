@@ -8,6 +8,7 @@ toc: true
 pager: true
 categories:
   - "Linux"
+  - "Network"
 tags:
   - Linux
   - ubuntu
@@ -121,6 +122,7 @@ postid: 100014
   ![接收使用cat命令发送的报文][img11]
 
 
+**欢迎访问我的博客：https://whowin.cn**
 
 
 

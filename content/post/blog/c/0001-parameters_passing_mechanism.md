@@ -452,4 +452,8 @@ postid: 130001
 * 再次强调，**在编写 x86-64 的 C 语言程序，把函数调用时的参数限制在 6 个以内，将可以在一定程度上提高程序的性能**
 
 
+**欢迎访问我的博客：https://whowin.cn**
+
+
+
 [img01]:/images/130001/0001-parameters_passing_mechanism.png

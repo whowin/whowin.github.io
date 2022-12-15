@@ -310,7 +310,7 @@ postid: 100001
   * 环境变量和普通 shell 变量之间可以使用 *export* 或 *declare* 进行转换
   * shell 可以在当前进程下运行脚本程序(不创建子进程)，这种运行方式常被用于改变当前运行环境下的环境变量
 
-
+**欢迎访问我的博客：https://whowin.cn**
 
 
 [img_01]:/images/100001/sh_point_to_dash.png
