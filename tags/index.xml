@@ -134,6 +134,15 @@
     </item>
     
     <item>
+      <title>Network Programming</title>
+      <link>https://whowin.gitee.io/tags/network-programming/</link>
+      <pubDate>Sun, 16 Oct 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/network-programming/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>参数传递</title>
       <link>https://whowin.gitee.io/tags/%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92/</link>
       <pubDate>Tue, 20 Sep 2022 16:43:29 +0800</pubDate>
@@ -224,11 +233,29 @@
     </item>
     
     <item>
+      <title>magic packet</title>
+      <link>https://whowin.gitee.io/tags/magic-packet/</link>
+      <pubDate>Thu, 18 Aug 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/magic-packet/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>openwrt</title>
       <link>https://whowin.gitee.io/tags/openwrt/</link>
       <pubDate>Thu, 18 Aug 2022 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/openwrt/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>wake on lan</title>
+      <link>https://whowin.gitee.io/tags/wake-on-lan/</link>
+      <pubDate>Thu, 18 Aug 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/wake-on-lan/</guid>
       <description></description>
     </item>
     

@@ -30,6 +30,13 @@
   </url>
   
   <url>
+    <loc>https://whowin.gitee.io/categories/network/</loc>
+    <lastmod>2022-12-12T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://whowin.gitee.io/post/</loc>
     <lastmod>2022-12-12T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -170,6 +177,13 @@
   </url>
   
   <url>
+    <loc>https://whowin.gitee.io/tags/network-programming/</loc>
+    <lastmod>2022-10-16T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://whowin.gitee.io/post/blog/c/0001-parameters_passing_mechanism/</loc>
     <lastmod>2022-09-20T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -261,7 +275,21 @@
   </url>
   
   <url>
+    <loc>https://whowin.gitee.io/tags/magic-packet/</loc>
+    <lastmod>2022-08-18T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://whowin.gitee.io/tags/openwrt/</loc>
+    <lastmod>2022-08-18T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/wake-on-lan/</loc>
     <lastmod>2022-08-18T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -507,13 +535,6 @@
   
   <url>
     <loc>https://whowin.gitee.io/tags/network/</loc>
-    <lastmod>2008-04-11T10:10:33+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/categories/network/</loc>
     <lastmod>2008-04-11T10:10:33+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

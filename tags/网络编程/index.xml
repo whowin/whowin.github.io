@@ -16,5 +16,14 @@
       <description>&lt;p&gt;大多数的网络编程都是在应用层接收数据和发送数据的，本文介绍在数据链路层的网络编程方法，介绍如何在数据链路层直接接收从物理层发过来的原始数据数据包，文章给出了一个完整的范例程序。&lt;/p&gt;</description>
     </item>
     
+    <item>
+      <title>C语言如何获取ipv6地址</title>
+      <link>https://whowin.gitee.io/post/blog/c/0003-how_to_get_ipv6_in_c/</link>
+      <pubDate>Sun, 16 Oct 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/c/0003-how_to_get_ipv6_in_c/</guid>
+      <description>&lt;p&gt;使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。&lt;/p&gt;</description>
+    </item>
+    
   </channel>
 </rss>
