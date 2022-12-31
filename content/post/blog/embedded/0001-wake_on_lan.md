@@ -23,7 +23,7 @@ draft: false
 # [Lua教程](https://www.runoob.com/lua/lua-tutorial.html)
 # [luasocket官网](https://w3.impa.br/~diego/software/luasocket/home.html)
 # [lua手册](https://www.runoob.com/manual/lua53doc/manual.html)
-postid: 100009
+postid: 110001
 ---
 
 本文通过一个简单的需求介绍了在一个 *ARM* 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 *Linux* 开发的过程。本文并不会详细介绍网络唤醒的原理以及 *Magic Packet*。
@@ -64,6 +64,7 @@ postid: 100009
 
     ![wake on lan架构][img05]
     + **图1：wake on lan架构图**
+*************
 
 * **Magic Packet**
   - 远程唤醒其实是网卡的一个功能，在 *PCI 2.2* 之后，信号线上多了一个 *PME* 信号，主机关闭电源后进入休眠状态，可以继续为网卡供电，网卡在收到一个叫做 *Magic Packet* 的数据包后，检测出该数据包是发给自己的，则会在 *PCI* 上发出 *PME* 信号，从而控制电脑启动，这个功能被称为 **网络唤醒**
@@ -655,49 +656,24 @@ postid: 100009
 
 
 <!-- 用于实际发布 -->
-[img01]:/images/100009/money_maker.png
-[img02]:/images/100009/money_maker_board.jpg
-[img03]:/images/100009/openwrt_version.png
-[img04]:/images/100009/toolschain_test.png
-[img05]:/images/100009/wake_on_lan_architecture.png
-[img06]:/images/100009/login_openwrt_first.png
-[img07]:/images/100009/web_openwrt_1.png
-[img08]:/images/100009/web_openwrt_2.png
-[img09]:/images/100009/openwrt_fixed_ip_config.png
-[img10]:/images/100009/openwrt_fixed_ip_web_1.png
-[img11]:/images/100009/openwrt_fixed_ip_web_2.png
-[img12]:/images/100009/openwrt_fixed_ip_web_3.png
-[img13]:/images/100009/openwrt_fixed_ip_router.png
-[img14]:/images/100009/openwrt_run_wakeonlan.png
-[img15]:/images/100009/listen_magic_packet.png
-[img16]:/images/100009/connectbot_setting.jpg
-[img17]:/images/100009/connectbot_login_openwrt.jpg
-[img18]:/images/100009/connectbot_run_wakeonlan.jpg
-[img19]:/images/100009/luci_wake_on_lan.png
+[img01]:/images/110001/money_maker.png
+[img02]:/images/110001/money_maker_board.jpg
+[img03]:/images/110001/openwrt_version.png
+[img04]:/images/110001/toolschain_test.png
+[img05]:/images/110001/wake_on_lan_architecture.png
+[img06]:/images/110001/login_openwrt_first.png
+[img07]:/images/110001/web_openwrt_1.png
+[img08]:/images/110001/web_openwrt_2.png
+[img09]:/images/110001/openwrt_fixed_ip_config.png
+[img10]:/images/110001/openwrt_fixed_ip_web_1.png
+[img11]:/images/110001/openwrt_fixed_ip_web_2.png
+[img12]:/images/110001/openwrt_fixed_ip_web_3.png
+[img13]:/images/110001/openwrt_fixed_ip_router.png
+[img14]:/images/110001/openwrt_run_wakeonlan.png
+[img15]:/images/110001/listen_magic_packet.png
+[img16]:/images/110001/connectbot_setting.jpg
+[img17]:/images/110001/connectbot_login_openwrt.jpg
+[img18]:/images/110001/connectbot_run_wakeonlan.jpg
+[img19]:/images/110001/luci_wake_on_lan.png
 <!-- -->
-
-<!--用于本地预览
-[img01]:../../../../static/images/100009/money_maker.png
-[img02]:../../../../static/images/100009/money_maker_board.jpg
-[img03]:../../../../static/images/100009/openwrt_version.png
-[img04]:../../../../static/images/100009/toolschain_test.png
-[img05]:../../../../static/images/100009/wake_on_lan_architecture.png
-[img06]:../../../../static/images/100009/login_openwrt_first.png
-[img07]:../../../../static/images/100009/web_openwrt_1.png
-[img08]:../../../../static/images/100009/web_openwrt_2.png
-[img09]:../../../../static/images/100009/openwrt_fixed_ip_config.png
-[img10]:../../../../static/images/100009/openwrt_fixed_ip_web_1.png
-[img11]:../../../../static/images/100009/openwrt_fixed_ip_web_2.png
-[img12]:../../../../static/images/100009/openwrt_fixed_ip_web_3.png
-[img13]:../../../../static/images/100009/openwrt_fixed_ip_router.png
-[img14]:../../../../static/images/100009/openwrt_run_wakeonlan.png
-[img15]:../../../../static/images/100009/listen_magic_packet.png
-[img16]:../../../../static/images/100009/connectbot_setting.jpg
-[img17]:../../../../static/images/100009/connectbot_login_openwrt.jpg
-[img18]:../../../../static/images/100009/connectbot_run_wakeonlan.jpg
-[img19]:../../../../static/images/100009/luci_wake_on_lan.png
--->
-
-
-
 

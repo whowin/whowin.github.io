@@ -24,7 +24,7 @@ draft: false
 # - [linux基础编程 链路层socket](https://blog.csdn.net/ghostyu/article/details/7737966)
 # - [OSI七层与TCP/IP五层网络架构详解](http://www.2cto.com/net/201310/252965.html)
 # - [data link layer programming in c](https://stackoverflow.com/questions/33073506/data-link-layer-programming-in-c)
-postid: 100011
+postid: 180002
 ---
 
 大多数的网络编程都是在应用层接收数据和发送数据的，本文介绍在数据链路层的网络编程方法，介绍如何在数据链路层直接接收从物理层发过来的原始数据数据包，文章给出了一个完整的范例程序。
@@ -511,11 +511,11 @@ postid: 100011
 
 
 
-[img01]:/images/100011/sending_data_from_app_with_socket.png
-[img02]:/images/100011/receiving_data_in_app_with_socket.png
-[img03]:/images/100011/app_receive_data_with_raw_socket.png
-[img04]:/images/100011/a_generic_representation_of_a_network_packet.png
-[img05]:/images/100011/ip_header.png
-[img06]:/images/100011/receive_udp_packet.png
+[img01]:/images/180002/sending_data_from_app_with_socket.png
+[img02]:/images/180002/receiving_data_in_app_with_socket.png
+[img03]:/images/180002/app_receive_data_with_raw_socket.png
+[img04]:/images/180002/a_generic_representation_of_a_network_packet.png
+[img05]:/images/180002/ip_header.png
+[img06]:/images/180002/receive_udp_packet.png
 
 

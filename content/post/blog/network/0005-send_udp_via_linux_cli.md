@@ -19,7 +19,7 @@ tags:
 draft: false
 #references: 
 # - [Send and Receive UDP packets via Linux CLI](https://linuxhint.com/send_receive_udp_packets_linux_cli/)
-postid: 100014
+postid: 180005
 ---
 
 众所周知，在传输层有两个常用的协议 TCP 和 UDP，本文介绍在 Linux 命令行下，如何使用 nc 命令发送或接收 UDP 数据包，这些命令的用法对调试 UDP 通信程序将有所帮助。
@@ -127,14 +127,14 @@ postid: 100014
 
 
 
-[img01]:/images/100014/server_client_connection.png
-[img02]:/images/100014/start_server_with_nc.png
-[img03]:/images/100014/screenshot_for_started_server.png
-[img04]:/images/100014/send_udp_packet_client.png
-[img05]:/images/100014/receive_udp_packet_server.png
-[img06]:/images/100014/send_udp_packet_server.png
-[img07]:/images/100014/receive_udp_packet_client.png
-[img08]:/images/100014/send_udp_packet_client_echo.png
-[img09]:/images/100014/receive_udp_packet_server_echo.png
-[img10]:/images/100014/send_udp_packet_client_cat.png
-[img11]:/images/100014/receive_udp_packet_server_cat.png
+[img01]:/images/180005/server_client_connection.png
+[img02]:/images/180005/start_server_with_nc.png
+[img03]:/images/180005/screenshot_for_started_server.png
+[img04]:/images/180005/send_udp_packet_client.png
+[img05]:/images/180005/receive_udp_packet_server.png
+[img06]:/images/180005/send_udp_packet_server.png
+[img07]:/images/180005/receive_udp_packet_client.png
+[img08]:/images/180005/send_udp_packet_client_echo.png
+[img09]:/images/180005/receive_udp_packet_server_echo.png
+[img10]:/images/180005/send_udp_packet_client_cat.png
+[img11]:/images/180005/receive_udp_packet_server_cat.png

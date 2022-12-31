@@ -15,7 +15,7 @@ tags:
 draft: false
 #references: 
 # - [How to Calculate IP Header Checksum (With an Example)](https://www.thegeekstuff.com/2012/05/ip-header-checksum/)
-postid: 100010
+postid: 180004
 ---
 
 如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的。
@@ -33,6 +33,7 @@ postid: 100010
   ![IP报头的基本格式][img01]
   **<center>图1：IP报头的基本格式</center>**
 
+*****************
 * 更好地理解IP报头各字段的含义，可以参考我的另一篇文章[《Linux下如何在数据链路层接收原始数据包》](/post/blog/linux/0011-link_layer_programming/)或者参考 [IP Protocol Header Fundamentals Explained with Diagrams](https://www.thegeekstuff.com/2012/03/ip-protocol-header/);
 * 仅就算法而言，IP报头的checksum定义为：IP报头中所有16-bit字的反码之和；也就是说把IP报头按照16-bit字分割，然后把它们逐一相加，要求相加的结果仍为16-bit字，如果出现溢出(结果超出16-bit字)，则丢弃溢出并把结果加1，全部16-bit字相加完成的结果再求反码，其结果就是checksum；
 * 上面的计算方法是在报文的发送端完成的；在接收端首先要将IP报头中的checksum字段清0，然后用与发送端相同的方法计算，得到的值与收到的IP报头中的checksum字段比较，如果一样，则表示IP报头完好，否则认为IP报头已经损坏；
@@ -126,6 +127,6 @@ postid: 100010
 
 
 
-[img01]:/images/100010/ip_header.png
+[img01]:/images/180004/ip_header.png
 
 

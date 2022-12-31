@@ -20,7 +20,7 @@ draft: false
 # - [Short UDP Checksum Calculation HowTo](https://people.engr.ncsu.edu/mlsichit/Teaching/407/Resources/udpChecksum.html)
 # - [RFC 768](http://www.faqs.org/rfcs/rfc768.html)
 # - [RFC 1071](http://www.faqs.org/rfcs/rfc1071.html)
-postid: 130005
+postid: 180003
 ---
 
 UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序。
@@ -235,8 +235,8 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
 
 
 
-[img01]:/images/130005/udp_packet_structure.png
-[img02]:/images/130005/ip_header.png
-[img03]:/images/130005/udp_packet_pseudo_header.png.png
-[img04]:/images/130005/udp_checksum_screenshot.png
+[img01]:/images/180003/udp_packet_structure.png
+[img02]:/images/180003/ip_header.png
+[img03]:/images/180003/udp_packet_pseudo_header.png.png
+[img04]:/images/180003/udp_checksum_screenshot.png
 

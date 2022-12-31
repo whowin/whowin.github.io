@@ -21,7 +21,7 @@ draft: false
 # - [IPv6-related entries in /proc/net/](https://tldp.org/HOWTO/Linux+IPv6-HOWTO/ch11s04.html)
 # - [scanf, fscanf, sscanf, scanf_s, fscanf_s, sscanf_s](https://en.cppreference.com/w/c/io/fscanf)
 # - [C代码，用于在Linux中获取IP地址的接口名称](http://www.955yes.com/ask/127327909.html)
-postid: 130003
+postid: 180001
 ---
 
 使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。
@@ -470,7 +470,7 @@ postid: 130003
 
 
 
-[img01]:/images/130003/ipv6_ioctl.png
-[img02]:/images/130003/file_if_inet6.png
-[img03]:/images/130003/ipv6_getnameinfo.png
+[img01]:/images/180001/ipv6_ioctl.png
+[img02]:/images/180001/file_if_inet6.png
+[img03]:/images/180001/ipv6_getnameinfo.png
 
