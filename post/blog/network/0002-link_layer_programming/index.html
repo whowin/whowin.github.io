@@ -27,7 +27,7 @@
 <meta name="generator" content="Hugo 0.97.3 with theme even" />
 
 
-<link rel="canonical" href="https://whowin.gitee.io/post/blog/linux/0011-link_layer_programming/" />
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/network/0002-link_layer_programming/" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -43,7 +43,7 @@
 <meta property="og:title" content="Linux下如何在数据链路层接收原始数据包" />
 <meta property="og:description" content="大多数的网络编程都是在应用层接收数据和发送数据的，本文介绍在数据链路层的网络编程方法，介绍如何在数据链路层直接接收从物理层发过来的原始数据数据包，文章给出了一个完整的范例程序。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://whowin.gitee.io/post/blog/linux/0011-link_layer_programming/" /><meta property="article:section" content="post" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0002-link_layer_programming/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2022-12-07T16:43:29+08:00" />
 <meta property="article:modified_time" content="2022-12-07T16:43:29+08:00" />
 
@@ -237,7 +237,7 @@
 <li>(IP头+UDP头+DATA)从网络层被送到了数据链路层，数据链路层的以太网协议会给这个数据包加上一个以太网头；</li>
 <li>(以太网头+IP头+UDP头+DATA)从数据链路层被送到了物理层，数据就被发送走了。</li>
 </ol>
-<p><img src="/images/100011/sending_data_from_app_with_socket.png" alt="使用socket从应用程序发送数据的过程"></p>
+<p><img src="/images/180002/sending_data_from_app_with_socket.png" alt="使用socket从应用程序发送数据的过程"></p>
 <p><strong>图1：使用socket从应用程序发送数据的过程</strong></p>
 </li>
 </ul>
@@ -283,7 +283,7 @@
 <li>传输层从数据中提取出UDP头，其余部分交给应用程序(DATA)；</li>
 <li>所以我们在应用层收到的就只有数据了，报头已经被各协议层提取出来</li>
 </ol>
-<p><img src="/images/100011/receiving_data_in_app_with_socket.png" alt="在应用程序中用socket接收数据的过程"></p>
+<p><img src="/images/180002/receiving_data_in_app_with_socket.png" alt="在应用程序中用socket接收数据的过程"></p>
 <p><strong>图2：在应用程序中用socket接收数据的过程</strong></p>
 </li>
 </ul>
@@ -298,7 +298,7 @@
 <ul>
 <li>
 <p>raw socket也是一种socket，常用于接收原始数据包，所谓原始数据包指的是从物理层直接传送出来的数据包；使用raw socket可以绕过通常的TCP/IP处理流程，在应用程序中直接收到原始数据包(见图3)。使用raw socket编程，并不需要对Linux内核有深入的了解。</p>
-<p><img src="/images/100011/app_receive_data_with_raw_socket.png" alt="在应用程序中使用raw socket接收数据"></p>
+<p><img src="/images/180002/app_receive_data_with_raw_socket.png" alt="在应用程序中使用raw socket接收数据"></p>
 <p><strong>图3：在应用程序中使用raw socket接收数据</strong></p>
 </li>
 <li>
@@ -365,7 +365,7 @@
 <ul>
 <li>网络报文的报头分为三个部分：传输层的传输层协议头、网络层的网络层协议头和数据链路层的以太网头，见图4；</li>
 </ul>
-<p><img src="/images/100011/a_generic_representation_of_a_network_packet.png" alt="网络报头的通用定义"></p>
+<p><img src="/images/180002/a_generic_representation_of_a_network_packet.png" alt="网络报头的通用定义"></p>
 <p><strong>图4：网络报头的通用定义</strong></p>
 <hr>
 <ul>
@@ -453,7 +453,7 @@
 </span></span><span class="line"><span class="cl">};
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p><img src="/images/100011/ip_header.png" alt="IP 报头"></p>
+</div><p><img src="/images/180002/ip_header.png" alt="IP 报头"></p>
 <p><strong>图5：IP 报头</strong></p>
 </li>
 </ul>
@@ -1078,7 +1078,7 @@
 </div></li>
 <li>
 <p>在我的电脑上看到的是这样的：</p>
-<p><img src="/images/100011/receive_udp_packet.png" alt="收到的 udp 数据包"></p>
+<p><img src="/images/180002/receive_udp_packet.png" alt="收到的 udp 数据包"></p>
 <p><strong>图6：收到的 UDP 数据包</strong></p>
 </li>
 </ul>
@@ -1116,12 +1116,12 @@
           <a href="/tags/raw-socket/">raw socket</a>
           </div>
       <nav class="post-nav">
-        <a class="prev" href="/post/blog/linux/0014-send_udp_via_linux_cli/">
+        <a class="prev" href="/post/blog/network/0005-send_udp_via_linux_cli/">
             <i class="iconfont icon-left"></i>
             <span class="prev-text nav-default">如何在Linux命令行下发送和接收UDP数据包</span>
             <span class="prev-text nav-mobile">上一篇</span>
           </a>
-        <a class="next" href="/post/blog/c/0003-how_to_get_ipv6_in_c/">
+        <a class="next" href="/post/blog/network/0001-how_to_get_ipv6_in_c/">
             <span class="next-text nav-default">C语言如何获取ipv6地址</span>
             <span class="next-text nav-mobile">下一篇</span>
             <i class="iconfont icon-right"></i>
@@ -1132,7 +1132,7 @@
         </div>
         
 
-  <span id="/post/blog/linux/0011-link_layer_programming/" class="leancloud_visitors" data-flag-title="Linux下如何在数据链路层接收原始数据包">
+  <span id="/post/blog/network/0002-link_layer_programming/" class="leancloud_visitors" data-flag-title="Linux下如何在数据链路层接收原始数据包">
 		<span class="post-meta-item-text">文章阅读量 </span>
 		<span class="leancloud-visitors-count">0</span>
 		<p></p>

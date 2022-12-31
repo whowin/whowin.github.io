@@ -9,10 +9,10 @@
     <lastBuildDate>Wed, 14 Dec 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/checksum/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>如何计算IP报头的checksum</title>
-      <link>https://whowin.gitee.io/post/blog/linux/0010-checksum_of_ip_header/</link>
+      <link>https://whowin.gitee.io/post/blog/network/0004-checksum_of_ip_header/</link>
       <pubDate>Wed, 14 Dec 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/linux/0010-checksum_of_ip_header/</guid>
+      <guid>https://whowin.gitee.io/post/blog/network/0004-checksum_of_ip_header/</guid>
       <description>&lt;p&gt;如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的。&lt;/p&gt;</description>
     </item>
     

@@ -27,7 +27,7 @@
 <meta name="generator" content="Hugo 0.97.3 with theme even" />
 
 
-<link rel="canonical" href="https://whowin.gitee.io/post/blog/linux/0009-wake_on_lan/" />
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/embedded/0001-wake_on_lan/" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -43,7 +43,7 @@
 <meta property="og:title" content="远程开机：一个简单的嵌入式项目开发" />
 <meta property="og:description" content="本文通过一个简单的需求介绍了在一个 ARM 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 Linux 开发的过程。本文并不会详细介绍网络唤醒的原理以及 Magic Packet。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://whowin.gitee.io/post/blog/linux/0009-wake_on_lan/" /><meta property="article:section" content="post" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/embedded/0001-wake_on_lan/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2022-08-18T16:43:29+08:00" />
 <meta property="article:modified_time" content="2022-08-18T16:43:29+08:00" />
 
@@ -207,18 +207,20 @@
 <p>上面的解决方案显然非常粗糙，但是这个项目本身确实也比较简单，没有必要做非常详尽的设计方案，所以我们下面仅列出一些可能的要点及解决方法</p>
 </blockquote>
 <ul>
-<li>
-<p><strong>本项目的基本网络架构</strong></p>
+<li><strong>本项目的基本网络架构</strong>
 <ul>
 <li>
 <p>下面是一个简单的示意图，表达了这个项目中各个设备是如何连接和互相影响的，其中 <em>Local Server</em> 是我们要远程开机的服务器，<em>Server</em> 是一台连接在互联网上的 <em>Virtual Private Server</em>，用于内网穿透</p>
-<p><img src="/images/100009/wake_on_lan_architecture.png" alt="wake on lan架构"></p>
+<p><img src="/images/110001/wake_on_lan_architecture.png" alt="wake on lan架构"></p>
 <ul>
 <li><strong>图1：wake on lan架构图</strong></li>
 </ul>
 </li>
 </ul>
 </li>
+</ul>
+<hr>
+<ul>
 <li>
 <p><strong>Magic Packet</strong></p>
 <ul>
@@ -315,12 +317,12 @@
 <li>我有一个早就不用的 <em>迅雷一代赚钱宝(以下简称<strong>赚钱宝</strong>)</em>，不知道为何物的自己去百度一下</li>
 <li>赚钱宝这个玩意 <em>CPU</em> 用的是 <em>Amlogic S805</em>，<em>ARM Cortex-A5</em> 架构，4核1.5GHz，功耗非常低，记住这个 CPU 的型号，记住这个 CPU 是32位的；</li>
 </ul>
-<p><img src="/images/100009/money_maker.png" alt="一代赚钱宝外观"></p>
+<p><img src="/images/110001/money_maker.png" alt="一代赚钱宝外观"></p>
 <ul>
 <li><strong>图2：赚钱宝外观</strong></li>
 </ul>
 <hr>
-<p><img src="/images/100009/money_maker_board.jpg" alt="S805主板"></p>
+<p><img src="/images/110001/money_maker_board.jpg" alt="S805主板"></p>
 <ul>
 <li><strong>图3：赚钱宝主板</strong></li>
 </ul>
@@ -377,7 +379,7 @@
 </div><blockquote>
 <p>我这里登录以后的样子，登录以后一定要改一下 root 的密码</p>
 </blockquote>
-<p><img src="/images/100009/login_openwrt_first.png" alt="ssh登录openwrt"></p>
+<p><img src="/images/110001/login_openwrt_first.png" alt="ssh登录openwrt"></p>
 <ul>
 <li><strong>图4：ssh登录openwrt</strong></li>
 </ul>
@@ -385,11 +387,11 @@
 </li>
 <li>
 <p><em>openwrt</em> 还会有一个 <em>web</em> 界面，直接在浏览器上输入 IP 即可进入</p>
-<p><img src="/images/100009/web_openwrt_1.png" alt="登录openwrt的web"></p>
+<p><img src="/images/110001/web_openwrt_1.png" alt="登录openwrt的web"></p>
 <ul>
 <li><strong>图5：登录openwrt的web界面</strong></li>
 </ul>
-<p><img src="/images/100009/web_openwrt_2.png" alt="openwrt的web界面"></p>
+<p><img src="/images/110001/web_openwrt_2.png" alt="openwrt的web界面"></p>
 <ul>
 <li><strong>图6：openwrt的web界面</strong></li>
 </ul>
@@ -403,7 +405,7 @@
 <blockquote>
 <p><em>openwrt</em> 的网络配置文件放在 <em>/etc/config/network</em> 文件中，可以直接修改这个文件，改成下面这个样子：</p>
 </blockquote>
-<p><img src="/images/100009/openwrt_fixed_ip_config.png" alt="固定IP"></p>
+<p><img src="/images/110001/openwrt_fixed_ip_config.png" alt="固定IP"></p>
 <ul>
 <li><strong>图7：openwrt 改成固定 IP</strong></li>
 </ul>
@@ -416,15 +418,15 @@
 <blockquote>
 <p>从浏览器登录 <em>openwrt</em> 的 <em>web</em> 页面，其密码与 <em>ssh</em> 的密码一致，选择：<em>Network &ndash;&gt; Interfaces &ndash;&gt; Edit</em></p>
 </blockquote>
-<p><img src="/images/100009/openwrt_fixed_ip_web_1.png" alt="通过openwrt的web界面修改固定IP"></p>
+<p><img src="/images/110001/openwrt_fixed_ip_web_1.png" alt="通过openwrt的web界面修改固定IP"></p>
 <ul>
 <li><strong>图8：通过openwrt的web界面修改固定IP</strong></li>
 </ul>
-<p><img src="/images/100009/openwrt_fixed_ip_web_2.png" alt="通过openwrt的web界面修改固定IP"></p>
+<p><img src="/images/110001/openwrt_fixed_ip_web_2.png" alt="通过openwrt的web界面修改固定IP"></p>
 <ul>
 <li><strong>图9：通过openwrt的web界面修改固定IP</strong></li>
 </ul>
-<p><img src="/images/100009/openwrt_fixed_ip_web_3.png" alt="通过openwrt的web界面修改固定IP"></p>
+<p><img src="/images/110001/openwrt_fixed_ip_web_3.png" alt="通过openwrt的web界面修改固定IP"></p>
 <ul>
 <li><strong>图10：通过openwrt的web界面修改固定IP</strong></li>
 </ul>
@@ -437,7 +439,7 @@
 <blockquote>
 <p>实际上就是在路由器上设置 <em>DHCP</em> 每次分配 IP 时，给指定 <em>MAC</em> 地址的设备分配一个固定的 IP，这样，你的 <em>openwrt</em> 设备就不必设置固定 IP了，每种路由器的设置方法不一样，我的路由器的界面像这个样子</p>
 </blockquote>
-<p><img src="/images/100009/openwrt_fixed_ip_router.png" alt="通过路由器设定openwrt的固定IP"></p>
+<p><img src="/images/110001/openwrt_fixed_ip_router.png" alt="通过路由器设定openwrt的固定IP"></p>
 <ul>
 <li><strong>图11：通过路由器设定openwrt的固定IP</strong></li>
 </ul>
@@ -465,7 +467,7 @@
 </li>
 <li>
 <p>首先 <em>ssh</em> 登录你刚刷的 <em>openwrt</em>，查看你刷的 <em>openwrt</em> 的版本号：</p>
-<p><img src="/images/100009/openwrt_version.png" alt="openwrt的版本号"></p>
+<p><img src="/images/110001/openwrt_version.png" alt="openwrt的版本号"></p>
 <ul>
 <li><strong>图12：查看openwrt的版本号</strong></li>
 </ul>
@@ -600,7 +602,7 @@
 </div></li>
 <li>
 <p>下面是在我的机器上的输出</p>
-<p><img src="/images/100009/toolschain_test.png" alt="测试一下工具链"></p>
+<p><img src="/images/110001/toolschain_test.png" alt="测试一下工具链"></p>
 <ul>
 <li><strong>图13：测试工具链</strong></li>
 </ul>
@@ -987,7 +989,7 @@
 </li>
 <li>
 <p>在我的机器上运行效果是这样的</p>
-<p><img src="/images/100009/openwrt_run_wakeonlan.png" alt="在openwrt上运行wakeOnLan"></p>
+<p><img src="/images/110001/openwrt_run_wakeonlan.png" alt="在openwrt上运行wakeOnLan"></p>
 <ul>
 <li><strong>图14：在openwrt上运行wakeOnLan</strong></li>
 </ul>
@@ -1038,7 +1040,7 @@
 </li>
 <li>
 <p>在我的环境下，看到的输出如下：</p>
-<p><img src="/images/100009/listen_magic_packet.png" alt="侦听magic packet"></p>
+<p><img src="/images/110001/listen_magic_packet.png" alt="侦听magic packet"></p>
 <ul>
 <li><strong>图15：侦听Magic Packet</strong></li>
 </ul>
@@ -1334,7 +1336,7 @@
 </li>
 <li>
 <p>设置连接如下：</p>
-<p><img src="/images/100009/connectbot_setting.jpg" alt="在ConnectBot上设置连接"></p>
+<p><img src="/images/110001/connectbot_setting.jpg" alt="在ConnectBot上设置连接"></p>
 <ul>
 <li><strong>图16：在ConnectBot上设置连接</strong></li>
 </ul>
@@ -1342,7 +1344,7 @@
 </li>
 <li>
 <p>通过 <em>frp</em> 连接到 <em>openwrt</em></p>
-<p><img src="/images/100009/connectbot_login_openwrt.jpg" alt="在ConnectBot上连接openwrt"></p>
+<p><img src="/images/110001/connectbot_login_openwrt.jpg" alt="在ConnectBot上连接openwrt"></p>
 <ul>
 <li><strong>图17：在ConnectBot上连接openwrt</strong></li>
 </ul>
@@ -1350,7 +1352,7 @@
 </li>
 <li>
 <p>在 <em>openwrt</em> 上运行 <em>wakeOnLan</em></p>
-<p><img src="/images/100009/connectbot_run_wakeonlan.jpg" alt="在openwrt上运行wakeOnLan"></p>
+<p><img src="/images/110001/connectbot_run_wakeonlan.jpg" alt="在openwrt上运行wakeOnLan"></p>
 <ul>
 <li><strong>图18：在openwrt上运行wakeOnLan</strong></li>
 </ul>
@@ -1386,7 +1388,7 @@
 <blockquote>
 <p>实际上，<em>openwrt</em> 是有现成的<strong>网络唤醒</strong>模块的，可以在 <em>openwrt</em> 的 <em>web</em> 界面上搜索 <em>luci-app-wol</em>，安装这个软件的同时，还会安装一个 <em>etherwake</em> 的软件，安装好以后，可以使用类似 <em>etherwake -b AA:BB:CC:DD:EE:FF</em> 的命令发送 <em>Magic Packet</em> 唤醒指定的机器，也可以通过 <em>web</em> 界面唤醒指定的电脑</p>
 </blockquote>
-<p><img src="/images/100009/luci_wake_on_lan.png" alt="在web界面上发送Magic Packet"></p>
+<p><img src="/images/110001/luci_wake_on_lan.png" alt="在web界面上发送Magic Packet"></p>
 <ul>
 <li><strong>图19：在web界面上发送Magic Packet</strong></li>
 </ul>
@@ -1408,27 +1410,6 @@
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <!-- 用于实际发布 -->
 <!-- -->
-<!--用于本地预览
-[img01]:../../../../static/images/100009/money_maker.png
-[img02]:../../../../static/images/100009/money_maker_board.jpg
-[img03]:../../../../static/images/100009/openwrt_version.png
-[img04]:../../../../static/images/100009/toolschain_test.png
-[img05]:../../../../static/images/100009/wake_on_lan_architecture.png
-[img06]:../../../../static/images/100009/login_openwrt_first.png
-[img07]:../../../../static/images/100009/web_openwrt_1.png
-[img08]:../../../../static/images/100009/web_openwrt_2.png
-[img09]:../../../../static/images/100009/openwrt_fixed_ip_config.png
-[img10]:../../../../static/images/100009/openwrt_fixed_ip_web_1.png
-[img11]:../../../../static/images/100009/openwrt_fixed_ip_web_2.png
-[img12]:../../../../static/images/100009/openwrt_fixed_ip_web_3.png
-[img13]:../../../../static/images/100009/openwrt_fixed_ip_router.png
-[img14]:../../../../static/images/100009/openwrt_run_wakeonlan.png
-[img15]:../../../../static/images/100009/listen_magic_packet.png
-[img16]:../../../../static/images/100009/connectbot_setting.jpg
-[img17]:../../../../static/images/100009/connectbot_login_openwrt.jpg
-[img18]:../../../../static/images/100009/connectbot_run_wakeonlan.jpg
-[img19]:../../../../static/images/100009/luci_wake_on_lan.png
--->
     </div>
 
     <div class="post-copyright">
@@ -1472,7 +1453,7 @@
         </div>
         
 
-  <span id="/post/blog/linux/0009-wake_on_lan/" class="leancloud_visitors" data-flag-title="远程开机：一个简单的嵌入式项目开发">
+  <span id="/post/blog/embedded/0001-wake_on_lan/" class="leancloud_visitors" data-flag-title="远程开机：一个简单的嵌入式项目开发">
 		<span class="post-meta-item-text">文章阅读量 </span>
 		<span class="leancloud-visitors-count">0</span>
 		<p></p>

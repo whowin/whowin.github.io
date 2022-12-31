@@ -27,7 +27,7 @@
 <meta name="generator" content="Hugo 0.97.3 with theme even" />
 
 
-<link rel="canonical" href="https://whowin.gitee.io/post/blog/linux/0010-checksum_of_ip_header/" />
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/network/0004-checksum_of_ip_header/" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -43,7 +43,7 @@
 <meta property="og:title" content="如何计算IP报头的checksum" />
 <meta property="og:description" content="如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://whowin.gitee.io/post/blog/linux/0010-checksum_of_ip_header/" /><meta property="article:section" content="post" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0004-checksum_of_ip_header/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2022-12-14T16:43:29+08:00" />
 <meta property="article:modified_time" content="2022-12-14T16:43:29+08:00" />
 
@@ -180,21 +180,16 @@
 </li>
 <li>
 <p>计算IP报头的checksum当然要了解IP协议的基本报头结构，下面是IP报头的基本格式：</p>
-<p><img src="/images/100010/ip_header.png" alt="IP报头的基本格式">
+<p><img src="/images/180004/ip_header.png" alt="IP报头的基本格式">
 <strong><center>图1：IP报头的基本格式</center></strong></p>
 </li>
-<li>
-<p>更好地理解IP报头各字段的含义，可以参考我的另一篇文章<a href="/post/blog/linux/0011-link_layer_programming/">《Linux下如何在数据链路层接收原始数据包》</a>或者参考 <a href="https://www.thegeekstuff.com/2012/03/ip-protocol-header/">IP Protocol Header Fundamentals Explained with Diagrams</a>;</p>
-</li>
-<li>
-<p>仅就算法而言，IP报头的checksum定义为：IP报头中所有16-bit字的反码之和；也就是说把IP报头按照16-bit字分割，然后把它们逐一相加，要求相加的结果仍为16-bit字，如果出现溢出(结果超出16-bit字)，则丢弃溢出并把结果加1，全部16-bit字相加完成的结果再求反码，其结果就是checksum；</p>
-</li>
-<li>
-<p>上面的计算方法是在报文的发送端完成的；在接收端首先要将IP报头中的checksum字段清0，然后用与发送端相同的方法计算，得到的值与收到的IP报头中的checksum字段比较，如果一样，则表示IP报头完好，否则认为IP报头已经损坏；</p>
-</li>
-<li>
-<p>实际在发送端的做法是：将IP报头按照16-bit字分割，然后把它们逐一相加(包括收到的checksum字段)，其结果如果为全1(0XFFFF)，则表示IP报头完好，否则认为IP报头已经损坏。</p>
-</li>
+</ul>
+<hr>
+<ul>
+<li>更好地理解IP报头各字段的含义，可以参考我的另一篇文章<a href="/post/blog/linux/0011-link_layer_programming/">《Linux下如何在数据链路层接收原始数据包》</a>或者参考 <a href="https://www.thegeekstuff.com/2012/03/ip-protocol-header/">IP Protocol Header Fundamentals Explained with Diagrams</a>;</li>
+<li>仅就算法而言，IP报头的checksum定义为：IP报头中所有16-bit字的反码之和；也就是说把IP报头按照16-bit字分割，然后把它们逐一相加，要求相加的结果仍为16-bit字，如果出现溢出(结果超出16-bit字)，则丢弃溢出并把结果加1，全部16-bit字相加完成的结果再求反码，其结果就是checksum；</li>
+<li>上面的计算方法是在报文的发送端完成的；在接收端首先要将IP报头中的checksum字段清0，然后用与发送端相同的方法计算，得到的值与收到的IP报头中的checksum字段比较，如果一样，则表示IP报头完好，否则认为IP报头已经损坏；</li>
+<li>实际在发送端的做法是：将IP报头按照16-bit字分割，然后把它们逐一相加(包括收到的checksum字段)，其结果如果为全1(0XFFFF)，则表示IP报头完好，否则认为IP报头已经损坏。</li>
 </ul>
 <h2 id="3-ip报头checksum实例">3. IP报头checksum实例</h2>
 <ul>
@@ -386,8 +381,12 @@
           <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
           </div>
       <nav class="post-nav">
-        
-        <a class="next" href="/post/blog/c/0005-checksum_of_udp_header/">
+        <a class="prev" href="/post/blog/network/0006-send_udp_with_raw_socket/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">如何使用raw socket发送UDP报文</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/network/0003-checksum_of_udp_header/">
             <span class="next-text nav-default">如何计算UDP头的checksum</span>
             <span class="next-text nav-mobile">下一篇</span>
             <i class="iconfont icon-right"></i>
@@ -398,7 +397,7 @@
         </div>
         
 
-  <span id="/post/blog/linux/0010-checksum_of_ip_header/" class="leancloud_visitors" data-flag-title="如何计算IP报头的checksum">
+  <span id="/post/blog/network/0004-checksum_of_ip_header/" class="leancloud_visitors" data-flag-title="如何计算IP报头的checksum">
 		<span class="post-meta-item-text">文章阅读量 </span>
 		<span class="leancloud-visitors-count">0</span>
 		<p></p>

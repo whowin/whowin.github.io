@@ -9,10 +9,10 @@
     <lastBuildDate>Mon, 12 Dec 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/internet-checksum/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>如何计算UDP头的checksum</title>
-      <link>https://whowin.gitee.io/post/blog/c/0005-checksum_of_udp_header/</link>
+      <link>https://whowin.gitee.io/post/blog/network/0003-checksum_of_udp_header/</link>
       <pubDate>Mon, 12 Dec 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/c/0005-checksum_of_udp_header/</guid>
+      <guid>https://whowin.gitee.io/post/blog/network/0003-checksum_of_udp_header/</guid>
       <description>&lt;p&gt;UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序。&lt;/p&gt;</description>
     </item>
     
