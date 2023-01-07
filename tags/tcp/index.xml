@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>TCP on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/tcp/</link>
+    <description>Recent content in TCP on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 06 Jan 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/tcp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用C语言实现服务器/客户端的TCP通信</title>
+      <link>https://whowin.gitee.io/post/blog/network/0012-tcp_server_client_implementation_in_c/</link>
+      <pubDate>Fri, 06 Jan 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0012-tcp_server_client_implementation_in_c/</guid>
+      <description>&lt;p&gt;本文力求使用简单的描述说明一个服务器/客户端TCP通信的基本程序框架，文中给出了服务器端和客户端的实例源程序，本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
