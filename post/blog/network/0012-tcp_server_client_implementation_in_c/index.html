@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用C语言实现服务器/客户端的TCP通信">
 <meta itemprop="description" content="本文力求使用简单的描述说明一个服务器/客户端TCP通信的基本程序框架，文中给出了服务器端和客户端的实例源程序，本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0"><meta itemprop="datePublished" content="2023-01-06T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-01-06T16:43:29+08:00" />
-<meta itemprop="wordCount" content="5553">
+<meta itemprop="wordCount" content="5909">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,TCP," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用C语言实现服务器/客户端的TCP通信"/>
 <meta name="twitter:description" content="本文力求使用简单的描述说明一个服务器/客户端TCP通信的基本程序框架，文中给出了服务器端和客户端的实例源程序，本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0"/>
@@ -179,7 +179,7 @@
 <p>所谓面向连接指的是在进行传输数据之前要确保进行通信的两台主机已经建立起了连接，比如A机和B机进行TCP通信，A发起通信时要首先连接B机，连接建立起来以后才能够进行数据传输(发送和接收数据)，如果无法建立连接(比如B机没有开机)则不能进行数据传输；TCP协议有完善的错误检查和错误恢复的能力，能够保证数据完好无损地传输到目的地；</p>
 </blockquote>
 <blockquote>
-<p>所谓面向无连接指的是在传输数据之前无须在两台进行通信的主机之间建立连接，直接发送数据即可，带来的问题是如果需要通信的两台主机如果其中有一台没有连接在网络上，那么发送的数据肯定是不能到达目的地的，同样，UDP协议没有完善的纠错机制，所以如果传输过程中出现错误，某个数据包会被丢弃，导致数据没有到达目的地或者到达目的地的数据不完整；</p>
+<p>所谓面向无连接指的是在传输数据之前无须在两台进行通信的主机之间建立连接，直接发送数据即可，带来的问题是如果需要通信的两台主机如果其中有一台没有连接在网络上，那么发送的数据肯定是不能到达目的地的，同样，UDP协议没有完善的纠错机制，所以如果传输过程中出现错误，出错的数据包会被丢弃，导致数据没有到达目的地或者到达目的地的数据不完整；</p>
 </blockquote>
 <blockquote>
 <p>相比较UDP通信，TCP通信对资源要求的要多一些，所以传输速度比起UDP就要慢一些，但其高可靠性的特点使得很多应用层的协议都是基于TCP协议的，比如：HTTP、HTTPS、FTP、SMTP、ssh等；</p>
@@ -273,9 +273,10 @@
 <ol>
 <li>sockfd：socket文件描述符</li>
 <li>addr：建立连接的地址结构，struct sockaddr结构在后面介绍</li>
-<li>addrlen：地址结构的大小</li>
+<li>addrlen：地址结构的大小，注意这里参数是一个指针，与connect()不同</li>
 </ol>
 </li>
+<li>调用这个函数时，addr和addrlen在调用成功后将被填写好对端的地址和端口信息，所以在调用前最好将其清0；如果我们并不关心对端的地址信息，这两个参数其实也可以为NULL；</li>
 </ul>
 </li>
 <li>
@@ -326,8 +327,25 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct sockaddr {
-</span></span><span class="line"><span class="cl">    __SOCKADDR_COMMON (sa_);	/* Common data: address family and length.  */
-</span></span><span class="line"><span class="cl">    char sa_data[14];		/* Address data.  */
+</span></span><span class="line"><span class="cl">    __SOCKADDR_COMMON (sa_);  /* Common data: address family and length.  */
+</span></span><span class="line"><span class="cl">    char sa_data[14];         /* Address data.  */
+</span></span><span class="line"><span class="cl">};
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>通常情况下，做socket编程时，我们只会include &lt;sys/socket.h&gt;，sys/socket.h中会include &lt;bits/socket.h&gt;；在(struct sockaddr)结构中的宏__SOCKADDR_COMMON展开后就是(sa_family_t sa_family)，sa_family_t是一个类型定义，实际为：unsigned short，所以(struct sockaddr)的结构为：</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct sockaddr {
+</span></span><span class="line"><span class="cl">    sa_family_t sa_family;  /* Common data: address family and length.  */
+</span></span><span class="line"><span class="cl">    char sa_data[14];       /* Address data.  */
 </span></span><span class="line"><span class="cl">};
 </span></span></code></pre></td></tr></table>
 </div>
@@ -932,7 +950,11 @@
           <a href="/tags/tcp/">TCP</a>
           </div>
       <nav class="post-nav">
-        
+        <a class="prev" href="/post/blog/network/0010-tcp_and_udp_server_using_select/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">使用select实现的UDP/TCP组合服务器</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
         <a class="next" href="/post/blog/network/0013-udp_server_client_implementation_in_c/">
             <span class="next-text nav-default">使用C语言实现服务器/客户端的UDP通信</span>
             <span class="next-text nav-mobile">下一篇</span>

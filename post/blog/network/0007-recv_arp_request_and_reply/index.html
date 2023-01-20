@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>接收arp请求并发送回应的实例 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。
+" /><meta name="keywords" content="linux, dos, hugo" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/network/0007-recv_arp_request_and_reply/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="接收arp请求并发送回应的实例" />
+<meta property="og:description" content="本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0007-recv_arp_request_and_reply/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-01-12T16:43:29+08:00" />
+<meta property="article:modified_time" content="2023-01-12T16:43:29+08:00" />
+
+<meta itemprop="name" content="接收arp请求并发送回应的实例">
+<meta itemprop="description" content="本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。"><meta itemprop="datePublished" content="2023-01-12T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2023-01-12T16:43:29+08:00" />
+<meta itemprop="wordCount" content="6006">
+<meta itemprop="keywords" content="Linux,Socket,网络编程,arp,raw socket," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="接收arp请求并发送回应的实例"/>
+<meta name="twitter:description" content="本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">About me</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">About me</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">接收arp请求并发送回应的实例</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-01-12 </span>
+        <div class="post-category">
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            <a href="/categories/network/"> Network </a>
+            </div>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-arp协议">1. ARP协议</a></li>
+        <li><a href="#2-arp请求回应的发送和接收">2. ARP请求/回应的发送和接收</a></li>
+        <li><a href="#3-接收arp请求并发送回应的实例">3. 接收ARP请求并发送回应的实例</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。</p>
+<h2 id="1-arp协议">1. ARP协议</h2>
+<ul>
+<li>
+<p>ARP(Address Resolution Protocol)，地址解析协议；在局域网上通过IP地址获取物理地址MAC的协议，该协议工作在数据链路层；</p>
+</li>
+<li>
+<p>为什么需要ARP协议</p>
+<ul>
+<li>以TCP/IP协议为例，应用程序在应用层发出信息后，在传输层(TCP层)加上一个TCP报头，TCP报头中需要填写源端口和目的端口，端口号标识着一台机器上的某个确定的应用程序，在网络层(IP层)加上一个IP报头，IP报头需要填写源IP地址和目的IP地址，IP地址标识着互联网上一台唯一的机器，所以，TCP报头和IP报头可以确定下来互联网上的某台机器上的某个应用程序；</li>
+<li>在数据链路层需要给数据包加上以太网报头，在以太网报头中，需要填的是机器的物理地址(MAC地址)，源地址和目的地址均要填MAC地址；</li>
+<li>我们可以使用ioctl获取本机的MAC地址，但是却无法获取目的地址的MAC地址，这时就需要使用ARP协议了；</li>
+</ul>
+</li>
+<li>
+<p>ARP的工作原理</p>
+<ul>
+<li>在以太网络中，每台机器均有一个ARP cache，里面存着一些IP地址和MAC地址的对应关系，在ubuntu下，内核把ARP cache映射为文件：/proc/net/arp</li>
+<li>在数据链路层需要填MAC地址时，首先查询ARP cache中是否有相应的记录，如果有则直接使用；</li>
+<li>如果在ARP cache中没有记录，则向局域网广播一个ARP请求，里面有需要获取MAC地址的机器所对应的IP地址，当这个IP地址收到这个ARP请求时，则会回应一个ARP回应，将自己的MAC地址告知发送请求的机器，发出请求的机器收到该回应后，应该在ARP cache中添加上这条记录；</li>
+<li>有关ARP cache的操作，请参考文章<a href="../0014-handling_arp_cache/">《如何用C语言操作arp cache》</a>。</li>
+</ul>
+</li>
+<li>
+<p>ARP请求/回应的格式</p>
+<ul>
+<li>对一个ARP请求的回应被称为ARP回应，ARP请求数据包和回应数据包的结构是一样的；</li>
+</ul>
+<p><img src="/images/180007/arp_packet.png" alt="arp request"></p>
+</li>
+</ul>
+<hr>
+<ul>
+<li>
+<p><strong>以太网报头(Ethernet Header)</strong></p>
+<ul>
+<li>数据链路层的以太网报头定义在头文件linux/if_ether.h中：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct ethhdr {
+</span></span><span class="line"><span class="cl">    unsigned char  h_dest[ETH_ALEN];    /* destination eth addr  */
+</span></span><span class="line"><span class="cl">    unsigned char  h_source[ETH_ALEN];  /* source ether addr  */
+</span></span><span class="line"><span class="cl">    __be16         h_proto;             /* packet type ID field  */
+</span></span><span class="line"><span class="cl">} __attribute__((packed));
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>上面的ETH_ALAN的值为6，定义在头文件linux/if_ether.h中；</li>
+<li>h_dest字段为目的MAC地址，h_source字段为源MAC地址；</li>
+<li>h_proto表示当前数据包在网络层使用的协议，Linux支持的协议在头文件linux/if_ether.h中定义；通常在网络层使用的IP协议，这个字段的值是0x0800(宏ETH_P_IP)，<strong>对于ARP报文，这个字段的值为0x0806(ETH_P_ARP)</strong>，表示网络层使用的是ARP协议；</li>
+<li>对于一个ARP请求数据包来说，h_dest通常为6个0xff，这是因为发送者并不知道目的机器的MAC地址，发送者的意图就是通过一个ARP请求包获得目的机器的MAC地址，所以发送者需要把这个数据包广播出去，使每台机器都可以收到，6个0xff表示一个广播地址；</li>
+<li>对于ARP请求的数据包来说，h_source是发送者自己的MAC地址，发送者在发送ARP请求时，自己的MAC地址是显然已知的；</li>
+<li>对于ARP回应的数据包来说，目的地址就是发送ARP请求包的机器，h_dest应该就是收到的ARP请求包中的h_source；</li>
+<li>对于ARP回应的数据包来说，h_source就是自己的MAC地址，这个当然是已知的；</li>
+<li>不管是ARP请求还是回应数据包，h_proto都是0x0806(宏ETH_P_ARP)，表示网络层使用的协议是ARP协议</li>
+</ul>
+</li>
+<li>
+<p><strong>ARP报头(ARP header)</strong></p>
+<p><img src="/images/180007/arp_header.png" alt="ARP header"></p>
+<hr>
+<ul>
+<li>arp报头定义在头文件linux/if_arp.h中：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct arphdr {
+</span></span><span class="line"><span class="cl">    __be16          ar_hrd;       /* format of hardware address   */
+</span></span><span class="line"><span class="cl">    __be16          ar_pro;       /* format of protocol address   */
+</span></span><span class="line"><span class="cl">    unsigned char   ar_hln;       /* length of hardware address   */
+</span></span><span class="line"><span class="cl">    unsigned char   ar_pln;       /* length of protocol address   */
+</span></span><span class="line"><span class="cl">    __be16          ar_op;        /* ARP opcode (command)         */
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>ar_hrd字段为ARP协议硬件类型，相关定义在linux/if_arp.h中，对以太网而言，硬件类型为1(宏ARPHRD_ETHER)；</li>
+<li>ar_pro字段为协议类型，协议类型定义在linux/if_ether.h中，IP协议的协议类型为0x800(宏ETH_P_IP)；</li>
+<li>ar_hln字段为硬件地址的长度，对以太网而言，硬件地址就是MAC地址，长度是6 bytes(宏ETH_ALEN)；</li>
+<li>ar_pln字段为协议地址长度，对IP协议的IPv4而言，协议地址就是IP地址，长度是4 bytes；</li>
+<li>ar_op字段表示要执行的操作，1-ARP请求，2-ARP回应；</li>
+<li>在发送ARP回应时，ARP报头比较好处理，只需要把ar_op从1(宏ARROP_REQUEST)改成2(ARROP_REPLY)即可，其它字段均不需要改动。</li>
+</ul>
+</li>
+<li>
+<p><strong>ARP Payload</strong></p>
+<p><img src="/images/180007/arp_payload.png" alt="ARP payload"></p>
+<hr>
+<ul>
+<li>对于以太网IPv4而言，ARP payload的定义如下
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct eth_arpmsg {
+</span></span><span class="line"><span class="cl">    unsigned char   arp_sha[ETH_ALEN];   /* Sender Hardware Address(MAC) */
+</span></span><span class="line"><span class="cl">    unsigned char   arp_spa[4];          /* Sender Protocol Address(IP) */
+</span></span><span class="line"><span class="cl">    unsigned char   arp_dha[ETH_ALEN];   /* Destination Hardware Address(MAC) */
+</span></span><span class="line"><span class="cl">    unsigned char   arp_dpa[4];          /* Destination Protocol Address(IP) */
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>ARP payload的实际长度要根据ARP报头来确定，对于以太网IPv4而言，其结构是可以确定的，但对于其它网络而言，硬件地址的表达形式可能不是MAC地址，那么sender hardware address的长度也有可能不是6；协议地址的长度也是一样，比如IPv6的协议地址长度就是128位，16个字节；所以，如果不是以太网，则arp payload是要重新定义的，好在我们日常见到的网络都是以太网IPv4；</li>
+<li>对于ARP请求数据包而言，arp_sha和arp_spa为发送者的MAC地址和IP地址，发送者是已知的，接收者的IP也是知道的，所以arp_dpa字段也是填好的，但接收者的MAC地址，也就是arp_dha字段发送者并不知道(发送者发送ARP请求就是为了获得这个MAC)，所以收到的ARP请求包里arp_dha字段为6个0；</li>
+<li>在回应ARP请求包时，ARP请求包的发送者成为了接收者，arp_dha和arp_dpa(目的机器的MAC和IP)应该就是请求包中的arp_sha和arp_spa；</li>
+<li>在ARP回应数据包中，arp_sha和arp_spa就是本机的MAC地址和IP地址，这些信息都是已知的。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-arp请求回应的发送和接收">2. ARP请求/回应的发送和接收</h2>
+<ul>
+<li>对于习惯于使用socket基于TCP/IP协议的编程来说，arp的请求既无法使用TCP socket发送，也无法使用UDP socket发送；接收也是一样，TCP/UDP socket是无法收到ARP的回应信息的；</li>
+<li>前面说过，ARP协议是工作在数据链路层的，而TCP/UDP socket是用在应用层的，应用层发送的数据在传输层要被加上一个TCP/UDP头，在网络层要被加上一个IP头，在数据链路层要被加上一个以太网头，然后才交给物理层发送；</li>
+<li>相关概念请参考<a href="../0002-link_layer_programming/">《Linux下如何在数据链路层接收原始数据包》</a>和<a href="../0006-send_udp_with_raw_socket/">《如何使用raw socket发送UDP报文》</a></li>
+<li>发送ARP请求、接收ARP回应只能在数据链路层完成，要在数据链路层上编程，需要用到raw socket，相关的知识也请参考上面两篇文章；</li>
+<li>在发送ARP请求时，封装过程与文章<a href="../0006-send_udp_with_raw_socket/">《如何使用raw socket发送UDP报文》</a>中类似；</li>
+<li>在接收ARP回应时，拆包过程与文章<a href="../0002-link_layer_programming/">《Linux下如何在数据链路层接收原始数据包》</a>中类似；</li>
+<li>使用程序获取、添加和删除ARP cache记录的方法，请参考文章<a href="../0014-handling_arp_cache/">《如何用C语言操作arp cache》</a></li>
+<li>关于如何构建以太网头、ARP报头和ARP payload，在上一节介绍以太网报头和ARP报文时已经做了介绍。</li>
+</ul>
+<h2 id="3-接收arp请求并发送回应的实例">3. 接收ARP请求并发送回应的实例</h2>
+<ul>
+<li>
+<p>在这个例子中，程序接收局域网上所有机器发出的arp请求包，如果这个请求包是发给本机的，即arp请求包中的目的IP为本机IP，则显示收到的以太网报头和arp报文，并向发送者发送一个arp回应；</p>
+</li>
+<li>
+<p>程序的运行步骤如下：</p>
+<ol>
+<li>创建一个raw socket</li>
+<li>查询网络接口的索引号(interface index)</li>
+<li>查询本机的MAC地址</li>
+<li>查询本机的IP地址</li>
+<li>为发送arp报文设置sockaddr_ll</li>
+<li>等待接收来自网络的数据包</li>
+<li>如果数据包不是arp数据包，则忽略，回到步骤6</li>
+<li>如果数据包不是arp请求包，则忽略，回到步骤6</li>
+<li>如果arp请求包不是发给本机的，则忽略，回到步骤6</li>
+<li>显示以太网报头</li>
+<li>显示arp数据包(arp header + arp payload)</li>
+<li>构建用于发送arp reply的以太网报头</li>
+<li>构建用于发送arp reply的arp数据包</li>
+<li>将sockaddr_ll中的sll_addr字段填为目的MAC地址</li>
+<li>显示用于发送arp reply的以太网报头</li>
+<li>显示用于发送arp reply的arp数据包内容</li>
+<li>发送arp reply</li>
+<li>回到步骤6</li>
+</ol>
+</li>
+<li>
+<p>该程序的主体在一个死循环中，所以程序只能使用ctrl+c退出，为了保证退出时能很好地清理现场，程序中拦截了SIGINT信号，当按下ctrl+c时，程序将收到这个信号，进行现场清理并退出；</p>
+</li>
+<li>
+<p>还是要简单讨论一下构建发送arp reply的arp数据包的过程：</p>
+<ol>
+<li>当收到一个arp请求时，其中的arp头部分基本不需要变，唯一要变的ar_op字段，因为这个字段在收到的数据包里为1，意即这是arp request，这个字段要改为2，意即这是一个arp reply</li>
+<li>收到的arp报文中arp_sha为发送人的MAC，发送arp reply时，这个MAC应该成为收件人MAC，即：arp_dha，所以要将arp_sha拷贝到arp_dha</li>
+<li>收到的arp报文中arp_spa为发送人的IP，发送arp reply时，这个IP应该成为收件人IP，即：arp_dpa，所以要将arp_spa拷贝到arp_dpa</li>
+<li>发送arp reply时，发件人MAC，也就是arp_sha应该为本机的MAC</li>
+<li>发送arp reply时，发件人IP，也就是arp_spa应该为本机IP</li>
+</ol>
+</li>
+<li>
+<p>构建以太网报头的过程：</p>
+<ol>
+<li>收到的以太网报头中的收件人的MAC(h_dest)，应该为6个0xff，因为发送者发送arp request时并不知道接收者的MAC，所以发的是广播报文；</li>
+<li>收到的以太网报头中的发件人的MAC(h_source)，在发送arp reply时应该为以太网报头中的收件人的MAC(h_dest)；</li>
+<li>发送arp reply时的发件人的MAC应该填本机的MAC；</li>
+</ol>
+</li>
+<li>
+<p>由于ARP工作在数据链路层，所以不能使用普通的socket进行接收和发送，需要使用raw socket，使用raw socket时需要使用一个结构(struct sockaddr_ll)，这个结构的作用类似于IPv4的socket编程中的(struct sockaddr_in)的作用，有关这个结构的简单介绍，可以参考文章<a href="../0006-send_udp_with_raw_socket/">《如何使用raw socket发送UDP报文》</a></p>
+</li>
+<li>
+<p>由于这个程序是使用raw socket在数据链路层上接收数据，所以实际上程序可以收到在局域网上的所有数据包，程序过滤掉了不是ARP协议的数据包，然后又过滤掉了目的IP不是本机的数据包，在ctrl+c退出时，程序会显示收到了多少数据包，其中ARP协议数据包有多少，ARP请求包有多少，程序一共回应了多少个数据包，数据还是有点意思的；</p>
+</li>
+<li>
+<p>下面是源程序，文件名：arp_server.c</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span><span class="lnt">203
+</span><span class="lnt">204
+</span><span class="lnt">205
+</span><span class="lnt">206
+</span><span class="lnt">207
+</span><span class="lnt">208
+</span><span class="lnt">209
+</span><span class="lnt">210
+</span><span class="lnt">211
+</span><span class="lnt">212
+</span><span class="lnt">213
+</span><span class="lnt">214
+</span><span class="lnt">215
+</span><span class="lnt">216
+</span><span class="lnt">217
+</span><span class="lnt">218
+</span><span class="lnt">219
+</span><span class="lnt">220
+</span><span class="lnt">221
+</span><span class="lnt">222
+</span><span class="lnt">223
+</span><span class="lnt">224
+</span><span class="lnt">225
+</span><span class="lnt">226
+</span><span class="lnt">227
+</span><span class="lnt">228
+</span><span class="lnt">229
+</span><span class="lnt">230
+</span><span class="lnt">231
+</span><span class="lnt">232
+</span><span class="lnt">233
+</span><span class="lnt">234
+</span><span class="lnt">235
+</span><span class="lnt">236
+</span><span class="lnt">237
+</span><span class="lnt">238
+</span><span class="lnt">239
+</span><span class="lnt">240
+</span><span class="lnt">241
+</span><span class="lnt">242
+</span><span class="lnt">243
+</span><span class="lnt">244
+</span><span class="lnt">245
+</span><span class="lnt">246
+</span><span class="lnt">247
+</span><span class="lnt">248
+</span><span class="lnt">249
+</span><span class="lnt">250
+</span><span class="lnt">251
+</span><span class="lnt">252
+</span><span class="lnt">253
+</span><span class="lnt">254
+</span><span class="lnt">255
+</span><span class="lnt">256
+</span><span class="lnt">257
+</span><span class="lnt">258
+</span><span class="lnt">259
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;signal.h&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;sys/ioctl.h&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#include &lt;linux/if_ether.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;linux/if_arp.h&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#define BUF_SIZE            42
+</span></span><span class="line"><span class="cl">#define DEVICE              &#34;enp0s3&#34;    // Please modify according to the actual device
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">int sock_raw = 0;               // Socket descriptor
+</span></span><span class="line"><span class="cl">void *buffer = NULL;            // Buffer for receiving and sending packet
+</span></span><span class="line"><span class="cl">long total_packets = 0;         // how many packets were received
+</span></span><span class="line"><span class="cl">long total_arp_packets = 0;     // how many arp packets were received
+</span></span><span class="line"><span class="cl">long total_arp_req_packets = 0; // how many arp request packets were received
+</span></span><span class="line"><span class="cl">long answered_packets = 0;      // how many arp reply packets were sent
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">void sigint(int signum);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">struct __attribute__((packed)) arp_header {
+</span></span><span class="line"><span class="cl">    struct arphdr arp_hdr;              // arp header
+</span></span><span class="line"><span class="cl">    unsigned char arp_sha[ETH_ALEN];    // Sender Hardware Address
+</span></span><span class="line"><span class="cl">    unsigned char arp_spa[4];           // Sender Protocol Address
+</span></span><span class="line"><span class="cl">    unsigned char arp_dha[ETH_ALEN];    // Destination Hardware Address
+</span></span><span class="line"><span class="cl">    unsigned char arp_dpa[4];           // Destination Protocol Address
+</span></span><span class="line"><span class="cl">};
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">int main(void) {
+</span></span><span class="line"><span class="cl">    buffer = (void *)malloc(BUF_SIZE);                  // Buffer for Ethernet Frame
+</span></span><span class="line"><span class="cl">    unsigned char *eth_header = buffer;                 // Pointer to Ethenet Header
+</span></span><span class="line"><span class="cl">    struct ethhdr *eh = (struct ethhdr *)eth_header;    // Another pointer to ethernet header
+</span></span><span class="line"><span class="cl">    unsigned char *arp_header = buffer + sizeof(struct ethhdr); // it is arp header after ethernet header
+</span></span><span class="line"><span class="cl">    struct arp_header *ah = (struct arp_header *)arp_header;    // pointer to ARP header
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    struct ifreq ifr;               // use for getting MAC and IP via ioctl
+</span></span><span class="line"><span class="cl">    unsigned char src_mac[ETH_ALEN];// local MAC address
+</span></span><span class="line"><span class="cl">    uint32_t src_ip;                // local IP address
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    struct sockaddr_ll saddr_ll;    // structure for sending packet via raw socket
+</span></span><span class="line"><span class="cl">    int ifindex = 0;                // Ethernet Interface index
+</span></span><span class="line"><span class="cl">    int length;                     // length of received packet
+</span></span><span class="line"><span class="cl">    int sent;                       // length of sent packet
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    printf(&#34;Server started, entering initialiation phase...\n&#34;);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Step 1: create raw socket
+</span></span><span class="line"><span class="cl">    //===========================
+</span></span><span class="line"><span class="cl">    sock_raw = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
+</span></span><span class="line"><span class="cl">    if (sock_raw == -1) {
+</span></span><span class="line"><span class="cl">        perror(&#34;socket():&#34;);
+</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    printf(&#34;Successfully created socket: %i\n&#34;, sock_raw);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Step 2: retrieve ethernet interface index
+</span></span><span class="line"><span class="cl">    //===========================================
+</span></span><span class="line"><span class="cl">    memset(&amp;ifr, 0, sizeof(struct ifreq));
+</span></span><span class="line"><span class="cl">    strncpy(ifr.ifr_name, DEVICE, IFNAMSIZ - 1);
+</span></span><span class="line"><span class="cl">    if (ioctl(sock_raw, SIOCGIFINDEX, &amp;ifr) == -1) {
+</span></span><span class="line"><span class="cl">        perror(&#34;SIOCGIFINDEX&#34;);
+</span></span><span class="line"><span class="cl">        close(sock_raw);
+</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    ifindex = ifr.ifr_ifindex;
+</span></span><span class="line"><span class="cl">    printf(&#34;Successfully got interface index: %i\n&#34;, ifindex);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Step 3: retrieve corresponding MAC
+</span></span><span class="line"><span class="cl">    //====================================
+</span></span><span class="line"><span class="cl">    if (ioctl(sock_raw, SIOCGIFHWADDR, &amp;ifr) == -1) {
+</span></span><span class="line"><span class="cl">        perror(&#34;SIOCGIFINDEX&#34;);
+</span></span><span class="line"><span class="cl">        close(sock_raw);
+</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    memcpy(src_mac, ifr.ifr_hwaddr.sa_data, ETH_ALEN);
+</span></span><span class="line"><span class="cl">    printf(&#34;Successfully got local MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n&#34;,
+</span></span><span class="line"><span class="cl">            src_mac[0],src_mac[1],src_mac[2],src_mac[3],src_mac[4],src_mac[5]);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Step 4: retrieve corresponding IP
+</span></span><span class="line"><span class="cl">    //===================================
+</span></span><span class="line"><span class="cl">    memset(&amp;ifr, 0, sizeof(struct ifreq));
+</span></span><span class="line"><span class="cl">    strncpy(ifr.ifr_name, DEVICE, IFNAMSIZ - 1);
+</span></span><span class="line"><span class="cl">    if (ioctl(sock_raw, SIOCGIFADDR, &amp;ifr) &lt; 0) {
+</span></span><span class="line"><span class="cl">        printf(&#34;SIOCGIFADDR.\n&#34;);
+</span></span><span class="line"><span class="cl">        close(sock_raw);
+</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    memcpy((void *)&amp;src_ip, &amp;(((struct sockaddr_in *)&amp;(ifr.ifr_addr))-&gt;sin_addr), 4);
+</span></span><span class="line"><span class="cl">    printf(&#34;successfully got local IP address: %s\n&#34;, inet_ntoa(((struct sockaddr_in *)&amp;(ifr.ifr_addr))-&gt;sin_addr));
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // step 5: prepare sockaddr_ll for sending packet
+</span></span><span class="line"><span class="cl">    //================================================
+</span></span><span class="line"><span class="cl">    memset((void *)&amp;saddr_ll, 0, sizeof(struct sockaddr_ll));
+</span></span><span class="line"><span class="cl">    saddr_ll.sll_family   = PF_PACKET;
+</span></span><span class="line"><span class="cl">    saddr_ll.sll_protocol = htons(ETH_P_IP);
+</span></span><span class="line"><span class="cl">    saddr_ll.sll_ifindex  = ifindex;
+</span></span><span class="line"><span class="cl">    saddr_ll.sll_hatype   = ARPHRD_ETHER;         // hardware address type: ethernet
+</span></span><span class="line"><span class="cl">    saddr_ll.sll_pkttype  = PACKET_OTHERHOST;     // packet type: To someone else
+</span></span><span class="line"><span class="cl">    saddr_ll.sll_halen    = ETH_ALEN;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Step 5: establish signal handler
+</span></span><span class="line"><span class="cl">    //==================================
+</span></span><span class="line"><span class="cl">    signal(SIGINT, sigint);
+</span></span><span class="line"><span class="cl">    printf(&#34;Successfully established signal handler for SIGINT\n\n&#34;);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    while (sock_raw &gt; 0) {
+</span></span><span class="line"><span class="cl">        // Step 6: Wait for incoming packet...
+</span></span><span class="line"><span class="cl">        //======================================
+</span></span><span class="line"><span class="cl">        memset(buffer, 0, BUF_SIZE);
+</span></span><span class="line"><span class="cl">        length = recvfrom(sock_raw, buffer, BUF_SIZE, 0, NULL, NULL);
+</span></span><span class="line"><span class="cl">        if (length == -1) {
+</span></span><span class="line"><span class="cl">            perror(&#34;recvfrom():&#34;);
+</span></span><span class="line"><span class="cl">            close(sock_raw);
+</span></span><span class="line"><span class="cl">            exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        total_packets++;        // how many packets were received
+</span></span><span class="line"><span class="cl">        // Step 7: ignore the packet if not arp protocol
+</span></span><span class="line"><span class="cl">        //=============================================== 
+</span></span><span class="line"><span class="cl">        if (htons(eh-&gt;h_proto) != ETH_P_ARP)           // 0x806
+</span></span><span class="line"><span class="cl">            continue;
+</span></span><span class="line"><span class="cl">        total_arp_packets++;        // how many arp packets were received
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // Step 8: ignore the packet if not arp request(may reply)
+</span></span><span class="line"><span class="cl">        //=========================================================
+</span></span><span class="line"><span class="cl">        if (htons(ah-&gt;arp_hdr.ar_op) != ARPOP_REQUEST) {    // 0x0001
+</span></span><span class="line"><span class="cl">            /*
+</span></span><span class="line"><span class="cl">            printf(&#34;Received an arp reply. Source IP:%d.%d.%d.%d\tDest IP: %d.%d.%d.%d\n&#34;,
+</span></span><span class="line"><span class="cl">                    ah-&gt;arp_spa[0], ah-&gt;arp_spa[1], ah-&gt;arp_spa[2], ah-&gt;arp_spa[3],
+</span></span><span class="line"><span class="cl">                    ah-&gt;arp_dpa[0], ah-&gt;arp_dpa[1], ah-&gt;arp_dpa[2], ah-&gt;arp_dpa[3]);
+</span></span><span class="line"><span class="cl">            */
+</span></span><span class="line"><span class="cl">            continue;
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        total_arp_req_packets++;    // how many arp request packets were received
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // Step 9: ignore the packet if the destination is not this machine
+</span></span><span class="line"><span class="cl">        //==================================================================
+</span></span><span class="line"><span class="cl">        if (src_ip != *((uint32_t *)ah-&gt;arp_dpa)) {
+</span></span><span class="line"><span class="cl">            printf(&#34;Received an arp request. Source IP:%d.%d.%d.%d\tDest IP: %d.%d.%d.%d\n&#34;,
+</span></span><span class="line"><span class="cl">                    ah-&gt;arp_spa[0], ah-&gt;arp_spa[1], ah-&gt;arp_spa[2], ah-&gt;arp_spa[3],
+</span></span><span class="line"><span class="cl">                    ah-&gt;arp_dpa[0], ah-&gt;arp_dpa[1], ah-&gt;arp_dpa[2], ah-&gt;arp_dpa[3]);
+</span></span><span class="line"><span class="cl">            continue;
+</span></span><span class="line"><span class="cl">        } 
+</span></span><span class="line"><span class="cl">        // receive an arp request packet and the destination IP is this machine
+</span></span><span class="line"><span class="cl">        printf(&#34;\nReceived an arp request to this machine.\n&#34;);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // Step 10: display ethernet header
+</span></span><span class="line"><span class="cl">        //==================================
+</span></span><span class="line"><span class="cl">        printf(&#34;================== ETHERNET HEADER ========================\n&#34;);
+</span></span><span class="line"><span class="cl">        printf(&#34;ETHER DST MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n&#34;,
+</span></span><span class="line"><span class="cl">                eh-&gt;h_dest[0], eh-&gt;h_dest[1], eh-&gt;h_dest[2],
+</span></span><span class="line"><span class="cl">                eh-&gt;h_dest[3], eh-&gt;h_dest[4], eh-&gt;h_dest[5]);
+</span></span><span class="line"><span class="cl">        printf(&#34;ETHER SRC MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n&#34;,
+</span></span><span class="line"><span class="cl">                eh-&gt;h_source[0], eh-&gt;h_source[1], eh-&gt;h_source[2],
+</span></span><span class="line"><span class="cl">                eh-&gt;h_source[3], eh-&gt;h_source[4], eh-&gt;h_source[5]);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // Step 11: display arp packet 
+</span></span><span class="line"><span class="cl">        //=============================
+</span></span><span class="line"><span class="cl">        printf(&#34;================== ARP PACKET ========================\n&#34;);
+</span></span><span class="line"><span class="cl">        printf(&#34;------------------ ARP Header ------------------------\n&#34;);
+</span></span><span class="line"><span class="cl">        printf(&#34;  H/D TYPE: 0x%04x\t  PROTO TYPE: 0x%04x\n&#34;, 
+</span></span><span class="line"><span class="cl">                ntohs(ah-&gt;arp_hdr.ar_hrd), ntohs(ah-&gt;arp_hdr.ar_pro));
+</span></span><span class="line"><span class="cl">        printf(&#34;H/D length: %d\t\tPROTO length: %d\n&#34;, 
+</span></span><span class="line"><span class="cl">                (unsigned short)ah-&gt;arp_hdr.ar_hln, (unsigned short)ah-&gt;arp_hdr.ar_pln);
+</span></span><span class="line"><span class="cl">        printf(&#34; OPERATION: %x\n&#34;, ntohs(ah-&gt;arp_hdr.ar_op));
+</span></span><span class="line"><span class="cl">        printf(&#34;------------------ ARP Payload -----------------------\n&#34;);
+</span></span><span class="line"><span class="cl">        printf(&#34;SENDER MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n&#34;,
+</span></span><span class="line"><span class="cl">                ah-&gt;arp_sha[0], ah-&gt;arp_sha[1], ah-&gt;arp_sha[2],
+</span></span><span class="line"><span class="cl">                ah-&gt;arp_sha[3], ah-&gt;arp_sha[4], ah-&gt;arp_sha[5]);
+</span></span><span class="line"><span class="cl">        printf(&#34; SENDER IP address: %d.%d.%d.%d\n&#34;,
+</span></span><span class="line"><span class="cl">                ah-&gt;arp_spa[0], ah-&gt;arp_spa[1], ah-&gt;arp_spa[2], ah-&gt;arp_spa[3]);
+</span></span><span class="line"><span class="cl">        printf(&#34;TARGET MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n&#34;,
+</span></span><span class="line"><span class="cl">                ah-&gt;arp_dha[0], ah-&gt;arp_dha[1], ah-&gt;arp_dha[2],
+</span></span><span class="line"><span class="cl">                ah-&gt;arp_dha[3], ah-&gt;arp_dha[4], ah-&gt;arp_dha[5]);
+</span></span><span class="line"><span class="cl">        printf(&#34; TARGET IP address: %d.%d.%d.%d\n&#34;,
+</span></span><span class="line"><span class="cl">                ah-&gt;arp_dpa[0], ah-&gt;arp_dpa[1], ah-&gt;arp_dpa[2], ah-&gt;arp_dpa[3]);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // Step 12: construct ethernet header for sending arp reply
+</span></span><span class="line"><span class="cl">        //==========================================================
+</span></span><span class="line"><span class="cl">        // Destination MAC: should be received sender&#39;s MAC
+</span></span><span class="line"><span class="cl">        memcpy((void *)eth_header, (const void *)(eth_header + ETH_ALEN), ETH_ALEN);
+</span></span><span class="line"><span class="cl">        // Source MAC: should be local MAC
+</span></span><span class="line"><span class="cl">        memcpy((void *)(eth_header + ETH_ALEN), (const void *)src_mac, ETH_ALEN);
+</span></span><span class="line"><span class="cl">        eh-&gt;h_proto = ETH_P_ARP;        // protocol in network layer. defined in if_ether.h
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // Step 13: construct arp packet for sending arp reply
+</span></span><span class="line"><span class="cl">        //=====================================================
+</span></span><span class="line"><span class="cl">        ah-&gt;arp_hdr.ar_op = ARPOP_REPLY;            // 0x0002;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        memcpy(ah-&gt;arp_dha, ah-&gt;arp_sha, ETH_ALEN); // copy received source MAC to destination MAC
+</span></span><span class="line"><span class="cl">        memcpy(ah-&gt;arp_dpa, ah-&gt;arp_spa, 4);        // copy received source IP to destination IP
+</span></span><span class="line"><span class="cl">        memcpy(ah-&gt;arp_sha, src_mac, ETH_ALEN);     // change the sender MAC to local MAC
+</span></span><span class="line"><span class="cl">        memcpy(ah-&gt;arp_spa, (unsigned char *)&amp;src_ip, 4);   // copy local IP to source IP
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // Step 14: change sll_addr to destination MAC
+</span></span><span class="line"><span class="cl">        //=============================================
+</span></span><span class="line"><span class="cl">        memcpy(saddr_ll.sll_addr, eh-&gt;h_dest, ETH_ALEN);    // copy h_dest field of ethernet header to sll_addr
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // Step 15: diaplay ethernet header for sending arp reply
+</span></span><span class="line"><span class="cl">        //========================================================
+</span></span><span class="line"><span class="cl">        printf(&#34;\n=========== ETHERNET HEARDER FOR SENDING PACKET =========\n&#34;);
+</span></span><span class="line"><span class="cl">        printf(&#34;ETHER DST MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n&#34;,
+</span></span><span class="line"><span class="cl">                eh-&gt;h_dest[0], eh-&gt;h_dest[1], eh-&gt;h_dest[2],
+</span></span><span class="line"><span class="cl">                eh-&gt;h_dest[3], eh-&gt;h_dest[4], eh-&gt;h_dest[5]);
+</span></span><span class="line"><span class="cl">        printf(&#34;ETHER SRC MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n&#34;,
+</span></span><span class="line"><span class="cl">                eh-&gt;h_source[0], eh-&gt;h_source[1], eh-&gt;h_source[2],
+</span></span><span class="line"><span class="cl">                eh-&gt;h_source[3], eh-&gt;h_source[4], eh-&gt;h_source[5]);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // Step 16: display the content of arp reply
+</span></span><span class="line"><span class="cl">        //===========================================
+</span></span><span class="line"><span class="cl">        printf(&#34;================== ARP REPLY PACKET ========================\n&#34;);
+</span></span><span class="line"><span class="cl">        printf(&#34;------------------ ARP header ------------------------------\n&#34;);
+</span></span><span class="line"><span class="cl">        printf(&#34;  H/D TYPE: 0x%04x\t  PROTO TYPE: 0x%04x\n&#34;, 
+</span></span><span class="line"><span class="cl">                ntohs(ah-&gt;arp_hdr.ar_hrd), ntohs(ah-&gt;arp_hdr.ar_pro));
+</span></span><span class="line"><span class="cl">        printf(&#34;H/D length: %d\t\tPROTO length: %d\n&#34;, 
+</span></span><span class="line"><span class="cl">                (unsigned short)ah-&gt;arp_hdr.ar_hln, (unsigned short)ah-&gt;arp_hdr.ar_pln);
+</span></span><span class="line"><span class="cl">        printf(&#34; OPERATION: %x\n&#34;, ah-&gt;arp_hdr.ar_op);
+</span></span><span class="line"><span class="cl">        printf(&#34;------------------ ARP Payload -----------------------------\n&#34;);
+</span></span><span class="line"><span class="cl">        printf(&#34;SENDER MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n&#34;,
+</span></span><span class="line"><span class="cl">                ah-&gt;arp_sha[0], ah-&gt;arp_sha[1], ah-&gt;arp_sha[2],
+</span></span><span class="line"><span class="cl">                ah-&gt;arp_sha[3], ah-&gt;arp_sha[4], ah-&gt;arp_sha[5]);
+</span></span><span class="line"><span class="cl">        printf(&#34; SENDER IP address: %d.%d.%d.%d\n&#34;,
+</span></span><span class="line"><span class="cl">                ah-&gt;arp_spa[0], ah-&gt;arp_spa[1], ah-&gt;arp_spa[2], ah-&gt;arp_spa[3]);
+</span></span><span class="line"><span class="cl">        printf(&#34;TARGET MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n&#34;,
+</span></span><span class="line"><span class="cl">                ah-&gt;arp_dha[0], ah-&gt;arp_dha[1], ah-&gt;arp_dha[2],
+</span></span><span class="line"><span class="cl">                ah-&gt;arp_dha[3], ah-&gt;arp_dha[4], ah-&gt;arp_dha[5]);
+</span></span><span class="line"><span class="cl">        printf(&#34; TARGET IP address: %d.%d.%d.%d\n\n&#34;,
+</span></span><span class="line"><span class="cl">                ah-&gt;arp_dpa[0], ah-&gt;arp_dpa[1], ah-&gt;arp_dpa[2], ah-&gt;arp_dpa[3]);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        // Step 17: Send the arp replay
+</span></span><span class="line"><span class="cl">        //==============================
+</span></span><span class="line"><span class="cl">        sent = sendto(sock_raw, buffer, BUF_SIZE, 0, (struct sockaddr *)&amp;saddr_ll, sizeof(struct sockaddr_ll));
+</span></span><span class="line"><span class="cl">        if (sent == -1) {
+</span></span><span class="line"><span class="cl">            perror(&#34;sendto():&#34;);
+</span></span><span class="line"><span class="cl">            close(sock_raw);
+</span></span><span class="line"><span class="cl">            exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        answered_packets++;     // How many arp reply packets were sent
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">void sigint(int signum) {
+</span></span><span class="line"><span class="cl">    // Clean up ......
+</span></span><span class="line"><span class="cl">    if (sock_raw &gt; 0) close(sock_raw);
+</span></span><span class="line"><span class="cl">    if (buffer) free(buffer);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    printf(&#34;Server terminating....\n&#34;);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    printf(&#34;Totally received: %ld packets\n&#34;, total_packets);
+</span></span><span class="line"><span class="cl">    printf(&#34;Totally received: %ld ARP packets\n&#34;, total_arp_packets);
+</span></span><span class="line"><span class="cl">    printf(&#34;Totally received: %ld ARP request packets\n&#34;, total_arp_req_packets);
+</span></span><span class="line"><span class="cl">    printf(&#34;Answered %ld packets\n&#34;, answered_packets);
+</span></span><span class="line"><span class="cl">    exit(EXIT_SUCCESS);
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>编译，程序在ubuntu 20.04下编译通过，gcc版本为9.4.0</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gcc -Wall arp_server.c -o arp_server
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>运行，由于使用了raw socket，必须要要有root权限才可以运行</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo ./arp_server
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>如果看不到有发给本机的arp请求，可以将你的手机连接到你得电脑所在的局域网上，然后，在你的电脑上开一个新的终端，在新的终端上ping一下你手机的IP，通常会激活手机向你的机器发送一个arp请求，当然你也可以ping另一台局域网中的电脑试试；</p>
+</li>
+<li>
+<p>运行截图</p>
+<p><img src="/images/180007/screenshot_arp_server.png" alt="screenshot of running arp_server"></p>
+</li>
+</ul>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-01-12
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/socket/">Socket</a>
+          <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+          <a href="/tags/arp/">arp</a>
+          <a href="/tags/raw-socket/">raw socket</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/network/0014-handling_arp_cache/">
+            <span class="next-text nav-default">如何用C语言操作arp cache</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/network/0007-recv_arp_request_and_reply/" class="leancloud_visitors" data-flag-title="接收arp请求并发送回应的实例">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

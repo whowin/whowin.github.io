@@ -6,7 +6,16 @@
     <description>Recent content in raw socket on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 27 Dec 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/raw-socket/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 12 Jan 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/raw-socket/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>接收arp请求并发送回应的实例</title>
+      <link>https://whowin.gitee.io/post/blog/network/0007-recv_arp_request_and_reply/</link>
+      <pubDate>Thu, 12 Jan 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0007-recv_arp_request_and_reply/</guid>
+      <description>&lt;p&gt;本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>如何使用raw socket发送UDP报文</title>
       <link>https://whowin.gitee.io/post/blog/network/0006-send_udp_with_raw_socket/</link>
