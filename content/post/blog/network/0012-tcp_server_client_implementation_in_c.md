@@ -29,7 +29,7 @@ postid: 180012
 
 > 所谓面向连接指的是在进行传输数据之前要确保进行通信的两台主机已经建立起了连接，比如A机和B机进行TCP通信，A发起通信时要首先连接B机，连接建立起来以后才能够进行数据传输(发送和接收数据)，如果无法建立连接(比如B机没有开机)则不能进行数据传输；TCP协议有完善的错误检查和错误恢复的能力，能够保证数据完好无损地传输到目的地；
 
-> 所谓面向无连接指的是在传输数据之前无须在两台进行通信的主机之间建立连接，直接发送数据即可，带来的问题是如果需要通信的两台主机如果其中有一台没有连接在网络上，那么发送的数据肯定是不能到达目的地的，同样，UDP协议没有完善的纠错机制，所以如果传输过程中出现错误，某个数据包会被丢弃，导致数据没有到达目的地或者到达目的地的数据不完整；
+> 所谓面向无连接指的是在传输数据之前无须在两台进行通信的主机之间建立连接，直接发送数据即可，带来的问题是如果需要通信的两台主机如果其中有一台没有连接在网络上，那么发送的数据肯定是不能到达目的地的，同样，UDP协议没有完善的纠错机制，所以如果传输过程中出现错误，出错的数据包会被丢弃，导致数据没有到达目的地或者到达目的地的数据不完整；
 
 > 相比较UDP通信，TCP通信对资源要求的要多一些，所以传输速度比起UDP就要慢一些，但其高可靠性的特点使得很多应用层的协议都是基于TCP协议的，比如：HTTP、HTTPS、FTP、SMTP、ssh等；
 
@@ -86,7 +86,8 @@ postid: 180012
   - 参数说明：
     1. sockfd：socket文件描述符
     2. addr：建立连接的地址结构，struct sockaddr结构在后面介绍
-    3. addrlen：地址结构的大小
+    3. addrlen：地址结构的大小，注意这里参数是一个指针，与connect()不同
+  - 调用这个函数时，addr和addrlen在调用成功后将被填写好对端的地址和端口信息，所以在调用前最好将其清0；如果我们并不关心对端的地址信息，这两个参数其实也可以为NULL；
 
 * **ssize_t read(int fd, void \*buf, size_t count)**
   - 从指定文件描述符中读出内容到缓冲区中
@@ -110,10 +111,19 @@ postid: 180012
 * 结构**struct sockaddr** - 定义在bits/socket.h
   ```
   struct sockaddr {
-      __SOCKADDR_COMMON (sa_);	/* Common data: address family and length.  */
-      char sa_data[14];		/* Address data.  */
+      __SOCKADDR_COMMON (sa_);  /* Common data: address family and length.  */
+      char sa_data[14];         /* Address data.  */
   };
   ```
+  > 通常情况下，做socket编程时，我们只会include <sys/socket.h>，sys/socket.h中会include <bits/socket.h>；在(struct sockaddr)结构中的宏__SOCKADDR_COMMON展开后就是(sa_family_t sa_family)，sa_family_t是一个类型定义，实际为：unsigned short，所以(struct sockaddr)的结构为：
+
+  ```
+  struct sockaddr {
+      sa_family_t sa_family;  /* Common data: address family and length.  */
+      char sa_data[14];       /* Address data.  */
+  };
+  ```
+
   > 这个结构用做bind、recvfrom、sendto等函数的参数，指明地址信息，但实际编程中并不直接针对此数据结构操作，因为针对不同的协议族，地址信息是不同的，比如对于IPv4(AF_INET)，使用(struct sockaddr_in)，这个结构和sockaddr是等价的，但是把sockaddr中的sa_data部分做了更明确的定义；当协议族为IPv6(AF_INET6)时，使用(struct sockaddr_in6)来表示IPv6的地址；
 
   > 在使用这个结构作为函数参数时，通常需要传递地址结构的指针，而且还需要传递这个地址结构的长度，比如sendto()函数的定义为：ssize_t sendto(int sockfd, (const void *)buf, size_t len, int flags, (const struct sockaddr *)dest_addr, socklen_t addrlen)；其中最后一个参数addrlen就是地址结构dest_addr的长度，这是因为对不同的协议族，使用的地址结构不同，这个地址结构的长度也是不同的，比如IPv4使用的地址结构(struct sockaddr_in)和IPv6使用的地址结构(struct sockaddr_in6)的长度就不同。

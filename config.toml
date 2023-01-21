@@ -65,7 +65,7 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
 
   # site info (optional)                                  # 站点信息（可选，不需要的可以直接注释掉）
   logoTitle = "WhoWin"        # default: the title value    # 默认值: 上面设置的title值
-  keywords = ["linux", "dos", "hugo"]
+  keywords = ["linux", "socket", "hugo", "dos"]
   description = "———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创"
 
   # paginate of archives, tags and categories             # 归档、标签、分类每页显示的文章数目，建议修改为一个较大的值
@@ -179,12 +179,12 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
     enable = true
     siteUV = true
     sitePV = true
-    pagePV = true
+    pagePV = false
 
   [params.reward]                                         # 文章打赏
-    enable = false
-    wechat = "/path/to/your/wechat-qr-code.png"           # 微信二维码
-    alipay = "/path/to/your/alipay-qr-code.png"           # 支付宝二维码
+    enable = true
+    wechat = "/images/qrcode/wechat-qrcode.png"           # 微信二维码
+    alipay = "/images/qrcode/alipay-qrcode.jpg"           # 支付宝二维码
 
   [params.social]                                         # 社交链接
     a-email = "mailto:hengch@163.com"

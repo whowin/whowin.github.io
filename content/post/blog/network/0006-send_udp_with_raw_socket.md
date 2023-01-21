@@ -22,9 +22,14 @@ draft: false
 # - [TCP/IP四层模型](https://www.cnblogs.com/BlueTzar/articles/811160.html)
 # - [Linux网络编程（数据链路层）](https://blog.csdn.net/qq_36131611/article/details/118460589)
 # - [linux基础编程 链路层socket](https://blog.csdn.net/ghostyu/article/details/7737966)
+# - [Packet socket 和 sockaddr_ll](https://www.cnblogs.com/zhangshenghui/p/6097492.html)
 # - [OSI七层与TCP/IP五层网络架构详解](http://www.2cto.com/net/201310/252965.html)
 # - [data link layer programming in c](https://stackoverflow.com/questions/33073506/data-link-layer-programming-in-c)
 # - [A Guide to Using Raw Sockets](https://www.opensourceforu.com/2015/03/a-guide-to-using-raw-sockets/)
+# - [packet(7) — Linux manual page](https://man7.org/linux/man-pages/man7/packet.7.html)
+# -      struct sockaddr_ll
+# - [Send an arbitrary Ethernet frame using an AF_PACKET socket in C](http://www.microhowto.info/howto/send_an_arbitrary_ethernet_frame_using_an_af_packet_socket_in_c.html)
+# - [Send an arbitrary IPv4 datagram using a raw socket in C](http://www.microhowto.info/howto/send_an_arbitrary_ipv4_datagram_using_a_raw_socket_in_c.html)
 postid: 180006
 ---
 
@@ -283,20 +288,22 @@ postid: 180006
         unsigned short  sll_family;
         __be16          sll_protocol;
         int             sll_ifindex;
-        unsigned short  sll_hatype;
-        unsigned char   sll_pkttype;
-        unsigned char   sll_halen;
-        unsigned char   sll_addr[8];
+        unsigned short  sll_hatype;     // Hardware Address Type
+        unsigned char   sll_pkttype;    // Packet Type
+        unsigned char   sll_halen;      // Hardware Address Length
+        unsigned char   sll_addr[8];    // Address(Hardware Address)
     };
     ```
 
-    > 当要在数据链路层发送数据时，需要填写sll_ifindex、sll_halen和sll_addr三个字段即可，其中sll_ifindex是网络接口的索引号，sll_halen是硬件地址(MAC)的长度，ha是Hardware Address的意思，sll_addr是目的MAC地址。
+    > 当要在数据链路层发送数据时，需要填sll_family、sll_protocol、sll_ifindex、sll_halen和sll_addr，其它字段填0即可；在接收到数据包时会填写sll_hatype和sll_pkttype；其中sll_family为协议族，和建立raw socket是使用的协议族要一致，所以肯定是AF_PACKET(PF_PACKET)，sll_protocol是标准的以太网协议类型，定义在头文件linux/if_ether.h中，默认为socket的协议，可以和建立socket时的协议一致，也可以不填；sll_ifindex是网络接口的索引号，我们可以根据接口名称使用ioctl获得；sll_halen是硬件地址(MAC)的长度，ha是Hardware Address的意思，填常数ETH_ALEN(定义在头文件linux/if_ether.h中)；sll_addr是目的MAC地址。
+
+    > 实际上，在发送数据时，由于sll_family和sll_protocol都是和socket中一样的，所以都可以不填，只要填sll_ifindex、sll_halen和sll_addr即可。
 
 * 构建sockaddr_ll结构
     ```
     struct sockaddr_ll saddr_ll;
     saddr_ll.sll_ifindex = ifreq_index.ifr_ifindex;     // index of interface
-    saddr_ll.sll_halen = ETH_ALEN;      // length of destination mac address
+    saddr_ll.sll_halen   = ETH_ALEN;      // length of destination mac address
     saddr_ll.sll_addr[0] = DEST_MAC_0;
     saddr_ll.sll_addr[1] = DEST_MAC_1;
     saddr_ll.sll_addr[2] = DEST_MAC_2;
@@ -517,19 +524,20 @@ postid: 180006
         udp_header_len(send_buf, total_len);        // fill len field in udp header
         ip_header_len_check(send_buf, total_len);   // fill len and check fields in ip header
 
-        struct sockaddr_ll sadr_ll;
-        sadr_ll.sll_ifindex = if_index;
-        sadr_ll.sll_halen   = ETH_ALEN;
-        sadr_ll.sll_addr[0] = DEST_MAC_0;
-        sadr_ll.sll_addr[1] = DEST_MAC_1;
-        sadr_ll.sll_addr[2] = DEST_MAC_2;
-        sadr_ll.sll_addr[3] = DEST_MAC_3;
-        sadr_ll.sll_addr[4] = DEST_MAC_4;
-        sadr_ll.sll_addr[5] = DEST_MAC_5;
+        struct sockaddr_ll saddr_ll;
+        memset(&saddr_ll, 0, sizeof(struct sockaddr_ll))
+        saddr_ll.sll_ifindex = if_index;
+        saddr_ll.sll_halen   = ETH_ALEN;
+        saddr_ll.sll_addr[0] = DEST_MAC_0;
+        saddr_ll.sll_addr[1] = DEST_MAC_1;
+        saddr_ll.sll_addr[2] = DEST_MAC_2;
+        saddr_ll.sll_addr[3] = DEST_MAC_3;
+        saddr_ll.sll_addr[4] = DEST_MAC_4;
+        saddr_ll.sll_addr[5] = DEST_MAC_5;
 
         printf("Sending ...");
         while (send_len == 0) {
-            send_len = sendto(sock_raw, send_buf, 64, 0, (const struct sockaddr*)&sadr_ll, sizeof(struct sockaddr_ll));
+            send_len = sendto(sock_raw, send_buf, 64, 0, (const struct sockaddr *)&saddr_ll, sizeof(struct sockaddr_ll));
             if (send_len < 0) {
                 printf("error in sending....sendlen=%d....errno=%d\n", send_len, errno);
                 ret_value = -1;
@@ -565,7 +573,7 @@ postid: 180006
 * 可以修改一下程序，尝试使用你的默认网关的MAC地址代替目的MAC地址，正常情况下报文也是可以送达的；
 * 如果你可以在互联网上找到一台服务器，可以尝试向局域网外发送数据，同样，建议你将目的MAC地址填上默认网关的MAC地址，特别要注意的是要确认服务器上的防火墙放开了你在程序中设置的目的端口号，在服务器上启动netcat命令监听目的端口，在你自己的机器上运行程序，正常情况下，报文是可以送达的。
 
-
+*********
 **欢迎访问我的博客：https://whowin.cn**
 
 
