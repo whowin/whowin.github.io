@@ -17,7 +17,7 @@
 
 
 <meta name="author" content="whowin" /><meta name="description" content="PC机在启动的时候，都会看到一个PCI设备清单，可以看到机器中的所有PCI设备，其实搜索PCI设备的程序并不难编，本文通过一个实例说明如何遍历PCI设备。本文程序的工作环境：MS-DOS 6.22，djgpp&#43;RHIDE。本文初次发表于2008年4月2日，2011年3月11日做过修改，将其中的代码片段换为完整代码。
-" /><meta name="keywords" content="linux, dos, hugo" />
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
 
@@ -50,7 +50,7 @@
 <meta itemprop="name" content="遍历 PCI 设备">
 <meta itemprop="description" content="PC机在启动的时候，都会看到一个PCI设备清单，可以看到机器中的所有PCI设备，其实搜索PCI设备的程序并不难编，本文通过一个实例说明如何遍历PCI设备。本文程序的工作环境：MS-DOS 6.22，djgpp&#43;RHIDE。本文初次发表于2008年4月2日，2011年3月11日做过修改，将其中的代码片段换为完整代码。"><meta itemprop="datePublished" content="2008-04-02T09:15:23+08:00" />
 <meta itemprop="dateModified" content="2008-04-02T09:15:23+08:00" />
-<meta itemprop="wordCount" content="2896">
+<meta itemprop="wordCount" content="2922">
 <meta itemprop="keywords" content="DOS,DJGPP,保护模式,RHIDE,PCI," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="遍历 PCI 设备"/>
 <meta name="twitter:description" content="PC机在启动的时候，都会看到一个PCI设备清单，可以看到机器中的所有PCI设备，其实搜索PCI设备的程序并不难编，本文通过一个实例说明如何遍历PCI设备。本文程序的工作环境：MS-DOS 6.22，djgpp&#43;RHIDE。本文初次发表于2008年4月2日，2011年3月11日做过修改，将其中的代码片段换为完整代码。"/>
@@ -434,6 +434,9 @@
 <p>这是一个完整的遍历PCI设备的程序，本代码可以DJGPP下编译通过并正常执行（测试环境：DOS 6.22 DJGPP2.2+RHIDE1.5）。</p>
 </li>
 </ul>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">
@@ -451,21 +454,7 @@
   
   
 </div>
-<div class="post-reward">
-  <input type="checkbox" name="reward" id="reward" hidden />
-  <label class="reward-button" for="reward">赞赏支持</label>
-  <div class="qr-code">
-    
-    <label class="qr-code-image" for="reward">
-        <img class="image" src="/images/qrcode/wechat-qrcode.png">
-        <span>微信打赏</span>
-      </label>
-    <label class="qr-code-image" for="reward">
-        <img class="image" src="/images/qrcode/alipay-qrcode.jpg">
-        <span>支付宝打赏</span>
-      </label>
-  </div>
-</div><footer class="post-footer">
+<footer class="post-footer">
       <div class="post-tags">
           <a href="/tags/dos/">DOS</a>
           <a href="/tags/djgpp/">DJGPP</a>

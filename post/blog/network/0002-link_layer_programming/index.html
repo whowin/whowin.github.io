@@ -17,7 +17,7 @@
 
 
 <meta name="author" content="whowin" /><meta name="description" content="大多数的网络编程都是在应用层接收数据和发送数据的，本文介绍在数据链路层的网络编程方法，介绍如何在数据链路层直接接收从物理层发过来的原始数据数据包，文章给出了一个完整的范例程序。
-" /><meta name="keywords" content="linux, dos, hugo" />
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
 
@@ -1084,12 +1084,9 @@
 </ul>
 </li>
 </ul>
+<hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
-<!--
-## 6. 使用 raw socket 发送数据
-* 发送数据显然比接收数据要复杂一些，仍然以发送一个 UDP 数据包为例，我们需要自己封装 UDP 头、IP 头和以太网头，前面已经介绍了这三个报头，我们显然还需要更多的知识才能填写这三个报头的字段；
-* 源 IP 地址和 MAC 地址的获得
--->
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">
@@ -1107,21 +1104,7 @@
   
   
 </div>
-<div class="post-reward">
-  <input type="checkbox" name="reward" id="reward" hidden />
-  <label class="reward-button" for="reward">赞赏支持</label>
-  <div class="qr-code">
-    
-    <label class="qr-code-image" for="reward">
-        <img class="image" src="/images/qrcode/wechat-qrcode.png">
-        <span>微信打赏</span>
-      </label>
-    <label class="qr-code-image" for="reward">
-        <img class="image" src="/images/qrcode/alipay-qrcode.jpg">
-        <span>支付宝打赏</span>
-      </label>
-  </div>
-</div><footer class="post-footer">
+<footer class="post-footer">
       <div class="post-tags">
           <a href="/tags/linux/">Linux</a>
           <a href="/tags/socket/">Socket</a>

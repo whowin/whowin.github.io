@@ -17,7 +17,7 @@
 
 
 <meta name="author" content="whowin" /><meta name="description" content="本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0
-" /><meta name="keywords" content="linux, dos, hugo" />
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
 
@@ -720,7 +720,9 @@
 <li>对于服务器端程序，一定会遇到多个客户端同时向服务器端发送报文的情况，有多种方法处理这种情况，比如：多线程、select、epoll等；</li>
 <li>UDP通信也是可以像TCP通信那样，在传输数据前进行连接的，这一点，本文也没有进行讨论。</li>
 </ul>
+<hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">
@@ -738,21 +740,7 @@
   
   
 </div>
-<div class="post-reward">
-  <input type="checkbox" name="reward" id="reward" hidden />
-  <label class="reward-button" for="reward">赞赏支持</label>
-  <div class="qr-code">
-    
-    <label class="qr-code-image" for="reward">
-        <img class="image" src="/images/qrcode/wechat-qrcode.png">
-        <span>微信打赏</span>
-      </label>
-    <label class="qr-code-image" for="reward">
-        <img class="image" src="/images/qrcode/alipay-qrcode.jpg">
-        <span>支付宝打赏</span>
-      </label>
-  </div>
-</div><footer class="post-footer">
+<footer class="post-footer">
       <div class="post-tags">
           <a href="/tags/linux/">Linux</a>
           <a href="/tags/socket/">Socket</a>
