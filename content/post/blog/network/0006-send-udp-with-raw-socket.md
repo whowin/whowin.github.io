@@ -573,11 +573,17 @@ postid: 180006
 * 可以修改一下程序，尝试使用你的默认网关的MAC地址代替目的MAC地址，正常情况下报文也是可以送达的；
 * 如果你可以在互联网上找到一台服务器，可以尝试向局域网外发送数据，同样，建议你将目的MAC地址填上默认网关的MAC地址，特别要注意的是要确认服务器上的防火墙放开了你在程序中设置的目的端口号，在服务器上启动netcat命令监听目的端口，在你自己的机器上运行程序，正常情况下，报文是可以送达的。
 
-*********
+-------------
 **欢迎访问我的博客：https://whowin.cn**
 
+**email: hengch@163.com**
 
-[article01]:../0002-link_layer_programming/
-[article02]:../0004-checksum_of_ip_header/
-[article03]:../0003-checksum_of_udp_header/
-[article04]:../0005-send_udp_via_linue_cli/
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+
+
+[article01]:../0002-link-layer-programming/
+[article02]:../0004-checksum-of-ip-header/
+[article03]:../0003-checksum-of-udp-header/
+[article04]:../0005-send-udp-via-linux-cli/

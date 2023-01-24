@@ -122,7 +122,14 @@ postid: 180005
   ![接收使用cat命令发送的报文][img11]
 
 
+-------------
 **欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 

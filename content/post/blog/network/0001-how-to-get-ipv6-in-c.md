@@ -464,10 +464,14 @@ postid: 180001
     4. netlink
 * 本文所述的三个方法，正是使用了上述 2、3、4 三种方法；而获取 ipv6 地址，简单地使用系统调用无法实现。
 
+-------------
 **欢迎访问我的博客：https://whowin.cn**
 
+**email: hengch@163.com**
 
+![donation][img_sponsor_qrcode]
 
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [img01]:/images/180001/ipv6_ioctl.png

@@ -126,3 +126,13 @@ postid: 160003
     DPMI swap space available: 39413 kb
     ```
   * 实际数值会根据你系统中内存大小和空闲磁盘空间大小以及DPMI服务器不同而有所变化。如果两个数值的总和少于4MB，请阅读FAQ的第3.9节，“How to configure your system for DJGPP”。（尽管两数值之和大于4MB，为了使你的系统性能更高，也可以阅读这部分）
+
+
+-------------
+**欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png

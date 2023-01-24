@@ -160,8 +160,15 @@ postid: 100003
 * 大多数 OSC(Operating System Command)序列都是由 Xterm 定义的，但许多其他仿真终端也支持 OSC 序列。由于历史原因，Xterm 可以使用 BEL(ASCII 007) 结束命令，也可以使用标准 ST(ESC \) 结束命令。例如，Xterm 允许使用 **```\033]0；window title\007```** 设置窗口标题
 
 
+-------------
 **欢迎访问我的博客：https://whowin.cn**
 
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
-[article01]: ../0001-environment_variables_and_shell_variables/
+
+[article01]: ../0001-environment-variables-and-shell-variables/

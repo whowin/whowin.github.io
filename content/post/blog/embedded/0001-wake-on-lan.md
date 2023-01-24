@@ -651,7 +651,14 @@ postid: 110001
 > 如果你喜欢做嵌入式开发，希望这篇文章能给予你帮助。
 
 
+-------------
 **欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 

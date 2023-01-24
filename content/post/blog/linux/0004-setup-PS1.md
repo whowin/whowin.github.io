@@ -635,12 +635,18 @@ postid: 100004
 2. [《ANSI 的 ESCAPE 转义》][article03]
 
 
+-------------
 **欢迎访问我的博客：https://whowin.cn**
 
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
-[article01]: ../0001-environment_variables_and_shell_variables/
-[article02]: ../0002-ps1_control_codes/
+[article01]: ../0001-environment-variables-and-shell-variables/
+[article02]: ../0002-ps1-control-codes/
 [article03]: ../0003-ansi-escape-code/
 
 
@@ -669,27 +675,3 @@ postid: 100004
 [img22_trace_mode]:/images/100004/trace_mode.png
 <!-- -->
 
-<!-- 
-[img01_man_env_1]:../../../static/images/100004/man_env_1.png
-[img02_man_env_2]:../../../static/images/100004/man_env_2.png
-[img03_set_help]:../../../static/images/100004/set_help.png
-[img04_terminal_title]:../../../static/images/100004/terminal_title.png
-[img05_terminal_original_title]:../../../static/images/100004/terminal_original_title.png
-[img06_terminal_hello_title]:../../../static/images/100004/terminal_hello_title.png
-[img07_terminal_title_time]:../../../static/images/100004/terminal_title_time.png
-[img08_terminal_PS1_1]:../../../static/images/100004/terminal_PS1_1.png
-[img09_terminal_PS1_2]:../../../static/images/100004/terminal_PS1_2.png
-[img10_man_bash_1]:../../../static/images/100004/man_bash_1.png
-[img11_man_bash_2]:../../../static/images/100004/man_bash_2.png
-[img12_man_bash_3]:../../../static/images/100004/man_bash_2.png
-[img13_debian_chroot]:../../../static/images/100004/debian_chroot.png
-[img14_chroot_prompt]:../../../static/images/100004/chroot_prompt.png
-[img15_ps2_3_4]:../../../static/images/100004/ps2_3_4.png
-[img16_ps2_value]:../../../static/images/100004/ps2_value.png
-[img17_ps3_value]:../../../static/images/100004/ps3_value.png
-[img18_ps3_example_1]:../../../static/images/100004/ps3_example_1.png
-[img19_ps3_example_2]:../../../static/images/100004/ps3_example_2.png
-[img20_ps3_example_3]:../../../static/images/100004/ps3_example_3.png
-[img21_ps4_value]:../../../static/images/100004/ps4_value.png
-[img22_trace_mode]:../../../static/images/100004/trace_mode.png
-<!-- -->

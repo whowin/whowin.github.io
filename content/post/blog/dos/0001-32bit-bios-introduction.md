@@ -48,3 +48,14 @@ PCI BIOS 在 PCI 编程中起着一定的作用，PCI BIOS 的资料也不是很
 * 在调用 PCI BIOS 以前，操作系统必须将 BIOS 的代码和数据段定义为具有 EBX 和 ECX 中返回的物理地址范围；
 * 代码和数据段必须具有相同的起始地址。操作系统必须启动 BIOS 的优先级，以允许 I/O 操作，且必须为 BIOS 定义一个容量至少为 1KB 的堆栈区域；
 * BIOS 设计者必须假定操作系统将代码段定义为只执行，将数据段定义为只读。
+
+
+-------------
+**欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+

@@ -258,15 +258,21 @@ postid: 180011
 
     ![Screenshot of client][img02]
 
-******************
+-------------
 **欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [img01]:/images/180011/screenshot_of_server.png
 [img02]:/images/180011/screenshot_of_client_1.png
 
 
-[article1]:../0010-tcp_and_udp_server_using_select/
-[article2]:../0013-udp_server_client_implementation_in_c/
-[article3]:../0012-tcp_server_client_implementation_in_c/
-[article4]:../0005-send_udp_via_linux_cli/
+[article1]:../0010-tcp-and-udp-server-using-select/
+[article2]:../0013-udp-server-client-implementation-in-c/
+[article3]:../0012-tcp-server-client-implementation-in-c/
+[article4]:../0005-send-udp-via-linux-cli/

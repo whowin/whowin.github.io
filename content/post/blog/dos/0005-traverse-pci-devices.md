@@ -155,9 +155,19 @@ PC机在启动的时候，都会看到一个PCI设备清单，可以看到机器
     ```
   * 这是一个完整的遍历PCI设备的程序，本代码可以DJGPP下编译通过并正常执行（测试环境：DOS 6.22 DJGPP2.2+RHIDE1.5）。
 
+-------------
+**欢迎访问我的博客：https://whowin.cn**
 
-[article01]:../0001-32bit_bios_introduction/
-[article02]:../0002-invoking_pci_bios/
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+
+
+
+[article01]:../0001-32bit-bios_introduction/
+[article02]:../0002-invoking-pci-bios/
 
 [img01]:/images/160005/traverse_PCI_devices_01.jpg
 [-img01]:../../../static/images/160005/traverse_PCI_devices_01.jpg

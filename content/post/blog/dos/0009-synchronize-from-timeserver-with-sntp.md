@@ -286,3 +286,13 @@ postid: 160009
 * 至此，程序解释完毕，该程序在 DOS6.22，DJGPP v2，WATT-32 下编译通过并运行良好。
 
 > 下一篇文章计划写如何在DOS对AC'97的声卡进行编程，会举一个实例，敬请期待。
+
+
+-------------
+**欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png

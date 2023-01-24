@@ -426,9 +426,14 @@ postid: 180007
 
   ![screenshot of running arp_server][img04]
 
------------------
+-------------
 **欢迎访问我的博客：https://whowin.cn**
 
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [img01]:/images/180007/arp_packet.png
@@ -437,6 +442,6 @@ postid: 180007
 [img04]:/images/180007/screenshot_arp_server.png
 
 
-[article1]:../0002-link_layer_programming/
-[article2]:../0006-send_udp_with_raw_socket/
-[article3]:../0014-handling_arp_cache/
+[article1]:../0002-link-layer-programming/
+[article2]:../0006-send-udp-with-raw-socket/
+[article3]:../0014-handling-arp-cache/

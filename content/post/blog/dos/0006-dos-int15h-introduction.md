@@ -299,3 +299,12 @@ postid: 160006
 ## (24)、功能C4H
   * 功能描述：可编程选项选择，仅在PS/2中有效，在此从略
 
+
+-------------
+**欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png

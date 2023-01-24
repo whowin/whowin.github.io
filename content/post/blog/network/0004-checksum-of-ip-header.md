@@ -123,7 +123,14 @@ postid: 180004
 * 计算结果为全1，表明这个IP报头完好无损。
 
 
+-------------
 **欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 

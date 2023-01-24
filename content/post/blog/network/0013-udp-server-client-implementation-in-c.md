@@ -306,11 +306,18 @@ postid: 180013
 * 对于服务器端程序，一定会遇到多个客户端同时向服务器端发送报文的情况，有多种方法处理这种情况，比如：多线程、select、epoll等；
 * UDP通信也是可以像TCP通信那样，在传输数据前进行连接的，这一点，本文也没有进行讨论。
 
+-------------
 **欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
   
 [img01]:/images/180013/test_udpserver_with_nc.png
 [img02]:/images/180013//screenshot_of_udpclient.png
 [img03]:/images/180013/screenshot_of_udpserver.png
 
-[article1]:../0005-send_udp_via_linux_cli/
+[article1]:../0005-send-udp-via-linux-cli/

@@ -581,8 +581,14 @@ arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护
 
   ![screenshot of arp_del][img04]
 
-************************
+-------------
 **欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [img01]:/images/180014/screenshot_arp_get.png

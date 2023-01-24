@@ -500,15 +500,14 @@ postid: 180002
     **图6：收到的 UDP 数据包**
 
 
+-------------
 **欢迎访问我的博客：https://whowin.cn**
 
+**email: hengch@163.com**
 
-<!--
-## 6. 使用 raw socket 发送数据
-* 发送数据显然比接收数据要复杂一些，仍然以发送一个 UDP 数据包为例，我们需要自己封装 UDP 头、IP 头和以太网头，前面已经介绍了这三个报头，我们显然还需要更多的知识才能填写这三个报头的字段；
-* 源 IP 地址和 MAC 地址的获得
--->
+![donation][img_sponsor_qrcode]
 
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [img01]:/images/180002/sending_data_from_app_with_socket.png

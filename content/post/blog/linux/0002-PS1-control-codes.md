@@ -50,4 +50,11 @@ PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用�
   |27|\\]|一串非打印字符的结束符|
 
 
+-------------
 **欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png

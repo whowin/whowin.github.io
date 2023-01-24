@@ -413,9 +413,14 @@ postid: 180010
   
     ![Screenshot of client][img05]
 
-
+-------------
 **欢迎访问我的博客：https://whowin.cn**
 
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [img01]:/images/180010/server_test.png
@@ -425,6 +430,6 @@ postid: 180010
 [img05]:/images/180010/screenshot_of_client.png
 
 
-[article1]:../0013-udp_server_client_implementation_in_c/
-[article2]:../0012-tcp_server_client_implementation_in_c/
-[article3]:../0005-send_udp_via_linux_cli/
+[article1]:../0013-udp-server-client-implementation-in-c/
+[article2]:../0012-tcp-server-client-implementation-in-c/
+[article3]:../0005-send-udp-via-linux-cli/

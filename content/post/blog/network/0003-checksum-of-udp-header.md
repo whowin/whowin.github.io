@@ -231,7 +231,14 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
     4. 如果最后结果为全1，即：0XFFFF，则表示UDP报文正确，否则应该认为UDP报文有错误，应该丢弃。
 
 
+-------------
 **欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 

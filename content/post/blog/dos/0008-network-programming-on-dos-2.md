@@ -270,14 +270,24 @@ postid: 160008
 
 > 好了，这个具体的例子我们说完了，大概在 DOS 下进行网络编程的方法你应该了解了，要注意，由于我们是在 DJGPP 下生成的程序，是 32 位保护模式的，所以要在有 DPMI 服务的机器上才能运行，当然这种编程方式也适用于实模式，而且，尽管 WATT-32 库是 32 位的，但实际也支持 16 位的实模式，所以使用 turbo C 等也是可以的，我们以后有机会会更进一步地谈在 DOS 下进行网络编程的方法，或者介绍 Packet Driver 的编写规范和方法，或者介绍一下 DPMI 等等。
 
+-------------
+**欢迎访问我的博客：https://whowin.cn**
 
-[article01]:../0007-network_programming_on_dow_1/
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+
+
+
+[article01]:../0007-network-programming-on-dos-1/
 [article02]:https://beej.us/guide/bgnet/
 [article03]:/references/BSDsocket.pdf
 
 
-[img01]:../../../../static/images/160008/run_ftp_on_windows.jpg
-[img02]:../../../../static/images/160008/input_ftp_user_on_windows.jpg
-[img03]:../../../../static/images/160008/input_password_on_windows.jpg
-[img04]:../../../../static/images/160008/ftp_login_ok.jpg
-[img05]:../../../../static/images/160008/quit_from_ftp.jpg
+[img01]:/images/160008/run_ftp_on_windows.jpg
+[img02]:/images/160008/input_ftp_user_on_windows.jpg
+[img03]:/images/160008/input_password_on_windows.jpg
+[img04]:/images/160008/ftp_login_ok.jpg
+[img05]:/images/160008/quit_from_ftp.jpg

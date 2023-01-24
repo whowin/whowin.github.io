@@ -408,7 +408,14 @@ postid: 180012
 * 对于一个socket还有很多模式可以设置，通常使用fcntl()和setsockopt()进行设置，这些在本文中也没有讨论；
 * 对于服务器端程序，一定会遇到多个客户端同时向服务器端发送连接请求的情况，有多种方法处理这种情况，比如：多线程、select、epoll等；
 
+-------------
 **欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 
@@ -419,4 +426,4 @@ postid: 180012
 
 
 
-[article1]:../0005-send_udp_via_linux_cli/
+[article1]:../0005-send-udp-via-linux-cli/

@@ -331,10 +331,15 @@ Linux 下的文件权限管理分为三组：拥有者、组、其它用户，�
 * Linux 的文件目录其实也是一个文件，只是一般情况下无法像普通文件一样打开罢了，如果能很容易地打开并读出，就可以很清楚地看到文件权限在文件目录中的存储方式；
 * C 语言中有 getuid()、setuid()、geteuid()、seteuid()等与本文有关的函数，可以自己编程试一下；
 * 希望本文能够对读者理解 Linux 的权限管理有所帮助；
-* **欢迎访问我的博客：https://whowin.cn**
 
+-------------
+**欢迎访问我的博客：https://whowin.cn**
 
+**email: hengch@163.com**
 
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [img01]:/images/100012/ls_show_file_attr_4755.png

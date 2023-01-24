@@ -166,3 +166,13 @@ postid: 160004
     ```
   * 你可以看到一个类似 turbo C 的界面，这就是 RHIDE，rhide 和 djgpp 配合十分默契。
   * 至此，你已经可以开发 C/C++ 的32位保护模式下的程序了。
+
+
+-------------
+**欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png

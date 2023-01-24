@@ -453,32 +453,15 @@ postid: 100007
 
 
 
+-------------
 **欢迎访问我的博客：https://whowin.cn**
 
+**email: hengch@163.com**
 
+![donation][img_sponsor_qrcode]
 
-<!-- 本地使用的图片 --
-[img01]: ../../../../static/images/100007/select-language-region-language.png
-[img02]: ../../../../static/images/100007/select-language.png
-[img03]: ../../../../static/images/100007/select-language-restart.png
-[img04]: ../../../../static/images/100007/region-language-1.png
-[img05]: ../../../../static/images/100007/install-language-support.png
-[img06]: ../../../../static/images/100007/apply-whole-system.png
-[img07]: ../../../../static/images/100007/region-language-2.png
-[img08]: ../../../../static/images/100007/keep-old-names.png
-[img09]: ../../../../static/images/100007/region-language-3.png
-[img10]: ../../../../static/images/100007/add-input-source.png
-[img11]: ../../../../static/images/100007/add-pinyin.png
-[img12]: ../../../../static/images/100007/dock.png
-[img13]: ../../../../static/images/100007/dock-on-bottom.png
-[img14]: ../../../../static/images/100007/qv2ray-doubleclick.png
-[img15]: ../../../../static/images/100007/qv2ray-new-connection.png
-[img16]: ../../../../static/images/100007/qv2ray-core-settings.png
-[img17]: ../../../../static/images/100007/qv2ray-regular-settings.png
-[img18]: ../../../../static/images/100007/qv2ray-subscribe-setting.png
-[img19]: ../../../../static/images/100007/sogou-fcitx.png
-[img20]: ../../../../static/images/100007/not-install-language-support.png
-!-- -->
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+
 
 <!-- blog上使用的图片 -->
 [img01]: /images/100007/select-language-region-language.png

@@ -136,7 +136,17 @@ postid: 160007
 
 > 至此，我们学会了在 DJGPP 下安装、配置 WATT-32 的过程，同时学会了在 DJGPP 下使用 RHIDE 编译使用 WATT-32 库的程序，我们已经做好了进行网络编程的准备。
 
-[article01]:../0004-install_djgpp_rhide_under_dos/
+-------------
+**欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+
+
+[article01]:../0004-install-djgpp-rhide-under-dos/
 [article02]:https://beej.us/guide/bgnet/
 [article03]:/references/bgnet.txt
 [article04]:/references/Beej-cn-20140429.pdf

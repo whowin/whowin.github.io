@@ -82,13 +82,16 @@ postid: 100008
   * 本地软件仓库存放在 *Ubuntu* 上的 */var/lib/apt/lists/* 目录下
 
 
+-------------
 **欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 <!--实际使用-->
 [img01]:/images/100008/apt-update-screen.png
 
-<!--编辑时使用-->
-<!--
-[img01]:../../../../static/images/100008/apt-update-screen.png
--->
