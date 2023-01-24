@@ -9,28 +9,28 @@
     <lastBuildDate>Mon, 12 Dec 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/c%E8%AF%AD%E8%A8%80/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>如何计算UDP头的checksum</title>
-      <link>https://whowin.gitee.io/post/blog/network/0003-checksum_of_udp_header/</link>
+      <link>https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/</link>
       <pubDate>Mon, 12 Dec 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/network/0003-checksum_of_udp_header/</guid>
+      <guid>https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/</guid>
       <description>&lt;p&gt;UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>C语言如何获取ipv6地址</title>
-      <link>https://whowin.gitee.io/post/blog/network/0001-how_to_get_ipv6_in_c/</link>
+      <link>https://whowin.gitee.io/post/blog/network/0001-how-to-get-ipv6-in-c/</link>
       <pubDate>Sun, 16 Oct 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/network/0001-how_to_get_ipv6_in_c/</guid>
+      <guid>https://whowin.gitee.io/post/blog/network/0001-how-to-get-ipv6-in-c/</guid>
       <description>&lt;p&gt;使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>C语言函数调用时的参数传递机制</title>
-      <link>https://whowin.gitee.io/post/blog/c/0001-parameters_passing_mechanism/</link>
+      <link>https://whowin.gitee.io/post/blog/c/0001-parameters-passing-mechanism/</link>
       <pubDate>Tue, 20 Sep 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/c/0001-parameters_passing_mechanism/</guid>
+      <guid>https://whowin.gitee.io/post/blog/c/0001-parameters-passing-mechanism/</guid>
       <description>&lt;p&gt;本文通过实例验证了 C 语言函数调用时参数传递机制在 32 位和 64 位时的不同；阅读本文不仅需要 C 语言的知识，还需要有一些汇编语言的知识。&lt;/p&gt;</description>
     </item>
     

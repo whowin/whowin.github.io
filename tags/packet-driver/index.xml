@@ -9,10 +9,10 @@
     <lastBuildDate>Wed, 09 Apr 2008 10:06:26 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/packet-driver/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>在DOS下进行网络编程（上）</title>
-      <link>https://whowin.gitee.io/post/blog/dos/0007-network_programming_on_dos_1/</link>
+      <link>https://whowin.gitee.io/post/blog/dos/0007-network-programming-on-dos-1/</link>
       <pubDate>Wed, 09 Apr 2008 10:06:26 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/dos/0007-network_programming_on_dos_1/</guid>
+      <guid>https://whowin.gitee.io/post/blog/dos/0007-network-programming-on-dos-1/</guid>
       <description>&lt;p&gt;该文介绍了在 DOS 下的进行网络编程的基本方法，该文写于2008年4月，2022年重新发表修了一些修改&lt;/p&gt;</description>
     </item>
     

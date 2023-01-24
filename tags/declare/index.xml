@@ -9,10 +9,10 @@
     <lastBuildDate>Sun, 10 Apr 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/declare/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>bash 的环境变量和 shell 变量</title>
-      <link>https://whowin.gitee.io/post/blog/linux/0001-environment_variables_and_shell_variables/</link>
+      <link>https://whowin.gitee.io/post/blog/linux/0001-environment-variables-and-shell-variables/</link>
       <pubDate>Sun, 10 Apr 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/linux/0001-environment_variables_and_shell_variables/</guid>
+      <guid>https://whowin.gitee.io/post/blog/linux/0001-environment-variables-and-shell-variables/</guid>
       <description>&lt;p&gt;本文简单介绍了bash的启动过程；shell变量和环境变量的区别及相互转换；环境变量传递给子进程的过程；在当前环境下执行脚本及其实际应用&lt;/p&gt;</description>
     </item>
     

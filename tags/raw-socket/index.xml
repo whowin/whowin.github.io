@@ -9,28 +9,28 @@
     <lastBuildDate>Thu, 12 Jan 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/raw-socket/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>接收arp请求并发送回应的实例</title>
-      <link>https://whowin.gitee.io/post/blog/network/0007-recv_arp_request_and_reply/</link>
+      <link>https://whowin.gitee.io/post/blog/network/0007-recv-arp-request-and-reply/</link>
       <pubDate>Thu, 12 Jan 2023 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/network/0007-recv_arp_request_and_reply/</guid>
+      <guid>https://whowin.gitee.io/post/blog/network/0007-recv-arp-request-and-reply/</guid>
       <description>&lt;p&gt;本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>如何使用raw socket发送UDP报文</title>
-      <link>https://whowin.gitee.io/post/blog/network/0006-send_udp_with_raw_socket/</link>
+      <link>https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/</link>
       <pubDate>Tue, 27 Dec 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/network/0006-send_udp_with_raw_socket/</guid>
+      <guid>https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/</guid>
       <description>&lt;p&gt;前面写的一篇《Linux下如何在数据链路层接收原始数据包》举了一个实例，使用raw socket接收UDP数据报，但是发送一个数据包比接收要复杂一些，本文以一个实例说明如何使用raw socket发送一个UDP报文。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Linux下如何在数据链路层接收原始数据包</title>
-      <link>https://whowin.gitee.io/post/blog/network/0002-link_layer_programming/</link>
+      <link>https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/</link>
       <pubDate>Wed, 07 Dec 2022 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/network/0002-link_layer_programming/</guid>
+      <guid>https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/</guid>
       <description>&lt;p&gt;大多数的网络编程都是在应用层接收数据和发送数据的，本文介绍在数据链路层的网络编程方法，介绍如何在数据链路层直接接收从物理层发过来的原始数据数据包，文章给出了一个完整的范例程序。&lt;/p&gt;</description>
     </item>
     

@@ -9,10 +9,10 @@
     <lastBuildDate>Mon, 09 Jan 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/select/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>TCP服务器如何使用select处理多客户连接</title>
-      <link>https://whowin.gitee.io/post/blog/network/0011-handling_multiple_clients_on_server_with_select/</link>
+      <link>https://whowin.gitee.io/post/blog/network/0011-handling-multiple-clients-on-server-with-select/</link>
       <pubDate>Mon, 09 Jan 2023 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/network/0011-handling_multiple_clients_on_server_with_select/</guid>
+      <guid>https://whowin.gitee.io/post/blog/network/0011-handling-multiple-clients-on-server-with-select/</guid>
       <description>&lt;p&gt;本文用一个简化的实例说明如何在一个TCP服务器程序中，使用select处理同时出现的多个客户连接，文章给出了程序源代码，本文假定读者已经具备了基本的socket编程知识，熟悉基本的服务器/客户端模型架构。&lt;/p&gt;</description>
     </item>
     

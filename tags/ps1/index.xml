@@ -9,19 +9,19 @@
     <lastBuildDate>Mon, 18 Apr 2022 13:30:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/ps1/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>bash下变量PS1的完整理解</title>
-      <link>https://whowin.gitee.io/post/blog/linux/0004-setup_ps1/</link>
+      <link>https://whowin.gitee.io/post/blog/linux/0004-setup-ps1/</link>
       <pubDate>Mon, 18 Apr 2022 13:30:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/linux/0004-setup_ps1/</guid>
+      <guid>https://whowin.gitee.io/post/blog/linux/0004-setup-ps1/</guid>
       <description>&lt;p&gt;本文并不会讲解如何设置PS1以获得你喜欢的提示符；本文会围绕PS1这个变量，就其涉及到的一些概念展开讨论&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>完整的PS1控制码</title>
-      <link>https://whowin.gitee.io/post/blog/linux/0002-ps1_control_codes/</link>
+      <link>https://whowin.gitee.io/post/blog/linux/0002-ps1-control-codes/</link>
       <pubDate>Fri, 01 Apr 2022 14:00:00 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/linux/0002-ps1_control_codes/</guid>
+      <guid>https://whowin.gitee.io/post/blog/linux/0002-ps1-control-codes/</guid>
       <description>&lt;p&gt;PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用于该变量的所有的控制代码，仅供参考.&lt;/p&gt;</description>
     </item>
     

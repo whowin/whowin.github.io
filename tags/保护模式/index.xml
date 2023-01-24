@@ -9,28 +9,28 @@
     <lastBuildDate>Wed, 02 Apr 2008 09:15:23 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>遍历 PCI 设备</title>
-      <link>https://whowin.gitee.io/post/blog/dos/0005-traverse_pci_devices/</link>
+      <link>https://whowin.gitee.io/post/blog/dos/0005-traverse-pci-devices/</link>
       <pubDate>Wed, 02 Apr 2008 09:15:23 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/dos/0005-traverse_pci_devices/</guid>
+      <guid>https://whowin.gitee.io/post/blog/dos/0005-traverse-pci-devices/</guid>
       <description>&lt;p&gt;PC机在启动的时候，都会看到一个PCI设备清单，可以看到机器中的所有PCI设备，其实搜索PCI设备的程序并不难编，本文通过一个实例说明如何遍历PCI设备。本文程序的工作环境：MS-DOS 6.22，djgpp+RHIDE。本文初次发表于2008年4月2日，2011年3月11日做过修改，将其中的代码片段换为完整代码。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>在 DOS 下的 DJGPP &#43; RHIDE 安装实作</title>
-      <link>https://whowin.gitee.io/post/blog/dos/0004-install_djgpp_rhide_under_dos/</link>
+      <link>https://whowin.gitee.io/post/blog/dos/0004-install-djgpp-rhide-under-dos/</link>
       <pubDate>Fri, 28 Mar 2008 13:48:41 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/dos/0004-install_djgpp_rhide_under_dos/</guid>
+      <guid>https://whowin.gitee.io/post/blog/dos/0004-install-djgpp-rhide-under-dos/</guid>
       <description>&lt;p&gt;本文介绍在一个纯DOS构建一个C、C++和汇编的保护模式开发环境，编写的程序可以在纯DOS环境下运行在保护模式下&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>在 DOS 下安装 DJGPP</title>
-      <link>https://whowin.gitee.io/post/blog/dos/0003-djgpp_installation/</link>
+      <link>https://whowin.gitee.io/post/blog/dos/0003-djgpp-installation/</link>
       <pubDate>Thu, 27 Mar 2008 14:27:38 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/dos/0003-djgpp_installation/</guid>
+      <guid>https://whowin.gitee.io/post/blog/dos/0003-djgpp-installation/</guid>
       <description>&lt;p&gt;该文翻译自 &lt;strong&gt;djgpp version 2.03&lt;/strong&gt; 的 &lt;em&gt;.readme&lt;/em&gt; 文件。本文中包含获得、安装、使用 &lt;strong&gt;DJGPP&lt;/strong&gt; 的信息，在寻求帮助之前请完整阅读该文档。&lt;/p&gt;</description>
     </item>
     
