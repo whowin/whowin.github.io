@@ -30,27 +30,47 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
 
 [[menu.main]]             # config your menu              # 配置目录
   identifier = "home"
-  name = "Home"
+  name = "首页"
   url = "/"
   weight = 100
+#[[menu.main]]
+#  identifier = "archives"
+#  name = "Archives"
+#  url = "/post/"
+#  weight = 110
 [[menu.main]]
   identifier = "archives"
-  name = "Archives"
+  name = "文章归档"
   url = "/post/"
   weight = 110
+#[[menu.main]]
+#  name = "Categories"
+#  identifier = "categories"
+#  url = "/categories/"
+#  weight = 120
 [[menu.main]]
-  name = "Categories"
   identifier = "categories"
-  url = "/categories/"
+  name = "文章分类"
+  url = "/article-categories/categories/"
   weight = 120
+#[[menu.main]]
+#  identifier = "tags"
+#  name = "Tags"
+#  url = "/tags/"
+#  weight = 130
 [[menu.main]]
   identifier = "tags"
-  name = "Tags"
+  name = "文章标签"
   url = "/tags/"
   weight = 130
+#[[menu.main]]
+#  identifier = "about"
+#  name = "About me"
+#  url = "/about/about/"
+#  weight = 140
 [[menu.main]]
   identifier = "about"
-  name = "About me"
+  name = "关于"
   url = "/about/about/"
   weight = 140
 
