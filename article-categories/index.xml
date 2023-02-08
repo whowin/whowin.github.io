@@ -8,6 +8,15 @@
     <language>en</language><atom:link href="https://whowin.gitee.io/article-categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title></title>
+      <link>https://whowin.gitee.io/article-categories/archives/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/article-categories/archives/</guid>
+      <description>2023 01-12 如何用C语言操作arp cache 01-12 接收arp请求并发送回应的实例 01-09 TCP服务器如何使用select处理多客户连接 01-07 使用select实现的UDP/</description>
+    </item>
+    
+    <item>
+      <title></title>
       <link>https://whowin.gitee.io/article-categories/categories/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       

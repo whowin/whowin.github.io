@@ -6,7 +6,25 @@
     <description>Recent content in Posts on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 12 Jan 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 05 Feb 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>从proc文件系统中获取gateway的IP地址</title>
+      <link>https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/</link>
+      <pubDate>Sun, 05 Feb 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/</guid>
+      <description>&lt;p&gt;在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有&lt;code&gt;ip route&lt;/code&gt;或者&lt;code&gt;route -n&lt;/code&gt;，其实&lt;code&gt;route -n&lt;/code&gt;也是通过读取proc文件系统下的文件来从内核获取路由表的，但&lt;code&gt;ip route&lt;/code&gt;是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>linux下使用netlink获取gateway的IP地址</title>
+      <link>https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/</link>
+      <pubDate>Sat, 04 Feb 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/</guid>
+      <description>&lt;p&gt;要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，假定阅读本文的读者对linux下编程有一定了解，具备一定的C语言能力，熟悉IPv4的socket编程。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>接收arp请求并发送回应的实例</title>
       <link>https://whowin.gitee.io/post/blog/network/0007-recv-arp-request-and-reply/</link>

@@ -134,6 +134,52 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0010-tcp-and-udp-server-using-select/">使用select实现的UDP/TCP组合服务器</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-01-07 </span>
+      <div class="post-category">
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>在以前的文章中，我们给出过UDP服务器和TCP服务器的例子，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0010-tcp-and-udp-server-using-select/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0012-tcp-server-client-implementation-in-c/">使用C语言实现服务器/客户端的TCP通信</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-01-06 </span>
+      <div class="post-category">
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>本文力求使用简单的描述说明一个服务器/客户端TCP通信的基本程序框架，文中给出了服务器端和客户端的实例源程序，本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0012-tcp-server-client-implementation-in-c/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/network/0013-udp-server-client-implementation-in-c/">使用C语言实现服务器/客户端的UDP通信</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-01-05 </span>
@@ -195,50 +241,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/network/0004-checksum-of-ip-header/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0003-checksum-of-udp-header/">如何计算UDP头的checksum</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2022-12-12 </span>
-      <div class="post-category">
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0003-checksum-of-udp-header/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0005-send-udp-via-linux-cli/">如何在Linux命令行下发送和接收UDP数据包</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2022-12-10 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>众所周知，在传输层有两个常用的协议 TCP 和 UDP，本文介绍在 Linux 命令行下，如何使用 nc 命令发送或接收 UDP 数据包，这些命令的用法对调试 UDP 通信程序将有所帮助。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0005-send-udp-via-linux-cli/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
