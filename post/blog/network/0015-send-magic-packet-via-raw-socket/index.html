@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>使用raw socket发送magic packet - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/network/0015-send-magic-packet-via-raw-socket/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="使用raw socket发送magic packet" />
+<meta property="og:description" content="Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0015-send-magic-packet-via-raw-socket/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-02-09T16:43:29+08:00" />
+<meta property="article:modified_time" content="2023-02-09T16:43:29+08:00" />
+
+<meta itemprop="name" content="使用raw socket发送magic packet">
+<meta itemprop="description" content="Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。"><meta itemprop="datePublished" content="2023-02-09T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2023-02-09T16:43:29+08:00" />
+<meta itemprop="wordCount" content="4194">
+<meta itemprop="keywords" content="Linux,raw Socket,网络编程," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用raw socket发送magic packet"/>
+<meta name="twitter:description" content="Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">使用raw socket发送magic packet</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-02-09 </span>
+        <div class="post-category">
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            <a href="/categories/network/"> Network </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-magic-packet">1. Magic Packet</a></li>
+        <li><a href="#2-相关技术要点">2. 相关技术要点</a></li>
+        <li><a href="#3-在数据链路层发送magic-packet">3. 在数据链路层发送Magic Packet</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。</p>
+<h2 id="1-magic-packet">1. Magic Packet</h2>
+<ul>
+<li>我比较喜欢把这个数据包称作&quot;网络唤醒包&quot;；有很多地方把它翻译成&quot;魔术包&quot;或者&quot;魔法数据包&quot;，我个人觉着太过表面，无法表达其实际的含义；本文将这个数据包称为&quot;网络唤醒包&quot;或者&quot;Magic Packet&quot;，二者具有完全相同的含义；</li>
+<li>以前写过一篇与嵌入式相关的文章<a href="../embedded/0001-wake-on-lan/">《远程开机：一个简单的嵌入式项目开发》</a>，在嵌入式环境下使用Magic Packet进行远程开机的小项目，有兴趣的读者可以参考；</li>
+<li><code>Magic Packet</code> 就是一个指定格式的数据包，其格式为：6 个 <strong>0xff</strong>，然后16组需要被网络唤醒的电脑的 <strong>MAC</strong> 地址，比如需要被唤醒的电脑的 MAC 为：<code>00:e0:2b:69:00:03</code>，则 <code>Magic Packet</code> 为(16进制表述)：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ff ff ff ff ff ff 
+</span></span><span class="line"><span class="cl">00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 
+</span></span><span class="line"><span class="cl">00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 
+</span></span><span class="line"><span class="cl">00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 
+</span></span><span class="line"><span class="cl">00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>关于 <em>Magic Packet</em> 的更多的信息请参考
+<ul>
+<li><a href="https://zh.wikipedia.org/zh-cn/%E7%B6%B2%E8%B7%AF%E5%96%9A%E9%86%92">wikipidia-网络唤醒</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Wake-on-LAN">wikipedia-Wake-On-Lan</a></li>
+</ul>
+</li>
+<li>对Magic Packet也没有什么好解释的，理论上只要一个报文中存在这个Magic Packet，那么有网络唤醒功能的NIC都会相应，What is NIC? NIC就是网卡，Network Interface Controller；</li>
+<li>但是大多数的 802.11 的无线网卡是收不到 Magic Packet 的，这一点在<a href="https://en.wikipedia.org/wiki/Wake-on-LAN">wikipedia-Wake-On-Lan</a>上有明确的说明；所以不要尝试在无线网卡上做网络唤醒，但是有一个叫做<strong>WoWLAN</strong>的标准是专门支持无线网卡的网络唤醒的，以后有时间的时候试一下；</li>
+<li>通常发送Magic Packet是使用UDP广播的方式发，这方面的文章很多，有兴趣的读者可以百个度或者谷个歌去找一下，我的另一篇文章<a href="../embedded/0001-wake-on-lan/">《远程开机：一个简单的嵌入式项目开发》</a>也是用这种方式发的，这里就不赘述了；</li>
+</ul>
+<h2 id="2-相关技术要点">2. 相关技术要点</h2>
+<blockquote>
+<p>以下要点将会在本文的范例程序中用到，在此需要简单回顾以下。</p>
+</blockquote>
+<ul>
+<li>
+<p><strong>TCP/IP的五层网络模型</strong>(OSI 七层架构的简化版)</p>
+<ol>
+<li>应用层</li>
+<li>传输层(TCP/UDP)</li>
+<li>网络层(IP)</li>
+<li>数据链路层(Ethernet)</li>
+<li>物理层</li>
+</ol>
+</li>
+<li>
+<p><strong>基于TCP/IP的数据报文的结构</strong></p>
+<ul>
+<li>一个基于TCP/IP的完整报文结构为：以太网报头 + IP报头 + TCP/UDP报头 + data，如下图：</li>
+</ul>
+<p><img src="/images/180002/sending_data_from_app_with_socket.png" alt="Packet structure based on TCP/IP"></p>
+<hr>
+</li>
+<li>
+<p><strong>以太网报头</strong></p>
+<ul>
+<li>以太网报头定义在头文件linux/if_ether.h中：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct ethhdr {
+</span></span><span class="line"><span class="cl">    unsigned char  h_dest[ETH_ALEN];    /* destination eth addr  */
+</span></span><span class="line"><span class="cl">    unsigned char  h_source[ETH_ALEN];  /* source ether addr  */
+</span></span><span class="line"><span class="cl">    __be16         h_proto;             /* packet type ID field  */
+</span></span><span class="line"><span class="cl">} __attribute__((packed));
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>h_dest字段为目的MAC地址，h_source字段为源MAC地址；</li>
+<li>h_proto表示当前数据包在网络层使用的协议，Linux支持的协议在头文件linux/if_ether.h中定义；通常在网络层使用的IP协议，这个字段的值是0x0800(ETH_P_IP)；</li>
+<li>但是本文中的 h_proto 字段要填写 <strong>0x842</strong>，很遗憾这个协议在头文件中没有定义，也基本找不到相关资料；</li>
+</ul>
+</li>
+<li>
+<p><strong>raw socket</strong></p>
+<ul>
+<li>可以参考我的另两篇文章<a href="../0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>和<a href="../0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a>，这里仅做一个简单回顾；</li>
+<li>打开一个raw socket
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">int sock_raw;
+</span></span><span class="line"><span class="cl">sock_raw = socket(AF_PACKET, SOCK_RAW, 0);
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>第三个参数还可以有其它选择，这个参数往往会对socket的接收产生影响，本文并不接收任何信息，所以对本文来说无关紧要。</li>
+</ul>
+</li>
+<li>
+<p><strong>struct sockaddr_ll</strong></p>
+<ul>
+<li>这个结构在linux/if_packet.h中定义，有关该结构的详细说明请参考其它文章，本文仅就相关字段做出说明；</li>
+<li>这个结构与IPv4 socket编程中的结构(struct sockaddr_in)的作用类似，是用在raw socket上的一个地址结构，烦请自行理解，其中&rsquo;ll&rsquo;表示Low Level
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct sockaddr_ll {
+</span></span><span class="line"><span class="cl">    unsigned short  sll_family;
+</span></span><span class="line"><span class="cl">    __be16          sll_protocol;
+</span></span><span class="line"><span class="cl">    int             sll_ifindex;
+</span></span><span class="line"><span class="cl">    unsigned short  sll_hatype;     // Hardware Address Type
+</span></span><span class="line"><span class="cl">    unsigned char   sll_pkttype;    // Packet Type
+</span></span><span class="line"><span class="cl">    unsigned char   sll_halen;      // Hardware Address Length
+</span></span><span class="line"><span class="cl">    unsigned char   sll_addr[8];    // Address(Hardware Address)
+</span></span><span class="line"><span class="cl">};
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>sll_family为协议族，和建立raw socket是使用的协议族要一致，所以肯定是AF_PACKET；</li>
+<li>sll_protocol是标准的以太网协议类型，定义在头文件linux/if_ether.h中，通常情况下应该 ETH_P_IP(0x800) 表示IP协议，本文要填 0x842；</li>
+<li>sll_ifindex是网络接口的索引号，我们可以根据接口名称使用ioctl获得；</li>
+<li>sll_halen是硬件地址(MAC)的长度，ha是Hardware Address的意思，填常数 ETH_ALEN(定义在头文件linux/if_ether.h中)；</li>
+<li>sll_addr是目的MAC地址</li>
+<li>实际上，在发送数据时，由于sll_family和sll_protocol都是和socket中一样的，所以大多数情况下都可以不填，只要填sll_ifindex、sll_halen和sll_addr即可，但是本文的例子中，如果使用bind()绑定地址，应该尽量完整第填写，否则执行bind()是会出错。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-在数据链路层发送magic-packet">3. 在数据链路层发送Magic Packet</h2>
+<ul>
+<li>
+<p>先说一下目标，通常使用UDP发送Magic Packet的报文结构为：以太网报头 + IP报头 + UDP报头 + Magic Packet，我们的目标是：<strong>以太网报头 + Magic Packet</strong></p>
+</li>
+<li>
+<p>先看源程序，文件名为：magic_packet.c</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span><span class="lnt">203
+</span><span class="lnt">204
+</span><span class="lnt">205
+</span><span class="lnt">206
+</span><span class="lnt">207
+</span><span class="lnt">208
+</span><span class="lnt">209
+</span><span class="lnt">210
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;malloc.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;errno.h&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;sys/ioctl.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;linux/if.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;linux/if_ether.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;linux/if_packet.h&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#define BUF_SIZE            256
+</span></span><span class="line"><span class="cl">#define MAGIC_PACKET_SIZE   102
+</span></span><span class="line"><span class="cl">#define MAGIC_PACKET_PROTO  0x842
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#define USING_SENDTO        1
+</span></span><span class="line"><span class="cl">/********************************************************************
+</span></span><span class="line"><span class="cl">* Function: int get_eth_index(int sock_raw, char *ifname)
+</span></span><span class="line"><span class="cl">* Description: Get iterface index number from ifname using ioctl
+</span></span><span class="line"><span class="cl">* 
+</span></span><span class="line"><span class="cl">* retuen
+</span></span><span class="line"><span class="cl">*          &gt;= 0        iterface index
+</span></span><span class="line"><span class="cl">*          &lt; 0         error  
+</span></span><span class="line"><span class="cl">********************************************************************/
+</span></span><span class="line"><span class="cl">int get_eth_index(int sock_raw, char *ifname) {
+</span></span><span class="line"><span class="cl">    struct ifreq if_req;
+</span></span><span class="line"><span class="cl">    memset(&amp;if_req, 0, sizeof(struct ifreq));
+</span></span><span class="line"><span class="cl">    strncpy(if_req.ifr_name, ifname, IFNAMSIZ - 1);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if ((ioctl(sock_raw, SIOCGIFINDEX, &amp;if_req)) &lt; 0) {
+</span></span><span class="line"><span class="cl">        printf(&#34;error in SIOCGIFINDEX ioctl reading.\n&#34;);
+</span></span><span class="line"><span class="cl">        return -1;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    printf(&#34;Interface Name: %s\tInterface Index=%d\n&#34;, ifname, if_req.ifr_ifindex);
+</span></span><span class="line"><span class="cl">    return if_req.ifr_ifindex;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">/**************************************************************************
+</span></span><span class="line"><span class="cl">* Function: int get_mac(int sock_raw, unsigned char *mac, char *ifname)
+</span></span><span class="line"><span class="cl">* Description: Get local MAC from ifname using ioctl
+</span></span><span class="line"><span class="cl">* 
+</span></span><span class="line"><span class="cl">* retuen
+</span></span><span class="line"><span class="cl">*          = 0         success. MAC has been stored into mac
+</span></span><span class="line"><span class="cl">*          &lt; 0         error 
+</span></span><span class="line"><span class="cl">**************************************************************************/
+</span></span><span class="line"><span class="cl">int get_mac(int sock_raw, unsigned char *mac, char *ifname) {
+</span></span><span class="line"><span class="cl">    struct ifreq if_req;
+</span></span><span class="line"><span class="cl">    memset(&amp;if_req, 0, sizeof(struct ifreq));
+</span></span><span class="line"><span class="cl">    strncpy(if_req.ifr_name, ifname, IFNAMSIZ - 1);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if ((ioctl(sock_raw, SIOCGIFHWADDR, &amp;if_req)) &lt; 0) { 
+</span></span><span class="line"><span class="cl">        printf(&#34;error in SIOCGIFHWADDR ioctl reading.\n&#34;);
+</span></span><span class="line"><span class="cl">        return -1;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    int i;
+</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; ETH_ALEN; ++i) mac[i] = (unsigned char)(if_req.ifr_hwaddr.sa_data[i]);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    printf(&#34;Source MAC: %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n&#34;, 
+</span></span><span class="line"><span class="cl">          mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]); 
+</span></span><span class="line"><span class="cl">    return 0;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">/****************************************************************
+</span></span><span class="line"><span class="cl">* Function: int is_valid_mac(char *mac)
+</span></span><span class="line"><span class="cl">* Description: Check mac if valid or not
+</span></span><span class="line"><span class="cl">* 
+</span></span><span class="line"><span class="cl">* Return
+</span></span><span class="line"><span class="cl">*          1       mac is valid
+</span></span><span class="line"><span class="cl">*          0       mac is invalid
+</span></span><span class="line"><span class="cl">****************************************************************/
+</span></span><span class="line"><span class="cl">int is_valid_mac(char *mac){
+</span></span><span class="line"><span class="cl">    if (strlen(mac) != 17) return 0;
+</span></span><span class="line"><span class="cl">    int i;
+</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; 17; ++i) {
+</span></span><span class="line"><span class="cl">        if ((i + 1) % 3 == 0) {
+</span></span><span class="line"><span class="cl">            if (mac[i] != &#39;:&#39;) return 0;
+</span></span><span class="line"><span class="cl">        } else {
+</span></span><span class="line"><span class="cl">            if ((mac[i] &gt;= &#39;0&#39; &amp;&amp; mac[i] &lt;= &#39;9&#39;) || 
+</span></span><span class="line"><span class="cl">                (mac[i] &gt;= &#39;a&#39; &amp;&amp; mac[i] &lt;= &#39;f&#39;) ||
+</span></span><span class="line"><span class="cl">                (mac[i] &gt;= &#39;A&#39; &amp;&amp; mac[i] &lt;= &#39;F&#39;)) {
+</span></span><span class="line"><span class="cl">                continue;
+</span></span><span class="line"><span class="cl">            } else return 0;
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    return 1;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">/******************************************************************
+</span></span><span class="line"><span class="cl">* Main
+</span></span><span class="line"><span class="cl">******************************************************************/
+</span></span><span class="line"><span class="cl">int main(int argc, char **argv) {
+</span></span><span class="line"><span class="cl">    int sock_raw;                           // raw socket
+</span></span><span class="line"><span class="cl">    unsigned char src_mac[ETH_ALEN] = {0};  // source MAC address
+</span></span><span class="line"><span class="cl">    unsigned char dest_mac[ETH_ALEN] = {0}; // destination MAC address
+</span></span><span class="line"><span class="cl">    int if_index;                           // interface index number
+</span></span><span class="line"><span class="cl">    char ifname[IFNAMSIZ] = {0};            // interface name
+</span></span><span class="line"><span class="cl">    unsigned char *send_buf;                // buffer for packet
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    int ret_value = EXIT_SUCCESS;           // return value
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // check parameters&#39; number
+</span></span><span class="line"><span class="cl">    if (argc != 3) {
+</span></span><span class="line"><span class="cl">        printf(&#34;Usage: %s [ifname] [destination MAC]\n&#34;, argv[0]);
+</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Check if MAC is valid
+</span></span><span class="line"><span class="cl">    if (!is_valid_mac(argv[2])) {
+</span></span><span class="line"><span class="cl">        printf(&#34;Invalid destination MAC address. %s\n&#34;, argv[2]);
+</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    // Check if ifname length is too long
+</span></span><span class="line"><span class="cl">    if (strlen(argv[1]) &gt; IFNAMSIZ) {
+</span></span><span class="line"><span class="cl">        printf(&#34;Invalid Interface Name. %s\n&#34;, argv[1]);
+</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    // copy ifname
+</span></span><span class="line"><span class="cl">    strcpy(ifname, argv[1]);
+</span></span><span class="line"><span class="cl">    // convert MAC string to digits
+</span></span><span class="line"><span class="cl">    unsigned char *p = (unsigned char *)argv[2];
+</span></span><span class="line"><span class="cl">    sscanf(argv[2], &#34;%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx&#34;, 
+</span></span><span class="line"><span class="cl">            &amp;dest_mac[0], &amp;dest_mac[1],&amp;dest_mac[2], &amp;dest_mac[3], &amp;dest_mac[4],&amp;dest_mac[5]);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Create a raw socket
+</span></span><span class="line"><span class="cl">    sock_raw = socket(AF_PACKET, SOCK_RAW, 0);
+</span></span><span class="line"><span class="cl">    if (sock_raw == -1) {
+</span></span><span class="line"><span class="cl">        printf(&#34;error in socket.\n&#34;);
+</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // allocate memory for sending
+</span></span><span class="line"><span class="cl">    send_buf = (unsigned char*)malloc(BUF_SIZE);
+</span></span><span class="line"><span class="cl">    memset(send_buf, 0, BUF_SIZE);
+</span></span><span class="line"><span class="cl">    // get interface index
+</span></span><span class="line"><span class="cl">    if_index = get_eth_index(sock_raw, ifname);         // get interface index number
+</span></span><span class="line"><span class="cl">    if (if_index &lt; 0) {
+</span></span><span class="line"><span class="cl">        ret_value = EXIT_FAILURE;
+</span></span><span class="line"><span class="cl">        goto quit;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    // get local MAC as source mac
+</span></span><span class="line"><span class="cl">    if (get_mac(sock_raw, src_mac, ifname) &lt; 0) {           // get MAC address
+</span></span><span class="line"><span class="cl">        ret_value = EXIT_FAILURE;
+</span></span><span class="line"><span class="cl">        goto quit;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    printf(&#34;Destination MAC: %02x:%02x:%02x:%02x:%02x:%02x\n&#34;,
+</span></span><span class="line"><span class="cl">            dest_mac[0], dest_mac[1], dest_mac[2], dest_mac[3], dest_mac[4], dest_mac[5]);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Fill ethernet header
+</span></span><span class="line"><span class="cl">    struct ethhdr *eth_hdr = (struct ethhdr *)(send_buf);
+</span></span><span class="line"><span class="cl">    int i;
+</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; ETH_ALEN; ++i) {
+</span></span><span class="line"><span class="cl">        eth_hdr-&gt;h_source[i] = src_mac[i];
+</span></span><span class="line"><span class="cl">        eth_hdr-&gt;h_dest[i] = 0xff;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    eth_hdr-&gt;h_proto = htons(MAGIC_PACKET_PROTO);   // 0x842
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Construct magic packet
+</span></span><span class="line"><span class="cl">    p = send_buf;
+</span></span><span class="line"><span class="cl">    p += sizeof(struct ethhdr);
+</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; ETH_ALEN; i++) *p++ = 0xFF;
+</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; 16; i++) memcpy((p + i * 6), dest_mac, ETH_ALEN);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // print the packet
+</span></span><span class="line"><span class="cl">    size_t total_len = MAGIC_PACKET_SIZE + sizeof(struct ethhdr);
+</span></span><span class="line"><span class="cl">    p = send_buf;
+</span></span><span class="line"><span class="cl">    for (i = 1; i &lt;= total_len; ++i) {
+</span></span><span class="line"><span class="cl">        printf(&#34; %02x&#34;, *p++);
+</span></span><span class="line"><span class="cl">        if ((i % 16) == 0) printf(&#34;\n&#34;);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    printf(&#34;\n&#34;);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Construct struct sockaddr_ll
+</span></span><span class="line"><span class="cl">    struct sockaddr_ll saddr_ll;
+</span></span><span class="line"><span class="cl">    memset(&amp;saddr_ll, 0, sizeof(struct sockaddr_ll));
+</span></span><span class="line"><span class="cl">    saddr_ll.sll_family   = AF_PACKET;
+</span></span><span class="line"><span class="cl">    saddr_ll.sll_ifindex  = if_index;
+</span></span><span class="line"><span class="cl">    saddr_ll.sll_pkttype  = PACKET_BROADCAST;
+</span></span><span class="line"><span class="cl">    saddr_ll.sll_halen    = ETH_ALEN;
+</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; ETH_ALEN; ++i) saddr_ll.sll_addr[i] = 0xff;
+</span></span><span class="line"><span class="cl">    saddr_ll.sll_protocol = htons(MAGIC_PACKET_PROTO);  // 0x842
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#if !USING_SENDTO
+</span></span><span class="line"><span class="cl">    if (bind(sock_raw, (const struct sockaddr *)&amp;saddr_ll, sizeof(struct sockaddr_ll)) &lt; 0) {
+</span></span><span class="line"><span class="cl">        perror(&#34;Bind()&#34;);
+</span></span><span class="line"><span class="cl">        ret_value = EXIT_FAILURE;
+</span></span><span class="line"><span class="cl">        goto quit;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">#endif
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  // Send the packet
+</span></span><span class="line"><span class="cl">    int send_len = 0;       // how many bytes sent
+</span></span><span class="line"><span class="cl">#if USING_SENDTO
+</span></span><span class="line"><span class="cl">    if ((send_len = sendto(sock_raw, send_buf, total_len, 0, (const struct sockaddr *)&amp;saddr_ll, sizeof(struct sockaddr_ll))) &lt; 0) {
+</span></span><span class="line"><span class="cl">        perror(&#34;Sendto()&#34;);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">#else
+</span></span><span class="line"><span class="cl">    if ((send_len = send(sock_raw, send_buf, total_len, 0)) &lt; 0) {
+</span></span><span class="line"><span class="cl">        perror(&#34;Send()&#34;);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">#endif
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    printf(&#34;... done. send_len=%d\n&#34;, send_len);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">quit:
+</span></span><span class="line"><span class="cl">    free(send_buf);
+</span></span><span class="line"><span class="cl">    close(sock_raw);
+</span></span><span class="line"><span class="cl">    return ret_value;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>报文是以广播的形式发出去的，发送广播时，以太网报头的目的MAC要全部填写0xff，(struct sockaddr_ll)中的sll_addr也要全部填写0xff；</p>
+</li>
+<li>
+<p>尽管我们知道目的MAC，但是这个报文必须以广播报文发出，因为此时被唤醒的机器并没有开机，所以无法通过arp获知填写的MAC地址是否在局域网内，所以如果在以太网报头的h_dest中填上了要被唤醒的机器的MAC地址，报文是无法送达的；</p>
+</li>
+<li>
+<p>关于使用ioctl获取接口索引号(Interface Index)和接口MAC的问题，请自行查找资料，这些是IPv4 socket编程中基础的东西，本文认为读者已经掌握；</p>
+</li>
+<li>
+<p>程序中写好了用send()或者用sendto()发送报文的代码，使用一个常量USING_SENDTO来控制，当USING_SENDTO为1时，将使用sendto()发送报文，否则使用send()发送报文；</p>
+</li>
+<li>
+<p>如果使用send()发送报文，需要使用bind()绑定目的地址；</p>
+</li>
+<li>
+<p>具体实践中，如果使用sendto()发送报文，(struct sockaddr_ll)中只需填写sll_ifindex即可，这个也许和运行环境有关，请自行测试；理论上说，只要编译通过，运行没有出错，就表示这个Magic Packet发送了出去，应该就可以起作用；</p>
+</li>
+<li>
+<p>源程序中有详细的注释，其它也没有什么更多解释的。</p>
+</li>
+<li>
+<p><strong>编译</strong>：<code>gcc -Wall magic_packet.c -o magic_packet</code></p>
+</li>
+<li>
+<p><strong>运行</strong>：<code>sudo ./magic_packet enp0s3 00:e0:2b:68:00:03</code></p>
+</li>
+<li>
+<p>由于使用了raw socket，所以必须以<strong>root</strong>权限运行；</p>
+</li>
+<li>
+<p>如果你填写的ifname和mac都正确的话，mac所对应的电脑应该被远程唤醒；</p>
+</li>
+<li>
+<p>这个程序并不好调试，因为能够在数据链路层侦听的工具不多，加上使用的协议号为0x842，使得大多数工具都无法使用，<strong>wireshark应该是可以的</strong>，而且<a href="https://wiki.wireshark.org/WakeOnLAN">wireshark的wiki</a>上说，它有专门针对0x842号协议的侦听，不过我没有试过，有感兴趣的读者可以试一下；</p>
+</li>
+<li>
+<p>远程唤醒是需要硬件支持的，主板和网卡都要支持，但是目前绝大多数有线网卡都应该是支持的，但是可能要在BIOS和其它地方做一些设置，请自行搜索相关资料，并参考我的另一篇文章<a href="../embedded/0001-wake-on-lan/">《远程开机：一个简单的嵌入式项目开发》</a></p>
+</li>
+<li>
+<p>运行结果截图：</p>
+<p><img src="/images/180015/screenshot-magic-packet.png" alt="Screenshot magic_packet"></p>
+</li>
+</ul>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-02-09
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/raw-socket/">raw Socket</a>
+          <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/network/0008-get-gateway-ip-from-proc-filesys/">
+            <span class="next-text nav-default">从proc文件系统中获取gateway的IP地址</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/network/0015-send-magic-packet-via-raw-socket/" class="leancloud_visitors" data-flag-title="使用raw socket发送magic packet">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

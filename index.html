@@ -134,6 +134,29 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0015-send-magic-packet-via-raw-socket/">使用raw socket发送magic packet</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-02-09 </span>
+      <div class="post-category">
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0015-send-magic-packet-via-raw-socket/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/network/0008-get-gateway-ip-from-proc-filesys/">从proc文件系统中获取gateway的IP地址</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-02-05 </span>
@@ -220,29 +243,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/network/0014-handling-arp-cache/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0011-handling-multiple-clients-on-server-with-select/">TCP服务器如何使用select处理多客户连接</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-01-09 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>本文用一个简化的实例说明如何在一个TCP服务器程序中，使用select处理同时出现的多个客户连接，文章给出了程序源代码，本文假定读者已经具备了基本的socket编程知识，熟悉基本的服务器/客户端模型架构。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0011-handling-multiple-clients-on-server-with-select/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

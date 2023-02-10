@@ -1,62 +1,62 @@
 <mxfile host="65bd71144e">
     <diagram id="u7vr-QenT6KZivplu1lZ" name="ip_header">
-        <mxGraphModel dx="754" dy="539" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="993" dy="733" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="DHMooveV-keyHzjIPeAs-0"/>
                 <mxCell id="DHMooveV-keyHzjIPeAs-1" parent="DHMooveV-keyHzjIPeAs-0"/>
-                <mxCell id="DHMooveV-keyHzjIPeAs-17" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=14;strokeColor=none;fillColor=#FFFFFF;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-17" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=14;strokeColor=none;fillColor=#FFFFFF;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="20" y="40" width="760" height="340" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-2" value="&lt;font style=&quot;font-size: 14px&quot;&gt;version&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-2" value="&lt;font style=&quot;font-size: 14px&quot;&gt;version&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="41" y="80" width="80" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-3" value="&lt;font style=&quot;font-size: 14px&quot;&gt;ihl&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-3" value="&lt;font style=&quot;font-size: 14px&quot;&gt;ihl&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="121" y="80" width="80" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-4" value="&lt;font style=&quot;font-size: 14px&quot;&gt;tos&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-4" value="&lt;font style=&quot;font-size: 14px&quot;&gt;tos&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="201" y="80" width="160" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-5" value="&lt;font size=&quot;3&quot;&gt;tot_len&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-5" value="&lt;font size=&quot;3&quot;&gt;tot_len&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="361" y="80" width="320" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-6" value="&lt;font style=&quot;font-size: 14px&quot; face=&quot;Courier New&quot; color=&quot;#000000&quot;&gt;0&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;3 4&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;7 8&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;15 16&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;31&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-6" value="&lt;font style=&quot;font-size: 14px&quot; face=&quot;Courier New&quot; color=&quot;#000000&quot;&gt;0&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;3 4&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;7 8&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;15 16&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;31&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="38" y="58" width="650" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-7" value="&lt;font size=&quot;3&quot;&gt;id&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-7" value="&lt;font size=&quot;3&quot;&gt;id&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="41" y="120" width="320" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-8" value="&lt;font size=&quot;3&quot;&gt;frag_off&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-8" value="&lt;font size=&quot;3&quot;&gt;frag_off&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="361" y="120" width="320" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-9" value="&lt;font style=&quot;font-size: 14px&quot;&gt;ttl&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-9" value="&lt;font style=&quot;font-size: 14px&quot;&gt;ttl&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="41" y="160" width="160" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-10" value="&lt;font style=&quot;font-size: 14px&quot;&gt;protocol&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-10" value="&lt;font style=&quot;font-size: 14px&quot;&gt;protocol&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="201" y="160" width="160" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-11" value="&lt;font size=&quot;3&quot;&gt;check&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-11" value="&lt;font size=&quot;3&quot;&gt;check&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="361" y="160" width="320" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-12" value="&lt;font size=&quot;3&quot;&gt;saddr&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-12" value="&lt;font size=&quot;3&quot;&gt;saddr&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="41" y="200" width="640" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-13" value="&lt;font size=&quot;3&quot;&gt;daddr&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-13" value="&lt;font size=&quot;3&quot;&gt;daddr&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="41" y="240" width="640" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-14" value="&lt;font size=&quot;3&quot;&gt;options(0 -- 40 bytes)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-14" value="&lt;font size=&quot;3&quot;&gt;options(0 -- 40 bytes)&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="41" y="280" width="640" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-15" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;fontFamily=Courier New;fontSize=14;strokeColor=#000000;strokeWidth=2;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-15" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;fontFamily=Courier New;fontSize=14;strokeColor=#000000;strokeWidth=2;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="686" y="80" width="20" height="200" as="geometry"/>
                 </mxCell>
-                <mxCell id="DHMooveV-keyHzjIPeAs-16" value="&lt;font face=&quot;Helvetica&quot; color=&quot;#000000&quot;&gt;20 bytes&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=14;fontFamily=Courier New;" vertex="1" parent="DHMooveV-keyHzjIPeAs-1">
+                <mxCell id="DHMooveV-keyHzjIPeAs-16" value="&lt;font face=&quot;Helvetica&quot; color=&quot;#000000&quot;&gt;20 bytes&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=14;fontFamily=Courier New;" parent="DHMooveV-keyHzjIPeAs-1" vertex="1">
                     <mxGeometry x="702" y="171" width="70" height="20" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
     <diagram id="FLMEIoMX8uv--oBVw_Oz" name="representation of a network packet">
-        <mxGraphModel dx="754" dy="539" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="993" dy="733" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="r3RcNXT-azHM2pUDs-xm-0"/>
                 <mxCell id="r3RcNXT-azHM2pUDs-xm-1" parent="r3RcNXT-azHM2pUDs-xm-0"/>
@@ -79,7 +79,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="LYj6hifyF-ziOyOi2kfr" name="app_receive_data_with_raw_socket">
-        <mxGraphModel dx="754" dy="539" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="993" dy="733" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="8yb0iqfsgr8Nk_YObrAN-0"/>
                 <mxCell id="8yb0iqfsgr8Nk_YObrAN-1" parent="8yb0iqfsgr8Nk_YObrAN-0"/>
@@ -124,7 +124,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="9u6zimstRXeZO1QwXPuI" name="receiving_data_in_app_with_socket">
-        <mxGraphModel dx="754" dy="539" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="993" dy="733" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="kOp343PaP1bm_xIr-tj_-0"/>
                 <mxCell id="kOp343PaP1bm_xIr-tj_-1" parent="kOp343PaP1bm_xIr-tj_-0"/>
@@ -192,7 +192,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="ld85nW_0cYD5aqHjIyk8" name="sending_data_from_app_with_socket">
-        <mxGraphModel dx="754" dy="539" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="993" dy="733" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>

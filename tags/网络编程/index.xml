@@ -6,7 +6,16 @@
     <description>Recent content in 网络编程 on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 05 Feb 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 09 Feb 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用raw socket发送magic packet</title>
+      <link>https://whowin.gitee.io/post/blog/network/0015-send-magic-packet-via-raw-socket/</link>
+      <pubDate>Thu, 09 Feb 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0015-send-magic-packet-via-raw-socket/</guid>
+      <description>&lt;p&gt;Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>从proc文件系统中获取gateway的IP地址</title>
       <link>https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/</link>
