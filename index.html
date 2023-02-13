@@ -134,6 +134,29 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0016-longest-prefix-match/">用C语言模拟内核查找路由表</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-02-10 </span>
+      <div class="post-category">
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0016-longest-prefix-match/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/network/0015-send-magic-packet-via-raw-socket/">使用raw socket发送magic packet</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-02-09 </span>
@@ -220,29 +243,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/network/0007-recv-arp-request-and-reply/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0014-handling-arp-cache/">如何用C语言操作arp cache</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-01-12 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0014-handling-arp-cache/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

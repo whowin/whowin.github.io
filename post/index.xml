@@ -6,7 +6,16 @@
     <description>Recent content in Posts on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 09 Feb 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 10 Feb 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>用C语言模拟内核查找路由表</title>
+      <link>https://whowin.gitee.io/post/blog/network/0016-longest-prefix-match/</link>
+      <pubDate>Fri, 10 Feb 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0016-longest-prefix-match/</guid>
+      <description>&lt;p&gt;在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>使用raw socket发送magic packet</title>
       <link>https://whowin.gitee.io/post/blog/network/0015-send-magic-packet-via-raw-socket/</link>
