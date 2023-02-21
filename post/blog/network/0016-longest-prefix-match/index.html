@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>用C语言模拟内核查找路由表 - whowin - 发表我个人原创作品的技术博客</title>
+  <title>简单的路由表查找程序 - whowin - 发表我个人原创作品的技术博客</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -40,19 +40,19 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:title" content="用C语言模拟内核查找路由表" />
+<meta property="og:title" content="简单的路由表查找程序" />
 <meta property="og:description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0016-longest-prefix-match/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2023-02-10T16:43:29+08:00" />
 <meta property="article:modified_time" content="2023-02-10T16:43:29+08:00" />
 
-<meta itemprop="name" content="用C语言模拟内核查找路由表">
+<meta itemprop="name" content="简单的路由表查找程序">
 <meta itemprop="description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。"><meta itemprop="datePublished" content="2023-02-10T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-10T16:43:29+08:00" />
 <meta itemprop="wordCount" content="4617">
 <meta itemprop="keywords" content="Linux,routing table,网络编程,最长前缀匹配,longest prefix match," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="用C语言模拟内核查找路由表"/>
+<meta name="twitter:title" content="简单的路由表查找程序"/>
 <meta name="twitter:description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。"/>
 
 <!--[if lte IE 9]>
@@ -138,7 +138,7 @@
           <article class="post">
     
     <header class="post-header">
-      <h1 class="post-title">用C语言模拟内核查找路由表</h1>
+      <h1 class="post-title">简单的路由表查找程序</h1>
 
       <div class="post-meta">
         <span class="post-time"> 2023-02-10 </span>
@@ -967,7 +967,11 @@
           <a href="/tags/longest-prefix-match/">longest prefix match</a>
           </div>
       <nav class="post-nav">
-        
+        <a class="prev" href="/post/blog/network/0017-sync-time-from-time-server-using-sntp/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">使用SNTP协议从时间服务器同步时间</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
         <a class="next" href="/post/blog/network/0015-send-magic-packet-via-raw-socket/">
             <span class="next-text nav-default">使用raw socket发送magic packet</span>
             <span class="next-text nav-mobile">下一篇</span>
@@ -979,7 +983,7 @@
         </div>
         
 
-  <span id="/post/blog/network/0016-longest-prefix-match/" class="leancloud_visitors" data-flag-title="用C语言模拟内核查找路由表">
+  <span id="/post/blog/network/0016-longest-prefix-match/" class="leancloud_visitors" data-flag-title="简单的路由表查找程序">
 		<span class="post-meta-item-text">文章阅读量 </span>
 		<span class="leancloud-visitors-count">0</span>
 		<p></p>
@@ -1047,6 +1051,14 @@
 
 
 <script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
 
 
 

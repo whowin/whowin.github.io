@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>使用SNTP协议从时间服务器同步时间 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="在互联网上校准时间，是几乎连接在互联网上的每台计算机都要去做的事情，而且很多是在后台完成的，并不需要人工干预；互联网上有很多时间服务器可以发布精确的时间，计算机客户端使用NTP(Network Time Protocol)协议与这些时间服务器进行时间同步，使本机得到精确时间，本文简要描述了NTP协议的原理，对NTP协议的时间同步精度做了简要分析，并具体实现了SNTP(Simple Network Time Protocol)下的客户端，本文附有完整的C语言SNTP客户端的源程序。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/network/0017-sync-time-from-time-server-using-sntp/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="使用SNTP协议从时间服务器同步时间" />
+<meta property="og:description" content="在互联网上校准时间，是几乎连接在互联网上的每台计算机都要去做的事情，而且很多是在后台完成的，并不需要人工干预；互联网上有很多时间服务器可以发布精确的时间，计算机客户端使用NTP(Network Time Protocol)协议与这些时间服务器进行时间同步，使本机得到精确时间，本文简要描述了NTP协议的原理，对NTP协议的时间同步精度做了简要分析，并具体实现了SNTP(Simple Network Time Protocol)下的客户端，本文附有完整的C语言SNTP客户端的源程序。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0017-sync-time-from-time-server-using-sntp/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-02-13T16:43:29+08:00" />
+<meta property="article:modified_time" content="2023-02-13T16:43:29+08:00" />
+
+<meta itemprop="name" content="使用SNTP协议从时间服务器同步时间">
+<meta itemprop="description" content="在互联网上校准时间，是几乎连接在互联网上的每台计算机都要去做的事情，而且很多是在后台完成的，并不需要人工干预；互联网上有很多时间服务器可以发布精确的时间，计算机客户端使用NTP(Network Time Protocol)协议与这些时间服务器进行时间同步，使本机得到精确时间，本文简要描述了NTP协议的原理，对NTP协议的时间同步精度做了简要分析，并具体实现了SNTP(Simple Network Time Protocol)下的客户端，本文附有完整的C语言SNTP客户端的源程序。"><meta itemprop="datePublished" content="2023-02-13T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2023-02-13T16:43:29+08:00" />
+<meta itemprop="wordCount" content="7563">
+<meta itemprop="keywords" content="Linux,网络编程,NTP,SNTP," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用SNTP协议从时间服务器同步时间"/>
+<meta name="twitter:description" content="在互联网上校准时间，是几乎连接在互联网上的每台计算机都要去做的事情，而且很多是在后台完成的，并不需要人工干预；互联网上有很多时间服务器可以发布精确的时间，计算机客户端使用NTP(Network Time Protocol)协议与这些时间服务器进行时间同步，使本机得到精确时间，本文简要描述了NTP协议的原理，对NTP协议的时间同步精度做了简要分析，并具体实现了SNTP(Simple Network Time Protocol)下的客户端，本文附有完整的C语言SNTP客户端的源程序。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">使用SNTP协议从时间服务器同步时间</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-02-13 </span>
+        <div class="post-category">
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            <a href="/categories/network/"> Network </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-ntp协议和sntp协议">1. NTP协议和SNTP协议</a></li>
+        <li><a href="#2-ntp时间同步的基本原理">2. NTP时间同步的基本原理</a></li>
+        <li><a href="#3-ntp和sntp协议参考">3. NTP和SNTP协议参考</a></li>
+        <li><a href="#4-sntpntp协议的消息结构">4. SNTP(NTP)协议的消息结构</a></li>
+        <li><a href="#5-sntp时间同步的精度分析">5. SNTP时间同步的精度分析</a></li>
+        <li><a href="#4sntp客户端实例">4、SNTP客户端实例</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>在互联网上校准时间，是几乎连接在互联网上的每台计算机都要去做的事情，而且很多是在后台完成的，并不需要人工干预；互联网上有很多时间服务器可以发布精确的时间，计算机客户端使用NTP(Network Time Protocol)协议与这些时间服务器进行时间同步，使本机得到精确时间，本文简要描述了NTP协议的原理，对NTP协议的时间同步精度做了简要分析，并具体实现了SNTP(Simple Network Time Protocol)下的客户端，本文附有完整的C语言SNTP客户端的源程序。</p>
+<h2 id="1-ntp协议和sntp协议">1. NTP协议和SNTP协议</h2>
+<ul>
+<li>SNTP协议使用与NTP协议同样的报文结构和格式，所以仅就从服务器进行时间同步而言，在服务器端看NTP和SNTP没有什么区别，使用SNTP协议的客户端可以从任何一台符合NTP协议的时间服务器上进行时间同步；</li>
+<li>NTP和SNTP协议的区别在于错误检测和时间校准的算法上，这主要体现在客户端的软件上；</li>
+<li>SNTP客户端程序向一台NTP时间服务器发出时间数据包，接收来自服务器的回应，并据此计算本机的时间偏差，从而校准本机时间；</li>
+<li>NTP协议的算法比SNTP复杂得多，NTP通常使用多个时间服务器校验时间，该算法使用多种方法来确定这些获取的时间值是否准确，包括模糊因子和识别与其他时间服务器不一致的时间服务器，然后加速或减慢系统时钟的<strong>漂移率</strong>，使系统时间可以做到
+<ol>
+<li>系统的时间总是正确的；</li>
+<li>在初始校正时间后，系统时间不会再有任何时间跳跃。</li>
+</ol>
+</li>
+<li>与NTP客户端不同，SNTP客户端通常只使用一个时间服务器来计算时间，然后将系统时间跳转到计算的时间；为了防止时间服务器出现不可用的情况，SNTP客户端可以有一个或多个备份时间服务器，但不会同时使用多个时间服务器来计算时间；</li>
+<li>SNTP客户端通常按照一个固定的间隔时间去访问时间服务器，在间隔期间则不对系统时间做任何调整；</li>
+<li>我们可以用一个更形象的例子来说明SNTP客户端，我们把墙上的挂钟当做时间服务器，把我们戴的手表当做客户端
+<ul>
+<li>当我们的手表为SNTP客户端时，我们每隔一小时看一下挂钟，并使用挂钟来校准手表；</li>
+<li>当手表12:00时，挂钟的时间为11:59:57秒，手表快了3秒钟，所以把手表调慢3秒钟；</li>
+<li>在接下来的1个小时里，不会对手表做任何调整，当手表1:00时，挂钟的时间为12:59:57秒，所以我们再次把手表调慢3秒钟；</li>
+<li>从手表时间的准确度来说，刚刚校准完时间时是最准确的，然后准确度逐渐变差，在再次调整时间前，其准确度是最差的；</li>
+</ul>
+</li>
+<li>如果这样的情况能够满足你对时间的要求，那就可以使用SNTP协议去校准时间，否则就要考虑使用NTP客户端；</li>
+<li>NTP客户端计算&quot;手表&quot;的时间变化方向和速率，以此为基础来补偿&quot;手表&quot;上的时间漂移，对&quot;手表&quot;进行实时调整，使&quot;手表&quot;一直保持准确；</li>
+<li>实际上，对大多数PC而言，SNTP都是可以满足要求的，windows的内建程序w32time采用的就是SNTP协议。</li>
+</ul>
+<h2 id="2-ntp时间同步的基本原理">2. NTP时间同步的基本原理</h2>
+<ul>
+<li>
+<p>NTP的原理是通过一个时间消息包的传送计算出客户端和服务器端的时间偏差，从而校准客户端的时间；</p>
+</li>
+<li>
+<p>NTP和SNTP客户端均使用UDP向时间服务器发送消息，IANA为NTP分配的端口号为123，也就是说，NTP/SNTP客户端需要向时间服务器的123端口发送一个符合格式(下一节介绍消息格式)的UDP消息，客户端的接收端口号没有规定；</p>
+</li>
+<li>
+<p>时间服务器是Server，客户端是Client，同步过程如下进行：</p>
+<ol>
+<li>Client向Server发送一个消息包，记录发出消息包时的时间戳 <strong>$T_1$</strong>(以Client系统时间为准)</li>
+<li>Server收到消息包立即记录时间戳 $T_2$(以Server系统时间为准)</li>
+<li>Server向Client返回一个消息包，返回消息包时记录时间戳 $T_3$(以Server系统时间为准)</li>
+<li>Client收到Server返回的消息包，此时记录时间戳 $T_4$(以Client系统时间为基准</li>
+</ol>
+</li>
+<li>
+<p>过程如下图所示：</p>
+<p><img src="/images/180017/process-of-time-synchronization.png" alt="Time Synchronization"></p>
+</li>
+<li>
+<p>$T_4$ 和 $T_1$ 是以Client的时间标准记录的时间戳，其差 $T_4 - T_1$ 表示整个消息传递过程所花费的总时间；</p>
+</li>
+<li>
+<p>$T_3$ 和 $T_2$ 是以Server的时间标准记录的时间戳，其差 $T_3 - T_2$ 表明消息传递过程在Server停留的时间；</p>
+</li>
+<li>
+<p>那么 $(T_4 - T_1) - (T_3 - T_2)$ 应该就是信息包的往返时间(总时间-在Server停留的时间)；</p>
+</li>
+<li>
+<p><strong>如果假定信息包从Client到Server和从Server到Client所用的时间一样</strong>，那么，从Client到Server或者从Server到Client信息包的传送时间d为：
+$\large \ \ d = {(T_4 - T_1) - (T_3 - T_2) \over 2}$</p>
+</li>
+<li>
+<p>假定Client相对于Server机的时间误差是 <strong>t</strong>(t = 服务器时间戳 - 客户端时间戳)，则有下列等式：
+$\  T_2 = T_1 + t + d\
+T_4 = T_3 - t + d
+$</p>
+</li>
+<li>
+<p>从以上三个等式组成一个方程式：
+$\
+\begin{cases}
+\large d = {(T_4 - T_1) - (T_3 - T_2) \over 2}\
+\normalsize T_2 = T_1 + t + d\
+T_4 = T_3 - t + d
+\end{cases}
+$</p>
+</li>
+<li>
+<p>可以解出Client机的时间误差 <strong>t</strong> 为：
+$\
+\LARGE t = {(T_2 - T_1) + (T_3 - T_4) \over 2}
+$</p>
+</li>
+<li>
+<p>如果一时没有转过来，可以自己在纸上画个图，再细细地琢磨一下，应该没有问题。</p>
+</li>
+</ul>
+<h2 id="3-ntp和sntp协议参考">3. NTP和SNTP协议参考</h2>
+<ul>
+<li>这里列出这两个协议的原件下载地址，有兴趣的读者可以认真读一下；</li>
+<li>NTP最新版目前是NTP v4(RFC5905)，v5还没有正是推出，这里列出NTP v4和v3(RFC1305)的链接，还有一个NTP v3的pdf文档的下载地址；</li>
+<li>SNTP目前的版本是v4(RFC4330)，其实这个版本也是很久以前的，2006年的，SNTP一直没有新的版本。</li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc5905">Network Time Protocol Version 4</a></li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc1305">Network Time Protocol (Version 3)</a></li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc1305.pdf">Network Time Protocol (Version 3) pdf</a></li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc4330">Simple Network Time Protocol (SNTP) Version 4</a></li>
+</ul>
+<h2 id="4-sntpntp协议的消息结构">4. SNTP(NTP)协议的消息结构</h2>
+<ul>
+<li>
+<p>下面这张图取自SNTP协议，很直观地显示出NTP消息包的结构，要注意的是，所有字段应该都是网络字节序(big endian)</p>
+</li>
+<li>
+<p>NTP时间同步过程中，客户端发送的消息包结构与时间服务器返回的消息包结构是完全一样的，时间服务器会将其中的一些字段改写，然后发回；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">                     1                   2                   3
+</span></span><span class="line"><span class="cl"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span><span class="line"><span class="cl">|LI | VN  |Mode |    Stratum    |     Poll      |   Precision   |
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span><span class="line"><span class="cl">|                          Root Delay                           |
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span><span class="line"><span class="cl">|                       Root Dispersion                         |
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span><span class="line"><span class="cl">|                     Reference Identifier                      |
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span><span class="line"><span class="cl">|                                                               |
+</span></span><span class="line"><span class="cl">|                   Reference Timestamp (64)                    |
+</span></span><span class="line"><span class="cl">|                                                               |
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span><span class="line"><span class="cl">|                                                               |
+</span></span><span class="line"><span class="cl">|                   Originate Timestamp (64)                    |
+</span></span><span class="line"><span class="cl">|                                                               |
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span><span class="line"><span class="cl">|                                                               |
+</span></span><span class="line"><span class="cl">|                    Receive Timestamp (64)                     |
+</span></span><span class="line"><span class="cl">|                                                               |
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span><span class="line"><span class="cl">|                                                               |
+</span></span><span class="line"><span class="cl">|                    Transmit Timestamp (64)                    |
+</span></span><span class="line"><span class="cl">|                                                               |
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span><span class="line"><span class="cl">|                 Key Identifier (optional) (32)                |
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span><span class="line"><span class="cl">|                                                               |
+</span></span><span class="line"><span class="cl">|                                                               |
+</span></span><span class="line"><span class="cl">|                 Message Digest (optional) (128)               |
+</span></span><span class="line"><span class="cl">|                                                               |
+</span></span><span class="line"><span class="cl">|                                                               |
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>LI(Leap Indicator)</strong></p>
+<ul>
+<li>闰秒指示，2 bits，bit 0和bit 1</li>
+<li>表示是否警告在当天的最后一分钟插入/删除一个闰秒；通常填0表示不需要警告。</li>
+<li>这个值只在服务器端有意义，SNTP协议第4节中对LI可能的取值做了说明</li>
+</ul>
+</li>
+<li>
+<p><strong>VN(Version Number)</strong></p>
+<ul>
+<li>NTP/SNTP版本号，3 bits</li>
+<li>这里只要填一个服务器支持的版本即可，目前最高的版本为4，填4，估计填3也不会有问题，因为绝大多数的时间服务器应该仍然支持NTP v3，以保证一些古老的客户端仍可以运行；</li>
+</ul>
+</li>
+<li>
+<p><strong>Mode</strong></p>
+<ul>
+<li>工作模式，3 bits，其取值含义如下
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Mode  Meaning
+</span></span><span class="line"><span class="cl">------------------------------------
+</span></span><span class="line"><span class="cl"> 0    reserved
+</span></span><span class="line"><span class="cl"> 1    symmetric active
+</span></span><span class="line"><span class="cl"> 2    symmetric passive
+</span></span><span class="line"><span class="cl"> 3    client
+</span></span><span class="line"><span class="cl"> 4    server
+</span></span><span class="line"><span class="cl"> 5    broadcast
+</span></span><span class="line"><span class="cl"> 6    reserved for NTP control message
+</span></span><span class="line"><span class="cl"> 7    reserved for private use
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>当访问单台时间服务器同步时间时，仅取值3和4有意义，客户端发送消息时将这个字段填3，表示发送消息者是一个客户端；服务器回复消息时将这个字段改为4，表示回复消息的是服务器；</li>
+</ul>
+</li>
+<li>
+<p><strong>Stratum</strong></p>
+<ul>
+<li>表示当前时间服务器在NTP网络体系中所处的层，是一个8位无符号整数，其值通常为0-15；该字段仅在NTP服务器消息中有意义；</li>
+<li>NTP 的网络体系是分层(stratum)结构，Stratum-0层设备(包括原子钟和gps钟)是最精确的，但不能通过网络向客户端授时；0级设备通常仅作为1级时间服务器的参考时钟(或同步源)；</li>
+<li>Stratum-1层设备是可以通过网络授时的最准确的ntp时间源，1层设备通常通过0层参考时钟同步时间；</li>
+<li>Stratum-2层设备通过网络连接从一级设备同步时间；由于网络抖动和延迟，二级服务器的时间准确度不如一级服务器；从第二层时间源同步的NTP客户端将是Stratum-3设备；</li>
+<li>以此类推，层级越高，其时间的精确度和可靠度越低；</li>
+<li>NTP协议不允许客户端接受来自Stratum-15设备的时间，因此Stratum-15是最低的NTP层；</li>
+</ul>
+</li>
+<li>
+<p><strong>Poll Interval</strong></p>
+<ul>
+<li>表示连续时间消息之间的最大间隔，以2的指数表示(比如4则间隔时间为 $ 2^4 $)，单位为秒，此值为一个8位无符号整数；</li>
+<li>该字段仅在SNTP服务器消息中有意义，其值范围为4(16秒)到17(131,072秒——大约36小时)；</li>
+</ul>
+</li>
+<li>
+<p><strong>Precision</strong></p>
+<ul>
+<li>时间服务器的系统时钟精度，以2的指数表示(比如-10则精度 $ 2^{-10} $)，单位为秒，此值为一个8位有符号整数；</li>
+<li>此字段仅在服务器消息中有意义，其中的值范围从-6(主频时钟)到-20(某些工作站中的微秒时钟)；</li>
+</ul>
+</li>
+<li>
+<p><strong>Root Delay</strong></p>
+<ul>
+<li>表示时间服务器到主参考源的总往返延迟，以秒为单位，是一个32位有符号的定点数，小数点在第bit 15和bit 16之间；</li>
+<li>该变量可以取正值，也可以取负值，取决于相对时间和频率偏移量，该字段仅在服务器消息中有意义，其值范围从几毫秒的负值到几百毫秒的正值；</li>
+</ul>
+</li>
+<li>
+<p><strong>Root Dispersion</strong></p>
+<ul>
+<li>表示相对于主要时钟参考源的的最大误差，单位为秒，是一个32位有符号的定点数，小数点在第bit 15和bit 16之间；</li>
+<li>其值只能是大于0的正数；</li>
+</ul>
+</li>
+<li>
+<p><strong>Reference Identifier</strong></p>
+<ul>
+<li>用于标识特定的时间参考源，32位串；此字段仅在服务器消息中有意义；</li>
+<li>对于Stratum-0和Statum-1，该字段的值为一个四字节的ASCII字符串，左对齐并以0填充到32位；</li>
+<li>对于IPv4的Stratum-2时间服务器，该字段的值为时间同步源的32位IPv4地址(IP地址)；</li>
+</ul>
+</li>
+<li>
+<p><strong>Reference Timestamp</strong></p>
+<ul>
+<li>本地时钟最后一次设置或修正时的时间，64位时间戳格式。</li>
+</ul>
+</li>
+<li>
+<p><strong>Originate Timestamp</strong></p>
+<ul>
+<li>前面原理部分说到的 $ T_1 $，也就是消息包从客户端发出时，客户端系统时间戳，由客户端程序填写，64位时间戳格式；</li>
+</ul>
+</li>
+<li>
+<p><strong>Receive Timestamp</strong></p>
+<ul>
+<li>前面原理部分说到的 $ T_2 $，也就是服务器收到客户端消息包时，服务器端系统时间戳，由服务器端程序填写，64位时间戳格式；</li>
+</ul>
+</li>
+<li>
+<p><strong>Transmit Timestamp</strong></p>
+<ul>
+<li>前面原理部分说到的 $ T_3 $，也就是服务器把数据包返回客户端时，服务器端系统时间戳，由服务器端程序填写，64位时间戳格式；</li>
+</ul>
+</li>
+<li>
+<p><strong>Authenticator</strong></p>
+<ul>
+<li>可选项，一般不填；</li>
+<li>当采用NTP认证方案时，&ldquo;Key Identifier&quot;和&quot;Message Digest&quot;字段包含了<a href="https://www.rfc-editor.org/rfc/rfc1305">《RFC 1305》</a>附录C中定义的MAC(Message authentication code)信息。</li>
+</ul>
+</li>
+<li>
+<p>关于<strong>64位时间戳</strong></p>
+<ul>
+<li>前面多次提到<strong>64位时间戳</strong>，在NTP/SNTP协议中，对此有专门的定义</li>
+<li>NTP时间戳表示为 64 位无符号定点数，以秒为单位，相对于1900年1月1日的0时；</li>
+<li>整数部分在前32位，小数部分在后32位；在小数部分，没有意义的低位，通常要设置为0；</li>
+<li>有关小数部分(Fraction Part)，其单位既不是毫秒(millisecond)，也不是微秒(microsecond)，<strong>其单位为 $\large 1 \over {2^{32}} $ 秒</strong>，这一点非常重要，但却鲜有文章说明，如果不知道这一点，UNIX时间戳和NTP时间戳之间的转换就搞不明白；</li>
+<li>下图摘自SNTP协议
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">                     1                   2                   3
+</span></span><span class="line"><span class="cl"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span><span class="line"><span class="cl">|                           Seconds                             |
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span><span class="line"><span class="cl">|                  Seconds Fraction (0-padded)                  |
+</span></span><span class="line"><span class="cl">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+<h2 id="5-sntp时间同步的精度分析">5. SNTP时间同步的精度分析</h2>
+<ul>
+<li>
+<p>有很多文章中都提到，NTP时间同步的精度可以达到50ms以内，本节将讨论这个精度是如何计算得出的；</p>
+</li>
+<li>
+<p>要注意我们讲网络时间同步的精度并不包括时间服务器本身的时间精度，只是客户端与服务器端同步时间后，客户端与服务器端相对时间误差；</p>
+</li>
+<li>
+<p>本文第2节介绍NTP时间同步的基本原理时，曾经列出过方程式，当时有一个重要的假设为：<strong>假定信息包从Client到Server和从Server到Client所用的时间一样</strong>，这次我们去掉这个假设，重新列出方程式；</p>
+</li>
+<li>
+<p>假定消息包从Client到Server的时长为 $ d_1 $，从Server到Client的时长为 $ d_2 $，$ d_2 $ 与 $ d_1 $ 的差为 $ \delta $，其它定义同前，则有下列等式：
+$\
+\begin{cases}
+\delta = d_2 - d_1\
+T_2 = T_1 + t + d_1\
+T_4 = T_3 - t + d_2\
+\end{cases}
+$</p>
+</li>
+<li>
+<p>(将1式带入3式)
+$\
+\begin{cases}
+t = T_2 - T_1 - d_1\
+t = T_3 - T_4 + \delta + d_1\
+\end{cases}
+$</p>
+</li>
+<li>
+<p>两式相加，得出
+$\
+\LARGE t = {{(T_2 - T_1) + (T_3 - T_4)} \over 2} + {\delta \over 2}
+$</p>
+</li>
+<li>
+<p>这个结果是精确的，没有任何假设，理论时间同步的精度为 0；</p>
+</li>
+<li>
+<p>当 $ \delta $ 为 <strong>0</strong> 时，相当于 <strong>假定信息包从Client到Server和从Server到Client所用的时间一样</strong>，得出的结果和第 2 节的结果是一样的；</p>
+</li>
+<li>
+<p>由此可见，误差由 $ \delta $ 产生，而 $ \delta $ 的最大值为 $ d_2 $ 或者最小值为 $ -d_1 $，假定Client到Server的最大时延为100ms，则 $ \delta $ 的最大值为 100ms，则根据上式，其时间精度的最大误差为 $ \large \delta \over 2$，即 50ms</p>
+</li>
+<li>
+<p>由上面的计算可以得知，NTP协议进行时间同步的精度误差主要来自数据包从Client到Server和从Server到Client的时间不一样，这个差异越大，其误差越大；</p>
+</li>
+<li>
+<p>SNTP使用UDP协议发送时间信息包，UDP又是一种无连接的协议，从Client到Server和从Server到Client的路由很可能是不一样的，这无形中会使时间同步的精度变差；</p>
+</li>
+<li>
+<p>找到一个时延比较小的时间服务器可以有效地提高时间同步的精度。</p>
+</li>
+</ul>
+<h2 id="4sntp客户端实例">4、SNTP客户端实例</h2>
+<ul>
+<li>
+<p>说起来一大堆，但实现起来其实并不像说的那么复杂。</p>
+</li>
+<li>
+<p>SNTP协议允许使用单播(unicast)、广播(broadcast)和多播(manycast)模式，通常我们只能使用单播模式，广播和多播模式的时间服务器只存在与一个子网中，为有限的用户服务；互联网上并不存在实际的广播或多播模式的时间服务器；</p>
+</li>
+<li>
+<p>根据<a href="https://www.rfc-editor.org/rfc/rfc5905">《SNTP 协议》</a>第5节&rdquo;<strong>SNTP Client Operations</strong>&ldquo;的说明，使用单播模式进行时间同步时，向时间服务器发送的请求数据包中，除了第一个字节以外，其他字段都可以设为0，也可以将Originate Timestamp(T1)填在Transmit Timestamp(T4)这个字段上，时间服务器会将Transmit Timestamp字段的内容搬移到Originate Timestamp(T1)上，然后填上正确的Transmit Timestamp(T4)；</p>
+</li>
+<li>
+<p>下面的例子中就是按照SNTP协议的说法去做的，在发送的请求包中，填了LI、VN、MODE三个字段，并把T1(Originate Timestamp)填在了T4(Transmit Timestamp)上，从时间服务器返回的数据看，完全印证了SNTP协议中的说法；</p>
+</li>
+<li>
+<p>要注意的是，ntp数据包中的各个字段都是网络字节序(big endian)，而我们使用的电脑都是主机字节序(little endian)，所以相互之间要做转换；</p>
+</li>
+<li>
+<p>再次强调一下，NTP时间戳的fraction字段的单位是 $\large 1 \over {2^{32}} $ 秒；</p>
+</li>
+<li>
+<p>下面是源程序，文件名：sntp_client.c</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span><span class="lnt">203
+</span><span class="lnt">204
+</span><span class="lnt">205
+</span><span class="lnt">206
+</span><span class="lnt">207
+</span><span class="lnt">208
+</span><span class="lnt">209
+</span><span class="lnt">210
+</span><span class="lnt">211
+</span><span class="lnt">212
+</span><span class="lnt">213
+</span><span class="lnt">214
+</span><span class="lnt">215
+</span><span class="lnt">216
+</span><span class="lnt">217
+</span><span class="lnt">218
+</span><span class="lnt">219
+</span><span class="lnt">220
+</span><span class="lnt">221
+</span><span class="lnt">222
+</span><span class="lnt">223
+</span><span class="lnt">224
+</span><span class="lnt">225
+</span><span class="lnt">226
+</span><span class="lnt">227
+</span><span class="lnt">228
+</span><span class="lnt">229
+</span><span class="lnt">230
+</span><span class="lnt">231
+</span><span class="lnt">232
+</span><span class="lnt">233
+</span><span class="lnt">234
+</span><span class="lnt">235
+</span><span class="lnt">236
+</span><span class="lnt">237
+</span><span class="lnt">238
+</span><span class="lnt">239
+</span><span class="lnt">240
+</span><span class="lnt">241
+</span><span class="lnt">242
+</span><span class="lnt">243
+</span><span class="lnt">244
+</span><span class="lnt">245
+</span><span class="lnt">246
+</span><span class="lnt">247
+</span><span class="lnt">248
+</span><span class="lnt">249
+</span><span class="lnt">250
+</span><span class="lnt">251
+</span><span class="lnt">252
+</span><span class="lnt">253
+</span><span class="lnt">254
+</span><span class="lnt">255
+</span><span class="lnt">256
+</span><span class="lnt">257
+</span><span class="lnt">258
+</span><span class="lnt">259
+</span><span class="lnt">260
+</span><span class="lnt">261
+</span><span class="lnt">262
+</span><span class="lnt">263
+</span><span class="lnt">264
+</span><span class="lnt">265
+</span><span class="lnt">266
+</span><span class="lnt">267
+</span><span class="lnt">268
+</span><span class="lnt">269
+</span><span class="lnt">270
+</span><span class="lnt">271
+</span><span class="lnt">272
+</span><span class="lnt">273
+</span><span class="lnt">274
+</span><span class="lnt">275
+</span><span class="lnt">276
+</span><span class="lnt">277
+</span><span class="lnt">278
+</span><span class="lnt">279
+</span><span class="lnt">280
+</span><span class="lnt">281
+</span><span class="lnt">282
+</span><span class="lnt">283
+</span><span class="lnt">284
+</span><span class="lnt">285
+</span><span class="lnt">286
+</span><span class="lnt">287
+</span><span class="lnt">288
+</span><span class="lnt">289
+</span><span class="lnt">290
+</span><span class="lnt">291
+</span><span class="lnt">292
+</span><span class="lnt">293
+</span><span class="lnt">294
+</span><span class="lnt">295
+</span><span class="lnt">296
+</span><span class="lnt">297
+</span><span class="lnt">298
+</span><span class="lnt">299
+</span><span class="lnt">300
+</span><span class="lnt">301
+</span><span class="lnt">302
+</span><span class="lnt">303
+</span><span class="lnt">304
+</span><span class="lnt">305
+</span><span class="lnt">306
+</span><span class="lnt">307
+</span><span class="lnt">308
+</span><span class="lnt">309
+</span><span class="lnt">310
+</span><span class="lnt">311
+</span><span class="lnt">312
+</span><span class="lnt">313
+</span><span class="lnt">314
+</span><span class="lnt">315
+</span><span class="lnt">316
+</span><span class="lnt">317
+</span><span class="lnt">318
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">/*
+</span></span><span class="line"><span class="cl">* (C) 2023 Songqing Hua.
+</span></span><span class="line"><span class="cl">* http://whowin.cn/
+</span></span><span class="line"><span class="cl">*
+</span></span><span class="line"><span class="cl">* SNTP client.
+</span></span><span class="line"><span class="cl">* Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
+</span></span><span class="line"><span class="cl">* Tested on Linux 5.4.0-139-generic #156-Ubuntu SMP Fri Jan 20 17:27:18 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux.
+</span></span><span class="line"><span class="cl">*
+</span></span><span class="line"><span class="cl">* To compile: $ gcc -Wall sntp_client.c -o sntp_client -lm
+</span></span><span class="line"><span class="cl">* Usage: $ ./sntp_client &lt;time server ip/domain name&gt;
+</span></span><span class="line"><span class="cl">*
+</span></span><span class="line"><span class="cl">* Time server reference:
+</span></span><span class="line"><span class="cl">*      ntp.tencent.com
+</span></span><span class="line"><span class="cl">*      ntp.aliyun.com
+</span></span><span class="line"><span class="cl">*      time.edu.cn
+</span></span><span class="line"><span class="cl">* 
+</span></span><span class="line"><span class="cl">*/
+</span></span><span class="line"><span class="cl">#include &lt;stdio.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;time.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;stdbool.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;netdb.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;math.h&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#include &lt;sys/time.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#define VERSION         &#34;==== SNTP Client v1.00 02/19/2023 ====\n&#34;
+</span></span><span class="line"><span class="cl">#define SNTP_PORT       123
+</span></span><span class="line"><span class="cl">#define SNTP_EPOCH      86400U * (365U * 70U + 17U)      // the seconds from Jan 1, 1900 to Jan 1, 1970
+</span></span><span class="line"><span class="cl">#define MAX_IP_SIZE     16
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">#pragma pack(1)
+</span></span><span class="line"><span class="cl">struct li_vn_mode {
+</span></span><span class="line"><span class="cl">    unsigned int mode: 3;
+</span></span><span class="line"><span class="cl">    unsigned int vn: 3;
+</span></span><span class="line"><span class="cl">    unsigned int li: 2;
+</span></span><span class="line"><span class="cl">};
+</span></span><span class="line"><span class="cl">struct ntp_timestamp {
+</span></span><span class="line"><span class="cl">    uint32_t seconds;
+</span></span><span class="line"><span class="cl">    uint32_t fraction;
+</span></span><span class="line"><span class="cl">};
+</span></span><span class="line"><span class="cl">struct sntp_packet {
+</span></span><span class="line"><span class="cl">    struct li_vn_mode lvm;
+</span></span><span class="line"><span class="cl">    uint8_t stratum;
+</span></span><span class="line"><span class="cl">    uint8_t poll;
+</span></span><span class="line"><span class="cl">    int8_t precision;
+</span></span><span class="line"><span class="cl">    int16_t root_delay_int;
+</span></span><span class="line"><span class="cl">    uint16_t root_delay_fraction;
+</span></span><span class="line"><span class="cl">    int16_t root_dispersion_int;
+</span></span><span class="line"><span class="cl">    uint16_t root_dispersion_fraction;
+</span></span><span class="line"><span class="cl">    uint8_t ref_id[4];
+</span></span><span class="line"><span class="cl">    struct ntp_timestamp ref_time;
+</span></span><span class="line"><span class="cl">    struct ntp_timestamp ori_time;
+</span></span><span class="line"><span class="cl">    struct ntp_timestamp recv_time;
+</span></span><span class="line"><span class="cl">    struct ntp_timestamp tran_time;
+</span></span><span class="line"><span class="cl">};
+</span></span><span class="line"><span class="cl">#pragma pack()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">/********************************************************************
+</span></span><span class="line"><span class="cl">* Functin: bool is_vaild_ip(const char *ip)
+</span></span><span class="line"><span class="cl">* Description: check if the ip string is valid
+</span></span><span class="line"><span class="cl">********************************************************************/
+</span></span><span class="line"><span class="cl">bool is_vaild_ip(const char *ip) {
+</span></span><span class="line"><span class="cl">    int dots    = 0;                                    // how many dots
+</span></span><span class="line"><span class="cl">    int setions = 0;                                    // the current section in digit(should be in 0-255)
+</span></span><span class="line"><span class="cl">    int strnum  = 0;                                    // total length of the IP string
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if (NULL == ip || *ip == &#39;.&#39;) {                     // if IP string is NULL or the 1st char is dot, return false
+</span></span><span class="line"><span class="cl">        return  false;                                  // wrong format
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    while (*ip) {                                       // loop when string is not empty
+</span></span><span class="line"><span class="cl">        if (*ip == &#39;.&#39;) {                               // check if the previous section is valid(0-255), if the current char is dot
+</span></span><span class="line"><span class="cl">            dots++;                                     // the number of dots plus 1
+</span></span><span class="line"><span class="cl">            if (setions &gt;= 0 &amp;&amp; setions &lt;= 255) {       // check if the current section is valid
+</span></span><span class="line"><span class="cl">                setions = 0;                            // clear the previous section
+</span></span><span class="line"><span class="cl">            } else {  
+</span></span><span class="line"><span class="cl">                return  false;                          // wrong format. the value is not whithin 0 -255
+</span></span><span class="line"><span class="cl">            }
+</span></span><span class="line"><span class="cl">        } else if (*ip &gt;= &#39;0&#39; &amp;&amp; *ip &lt;= &#39;9&#39;) {          // if the current char is a digit
+</span></span><span class="line"><span class="cl">            setions = setions * 10 + (*ip - &#39;0&#39;);       // 
+</span></span><span class="line"><span class="cl">        } else {
+</span></span><span class="line"><span class="cl">            return  false;                              // the current char is not a digit or dot. return false
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        ip++;                                           // point to net char
+</span></span><span class="line"><span class="cl">        if (++strnum &gt; 15) {                            // The max. length of IP string must be less than 16
+</span></span><span class="line"><span class="cl">            return false;
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    // check if the last section is valid
+</span></span><span class="line"><span class="cl">    if (setions &gt;= 0 &amp;&amp; setions &lt;= 255) {                 
+</span></span><span class="line"><span class="cl">        if (dots == 3) {                                // avoid：“192.168.123”
+</span></span><span class="line"><span class="cl">            return true;                                // IP is valis
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    return  false;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">/****************************************************************************************************
+</span></span><span class="line"><span class="cl">* Function: void convert_ntp_time_into_unix_time(struct ntp_timestamp *ntp_tm, struct timeval *unix_tm)
+</span></span><span class="line"><span class="cl">* Decription: convert the NTP timestamp into UNIX timeval
+</span></span><span class="line"><span class="cl">* 
+</span></span><span class="line"><span class="cl">* Entry:   ntp_tm      pointer of struct ntp_timestamp
+</span></span><span class="line"><span class="cl">*          unix_tm     pointer of struct timeval
+</span></span><span class="line"><span class="cl">* Return:  none
+</span></span><span class="line"><span class="cl">*          converted unix timeval is stored in unix_tm
+</span></span><span class="line"><span class="cl">****************************************************************************************************/
+</span></span><span class="line"><span class="cl">void convert_ntp_time_into_unix_time(struct ntp_timestamp *ntp_tm, struct timeval *unix_tm) {
+</span></span><span class="line"><span class="cl">    unix_tm-&gt;tv_sec = ntohl(ntp_tm-&gt;seconds) - SNTP_EPOCH;
+</span></span><span class="line"><span class="cl">    unix_tm-&gt;tv_usec = (uint32_t)( (double)ntohl(ntp_tm-&gt;fraction) * 1.0e6 / (double)(1LL &lt;&lt; 32) );
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">/****************************************************************************************************
+</span></span><span class="line"><span class="cl">* Function: void convert_unix_time_into_ntp_time(struct timeval *unix_tm, struct ntp_timestamp *ntp_tm)
+</span></span><span class="line"><span class="cl">* Decription: convert UNIX timeval into the NTP timestamp
+</span></span><span class="line"><span class="cl">* 
+</span></span><span class="line"><span class="cl">* Entry:   ntp_tm      pointer of struct ntp_timestamp
+</span></span><span class="line"><span class="cl">*          unix_tm     pointer of struct timeval
+</span></span><span class="line"><span class="cl">* Return:  none
+</span></span><span class="line"><span class="cl">*          converted ntp timestamp is stored in ntp_tm
+</span></span><span class="line"><span class="cl">****************************************************************************************************/
+</span></span><span class="line"><span class="cl">void convert_unix_time_into_ntp_time(struct timeval *unix_tm, struct ntp_timestamp *ntp_tm) {
+</span></span><span class="line"><span class="cl">    ntp_tm-&gt;seconds = htonl(unix_tm-&gt;tv_sec + SNTP_EPOCH);
+</span></span><span class="line"><span class="cl">    ntp_tm-&gt;fraction = htonl( (uint32_t)((double)(unix_tm-&gt;tv_usec+1) * (double)(1LL &lt;&lt; 32) * 1.0e-6) );
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">/********************************************************************************
+</span></span><span class="line"><span class="cl">* Function: void print_sntp_packet(struct sntp_packet *p)
+</span></span><span class="line"><span class="cl">* Description: print sntp packet
+</span></span><span class="line"><span class="cl">********************************************************************************/
+</span></span><span class="line"><span class="cl">void print_sntp_packet(struct sntp_packet *p) {
+</span></span><span class="line"><span class="cl">    printf(&#34;\n=========== SNTP packet ================\n&#34;);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    printf(&#34;li: %d\tvn: %d\tmode: %d\n&#34;, p-&gt;lvm.li, p-&gt;lvm.vn, p-&gt;lvm.mode);
+</span></span><span class="line"><span class="cl">    printf(&#34;stratum: %d\tpoll interval: %d seconds\tprecision: %f microseconds\n&#34;, 
+</span></span><span class="line"><span class="cl">            p-&gt;stratum, (int32_t)1 &lt;&lt; p-&gt;poll, pow(2, p-&gt;precision) * 1000000);
+</span></span><span class="line"><span class="cl">    printf(&#34;root delay: %d.%u seconds\troot dispersion: %d.%u seconds\n&#34;, 
+</span></span><span class="line"><span class="cl">            ntohs(p-&gt;root_delay_int), ntohs(p-&gt;root_delay_fraction),
+</span></span><span class="line"><span class="cl">            ntohs(p-&gt;root_dispersion_int), ntohs(p-&gt;root_dispersion_fraction));
+</span></span><span class="line"><span class="cl">    if (p-&gt;stratum == 2) {
+</span></span><span class="line"><span class="cl">        printf(&#34;reference identifier: %u.%u.%u.%u\n&#34;, p-&gt;ref_id[0], p-&gt;ref_id[1], p-&gt;ref_id[2], p-&gt;ref_id[3]);
+</span></span><span class="line"><span class="cl">    } else {
+</span></span><span class="line"><span class="cl">        printf(&#34;reference identifier: %02x %02x %02x %02x\n&#34;, p-&gt;ref_id[0], p-&gt;ref_id[1], p-&gt;ref_id[2], p-&gt;ref_id[3]);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    struct timeval tv;
+</span></span><span class="line"><span class="cl">    convert_ntp_time_into_unix_time(&amp;p-&gt;ori_time, &amp;tv);
+</span></span><span class="line"><span class="cl">    printf(&#34;Reference Timestamp(%ld seconds and %ld microseconds)\n&#34;, tv.tv_sec, tv.tv_usec);
+</span></span><span class="line"><span class="cl">    printf(&#34;\n&#34;);
+</span></span><span class="line"><span class="cl">    convert_ntp_time_into_unix_time(&amp;p-&gt;ori_time, &amp;tv);
+</span></span><span class="line"><span class="cl">    printf(&#34;Originate Timestamp(T1)\t\t(%ld seconds and %ld microseconds)\n&#34;, tv.tv_sec, tv.tv_usec);
+</span></span><span class="line"><span class="cl">    convert_ntp_time_into_unix_time(&amp;p-&gt;recv_time, &amp;tv);
+</span></span><span class="line"><span class="cl">    printf(&#34;Receive Timestamp(T2)\t\t(%ld seconds and %ld microseconds)\n&#34;, tv.tv_sec, tv.tv_usec);
+</span></span><span class="line"><span class="cl">    convert_ntp_time_into_unix_time(&amp;p-&gt;tran_time, &amp;tv);
+</span></span><span class="line"><span class="cl">    printf(&#34;Transmit Timestamp(T3)\t\t(%ld seconds and %ld microseconds)\n&#34;, tv.tv_sec, tv.tv_usec);
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">int main(int argc, char **argv) {
+</span></span><span class="line"><span class="cl">    int ret_value;                      // return value
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    fd_set readfds;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    struct sntp_packet sntp_request;    // sntp packet for sending
+</span></span><span class="line"><span class="cl">    struct sntp_packet sntp_reply;      // sntp packet for receiving
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    int sock;
+</span></span><span class="line"><span class="cl">    struct sockaddr_in to_addr;
+</span></span><span class="line"><span class="cl">    socklen_t addr_len;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    struct timeval tv;                  // unix timestamp for normal usgae
+</span></span><span class="line"><span class="cl">    struct timeval tv1, tv2, tv3, tv4;  // T1, T2, T3, T3 in timeval format
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    char ip[MAX_IP_SIZE] = {0};
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    printf(VERSION);
+</span></span><span class="line"><span class="cl">    if (argc &gt; 1) {
+</span></span><span class="line"><span class="cl">        if (strcmp(argv[1], &#34;-v&#34;) == 0 || strcmp(argv[1], &#34;-V&#34;) == 0) {
+</span></span><span class="line"><span class="cl">            exit(EXIT_SUCCESS);
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // if invalid ip format, resolve the argument as a domain name
+</span></span><span class="line"><span class="cl">    if (!is_vaild_ip(argv[1])) {
+</span></span><span class="line"><span class="cl">        struct hostent *hptr;
+</span></span><span class="line"><span class="cl">        char *p = argv[1];
+</span></span><span class="line"><span class="cl">        if ((hptr = gethostbyname(p)) == NULL) {    // Resolve a domain name
+</span></span><span class="line"><span class="cl">            perror(&#34;gethostbyname&#34;);
+</span></span><span class="line"><span class="cl">            printf(&#34;Invalid IP address or domain name. %s\n&#34;, argv[1]);
+</span></span><span class="line"><span class="cl">            exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">        } else {
+</span></span><span class="line"><span class="cl">            if (hptr-&gt;h_addrtype == AF_INET) {      // exit if it is not IPv4
+</span></span><span class="line"><span class="cl">                unsigned char *p = (unsigned char *)hptr-&gt;h_addr_list[0];
+</span></span><span class="line"><span class="cl">                sprintf(ip, &#34;%d.%d.%d.%d&#34;, p[0], p[1], p[2], p[3]);
+</span></span><span class="line"><span class="cl">            } else {
+</span></span><span class="line"><span class="cl">                printf(&#34;It is not IPv4 address type(%d).\n&#34;, hptr-&gt;h_addrtype);
+</span></span><span class="line"><span class="cl">                exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">            }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    } else strncpy(ip, argv[1], MAX_IP_SIZE - 1);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    printf(&#34;The time server&#39;s IP: %s\n&#34;, ip);
+</span></span><span class="line"><span class="cl">    if (!is_vaild_ip(ip)) {
+</span></span><span class="line"><span class="cl">        printf(&#34;Invalid IP address or domain name. %s\n&#34;, argv[1]);
+</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Creat a socket
+</span></span><span class="line"><span class="cl">    sock = socket(AF_INET, SOCK_DGRAM, 0);
+</span></span><span class="line"><span class="cl">    if (sock &lt; 0) {
+</span></span><span class="line"><span class="cl">        printf(&#34;\nsocket creation Failed!\n&#34;);
+</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Set the server address and port
+</span></span><span class="line"><span class="cl">    to_addr.sin_family      = AF_INET;
+</span></span><span class="line"><span class="cl">    to_addr.sin_port        = htons(SNTP_PORT);
+</span></span><span class="line"><span class="cl">    to_addr.sin_addr.s_addr = inet_addr(ip);       // Time server&#39;s IP
+</span></span><span class="line"><span class="cl">    bzero(&amp;(to_addr.sin_zero), 8);
+</span></span><span class="line"><span class="cl">    addr_len = sizeof(struct sockaddr);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Fill the NTP packet for request
+</span></span><span class="line"><span class="cl">    bzero(&amp;sntp_request, sizeof(struct sntp_packet));
+</span></span><span class="line"><span class="cl">    sntp_request.lvm.li = 0;
+</span></span><span class="line"><span class="cl">    sntp_request.lvm.vn = 4;
+</span></span><span class="line"><span class="cl">    sntp_request.lvm.mode = 3;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    gettimeofday(&amp;tv1, NULL);
+</span></span><span class="line"><span class="cl">    convert_unix_time_into_ntp_time(&amp;tv1, &amp;sntp_request.tran_time);     // Originate timestamp(T1)
+</span></span><span class="line"><span class="cl">    printf(&#34;Size of sntp_packet is %ld\n&#34;, sizeof(struct sntp_packet));
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    ret_value = sendto(sock, &amp;sntp_request, sizeof(struct sntp_packet), 0,
+</span></span><span class="line"><span class="cl">                      (struct sockaddr *)&amp;to_addr, addr_len);
+</span></span><span class="line"><span class="cl">    if (ret_value &lt; 0) {
+</span></span><span class="line"><span class="cl">        perror(&#34;sendto()&#34;);
+</span></span><span class="line"><span class="cl">        ret_value = EXIT_FAILURE;
+</span></span><span class="line"><span class="cl">        goto quit;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Receive reply from time server
+</span></span><span class="line"><span class="cl">    FD_ZERO(&amp;readfds);
+</span></span><span class="line"><span class="cl">    FD_SET(sock, &amp;readfds);
+</span></span><span class="line"><span class="cl">    tv.tv_sec = 10;
+</span></span><span class="line"><span class="cl">    tv.tv_usec = 0;
+</span></span><span class="line"><span class="cl">    select(sock + 1, &amp;readfds, NULL, NULL, &amp;tv);
+</span></span><span class="line"><span class="cl">    if (FD_ISSET(sock, &amp;readfds)) {  // someone connects to me
+</span></span><span class="line"><span class="cl">        ret_value = recvfrom(sock,
+</span></span><span class="line"><span class="cl">                            (char *)&amp;sntp_reply,
+</span></span><span class="line"><span class="cl">                            sizeof(struct sntp_packet),
+</span></span><span class="line"><span class="cl">                            0,
+</span></span><span class="line"><span class="cl">                            (struct sockaddr *)&amp;to_addr,
+</span></span><span class="line"><span class="cl">                            &amp;addr_len);
+</span></span><span class="line"><span class="cl">    } else {
+</span></span><span class="line"><span class="cl">        printf(&#34;\nDid not Get information from time server in 10 seconds.\n&#34;);
+</span></span><span class="line"><span class="cl">        ret_value = EXIT_FAILURE;
+</span></span><span class="line"><span class="cl">        goto quit;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    if (ret_value &lt; 0 ) {
+</span></span><span class="line"><span class="cl">        perror(&#34;recvfrom()&#34;);
+</span></span><span class="line"><span class="cl">        ret_value = EXIT_FAILURE;
+</span></span><span class="line"><span class="cl">        goto quit;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    if (ret_value == 0) {
+</span></span><span class="line"><span class="cl">        printf(&#34;Received zero byte from server.\n&#34;);
+</span></span><span class="line"><span class="cl">        ret_value = EXIT_FAILURE;
+</span></span><span class="line"><span class="cl">        goto quit;
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    gettimeofday(&amp;tv4, NULL);       // Destination timestamp(T4)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // Show received data
+</span></span><span class="line"><span class="cl">    /*
+</span></span><span class="line"><span class="cl">    int i, j;
+</span></span><span class="line"><span class="cl">    unsigned char *p1 = (unsigned char *)&amp;sntp_request;
+</span></span><span class="line"><span class="cl">    unsigned char *p2 = (unsigned char *)&amp;sntp_reply;
+</span></span><span class="line"><span class="cl">    printf(&#34;\n\tSent...\t\t\t\t\tReceiving...&#34;);
+</span></span><span class="line"><span class="cl">    for (j = 0; j &lt; 12; j++) {
+</span></span><span class="line"><span class="cl">        printf(&#34;\n&#34;);
+</span></span><span class="line"><span class="cl">        for (i = 0; i &lt; 4; i++) {
+</span></span><span class="line"><span class="cl">            printf(&#34;\t%02x&#34;, p1[i + j * 4]);
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">        printf(&#34;\t&#34;);
+</span></span><span class="line"><span class="cl">        for (i = 0; i &lt; 4; i++) {
+</span></span><span class="line"><span class="cl">            printf(&#34;\t%02x&#34;, p2[i + j * 4]);
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    */
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    convert_ntp_time_into_unix_time(&amp;sntp_reply.ori_time, &amp;tv2);        // Receive timestamp(T2)
+</span></span><span class="line"><span class="cl">    convert_ntp_time_into_unix_time(&amp;sntp_reply.tran_time, &amp;tv3);       // Transmit timestamp(T3)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    print_sntp_packet(&amp;sntp_reply);         // print ntp packet received from time server
+</span></span><span class="line"><span class="cl">    printf(&#34;Destination Timestamp(T4)\t(%ld seconds and %ld microseconds)\n&#34;, tv4.tv_sec, tv4.tv_usec);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    // calculate the difference
+</span></span><span class="line"><span class="cl">    double diff, t2_t1, t3_t4;
+</span></span><span class="line"><span class="cl">    t2_t1 = ((double)tv2.tv_sec + (double)tv2.tv_usec / 1000000) - 
+</span></span><span class="line"><span class="cl">            ((double)tv1.tv_sec + (double)tv1.tv_usec / 1000000);
+</span></span><span class="line"><span class="cl">    t3_t4 = ((double)tv3.tv_sec + (double)tv3.tv_usec / 1000000) - 
+</span></span><span class="line"><span class="cl">            ((double)tv4.tv_sec + (double)tv4.tv_usec / 1000000);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    diff = (t2_t1 + t3_t4) / 2;
+</span></span><span class="line"><span class="cl">    printf(&#34;\nThe difference is %lf seconds.\n&#34;, diff);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    struct timeval tv_diff;
+</span></span><span class="line"><span class="cl">    tv_diff.tv_sec = (int)diff;
+</span></span><span class="line"><span class="cl">    tv_diff.tv_usec = (int)((diff - (double)tv_diff.tv_sec) * 1000000);
+</span></span><span class="line"><span class="cl">    printf(&#34;The different in timeval format is %ld seconds &amp; %ld microseconds.\n&#34;, tv_diff.tv_sec, tv_diff.tv_usec);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    ret_value = 0;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">quit:
+</span></span><span class="line"><span class="cl">    close(sock);
+</span></span><span class="line"><span class="cl">    return ret_value;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>编译：<code>gcc -Wall sntp_client.c -o sntp_client -lm</code>，因为其中使用了数学函数，所以编译时要加上 &ldquo;-lm&rdquo;</p>
+</li>
+<li>
+<p>运行：<code>./sntp_client ntp.aliyun.com</code></p>
+</li>
+<li>
+<p>运行截图：</p>
+<p><img src="/images/180017/screenshot-of-sntp-client.png" alt="screenshot of sntp_client"></p>
+</li>
+</ul>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-02-13
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+          <a href="/tags/ntp/">NTP</a>
+          <a href="/tags/sntp/">SNTP</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/network/0016-longest-prefix-match/">
+            <span class="next-text nav-default">简单的路由表查找程序</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/network/0017-sync-time-from-time-server-using-sntp/" class="leancloud_visitors" data-flag-title="使用SNTP协议从时间服务器同步时间">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

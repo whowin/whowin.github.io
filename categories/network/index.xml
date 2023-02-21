@@ -6,9 +6,18 @@
     <description>Recent content in network on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 10 Feb 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/network/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 13 Feb 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/network/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>用C语言模拟内核查找路由表</title>
+      <title>使用SNTP协议从时间服务器同步时间</title>
+      <link>https://whowin.gitee.io/post/blog/network/0017-sync-time-from-time-server-using-sntp/</link>
+      <pubDate>Mon, 13 Feb 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0017-sync-time-from-time-server-using-sntp/</guid>
+      <description>&lt;p&gt;在互联网上校准时间，是几乎连接在互联网上的每台计算机都要去做的事情，而且很多是在后台完成的，并不需要人工干预；互联网上有很多时间服务器可以发布精确的时间，计算机客户端使用NTP(Network Time Protocol)协议与这些时间服务器进行时间同步，使本机得到精确时间，本文简要描述了NTP协议的原理，对NTP协议的时间同步精度做了简要分析，并具体实现了SNTP(Simple Network Time Protocol)下的客户端，本文附有完整的C语言SNTP客户端的源程序。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>简单的路由表查找程序</title>
       <link>https://whowin.gitee.io/post/blog/network/0016-longest-prefix-match/</link>
       <pubDate>Fri, 10 Feb 2023 16:43:29 +0800</pubDate>
       
