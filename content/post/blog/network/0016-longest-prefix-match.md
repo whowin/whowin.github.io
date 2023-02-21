@@ -1,5 +1,5 @@
 ---
-title: "用C语言模拟内核查找路由表"
+title: "简单的路由表查找程序"
 date: 2023-02-10T16:43:29+08:00
 author: whowin
 sidebar: false
