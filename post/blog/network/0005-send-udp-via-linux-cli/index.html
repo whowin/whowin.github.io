@@ -192,7 +192,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">nc
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">nc
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -205,10 +205,10 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">usage: nc [-46CDdFhklNnrStUuvZz] [-I length] [-i interval] [-M ttl]
-</span></span><span class="line"><span class="cl">          [-m minttl] [-O length] [-P proxy_username] [-p source_port]
-</span></span><span class="line"><span class="cl">          [-q seconds] [-s source] [-T keyword] [-V rtable] [-W recvlimit] [-w timeout]
-</span></span><span class="line"><span class="cl">          [-X proxy_protocol] [-x proxy_address[:port]] 	  [destination] [port]
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">usage: nc <span class="o">[</span>-46CDdFhklNnrStUuvZz<span class="o">]</span> <span class="o">[</span>-I length<span class="o">]</span> <span class="o">[</span>-i interval<span class="o">]</span> <span class="o">[</span>-M ttl<span class="o">]</span>
+</span></span><span class="line"><span class="cl">          <span class="o">[</span>-m minttl<span class="o">]</span> <span class="o">[</span>-O length<span class="o">]</span> <span class="o">[</span>-P proxy_username<span class="o">]</span> <span class="o">[</span>-p source_port<span class="o">]</span>
+</span></span><span class="line"><span class="cl">          <span class="o">[</span>-q seconds<span class="o">]</span> <span class="o">[</span>-s source<span class="o">]</span> <span class="o">[</span>-T keyword<span class="o">]</span> <span class="o">[</span>-V rtable<span class="o">]</span> <span class="o">[</span>-W recvlimit<span class="o">]</span> <span class="o">[</span>-w timeout<span class="o">]</span>
+</span></span><span class="line"><span class="cl">          <span class="o">[</span>-X proxy_protocol<span class="o">]</span> <span class="o">[</span>-x proxy_address<span class="o">[</span>:port<span class="o">]]</span> 	  <span class="o">[</span>destination<span class="o">]</span> <span class="o">[</span>port<span class="o">]</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -218,7 +218,7 @@
 <ul>
 <li>
 <p>举个例子，假定我们要从 A 机发送一个 UDP 报文到 B 机，按照 server-client 的概念，我们把 B 机作为 server 端，A 机作为 client 端；</p>
-<p><img src="/images/180005/server_client_connection.png" alt="Server-client方式连接的两台机器"></p>
+<p><img src="https://whowin.gitee.io/images/180005/server_client_connection.png" alt="Server-client方式连接的两台机器"></p>
 </li>
 <li>
 <p>A 机的 IP: 192.168.2.112；B 机的 IP：192.168.2.114</p>
@@ -233,13 +233,13 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">nc –u –l 8888
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">nc –u –l <span class="m">8888</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
 <p>下面是屏幕截图</p>
-<p><img src="/images/180005/start_server_with_nc.png" alt="在B机用nc启动服务器监听"></p>
+<p><img src="https://whowin.gitee.io/images/180005/start_server_with_nc.png" alt="在B机用nc启动服务器监听"></p>
 </li>
 <li>
 <p>启动后，并没有更多的提示，当收到信息时，会显示收到的信息</p>
@@ -259,13 +259,13 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">netstat -a|grep 8888
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">netstat -a<span class="p">|</span>grep <span class="m">8888</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
 <p>屏幕截图</p>
-<p><img src="/images/180005/screenshot_for_started_server.png" alt="检查server是否启动"></p>
+<p><img src="https://whowin.gitee.io/images/180005/screenshot_for_started_server.png" alt="检查server是否启动"></p>
 </li>
 </ul>
 </li>
@@ -279,7 +279,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">nc -n 192.168.2.114 8888
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">nc -n 192.168.2.114 <span class="m">8888</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -291,11 +291,11 @@
 </li>
 <li>
 <p>下面是 A 机上的屏幕截图</p>
-<p><img src="/images/180005/send_udp_packet_client.png" alt="在client端发送信息"></p>
+<p><img src="https://whowin.gitee.io/images/180005/send_udp_packet_client.png" alt="在client端发送信息"></p>
 </li>
 <li>
 <p>下面是 B 机上的屏幕截图</p>
-<p><img src="/images/180005/receive_udp_packet_server.png" alt="在server端接收信息"></p>
+<p><img src="https://whowin.gitee.io/images/180005/receive_udp_packet_server.png" alt="在server端接收信息"></p>
 </li>
 <li>
 <p>也可以在 B 机输入信息，信息会发送到 A 机</p>
@@ -305,11 +305,11 @@
 </li>
 <li>
 <p>下面是在 B 机的截图</p>
-<p><img src="/images/180005/send_udp_packet_server.png" alt="在server端发送信息"></p>
+<p><img src="https://whowin.gitee.io/images/180005/send_udp_packet_server.png" alt="在server端发送信息"></p>
 </li>
 <li>
 <p>下面是在 A 机的截图</p>
-<p><img src="/images/180005/receive_udp_packet_client.png" alt="在client端接收信息"></p>
+<p><img src="https://whowin.gitee.io/images/180005/receive_udp_packet_client.png" alt="在client端接收信息"></p>
 </li>
 </ul>
 </li>
@@ -323,28 +323,28 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">echo -n &#34;I am sending an UDP packet using echo command&#34; &gt; /dev/udp/192.168.2.114/8888
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">echo</span> -n <span class="s2">&#34;I am sending an UDP packet using echo command&#34;</span> &gt; /dev/udp/192.168.2.114/8888
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
 <p>下面是在 A 机上的截屏</p>
-<p><img src="/images/180005/send_udp_packet_client_echo.png" alt="使用echo发送UDP报文"></p>
+<p><img src="https://whowin.gitee.io/images/180005/send_udp_packet_client_echo.png" alt="使用echo发送UDP报文"></p>
 </li>
 <li>
 <p>下面是在 B 机上的截屏</p>
-<p><img src="/images/180005/receive_udp_packet_server_echo.png" alt="接收使用echo发送的UDP报文"></p>
+<p><img src="https://whowin.gitee.io/images/180005/receive_udp_packet_server_echo.png" alt="接收使用echo发送的UDP报文"></p>
 </li>
 <li>
 <p>很显然使用 cat 命令也可以发送 UDP 报文：</p>
-<p><img src="/images/180005/send_udp_packet_client_cat.png" alt="使用cat命令发送UDP报文"></p>
-<p><img src="/images/180005/receive_udp_packet_server_cat.png" alt="接收使用cat命令发送的报文"></p>
+<p><img src="https://whowin.gitee.io/images/180005/send_udp_packet_client_cat.png" alt="使用cat命令发送UDP报文"></p>
+<p><img src="https://whowin.gitee.io/images/180005/receive_udp_packet_server_cat.png" alt="接收使用cat命令发送的报文"></p>
 </li>
 </ul>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">

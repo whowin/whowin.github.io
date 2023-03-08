@@ -50,7 +50,7 @@
 <meta itemprop="name" content="linux下使用netlink获取gateway的IP地址">
 <meta itemprop="description" content="要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，假定阅读本文的读者对linux下编程有一定了解，具备一定的C语言能力，熟悉IPv4的socket编程。"><meta itemprop="datePublished" content="2023-02-04T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-04T16:43:29+08:00" />
-<meta itemprop="wordCount" content="12946">
+<meta itemprop="wordCount" content="12905">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,netlink,rtnetlink," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="linux下使用netlink获取gateway的IP地址"/>
 <meta name="twitter:description" content="要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，假定阅读本文的读者对linux下编程有一定了解，具备一定的C语言能力，熟悉IPv4的socket编程。"/>
@@ -174,7 +174,7 @@
     <div class="post-content">
       <p>要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，假定阅读本文的读者对linux下编程有一定了解，具备一定的C语言能力，熟悉IPv4的socket编程。</p>
 <blockquote>
-<p>在linux编程的资料中，netlink编程的资料并不多，但netlink编程显然是本文无法越过的一道坎，所以下面需要用一定篇幅对netlink编程做个介绍；本文的最终目标是使用netlink这种与linux内核通信的机制，从内核获得路由表并从中找到gateway的IP地址。在具体实践中，获取路由表或者获取gateway的IP地址通常并不需要使用netlink编程实现，这种方法对应用层编程来说显得有些繁琐，本文主要还是作为netlink编程的一个范例，并以此为题介绍一些netlink的编程方法；有关其它获取gateway的IP地址的方法，请参见另一篇文章<a href="../0008-get-gateway-ip-from-proc-filesys/">《从proc文件系统中获取gateway的IP地址》</a>。</p>
+<p>在linux编程的资料中，netlink编程的资料并不多，但netlink编程显然是本文无法越过的一道坎，所以下面需要用一定篇幅对netlink编程做个介绍；本文的最终目标是使用netlink这种与linux内核通信的机制，从内核获得路由表并从中找到gateway的IP地址。在具体实践中，获取路由表或者获取gateway的IP地址通常并不需要使用netlink编程实现，这种方法对应用层编程来说显得有些繁琐，本文主要还是作为netlink编程的一个范例，并以此为题介绍一些netlink的编程方法；有关其它获取gateway的IP地址的方法，请参见另一篇文章<a href="https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/">《从proc文件系统中获取gateway的IP地址》</a>。</p>
 </blockquote>
 <h2 id="1-netlink-socket及netlink消息结构">1. netlink socket及netlink消息结构</h2>
 <ul>
@@ -187,7 +187,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sock = socket(AF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE);
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_NETLINK</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="n">NETLINK_ROUTE</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -221,30 +221,30 @@
 </span><span class="lnt">23
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#define NETLINK_ROUTE       0    /* Routing/device hook                     */
-</span></span><span class="line"><span class="cl">#define NETLINK_UNUSED      1    /* Unused number                           */
-</span></span><span class="line"><span class="cl">#define NETLINK_USERSOCK    2    /* Reserved for user mode socket protocols */
-</span></span><span class="line"><span class="cl">#define NETLINK_FIREWALL    3    /* Unused number, formerly ip_queue        */
-</span></span><span class="line"><span class="cl">#define NETLINK_SOCK_DIAG   4    /* socket monitoring                       */
-</span></span><span class="line"><span class="cl">#define NETLINK_NFLOG       5    /* netfilter/iptables ULOG */
-</span></span><span class="line"><span class="cl">#define NETLINK_XFRM        6    /* ipsec */
-</span></span><span class="line"><span class="cl">#define NETLINK_SELINUX     7    /* SELinux event notifications */
-</span></span><span class="line"><span class="cl">#define NETLINK_ISCSI       8    /* Open-iSCSI */
-</span></span><span class="line"><span class="cl">#define NETLINK_AUDIT       9    /* auditing */
-</span></span><span class="line"><span class="cl">#define NETLINK_FIB_LOOKUP  10    
-</span></span><span class="line"><span class="cl">#define NETLINK_CONNECTOR   11
-</span></span><span class="line"><span class="cl">#define NETLINK_NETFILTER   12    /* netfilter subsystem */
-</span></span><span class="line"><span class="cl">#define NETLINK_IP6_FW      13
-</span></span><span class="line"><span class="cl">#define NETLINK_DNRTMSG     14    /* DECnet routing messages */
-</span></span><span class="line"><span class="cl">#define NETLINK_KOBJECT_UEVENT  15    /* Kernel messages to userspace */
-</span></span><span class="line"><span class="cl">#define NETLINK_GENERIC     16
-</span></span><span class="line"><span class="cl">/* leave room for NETLINK_DM (DM Events) */
-</span></span><span class="line"><span class="cl">#define NETLINK_SCSITRANSPORT   18    /* SCSI Transports */
-</span></span><span class="line"><span class="cl">#define NETLINK_ECRYPTFS    19
-</span></span><span class="line"><span class="cl">#define NETLINK_RDMA        20
-</span></span><span class="line"><span class="cl">#define NETLINK_CRYPTO      21    /* Crypto layer */
-</span></span><span class="line"><span class="cl">#define NETLINK_SMC         22    /* SMC monitoring */
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#define NETLINK_ROUTE       0    </span><span class="cm">/* Routing/device hook                     */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_UNUSED      1    </span><span class="cm">/* Unused number                           */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_USERSOCK    2    </span><span class="cm">/* Reserved for user mode socket protocols */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_FIREWALL    3    </span><span class="cm">/* Unused number, formerly ip_queue        */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_SOCK_DIAG   4    </span><span class="cm">/* socket monitoring                       */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_NFLOG       5    </span><span class="cm">/* netfilter/iptables ULOG */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_XFRM        6    </span><span class="cm">/* ipsec */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_SELINUX     7    </span><span class="cm">/* SELinux event notifications */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_ISCSI       8    </span><span class="cm">/* Open-iSCSI */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_AUDIT       9    </span><span class="cm">/* auditing */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_FIB_LOOKUP  10    
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_CONNECTOR   11
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_NETFILTER   12    </span><span class="cm">/* netfilter subsystem */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_IP6_FW      13
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_DNRTMSG     14    </span><span class="cm">/* DECnet routing messages */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_KOBJECT_UEVENT  15    </span><span class="cm">/* Kernel messages to userspace */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_GENERIC     16
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="cm">/* leave room for NETLINK_DM (DM Events) */</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_SCSITRANSPORT   18    </span><span class="cm">/* SCSI Transports */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_ECRYPTFS    19
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_RDMA        20
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_CRYPTO      21    </span><span class="cm">/* Crypto layer */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define NETLINK_SMC         22    </span><span class="cm">/* SMC monitoring */</span><span class="cp">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>尽管定义的协议很多，但常用的协议并不多，本例中仅使用NETLINK_ROUTE；</li>
@@ -269,8 +269,10 @@
 <li>
 <p><strong>netlink消息结构</strong></p>
 <ul>
-<li>netlink消息是由一个或多个netlink消息头和与其相关的payload组成的一个字节流
-<img src="/images/180009/netlink-message-format.png" alt="netlink信息"></li>
+<li>
+<p>netlink消息是由一个或多个netlink消息头和与其相关的payload组成的一个字节流</p>
+<p><img src="https://whowin.gitee.io/images/180009/netlink-message-format.png" alt="netlink信息"></p>
+</li>
 </ul>
 <hr>
 <ul>
@@ -299,12 +301,12 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct sockaddr_nl {
-</span></span><span class="line"><span class="cl">    __kernel_sa_family_t  nl_family;  /* AF_NETLINK  */
-</span></span><span class="line"><span class="cl">    unsigned short        nl_pad;     /* zero        */
-</span></span><span class="line"><span class="cl">    __u32                 nl_pid;     /* port ID     */
-</span></span><span class="line"><span class="cl">    __u32                 nl_groups;  /* multicast groups mask */
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr_nl</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__kernel_sa_family_t</span>  <span class="n">nl_family</span><span class="p">;</span>  <span class="cm">/* AF_NETLINK  */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span>        <span class="n">nl_pad</span><span class="p">;</span>     <span class="cm">/* zero        */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u32</span>                 <span class="n">nl_pid</span><span class="p">;</span>     <span class="cm">/* port ID     */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u32</span>                 <span class="n">nl_groups</span><span class="p">;</span>  <span class="cm">/* multicast groups mask */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
@@ -330,13 +332,13 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct nlmsghdr {
-</span></span><span class="line"><span class="cl">    __u32   nlmsg_len;    /* Length of message including header */
-</span></span><span class="line"><span class="cl">    __u16   nlmsg_type;   /* Message content */
-</span></span><span class="line"><span class="cl">    __u16   nlmsg_flags;  /* Additional flags */
-</span></span><span class="line"><span class="cl">    __u32   nlmsg_seq;    /* Sequence number */
-</span></span><span class="line"><span class="cl">    __u32   nlmsg_pid;    /* Sending process port ID */
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u32</span>   <span class="n">nlmsg_len</span><span class="p">;</span>    <span class="cm">/* Length of message including header */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span>   <span class="n">nlmsg_type</span><span class="p">;</span>   <span class="cm">/* Message content */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span>   <span class="n">nlmsg_flags</span><span class="p">;</span>  <span class="cm">/* Additional flags */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u32</span>   <span class="n">nlmsg_seq</span><span class="p">;</span>    <span class="cm">/* Sequence number */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u32</span>   <span class="n">nlmsg_pid</span><span class="p">;</span>    <span class="cm">/* Sending process port ID */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -353,13 +355,13 @@
 </span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">NLMSG_NOOP      1       无用，可忽略
-</span></span><span class="line"><span class="cl">NLMSG_ERROR     2       出现错误
-</span></span><span class="line"><span class="cl">NLMSG_DONE      3       数据输出结束
-</span></span><span class="line"><span class="cl">NLMSG_OVERRUN   4       数据丢失
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">NLMSG_NOOP</span>      <span class="mi">1</span>       <span class="err">无用，可忽略</span>
+</span></span><span class="line"><span class="cl"><span class="n">NLMSG_ERROR</span>     <span class="mi">2</span>       <span class="err">出现错误</span>
+</span></span><span class="line"><span class="cl"><span class="n">NLMSG_DONE</span>      <span class="mi">3</span>       <span class="err">数据输出结束</span>
+</span></span><span class="line"><span class="cl"><span class="n">NLMSG_OVERRUN</span>   <span class="mi">4</span>       <span class="err">数据丢失</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">RTM_NEWROUTE    24      新路由
-</span></span><span class="line"><span class="cl">RTM_GETROUTE    26      从内核中获取路由表，发送netlink包请求时填写
+</span></span><span class="line"><span class="cl"><span class="n">RTM_NEWROUTE</span>    <span class="mi">24</span>      <span class="err">新路由</span>
+</span></span><span class="line"><span class="cl"><span class="n">RTM_GETROUTE</span>    <span class="mi">26</span>      <span class="err">从内核中获取路由表，发送</span><span class="n">netlink包请求时填写</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -410,18 +412,18 @@
 </span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct rtmsg {
-</span></span><span class="line"><span class="cl">    unsigned char rtm_family;   /* Address family of route */
-</span></span><span class="line"><span class="cl">    unsigned char rtm_dst_len;  /* Length of destination */
-</span></span><span class="line"><span class="cl">    unsigned char rtm_src_len;  /* Length of source */
-</span></span><span class="line"><span class="cl">    unsigned char rtm_tos;      /* TOS filter */
-</span></span><span class="line"><span class="cl">    unsigned char rtm_table;    /* Routing table ID */
-</span></span><span class="line"><span class="cl">    unsigned char rtm_protocol; /* Routing protocol */
-</span></span><span class="line"><span class="cl">    unsigned char rtm_scope;    /* See below */
-</span></span><span class="line"><span class="cl">    unsigned char rtm_type;     /* See below */
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">rtmsg</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">rtm_family</span><span class="p">;</span>   <span class="cm">/* Address family of route */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">rtm_dst_len</span><span class="p">;</span>  <span class="cm">/* Length of destination */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">rtm_src_len</span><span class="p">;</span>  <span class="cm">/* Length of source */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">rtm_tos</span><span class="p">;</span>      <span class="cm">/* TOS filter */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">rtm_table</span><span class="p">;</span>    <span class="cm">/* Routing table ID */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">rtm_protocol</span><span class="p">;</span> <span class="cm">/* Routing protocol */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">rtm_scope</span><span class="p">;</span>    <span class="cm">/* See below */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">rtm_type</span><span class="p">;</span>     <span class="cm">/* See below */</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    unsigned int  rtm_flags;
-</span></span><span class="line"><span class="cl">};
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">int</span>  <span class="n">rtm_flags</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -443,15 +445,15 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">enum rt_class_t {
-</span></span><span class="line"><span class="cl">    RT_TABLE_UNSPEC=0,
-</span></span><span class="line"><span class="cl">    /* User defined values */
-</span></span><span class="line"><span class="cl">    RT_TABLE_COMPAT=252,
-</span></span><span class="line"><span class="cl">    RT_TABLE_DEFAULT=253,
-</span></span><span class="line"><span class="cl">    RT_TABLE_MAIN=254,
-</span></span><span class="line"><span class="cl">    RT_TABLE_LOCAL=255,
-</span></span><span class="line"><span class="cl">    RT_TABLE_MAX=0xFFFFFFFF
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">enum</span> <span class="n">rt_class_t</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RT_TABLE_UNSPEC</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* User defined values */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RT_TABLE_COMPAT</span><span class="o">=</span><span class="mi">252</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RT_TABLE_DEFAULT</span><span class="o">=</span><span class="mi">253</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RT_TABLE_MAIN</span><span class="o">=</span><span class="mi">254</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RT_TABLE_LOCAL</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RT_TABLE_MAX</span><span class="o">=</span><span class="mh">0xFFFFFFFF</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -466,12 +468,12 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#define RTPROT_UNSPEC     0     不明
-</span></span><span class="line"><span class="cl">#define RTPROT_REDIRECT   1     当前的IPv4下没有使用
-</span></span><span class="line"><span class="cl">#define RTPROT_KERNEL     2     路由由内核设置
-</span></span><span class="line"><span class="cl">#define RTPROT_BOOT       3     路由在启动时设置
-</span></span><span class="line"><span class="cl">#define RTPROT_STATIC     4     路由由管理员设置
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#define RTPROT_UNSPEC     0     不明
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define RTPROT_REDIRECT   1     当前的IPv4下没有使用
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define RTPROT_KERNEL     2     路由由内核设置
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define RTPROT_BOOT       3     路由在启动时设置
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define RTPROT_STATIC     4     路由由管理员设置
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>在头文件linux/rtnetlink.h中专门有说明，当rtm_protocol&gt;RTPROT_STATIC时，Linux内核将不予理会，只能作为用户信息；在本例中，我们得到的路由表应该是由内核或者管理员设置的，当然也可以是在启动中由某个启动例程设置，所以RTPROT_KERNEL、RTPROT_BOOT或者RTPROT_STATIC都是可能的；</li>
@@ -488,14 +490,14 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">enum rt_scope_t {
-</span></span><span class="line"><span class="cl">    RT_SCOPE_UNIVERSE=0,      /* global route */
-</span></span><span class="line"><span class="cl">/* User defined values */
-</span></span><span class="line"><span class="cl">    RT_SCOPE_SITE=200,        /* interior route in the local autonomous system */
-</span></span><span class="line"><span class="cl">    RT_SCOPE_LINK=253,        /* route on this link */
-</span></span><span class="line"><span class="cl">    RT_SCOPE_HOST=254,        /* route on the local host */
-</span></span><span class="line"><span class="cl">    RT_SCOPE_NOWHERE=255      /* destination doesn&#39;t exist */
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">enum</span> <span class="n">rt_scope_t</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RT_SCOPE_UNIVERSE</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>      <span class="cm">/* global route */</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* User defined values */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RT_SCOPE_SITE</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>        <span class="cm">/* interior route in the local autonomous system */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RT_SCOPE_LINK</span><span class="o">=</span><span class="mi">253</span><span class="p">,</span>        <span class="cm">/* route on this link */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RT_SCOPE_HOST</span><span class="o">=</span><span class="mi">254</span><span class="p">,</span>        <span class="cm">/* route on the local host */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RT_SCOPE_NOWHERE</span><span class="o">=</span><span class="mi">255</span>      <span class="cm">/* destination doesn&#39;t exist */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -522,23 +524,23 @@
 </span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">enum {
-</span></span><span class="line"><span class="cl">    RTN_UNSPEC,
-</span></span><span class="line"><span class="cl">    RTN_UNICAST,      /* Gateway or direct route */
-</span></span><span class="line"><span class="cl">    RTN_LOCAL,        /* Accept locally */
-</span></span><span class="line"><span class="cl">    RTN_BROADCAST,    /* Accept locally as broadcast,
-</span></span><span class="line"><span class="cl">                          send as broadcast */
-</span></span><span class="line"><span class="cl">    RTN_ANYCAST,      /* Accept locally as broadcast,
-</span></span><span class="line"><span class="cl">                          but send as unicast */
-</span></span><span class="line"><span class="cl">    RTN_MULTICAST,    /* Multicast route */
-</span></span><span class="line"><span class="cl">    RTN_BLACKHOLE,    /* Drop */
-</span></span><span class="line"><span class="cl">    RTN_UNREACHABLE,  /* Destination is unreachable */
-</span></span><span class="line"><span class="cl">    RTN_PROHIBIT,     /* Administratively prohibited */
-</span></span><span class="line"><span class="cl">    RTN_THROW,        /* Not in this table */
-</span></span><span class="line"><span class="cl">    RTN_NAT,          /* Translate this address */
-</span></span><span class="line"><span class="cl">    RTN_XRESOLVE,     /* Use external resolver */
-</span></span><span class="line"><span class="cl">    __RTN_MAX
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">enum</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTN_UNSPEC</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTN_UNICAST</span><span class="p">,</span>      <span class="cm">/* Gateway or direct route */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTN_LOCAL</span><span class="p">,</span>        <span class="cm">/* Accept locally */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTN_BROADCAST</span><span class="p">,</span>    <span class="cm">/* Accept locally as broadcast,
+</span></span></span><span class="line"><span class="cl"><span class="cm">                          send as broadcast */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTN_ANYCAST</span><span class="p">,</span>      <span class="cm">/* Accept locally as broadcast,
+</span></span></span><span class="line"><span class="cl"><span class="cm">                          but send as unicast */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTN_MULTICAST</span><span class="p">,</span>    <span class="cm">/* Multicast route */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTN_BLACKHOLE</span><span class="p">,</span>    <span class="cm">/* Drop */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTN_UNREACHABLE</span><span class="p">,</span>  <span class="cm">/* Destination is unreachable */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTN_PROHIBIT</span><span class="p">,</span>     <span class="cm">/* Administratively prohibited */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTN_THROW</span><span class="p">,</span>        <span class="cm">/* Not in this table */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTN_NAT</span><span class="p">,</span>          <span class="cm">/* Translate this address */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTN_XRESOLVE</span><span class="p">,</span>     <span class="cm">/* Use external resolver */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__RTN_MAX</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -554,13 +556,13 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#define RTM_F_NOTIFY        0x100     /* Notify user of route change */
-</span></span><span class="line"><span class="cl">#define RTM_F_CLONED        0x200     /* This route is cloned */
-</span></span><span class="line"><span class="cl">#define RTM_F_EQUALIZE      0x400     /* Multipath equalizer: NI */
-</span></span><span class="line"><span class="cl">#define RTM_F_PREFIX        0x800     /* Prefix addresses */
-</span></span><span class="line"><span class="cl">#define RTM_F_LOOKUP_TABLE  0x1000    /* set rtm_table to FIB lookup result */
-</span></span><span class="line"><span class="cl">#define RTM_F_FIB_MATCH     0x2000    /* return full fib lookup match */
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#define RTM_F_NOTIFY        0x100     </span><span class="cm">/* Notify user of route change */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define RTM_F_CLONED        0x200     </span><span class="cm">/* This route is cloned */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define RTM_F_EQUALIZE      0x400     </span><span class="cm">/* Multipath equalizer: NI */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define RTM_F_PREFIX        0x800     </span><span class="cm">/* Prefix addresses */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define RTM_F_LOOKUP_TABLE  0x1000    </span><span class="cm">/* set rtm_table to FIB lookup result */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define RTM_F_FIB_MATCH     0x2000    </span><span class="cm">/* return full fib lookup match */</span><span class="cp">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 </ul>
@@ -577,10 +579,10 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct rtattr {
-</span></span><span class="line"><span class="cl">    unsigned short  rta_len;
-</span></span><span class="line"><span class="cl">    unsigned short  rta_type;
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">rtattr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span>  <span class="n">rta_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span>  <span class="n">rta_type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -603,20 +605,20 @@
 </span><span class="lnt">14
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">enum rtattr_type_t {
-</span></span><span class="line"><span class="cl">    RTA_UNSPEC,
-</span></span><span class="line"><span class="cl">    RTA_DST,
-</span></span><span class="line"><span class="cl">    RTA_SRC,
-</span></span><span class="line"><span class="cl">    RTA_IIF,
-</span></span><span class="line"><span class="cl">    RTA_OIF,
-</span></span><span class="line"><span class="cl">    RTA_GATEWAY,
-</span></span><span class="line"><span class="cl">    RTA_PRIORITY,
-</span></span><span class="line"><span class="cl">    RTA_PREFSRC,
-</span></span><span class="line"><span class="cl">    ......
-</span></span><span class="line"><span class="cl">    RTA_TABLE,
-</span></span><span class="line"><span class="cl">    ......
-</span></span><span class="line"><span class="cl">    __RTA_MAX
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">enum</span> <span class="n">rtattr_type_t</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTA_UNSPEC</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTA_DST</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTA_SRC</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTA_IIF</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTA_OIF</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTA_GATEWAY</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTA_PRIORITY</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTA_PREFSRC</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RTA_TABLE</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__RTA_MAX</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -794,7 +796,7 @@
 <ul>
 <li>
 <p>请求消息的结构比较简单，就两个结构：(struct nlmsghdr) + (struct rtmsg)</p>
-<p><img src="/images/180009/rtnetlink-request_message.png" alt="rtnetlink请求消息"></p>
+<p><img src="https://whowin.gitee.io/images/180009/rtnetlink-request_message.png" alt="rtnetlink请求消息"></p>
 <hr>
 </li>
 <li>
@@ -822,25 +824,25 @@
 </span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct nlmsghdr *nl_msg_hdr;
-</span></span><span class="line"><span class="cl">struct rtmsg *rt_msg;
-</span></span><span class="line"><span class="cl">char *msg_buf;
-</span></span><span class="line"><span class="cl">int msg_buf_len;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="n">nl_msg_hdr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">rtmsg</span> <span class="o">*</span><span class="n">rt_msg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">msg_buf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">msg_buf_len</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">msg_buf_len = NLMSG_SPACE(sizeof(struct rtmsg));
-</span></span><span class="line"><span class="cl">msg_buf = malloc(msg_buf_len);
-</span></span><span class="line"><span class="cl">memset(msg_buf, 0, msg_buf_len);
+</span></span><span class="line"><span class="cl"><span class="n">msg_buf_len</span> <span class="o">=</span> <span class="n">NLMSG_SPACE</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">rtmsg</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">msg_buf</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">msg_buf_len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="n">msg_buf</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">msg_buf_len</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">nl_msg_hdr = (struct nlmsghdr *)msg_buf;
-</span></span><span class="line"><span class="cl">rt_msg = (struct rtmsg *)NLMSG_DATA(nl_msg_hdr);
+</span></span><span class="line"><span class="cl"><span class="n">nl_msg_hdr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="p">)</span><span class="n">msg_buf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">rt_msg</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">rtmsg</span> <span class="o">*</span><span class="p">)</span><span class="n">NLMSG_DATA</span><span class="p">(</span><span class="n">nl_msg_hdr</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">nl_msg_hdr-&gt;nlmsg_len   = msg_buf_len;
-</span></span><span class="line"><span class="cl">nl_msg_hdr-&gt;nlmsg_type  = RTM_GETROUTE;
+</span></span><span class="line"><span class="cl"><span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_len</span>   <span class="o">=</span> <span class="n">msg_buf_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_type</span>  <span class="o">=</span> <span class="n">RTM_GETROUTE</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">nl_msg_hdr-&gt;nlmsg_flags = NLM_F_DUMP | NLM_F_REQUEST;
-</span></span><span class="line"><span class="cl">nl_msg_hdr-&gt;nlmsg_seq   = time(NULL);
-</span></span><span class="line"><span class="cl">nl_msg_hdr-&gt;nlmsg_pid   = getpid();
-</span></span><span class="line"><span class="cl">rt_msg-&gt;rtm_family  = AF_INET;
+</span></span><span class="line"><span class="cl"><span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_flags</span> <span class="o">=</span> <span class="n">NLM_F_DUMP</span> <span class="o">|</span> <span class="n">NLM_F_REQUEST</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_seq</span>   <span class="o">=</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_pid</span>   <span class="o">=</span> <span class="n">getpid</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_family</span>  <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -874,7 +876,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">send(nl_sock, nl_msg_hdr, nl_msg_hdr-&gt;nlmsg_len, 0);
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">send</span><span class="p">(</span><span class="n">nl_sock</span><span class="p">,</span> <span class="n">nl_msg_hdr</span><span class="p">,</span> <span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_len</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="6-接收和解析内核返回的路由表">6. 接收和解析内核返回的路由表</h2>
@@ -893,7 +895,7 @@
 <blockquote>
 <p>强调是两个报文是因为我们首先要使用recv()测试一下有多少字节需要接收，然后为接收缓冲区分配内存，但是这个测试只能测试第一个要接收的报文，所以获得的字节数实际还要加上(struct nlmsghdr) + (struct rtmsg)的长度，最后加上的这部分就是最后一个NLMSG_DONE的报文，请看下面的代码。</p>
 </blockquote>
-<pre><code>```
+<pre><code>```C
 char *buf_ptr, *p;
 int buf_size, msg_len = 0, read_len;
 buf_size = recv(nl_sock, NULL, 0, MSG_PEEK|MSG_TRUNC));
@@ -931,14 +933,14 @@ do {
 <ul>
 <li>
 <p>路由表报文结构(多部分报文)</p>
-<p><img src="/images/180009/rtnetlink-routing-table.png" alt="rtnetlink routing table"></p>
+<p><img src="https://whowin.gitee.io/images/180009/rtnetlink-routing-table.png" alt="rtnetlink routing table"></p>
 </li>
 </ul>
 <hr>
 <ul>
 <li>
 <p>多部分报文中，每一部分有一个(struct nlmsghdr)和一个(struct rtmsg)，在(struct rtmsg)后面有一个或多个(struct rtattr)，在(struct rtarrt)后面跟着数据，如下图，我们把这样一块数据叫做多部分报文中的一部分；</p>
-<p><img src="/images/180009/route-of-routing-table.png" alt="a route of routing table"></p>
+<p><img src="https://whowin.gitee.io/images/180009/route-of-routing-table.png" alt="a route of routing table"></p>
 </li>
 </ul>
 <hr>
@@ -959,7 +961,7 @@ do {
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">08 05 c0 a8 00 01
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">08 05 c0 a8 00 01
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -988,19 +990,19 @@ do {
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct nlmsghdr *nlmsg_hdr;
-</span></span><span class="line"><span class="cl">int msg_buf_len;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="n">nlmsg_hdr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">msg_buf_len</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">nlmsg_hdr = buf_ptr;
-</span></span><span class="line"><span class="cl">msg_buf_len = msg_len;
-</span></span><span class="line"><span class="cl">for (; NLMSG_OK(nlmsg_hdr, msg_buf_len); nlmsg_hdr = NLMSG_NEXT(nlmsg_hdr, msg_buf_len)) {
-</span></span><span class="line"><span class="cl">    if (nlmsg_hdr-&gt;nlmsg_type == NLMSG_DONE) {
-</span></span><span class="line"><span class="cl">        break;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    parse_message(nlmsg_hdr);
+</span></span><span class="line"><span class="cl"><span class="n">nlmsg_hdr</span> <span class="o">=</span> <span class="n">buf_ptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">msg_buf_len</span> <span class="o">=</span> <span class="n">msg_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(;</span> <span class="n">NLMSG_OK</span><span class="p">(</span><span class="n">nlmsg_hdr</span><span class="p">,</span> <span class="n">msg_buf_len</span><span class="p">);</span> <span class="n">nlmsg_hdr</span> <span class="o">=</span> <span class="n">NLMSG_NEXT</span><span class="p">(</span><span class="n">nlmsg_hdr</span><span class="p">,</span> <span class="n">msg_buf_len</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">nlmsg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_type</span> <span class="o">==</span> <span class="n">NLMSG_DONE</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">parse_message</span><span class="p">(</span><span class="n">nlmsg_hdr</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // TODO: 
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="c1">// TODO: 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -1055,48 +1057,48 @@ do {
 </span><span class="lnt">42
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct rtmsg *rt_msg;
-</span></span><span class="line"><span class="cl">struct rtattr *rt_attr;
-</span></span><span class="line"><span class="cl">int rt_len;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">rtmsg</span> <span class="o">*</span><span class="n">rt_msg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">rtattr</span> <span class="o">*</span><span class="n">rt_attr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">rt_len</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">struct in_addr dst_addr;            // destination IP address
-</span></span><span class="line"><span class="cl">struct in_addr src_addr;            // source IP address
-</span></span><span class="line"><span class="cl">struct in_addr gateway;             // gateway IP address
-</span></span><span class="line"><span class="cl">char ifname[IF_NAMESIZE];           // network interface name
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">in_addr</span> <span class="n">dst_addr</span><span class="p">;</span>            <span class="c1">// destination IP address
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="n">in_addr</span> <span class="n">src_addr</span><span class="p">;</span>            <span class="c1">// source IP address
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="n">in_addr</span> <span class="n">gateway</span><span class="p">;</span>             <span class="c1">// gateway IP address
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">char</span> <span class="n">ifname</span><span class="p">[</span><span class="n">IF_NAMESIZE</span><span class="p">];</span>           <span class="c1">// network interface name
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="n">rt_msg</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">rtmsg</span> <span class="o">*</span><span class="p">)</span><span class="n">NLMSG_DATA</span><span class="p">(</span><span class="n">nlmsg_hdr</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">rt_msg = (struct rtmsg *)NLMSG_DATA(nlmsg_hdr);
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">((</span><span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_family</span> <span class="o">!=</span> <span class="n">AF_INET</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_table</span> <span class="o">!=</span> <span class="n">RT_TABLE_MAIN</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// return if it is not IPv4 or not main routing table.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">if ((rt_msg-&gt;rtm_family != AF_INET) || (rt_msg-&gt;rtm_table != RT_TABLE_MAIN)) {
-</span></span><span class="line"><span class="cl">    // return if it is not IPv4 or not main routing table.
-</span></span><span class="line"><span class="cl">    return;
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl"><span class="n">rt_attr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">rtattr</span> <span class="o">*</span><span class="p">)</span><span class="n">RTM_RTA</span><span class="p">(</span><span class="n">rt_msg</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">rt_len</span> <span class="o">=</span> <span class="n">RTM_PAYLOAD</span><span class="p">(</span><span class="n">nlmsg_hdr</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">rt_attr = (struct rtattr *)RTM_RTA(rt_msg);
-</span></span><span class="line"><span class="cl">rt_len = RTM_PAYLOAD(nlmsg_hdr);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">unsigned char *p;
-</span></span><span class="line"><span class="cl">for (; RTA_OK(rt_attr, rt_len); rt_attr = RTA_NEXT(rt_attr, rt_len)) {
-</span></span><span class="line"><span class="cl">    switch (rt_attr-&gt;rta_type) {
-</span></span><span class="line"><span class="cl">        case RTA_OIF:       // rta_data is index of network interface. converter it to ifterface name here.
-</span></span><span class="line"><span class="cl">            if_indextoname(*(int *)RTA_DATA(rt_attr), ifname);
-</span></span><span class="line"><span class="cl">            break;
-</span></span><span class="line"><span class="cl">        case RTA_GATEWAY:   // rta_date is gateway ip in 32bits(struct in_addr).
-</span></span><span class="line"><span class="cl">            memcpy(&amp;gateway, RTA_DATA(rt_attr), sizeof(gateway));
-</span></span><span class="line"><span class="cl">            break;
-</span></span><span class="line"><span class="cl">        case RTA_PREFSRC:   // Preferred source IP address in 32bits(struct in_addr)
-</span></span><span class="line"><span class="cl">            memcpy(&amp;src_addr, RTA_DATA(rt_attr), sizeof(src_addr));
-</span></span><span class="line"><span class="cl">            break;
-</span></span><span class="line"><span class="cl">        case RTA_DST:       // Destination IP address in 32 bits(struct in_addr)
-</span></span><span class="line"><span class="cl">            memcpy(&amp;dst_addr, RTA_DATA(rt_attr), sizeof(dst_addr));
-</span></span><span class="line"><span class="cl">            break;
-</span></span><span class="line"><span class="cl">        case RTA_TABLE:     // Routing table ID. 
-</span></span><span class="line"><span class="cl">            break;
-</span></span><span class="line"><span class="cl">        case RTA_PRIORITY:  // Priority of route.
-</span></span><span class="line"><span class="cl">            break;
-</span></span><span class="line"><span class="cl">        default:            // Unknown routing attribute
-</span></span><span class="line"><span class="cl">            break;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(;</span> <span class="n">RTA_OK</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">,</span> <span class="n">rt_len</span><span class="p">);</span> <span class="n">rt_attr</span> <span class="o">=</span> <span class="n">RTA_NEXT</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">,</span> <span class="n">rt_len</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">switch</span> <span class="p">(</span><span class="n">rt_attr</span><span class="o">-&gt;</span><span class="n">rta_type</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="nl">RTA_OIF</span><span class="p">:</span>       <span class="c1">// rta_data is index of network interface. converter it to ifterface name here.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">if_indextoname</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">RTA_DATA</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">),</span> <span class="n">ifname</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="nl">RTA_GATEWAY</span><span class="p">:</span>   <span class="c1">// rta_date is gateway ip in 32bits(struct in_addr).
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">gateway</span><span class="p">,</span> <span class="n">RTA_DATA</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">),</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">gateway</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="nl">RTA_PREFSRC</span><span class="p">:</span>   <span class="c1">// Preferred source IP address in 32bits(struct in_addr)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">src_addr</span><span class="p">,</span> <span class="n">RTA_DATA</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">),</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">src_addr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="nl">RTA_DST</span><span class="p">:</span>       <span class="c1">// Destination IP address in 32 bits(struct in_addr)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dst_addr</span><span class="p">,</span> <span class="n">RTA_DATA</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">),</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">dst_addr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="nl">RTA_TABLE</span><span class="p">:</span>     <span class="c1">// Routing table ID. 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">case</span> <span class="nl">RTA_PRIORITY</span><span class="p">:</span>  <span class="c1">// Priority of route.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">default</span><span class="o">:</span>            <span class="c1">// Unknown routing attribute
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -1447,341 +1449,341 @@ do {
 </span><span class="lnt">335
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;time.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;errno.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;errno.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;net/if.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/netlink.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/rtnetlink.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">//#define BUF_SIZE        8192
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define IP_SIZE         16
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">debug</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">route_info</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">in_addr</span> <span class="n">dst_addr</span><span class="p">;</span>            <span class="c1">// destination IP address
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">struct</span> <span class="n">in_addr</span> <span class="n">src_addr</span><span class="p">;</span>            <span class="c1">// source IP address
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">struct</span> <span class="n">in_addr</span> <span class="n">gateway</span><span class="p">;</span>             <span class="c1">// gateway IP address
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">char</span> <span class="n">ifname</span><span class="p">[</span><span class="n">IF_NAMESIZE</span><span class="p">];</span>           <span class="c1">// network interface name
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">uint32_t</span> <span class="n">rt_table_id</span><span class="p">;</span>               <span class="c1">// route table id
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">uint32_t</span> <span class="n">rt_priority</span><span class="p">;</span>               <span class="c1">// priority of route
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;net/if.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/netlink.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/rtnetlink.h&gt;
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print_bytes</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">debug</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">//#define BUF_SIZE        8192
-</span></span><span class="line"><span class="cl">#define IP_SIZE         16
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">len</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%02x &#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">i</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int debug = 0;
-</span></span><span class="line"><span class="cl">struct route_info {
-</span></span><span class="line"><span class="cl">    struct in_addr dst_addr;            // destination IP address
-</span></span><span class="line"><span class="cl">    struct in_addr src_addr;            // source IP address
-</span></span><span class="line"><span class="cl">    struct in_addr gateway;             // gateway IP address
-</span></span><span class="line"><span class="cl">    char ifname[IF_NAMESIZE];           // network interface name
-</span></span><span class="line"><span class="cl">    uint32_t rt_table_id;               // route table id
-</span></span><span class="line"><span class="cl">    uint32_t rt_priority;               // priority of route
-</span></span><span class="line"><span class="cl">};
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">void print_bytes(unsigned char *p, int len) {
-</span></span><span class="line"><span class="cl">    if (!debug) return;
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print_rt_attr</span><span class="p">(</span><span class="k">struct</span> <span class="n">rtattr</span> <span class="o">*</span><span class="n">rt_attr</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">debug</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">===== Route Attribute ======</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s"> rta_len = %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_attr</span><span class="o">-&gt;</span><span class="n">rta_len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">rta_type = %d(1-DST,4-OIF,5-GATEWAY,6-PRIORITY,7-PREFSRC,15-TABLE)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_attr</span><span class="o">-&gt;</span><span class="n">rta_type</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">============================</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    int i;
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print_rt_msg</span><span class="p">(</span><span class="k">struct</span> <span class="n">rtmsg</span> <span class="o">*</span><span class="n">rt_msg</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">debug</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">==== Routing Message =========</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">  rtm_family: %d(1-AF_LOCAL,2-AF_INET,10-AF_INET6</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_family</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s"> rtm_dst_len: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_dst_len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s"> rtm_src_len: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_src_len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">     rtm_tos: 0x%02x</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_tos</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 0-UNSPEC(unknown), 253-DEFAULT(the default table), 254-MAIN(the main table), 255-LOCAL(the local table)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">   rtm_table: %d(0-UNKNOWN,253-DEFAULT,254-MAIN,255-LOCAL)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_table</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 0-UNSPEC(unknown), 1-REDIRECT(not used), 2-KERNEL(by the kernel), 3-BOOT(during boot), 4-STATIC(by the administrator)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">rtm_protocol: %d(0-unknown,1-not used,2-kernel,3-boot,4-administrtor)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_protocol</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 0-UNIVERSE(global route), 200-SITE(interior route in the local autonomous system)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 253-LINK(route on this link), 254-HOST(route on the local host), 255-NOWHERE(destination doesn&#39;t exist)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">   rtm_scope: %d(0-universe,200-site,253-link,254-host,255-host)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_scope</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 0-UNSPEC(unknown), 1-UNICAST(a gateway or direct route), 2-LOCAL(a local interface route)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 3-BROADCAST(a local broadcast route), ......
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">    rtm_type: %d(0-UNSPEC,1-GATEWAY OR DIRECT,2-LOCAL,3-BROADCAST)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_type</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">   rtm_flags: 0x%02x</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_flags</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">==============================</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (len &gt; 0) printf(&#34;\t&#34;);
-</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; len; ++i) 
-</span></span><span class="line"><span class="cl">        printf(&#34;%02x &#34;, (unsigned char)*(p + i));
-</span></span><span class="line"><span class="cl">    printf(&#34;\n&#34;);
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print_nl_msg_hdr</span><span class="p">(</span><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="n">nl_msg_hdr</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">debug</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">== Netlink Message Header ==</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">  nlmsg_len = %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 1-Nothing,2-Error,3-NLMSG_DONE,24-RTM_NEWROUTE,26-RTM_GETROUTE
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s"> nlmsg_type = %d(2-Error,3-NLMSG_DONE,24-RTM_NEWROUTE)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_type</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 0x02-NLM_F_MULTI,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">nlmsg_flags = 0X%04X(0X02-NLM_F_MULTI)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_flags</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">  nlmsg_seq = %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_seq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">  nlmsg_pid = %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_pid</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">============================</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl"><span class="cm">/****************************************************************************
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Function: read_nl_sock(int nl_sock, char **buf_ptr, int seq_num, int pid)
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Description: Read data from netlink socket
+</span></span></span><span class="line"><span class="cl"><span class="cm">* 
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Entry:   nl_sock     netlink socket
+</span></span></span><span class="line"><span class="cl"><span class="cm">*          buf_ptr     receive buffer
+</span></span></span><span class="line"><span class="cl"><span class="cm">*          seq_num     message sequence number
+</span></span></span><span class="line"><span class="cl"><span class="cm">*          pid         process id
+</span></span></span><span class="line"><span class="cl"><span class="cm">* return:  &gt;0          length of received message
+</span></span></span><span class="line"><span class="cl"><span class="cm">*          &lt;0          error
+</span></span></span><span class="line"><span class="cl"><span class="cm">****************************************************************************/</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">read_nl_sock</span><span class="p">(</span><span class="kt">int</span> <span class="n">nl_sock</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">buf_ptr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">seq_num</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pid</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">read_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>       <span class="c1">// how many bytes to read from the netlink socket
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">msg_len</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>       <span class="c1">// how many bytes have been read from the netlink socket
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">buf_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>       <span class="c1">// the size of the receive buffer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">//int count    = 0;       // how many times have read from the netlink socket
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;5-1. Check how many bytes can be read from the netlink socket.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">((</span><span class="n">buf_size</span> <span class="o">=</span> <span class="n">recv</span><span class="p">(</span><span class="n">nl_sock</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MSG_PEEK</span><span class="o">|</span><span class="n">MSG_TRUNC</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">perror</span><span class="p">(</span><span class="s">&#34;Fail to receive from socket&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// No data can be read
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">buf_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;EOF of socket.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">void print_rt_attr(struct rtattr *rt_attr) {
-</span></span><span class="line"><span class="cl">    if (!debug) return;
-</span></span><span class="line"><span class="cl">    printf(&#34;\t===== Route Attribute ======\n&#34;);
-</span></span><span class="line"><span class="cl">    printf(&#34;\t rta_len = %d\n&#34;, rt_attr-&gt;rta_len);
-</span></span><span class="line"><span class="cl">    printf(&#34;\trta_type = %d(1-DST,4-OIF,5-GATEWAY,6-PRIORITY,7-PREFSRC,15-TABLE)\n&#34;, rt_attr-&gt;rta_type);
-</span></span><span class="line"><span class="cl">    printf(&#34;\t============================\n&#34;);
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;5-2. Reallocate memory for receiving the response from the kernel.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// caculate the size of the receive buffer. plus sizeof(struct nlmsghdr) &amp; sizeof(struct rtmsg)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">buf_size</span> <span class="o">+=</span> <span class="n">NLMSG_SPACE</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">rtmsg</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">New buffer size: %d.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">buf_size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Reallocate memory for receive buffer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span> <span class="o">=</span> <span class="n">realloc</span><span class="p">(</span><span class="o">*</span><span class="n">buf_ptr</span><span class="p">,</span> <span class="n">buf_size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">perror</span><span class="p">(</span><span class="s">&#34;Realloc(): &#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">buf_ptr</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">memset</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">buf_size</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">void print_rt_msg(struct rtmsg *rt_msg) {
-</span></span><span class="line"><span class="cl">    if (!debug) return;
-</span></span><span class="line"><span class="cl">    printf(&#34;\t==== Routing Message =========\n&#34;);
-</span></span><span class="line"><span class="cl">    printf(&#34;\t  rtm_family: %d(1-AF_LOCAL,2-AF_INET,10-AF_INET6\n&#34;, rt_msg-&gt;rtm_family);
-</span></span><span class="line"><span class="cl">    printf(&#34;\t rtm_dst_len: %d\n&#34;, rt_msg-&gt;rtm_dst_len);
-</span></span><span class="line"><span class="cl">    printf(&#34;\t rtm_src_len: %d\n&#34;, rt_msg-&gt;rtm_src_len);
-</span></span><span class="line"><span class="cl">    printf(&#34;\t     rtm_tos: 0x%02x\n&#34;, rt_msg-&gt;rtm_tos);
-</span></span><span class="line"><span class="cl">    // 0-UNSPEC(unknown), 253-DEFAULT(the default table), 254-MAIN(the main table), 255-LOCAL(the local table)
-</span></span><span class="line"><span class="cl">    printf(&#34;\t   rtm_table: %d(0-UNKNOWN,253-DEFAULT,254-MAIN,255-LOCAL)\n&#34;, rt_msg-&gt;rtm_table);
-</span></span><span class="line"><span class="cl">    // 0-UNSPEC(unknown), 1-REDIRECT(not used), 2-KERNEL(by the kernel), 3-BOOT(during boot), 4-STATIC(by the administrator)
-</span></span><span class="line"><span class="cl">    printf(&#34;\trtm_protocol: %d(0-unknown,1-not used,2-kernel,3-boot,4-administrtor)\n&#34;, rt_msg-&gt;rtm_protocol);
-</span></span><span class="line"><span class="cl">    // 0-UNIVERSE(global route), 200-SITE(interior route in the local autonomous system)
-</span></span><span class="line"><span class="cl">    // 253-LINK(route on this link), 254-HOST(route on the local host), 255-NOWHERE(destination doesn&#39;t exist)
-</span></span><span class="line"><span class="cl">    printf(&#34;\t   rtm_scope: %d(0-universe,200-site,253-link,254-host,255-host)\n&#34;, rt_msg-&gt;rtm_scope);
-</span></span><span class="line"><span class="cl">    // 0-UNSPEC(unknown), 1-UNICAST(a gateway or direct route), 2-LOCAL(a local interface route)
-</span></span><span class="line"><span class="cl">    // 3-BROADCAST(a local broadcast route), ......
-</span></span><span class="line"><span class="cl">    printf(&#34;\t    rtm_type: %d(0-UNSPEC,1-GATEWAY OR DIRECT,2-LOCAL,3-BROADCAST)\n&#34;, rt_msg-&gt;rtm_type);
-</span></span><span class="line"><span class="cl">    printf(&#34;\t   rtm_flags: 0x%02x\n&#34;, rt_msg-&gt;rtm_flags);
-</span></span><span class="line"><span class="cl">    printf(&#34;\t==============================\n&#34;);
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;5-3. Receive response from kernel.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">void print_nl_msg_hdr(struct nlmsghdr *nl_msg_hdr) {
-</span></span><span class="line"><span class="cl">    if (!debug) return;
-</span></span><span class="line"><span class="cl">    printf(&#34;\t== Netlink Message Header ==\n&#34;);
-</span></span><span class="line"><span class="cl">    printf(&#34;\t  nlmsg_len = %d\n&#34;, nl_msg_hdr-&gt;nlmsg_len);
-</span></span><span class="line"><span class="cl">    // 1-Nothing,2-Error,3-NLMSG_DONE,24-RTM_NEWROUTE,26-RTM_GETROUTE
-</span></span><span class="line"><span class="cl">    printf(&#34;\t nlmsg_type = %d(2-Error,3-NLMSG_DONE,24-RTM_NEWROUTE)\n&#34;, nl_msg_hdr-&gt;nlmsg_type);
-</span></span><span class="line"><span class="cl">    // 0x02-NLM_F_MULTI,
-</span></span><span class="line"><span class="cl">    printf(&#34;\tnlmsg_flags = 0X%04X(0X02-NLM_F_MULTI)\n&#34;, nl_msg_hdr-&gt;nlmsg_flags);
-</span></span><span class="line"><span class="cl">    printf(&#34;\t  nlmsg_seq = %d\n&#34;, nl_msg_hdr-&gt;nlmsg_seq);
-</span></span><span class="line"><span class="cl">    printf(&#34;\t  nlmsg_pid = %d\n&#34;, nl_msg_hdr-&gt;nlmsg_pid);
-</span></span><span class="line"><span class="cl">    printf(&#34;\t============================\n&#34;);
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="k">do</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Recieve response from the kernel
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">read_len</span> <span class="o">=</span> <span class="n">recv</span><span class="p">(</span><span class="n">nl_sock</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">buf_size</span> <span class="o">-</span> <span class="n">msg_len</span><span class="p">,</span> <span class="n">MSG_DONTWAIT</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">read_len</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">errno</span> <span class="o">==</span> <span class="n">EAGAIN</span> <span class="o">||</span> <span class="n">errno</span> <span class="o">==</span> <span class="n">EWOULDBLOCK</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">Break due to EAGAIN or EWOULDBLOCK.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">printf</span><span class="p">(</span><span class="s">&#34;errno=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">errno</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">perror</span><span class="p">(</span><span class="s">&#34;SOCK READ: &#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">read_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">Break due to reading nothing.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">/****************************************************************************
-</span></span><span class="line"><span class="cl">* Function: read_nl_sock(int nl_sock, char **buf_ptr, int seq_num, int pid)
-</span></span><span class="line"><span class="cl">* Description: Read data from netlink socket
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Entry:   nl_sock     netlink socket
-</span></span><span class="line"><span class="cl">*          buf_ptr     receive buffer
-</span></span><span class="line"><span class="cl">*          seq_num     message sequence number
-</span></span><span class="line"><span class="cl">*          pid         process id
-</span></span><span class="line"><span class="cl">* return:  &gt;0          length of received message
-</span></span><span class="line"><span class="cl">*          &lt;0          error
-</span></span><span class="line"><span class="cl">****************************************************************************/
-</span></span><span class="line"><span class="cl">int read_nl_sock(int nl_sock, char **buf_ptr, int seq_num, int pid) {
-</span></span><span class="line"><span class="cl">    char *p;
-</span></span><span class="line"><span class="cl">    int read_len = 0;       // how many bytes to read from the netlink socket
-</span></span><span class="line"><span class="cl">    int msg_len  = 0;       // how many bytes have been read from the netlink socket
-</span></span><span class="line"><span class="cl">    int buf_size = 0;       // the size of the receive buffer
-</span></span><span class="line"><span class="cl">    //int count    = 0;       // how many times have read from the netlink socket
+</span></span><span class="line"><span class="cl">        <span class="n">p</span> <span class="o">+=</span> <span class="n">read_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">msg_len</span> <span class="o">+=</span> <span class="n">read_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">msg_len</span> <span class="o">&lt;</span> <span class="n">buf_size</span> <span class="o">&amp;&amp;</span> <span class="n">read_len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;5-1. Check how many bytes can be read from the netlink socket.\n&#34;);
-</span></span><span class="line"><span class="cl">    if ((buf_size = recv(nl_sock, NULL, 0, MSG_PEEK|MSG_TRUNC)) &lt; 0) {
-</span></span><span class="line"><span class="cl">        perror(&#34;Fail to receive from socket&#34;);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    // No data can be read
-</span></span><span class="line"><span class="cl">    if (buf_size == 0) {
-</span></span><span class="line"><span class="cl">        printf(&#34;EOF of socket.\n&#34;);
-</span></span><span class="line"><span class="cl">        return 0;
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">msg_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;5-2. Reallocate memory for receiving the response from the kernel.\n&#34;);
-</span></span><span class="line"><span class="cl">    // caculate the size of the receive buffer. plus sizeof(struct nlmsghdr) &amp; sizeof(struct rtmsg)
-</span></span><span class="line"><span class="cl">    buf_size += NLMSG_SPACE(sizeof(struct rtmsg));
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;\tNew buffer size: %d.\n&#34;, buf_size);
-</span></span><span class="line"><span class="cl">    // Reallocate memory for receive buffer
-</span></span><span class="line"><span class="cl">    p = realloc(*buf_ptr, buf_size);
-</span></span><span class="line"><span class="cl">    if (p == NULL) {
-</span></span><span class="line"><span class="cl">        perror(&#34;Realloc(): &#34;);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    *buf_ptr = p;
-</span></span><span class="line"><span class="cl">    memset(p, 0, buf_size);
+</span></span><span class="line"><span class="cl"><span class="cm">/*************************************************************************************
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Function: void parse_message(struct nlmsghdr *nl_hdr, struct route_info *rt_info)
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Description: parse the route info returned
+</span></span></span><span class="line"><span class="cl"><span class="cm">* 
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Entry:   nl_hdr      pointer of struct nlmsghdr
+</span></span></span><span class="line"><span class="cl"><span class="cm">*          rt_info     pointer of struct route_info
+</span></span></span><span class="line"><span class="cl"><span class="cm">* return:  none
+</span></span></span><span class="line"><span class="cl"><span class="cm">*          routes info will fill into rtinfo
+</span></span></span><span class="line"><span class="cl"><span class="cm">*************************************************************************************/</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">parse_message</span><span class="p">(</span><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="n">nl_hdr</span><span class="p">,</span> <span class="k">struct</span> <span class="n">route_info</span> <span class="o">*</span><span class="n">rt_info</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">rtmsg</span> <span class="o">*</span><span class="n">rt_msg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">rtattr</span> <span class="o">*</span><span class="n">rt_attr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">rt_len</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;5-3. Receive response from kernel.\n&#34;);
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;6-1. Check if the route msg is IPv4 route table.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rt_msg</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">rtmsg</span> <span class="o">*</span><span class="p">)</span><span class="n">NLMSG_DATA</span><span class="p">(</span><span class="n">nl_hdr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">print_rt_msg</span><span class="p">(</span><span class="n">rt_msg</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    do {
-</span></span><span class="line"><span class="cl">        // Recieve response from the kernel
-</span></span><span class="line"><span class="cl">        read_len = recv(nl_sock, p, buf_size - msg_len, MSG_DONTWAIT);
-</span></span><span class="line"><span class="cl">        if (read_len &lt; 0) {
-</span></span><span class="line"><span class="cl">            if (errno == EAGAIN || errno == EWOULDBLOCK) {
-</span></span><span class="line"><span class="cl">                if (debug) printf(&#34;\tBreak due to EAGAIN or EWOULDBLOCK.\n&#34;);
-</span></span><span class="line"><span class="cl">                break;
-</span></span><span class="line"><span class="cl">            } else {
-</span></span><span class="line"><span class="cl">                printf(&#34;errno=%d\n&#34;, errno);
-</span></span><span class="line"><span class="cl">                perror(&#34;SOCK READ: &#34;);
-</span></span><span class="line"><span class="cl">                return -1;
-</span></span><span class="line"><span class="cl">            }
-</span></span><span class="line"><span class="cl">        } else if (read_len == 0) {
-</span></span><span class="line"><span class="cl">            if (debug) printf(&#34;\tBreak due to reading nothing.\n&#34;);
-</span></span><span class="line"><span class="cl">            break;
-</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    <span class="c1">// If the route is not for AF_INET or does not belong to main routing table then return.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">((</span><span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_family</span> <span class="o">!=</span> <span class="n">AF_INET</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_table</span> <span class="o">!=</span> <span class="n">RT_TABLE_MAIN</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">It is not the IPv4 route table. Just return.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        p += read_len;
-</span></span><span class="line"><span class="cl">        msg_len += read_len;
-</span></span><span class="line"><span class="cl">    } while (msg_len &lt; buf_size &amp;&amp; read_len &gt; 0);
+</span></span><span class="line"><span class="cl">    <span class="c1">// get the rtattr field
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">It is the IPv4 route table.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rt_attr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">rtattr</span> <span class="o">*</span><span class="p">)</span><span class="n">RTM_RTA</span><span class="p">(</span><span class="n">rt_msg</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rt_len</span> <span class="o">=</span> <span class="n">RTM_PAYLOAD</span><span class="p">(</span><span class="n">nl_hdr</span><span class="p">);</span>       <span class="c1">// return length of all rtattr
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;6-2. Parse the route attribute.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(;</span> <span class="n">RTA_OK</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">,</span> <span class="n">rt_len</span><span class="p">);</span> <span class="n">rt_attr</span> <span class="o">=</span> <span class="n">RTA_NEXT</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">,</span> <span class="n">rt_len</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">print_rt_attr</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">switch</span> <span class="p">(</span><span class="n">rt_attr</span><span class="o">-&gt;</span><span class="n">rta_type</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">case</span> <span class="nl">RTA_OIF</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// rta_data is index of network interface. converter it to ifterface name here.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">if_indextoname</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="p">)</span><span class="n">RTA_DATA</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">),</span> <span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">ifname</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">Interface name: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">ifname</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    return msg_len;
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">            <span class="k">case</span> <span class="nl">RTA_GATEWAY</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// rta_date is gateway ip in 32bits(struct in_addr).
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">gateway</span><span class="p">,</span> <span class="n">RTA_DATA</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">),</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">gateway</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">                <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">gateway</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">Gateway IP: %d.%d.%d.%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="o">*</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span> <span class="o">*</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">3</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">/*************************************************************************************
-</span></span><span class="line"><span class="cl">* Function: void parse_message(struct nlmsghdr *nl_hdr, struct route_info *rt_info)
-</span></span><span class="line"><span class="cl">* Description: parse the route info returned
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Entry:   nl_hdr      pointer of struct nlmsghdr
-</span></span><span class="line"><span class="cl">*          rt_info     pointer of struct route_info
-</span></span><span class="line"><span class="cl">* return:  none
-</span></span><span class="line"><span class="cl">*          routes info will fill into rtinfo
-</span></span><span class="line"><span class="cl">*************************************************************************************/
-</span></span><span class="line"><span class="cl">void parse_message(struct nlmsghdr *nl_hdr, struct route_info *rt_info) {
-</span></span><span class="line"><span class="cl">    struct rtmsg *rt_msg;
-</span></span><span class="line"><span class="cl">    struct rtattr *rt_attr;
-</span></span><span class="line"><span class="cl">    int rt_len;
+</span></span><span class="line"><span class="cl">            <span class="k">case</span> <span class="nl">RTA_PREFSRC</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// Preferred source IP address in 32bits(struct in_addr)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">src_addr</span><span class="p">,</span> <span class="n">RTA_DATA</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">),</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">src_addr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">                <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">src_addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">Source IP: %d.%d.%d.%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="o">*</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span> <span class="o">*</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">3</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;6-1. Check if the route msg is IPv4 route table.\n&#34;);
-</span></span><span class="line"><span class="cl">    rt_msg = (struct rtmsg *)NLMSG_DATA(nl_hdr);
-</span></span><span class="line"><span class="cl">    print_rt_msg(rt_msg);
+</span></span><span class="line"><span class="cl">            <span class="k">case</span> <span class="nl">RTA_DST</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// Destination IP address in 32 bits(struct in_addr)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">dst_addr</span><span class="p">,</span> <span class="n">RTA_DATA</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">),</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">dst_addr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">                <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">dst_addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">Destination IP: %d.%d.%d.%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="o">*</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span> <span class="o">*</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">3</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // If the route is not for AF_INET or does not belong to main routing table then return.
-</span></span><span class="line"><span class="cl">    if ((rt_msg-&gt;rtm_family != AF_INET) || (rt_msg-&gt;rtm_table != RT_TABLE_MAIN)) {
-</span></span><span class="line"><span class="cl">        if (debug) printf(&#34;\tIt is not the IPv4 route table. Just return.\n&#34;);
-</span></span><span class="line"><span class="cl">        return;
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">            <span class="k">case</span> <span class="nl">RTA_TABLE</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// Routing table ID. 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">rt_table_id</span><span class="p">,</span> <span class="n">RTA_DATA</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">),</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">rt_table_id</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">Routing Table ID: 0x%08x</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">rt_table_id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // get the rtattr field
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;\tIt is the IPv4 route table.\n&#34;);
-</span></span><span class="line"><span class="cl">    rt_attr = (struct rtattr *)RTM_RTA(rt_msg);
-</span></span><span class="line"><span class="cl">    rt_len = RTM_PAYLOAD(nl_hdr);       // return length of all rtattr
+</span></span><span class="line"><span class="cl">            <span class="k">case</span> <span class="nl">RTA_PRIORITY</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="c1">// Priority of route.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">rt_priority</span><span class="p">,</span> <span class="n">RTA_DATA</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">),</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">rt_priority</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">Priority of route: 0x%08x</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">rt_priority</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;6-2. Parse the route attribute.\n&#34;);
-</span></span><span class="line"><span class="cl">    unsigned char *p;
-</span></span><span class="line"><span class="cl">    for (; RTA_OK(rt_attr, rt_len); rt_attr = RTA_NEXT(rt_attr, rt_len)) {
-</span></span><span class="line"><span class="cl">        print_rt_attr(rt_attr);
-</span></span><span class="line"><span class="cl">        switch (rt_attr-&gt;rta_type) {
-</span></span><span class="line"><span class="cl">            case RTA_OIF:
-</span></span><span class="line"><span class="cl">                // rta_data is index of network interface. converter it to ifterface name here.
-</span></span><span class="line"><span class="cl">                if_indextoname(*(int *)RTA_DATA(rt_attr), rt_info-&gt;ifname);
-</span></span><span class="line"><span class="cl">                if (debug) printf(&#34;\tInterface name: %s\n&#34;, rt_info-&gt;ifname);
-</span></span><span class="line"><span class="cl">                break;
+</span></span><span class="line"><span class="cl">            <span class="k">default</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">***It is an unknown route attribute***</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">rta_len = %d, rta_type = 0x%04x****</span><span class="se">\n\t</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rt_attr</span><span class="o">-&gt;</span><span class="n">rta_len</span><span class="p">,</span> <span class="n">rt_attr</span><span class="o">-&gt;</span><span class="n">rta_type</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">print_bytes</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)(</span><span class="o">&amp;</span><span class="n">rt_attr</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rt_attr</span><span class="p">)),</span> <span class="p">(</span><span class="n">rt_attr</span><span class="o">-&gt;</span><span class="n">rta_len</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">rtattr</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            case RTA_GATEWAY:
-</span></span><span class="line"><span class="cl">                // rta_date is gateway ip in 32bits(struct in_addr).
-</span></span><span class="line"><span class="cl">                memcpy(&amp;rt_info-&gt;gateway, RTA_DATA(rt_attr), sizeof(rt_info-&gt;gateway));
-</span></span><span class="line"><span class="cl">                p = (unsigned char *)&amp;rt_info-&gt;gateway;
-</span></span><span class="line"><span class="cl">                if (debug) printf(&#34;\tGateway IP: %d.%d.%d.%d\n&#34;, *p, *(p + 1), *(p + 2), *(p + 3));
-</span></span><span class="line"><span class="cl">                break;
+</span></span><span class="line"><span class="cl">    <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            case RTA_PREFSRC:
-</span></span><span class="line"><span class="cl">                // Preferred source IP address in 32bits(struct in_addr)
-</span></span><span class="line"><span class="cl">                memcpy(&amp;rt_info-&gt;src_addr, RTA_DATA(rt_attr), sizeof(rt_info-&gt;src_addr));
-</span></span><span class="line"><span class="cl">                p = (unsigned char *)&amp;rt_info-&gt;src_addr;
-</span></span><span class="line"><span class="cl">                if (debug) printf(&#34;\tSource IP: %d.%d.%d.%d\n&#34;, *p, *(p + 1), *(p + 2), *(p + 3));
-</span></span><span class="line"><span class="cl">                break;
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">get_gateway_ip</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">gateway_ip</span><span class="p">,</span> <span class="kt">int</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">found_gateway_ip</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            case RTA_DST:
-</span></span><span class="line"><span class="cl">                // Destination IP address in 32 bits(struct in_addr)
-</span></span><span class="line"><span class="cl">                memcpy(&amp;rt_info-&gt;dst_addr, RTA_DATA(rt_attr), sizeof(rt_info-&gt;dst_addr));
-</span></span><span class="line"><span class="cl">                p = (unsigned char *)&amp;rt_info-&gt;dst_addr;
-</span></span><span class="line"><span class="cl">                if (debug) printf(&#34;\tDestination IP: %d.%d.%d.%d\n&#34;, *p, *(p + 1), *(p + 2), *(p + 3));
-</span></span><span class="line"><span class="cl">                break;
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="n">nl_msg_hdr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">rtmsg</span> <span class="o">*</span><span class="n">rt_msg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">route_info</span> <span class="o">*</span><span class="n">rt_info</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="o">*</span><span class="n">msg_buf</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            case RTA_TABLE:
-</span></span><span class="line"><span class="cl">                // Routing table ID. 
-</span></span><span class="line"><span class="cl">                memcpy(&amp;rt_info-&gt;rt_table_id, RTA_DATA(rt_attr), sizeof(rt_info-&gt;rt_table_id));
-</span></span><span class="line"><span class="cl">                if (debug) printf(&#34;\tRouting Table ID: 0x%08x\n&#34;, rt_info-&gt;rt_table_id);
-</span></span><span class="line"><span class="cl">                break;
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">msg_buf_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">nl_sock</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">nlmsg_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">msg_seq</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            case RTA_PRIORITY:
-</span></span><span class="line"><span class="cl">                // Priority of route.
-</span></span><span class="line"><span class="cl">                memcpy(&amp;rt_info-&gt;rt_priority, RTA_DATA(rt_attr), sizeof(rt_info-&gt;rt_priority));
-</span></span><span class="line"><span class="cl">                if (debug) printf(&#34;\tPriority of route: 0x%08x\n&#34;, rt_info-&gt;rt_priority);
-</span></span><span class="line"><span class="cl">                break;
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;1. Create a netlink socket.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">((</span><span class="n">nl_sock</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">PF_NETLINK</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="n">NETLINK_ROUTE</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">perror</span><span class="p">(</span><span class="s">&#34;Socket Creation: &#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">            default:
-</span></span><span class="line"><span class="cl">                printf(&#34;\t***It is an unknown route attribute***\n&#34;);
-</span></span><span class="line"><span class="cl">                printf(&#34;\trta_len = %d, rta_type = 0x%04x****\n\t&#34;, rt_attr-&gt;rta_len, rt_attr-&gt;rta_type);
-</span></span><span class="line"><span class="cl">                print_bytes((unsigned char *)(&amp;rt_attr + sizeof(rt_attr)), (rt_attr-&gt;rta_len - sizeof(struct rtattr)));
-</span></span><span class="line"><span class="cl">                break;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;2. Allocate memory for sending the nelink request.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">msg_buf_len</span> <span class="o">=</span> <span class="n">NLMSG_SPACE</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">rtmsg</span><span class="p">));</span>    <span class="c1">// sizeof(struct nlmsghdr) + sizeof(struct rtmsg)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">msg_buf</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">msg_buf_len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">memset</span><span class="p">(</span><span class="n">msg_buf</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">msg_buf_len</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    return;
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;3. Fill netlink msg header and route msg structure for sending the netlink request.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// point the netlink msg header(nl_msg_hdr) and the route msg(rt_msg) structure pointers into the buffer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">nl_msg_hdr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="p">)</span><span class="n">msg_buf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rt_msg</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">rtmsg</span> <span class="o">*</span><span class="p">)</span><span class="n">NLMSG_DATA</span><span class="p">(</span><span class="n">nl_msg_hdr</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int get_gateway_ip(char *gateway_ip, int size) {
-</span></span><span class="line"><span class="cl">    int found_gateway_ip = 0;
+</span></span><span class="line"><span class="cl">    <span class="c1">// Fill in the nlmsg header
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_len</span>   <span class="o">=</span> <span class="n">msg_buf_len</span><span class="p">;</span>                      <span class="c1">// Length of message.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_type</span>  <span class="o">=</span> <span class="n">RTM_GETROUTE</span><span class="p">;</span>                     <span class="c1">// Get the routes from kernel routing table .
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_flags</span> <span class="o">=</span> <span class="n">NLM_F_DUMP</span> <span class="o">|</span> <span class="n">NLM_F_REQUEST</span><span class="p">;</span>       <span class="c1">// The message is a request for dump.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">msg_seq</span> <span class="o">=</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_seq</span>   <span class="o">=</span> <span class="n">msg_seq</span><span class="p">;</span>                          <span class="c1">// Sequence of the message packet.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_pid</span>   <span class="o">=</span> <span class="n">getpid</span><span class="p">();</span>                         <span class="c1">// PID of process sending the request.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">rt_msg</span><span class="o">-&gt;</span><span class="n">rtm_family</span>  <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    struct nlmsghdr *nl_msg_hdr;
-</span></span><span class="line"><span class="cl">    struct rtmsg *rt_msg;
-</span></span><span class="line"><span class="cl">    struct route_info *rt_info;
-</span></span><span class="line"><span class="cl">    char *msg_buf;
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;4. Send the netlink request.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Send the netlink request
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">send</span><span class="p">(</span><span class="n">nl_sock</span><span class="p">,</span> <span class="n">nl_msg_hdr</span><span class="p">,</span> <span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_len</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Write To Socket Failed...</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">free</span><span class="p">(</span><span class="n">msg_buf</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    int msg_buf_len;
-</span></span><span class="line"><span class="cl">    int nl_sock;
-</span></span><span class="line"><span class="cl">    int nlmsg_count = 0;
-</span></span><span class="line"><span class="cl">    int msg_seq = 0;
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;5. Receive the response from the kernel.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Receive the response from the kernel
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">((</span><span class="n">msg_buf_len</span> <span class="o">=</span> <span class="n">read_nl_sock</span><span class="p">(</span><span class="n">nl_sock</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">msg_buf</span><span class="p">,</span> <span class="n">msg_seq</span><span class="p">,</span> <span class="n">getpid</span><span class="p">()))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;Read From Socket Failed...</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">free</span><span class="p">(</span><span class="n">msg_buf</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;1. Create a netlink socket.\n&#34;);
-</span></span><span class="line"><span class="cl">    if ((nl_sock = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE)) &lt; 0) {
-</span></span><span class="line"><span class="cl">        perror(&#34;Socket Creation: &#34;);
-</span></span><span class="line"><span class="cl">        return(-1);
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">Data length read from socket: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">msg_buf_len</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;2. Allocate memory for sending the nelink request.\n&#34;);
-</span></span><span class="line"><span class="cl">    msg_buf_len = NLMSG_SPACE(sizeof(struct rtmsg));    // sizeof(struct nlmsghdr) + sizeof(struct rtmsg)
-</span></span><span class="line"><span class="cl">    msg_buf = malloc(msg_buf_len);
-</span></span><span class="line"><span class="cl">    memset(msg_buf, 0, msg_buf_len);
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;6. Parse the message received from the kernel.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// msg_buf has been changed in function read_nl_sock(), so we have to set it again.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">nl_msg_hdr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="p">)</span><span class="n">msg_buf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// allocate memory for storing the item of routing table
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">rt_info</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">route_info</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">route_info</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;3. Fill netlink msg header and route msg structure for sending the netlink request.\n&#34;);
-</span></span><span class="line"><span class="cl">    // point the netlink msg header(nl_msg_hdr) and the route msg(rt_msg) structure pointers into the buffer
-</span></span><span class="line"><span class="cl">    nl_msg_hdr = (struct nlmsghdr *)msg_buf;
-</span></span><span class="line"><span class="cl">    rt_msg = (struct rtmsg *)NLMSG_DATA(nl_msg_hdr);
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(;</span> <span class="n">NLMSG_OK</span><span class="p">(</span><span class="n">nl_msg_hdr</span><span class="p">,</span> <span class="n">msg_buf_len</span><span class="p">);</span> <span class="n">nl_msg_hdr</span> <span class="o">=</span> <span class="n">NLMSG_NEXT</span><span class="p">(</span><span class="n">nl_msg_hdr</span><span class="p">,</span> <span class="n">msg_buf_len</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">Netlink msg No.: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">++</span><span class="n">nlmsg_count</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">memset</span><span class="p">(</span><span class="n">rt_info</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">route_info</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">        <span class="n">print_nl_msg_hdr</span><span class="p">(</span><span class="n">nl_msg_hdr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">nl_msg_hdr</span><span class="o">-&gt;</span><span class="n">nlmsg_type</span> <span class="o">==</span> <span class="n">NLMSG_DONE</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\t</span><span class="s">End of Netlink Routing Message.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">parse_message</span><span class="p">(</span><span class="n">nl_msg_hdr</span><span class="p">,</span> <span class="n">rt_info</span><span class="p">);</span>             <span class="c1">// parse a netlink message
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Check if default gateway
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">strstr</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">dst_addr</span><span class="p">),</span> <span class="s">&#34;0.0.0.0&#34;</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// copy it over
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">inet_ntop</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rt_info</span><span class="o">-&gt;</span><span class="n">gateway</span><span class="p">,</span> <span class="n">gateway_ip</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">found_gateway_ip</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Fill in the nlmsg header
-</span></span><span class="line"><span class="cl">    nl_msg_hdr-&gt;nlmsg_len   = msg_buf_len;                      // Length of message.
-</span></span><span class="line"><span class="cl">    nl_msg_hdr-&gt;nlmsg_type  = RTM_GETROUTE;                     // Get the routes from kernel routing table .
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">debug</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;7. Clean up and Return.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">free</span><span class="p">(</span><span class="n">msg_buf</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">free</span><span class="p">(</span><span class="n">rt_info</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">close</span><span class="p">(</span><span class="n">nl_sock</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    nl_msg_hdr-&gt;nlmsg_flags = NLM_F_DUMP | NLM_F_REQUEST;       // The message is a request for dump.
-</span></span><span class="line"><span class="cl">    msg_seq = time(NULL);
-</span></span><span class="line"><span class="cl">    nl_msg_hdr-&gt;nlmsg_seq   = msg_seq;                          // Sequence of the message packet.
-</span></span><span class="line"><span class="cl">    nl_msg_hdr-&gt;nlmsg_pid   = getpid();                         // PID of process sending the request.
-</span></span><span class="line"><span class="cl">    rt_msg-&gt;rtm_family  = AF_INET;
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">found_gateway_ip</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;4. Send the netlink request.\n&#34;);
-</span></span><span class="line"><span class="cl">    // Send the netlink request
-</span></span><span class="line"><span class="cl">    if (send(nl_sock, nl_msg_hdr, nl_msg_hdr-&gt;nlmsg_len, 0) &lt; 0) {
-</span></span><span class="line"><span class="cl">        fprintf(stderr, &#34;Write To Socket Failed...\n&#34;);
-</span></span><span class="line"><span class="cl">        free(msg_buf);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">gateway_ip</span><span class="p">[</span><span class="n">IP_SIZE</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>     <span class="c1">// Store gateway IP
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="n">debug</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">get_gateway_ip</span><span class="p">(</span><span class="n">gateway_ip</span><span class="p">,</span> <span class="n">IP_SIZE</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">==== Gateway IP: %s ====</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">gateway_ip</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Failed to get gateway IP.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;5. Receive the response from the kernel.\n&#34;);
-</span></span><span class="line"><span class="cl">    // Receive the response from the kernel
-</span></span><span class="line"><span class="cl">    if ((msg_buf_len = read_nl_sock(nl_sock, &amp;msg_buf, msg_seq, getpid())) &lt; 0) {
-</span></span><span class="line"><span class="cl">        fprintf(stderr, &#34;Read From Socket Failed...\n&#34;);
-</span></span><span class="line"><span class="cl">        free(msg_buf);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;\tData length read from socket: %d\n&#34;, msg_buf_len);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;6. Parse the message received from the kernel.\n&#34;);
-</span></span><span class="line"><span class="cl">    // msg_buf has been changed in function read_nl_sock(), so we have to set it again.
-</span></span><span class="line"><span class="cl">    nl_msg_hdr = (struct nlmsghdr *)msg_buf;
-</span></span><span class="line"><span class="cl">    // allocate memory for storing the item of routing table
-</span></span><span class="line"><span class="cl">    rt_info = (struct route_info *)malloc(sizeof(struct route_info));
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    for (; NLMSG_OK(nl_msg_hdr, msg_buf_len); nl_msg_hdr = NLMSG_NEXT(nl_msg_hdr, msg_buf_len)) {
-</span></span><span class="line"><span class="cl">        if (debug) printf(&#34;\tNetlink msg No.: %d\n&#34;, ++nlmsg_count);
-</span></span><span class="line"><span class="cl">        memset(rt_info, 0, sizeof(struct route_info));
-</span></span><span class="line"><span class="cl">        print_nl_msg_hdr(nl_msg_hdr);
-</span></span><span class="line"><span class="cl">        if (nl_msg_hdr-&gt;nlmsg_type == NLMSG_DONE) {
-</span></span><span class="line"><span class="cl">            printf(&#34;\tEnd of Netlink Routing Message.\n&#34;);
-</span></span><span class="line"><span class="cl">            break;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">        parse_message(nl_msg_hdr, rt_info);             // parse a netlink message
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        // Check if default gateway
-</span></span><span class="line"><span class="cl">        if (strstr((char *)inet_ntoa(rt_info-&gt;dst_addr), &#34;0.0.0.0&#34;)) {
-</span></span><span class="line"><span class="cl">            // copy it over
-</span></span><span class="line"><span class="cl">            inet_ntop(AF_INET, &amp;rt_info-&gt;gateway, gateway_ip, size);
-</span></span><span class="line"><span class="cl">            found_gateway_ip = 1;
-</span></span><span class="line"><span class="cl">            break;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (debug) printf(&#34;7. Clean up and Return.\n&#34;);
-</span></span><span class="line"><span class="cl">    free(msg_buf);
-</span></span><span class="line"><span class="cl">    free(rt_info);
-</span></span><span class="line"><span class="cl">    close(nl_sock);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    return found_gateway_ip;
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main(int argc, char **argv) {
-</span></span><span class="line"><span class="cl">    char gateway_ip[IP_SIZE] = {0};     // Store gateway IP
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (argc &gt; 1) debug = 1;
-</span></span><span class="line"><span class="cl">    if (get_gateway_ip(gateway_ip, IP_SIZE)) {
-</span></span><span class="line"><span class="cl">        printf(&#34;\n==== Gateway IP: %s ====\n&#34;, gateway_ip);
-</span></span><span class="line"><span class="cl">    } else {
-</span></span><span class="line"><span class="cl">        printf(&#34;Failed to get gateway IP.\n&#34;);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -1801,13 +1803,13 @@ do {
 <p>这个程序其实是可以获取整个路由表的，但程序中做了过滤，一旦找到gateway的IP地址便不再解析下面的信息，所以这个程序稍加修改可以获取整个路由表；</p>
 </li>
 <li>
-<p>获取gateway IP地址的方法不止本文介绍的这一种方法，其实我认为netlink的方法尽管看上去比较&quot;高级&rdquo;，但也十分复杂和繁琐，最好的方法我认为是从proc文件系统中获取，想要了解这种方法的读者可以参考我的另一篇文章<a href="../0008-get-gateway-ip-from-proc-filesys/">《从proc文件系统中获取gateway的IP地址》</a>。</p>
+<p>获取gateway IP地址的方法不止本文介绍的这一种方法，其实我认为netlink的方法尽管看上去比较&quot;高级&rdquo;，但也十分复杂和繁琐，最好的方法我认为是从proc文件系统中获取，想要了解这种方法的读者可以参考我的另一篇文章<a href="https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/">《从proc文件系统中获取gateway的IP地址》</a>。</p>
 </li>
 </ul>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">

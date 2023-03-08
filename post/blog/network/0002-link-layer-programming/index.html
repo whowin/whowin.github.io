@@ -50,7 +50,7 @@
 <meta itemprop="name" content="Linux下如何在数据链路层接收原始数据包">
 <meta itemprop="description" content="大多数的网络编程都是在应用层接收数据和发送数据的，本文介绍在数据链路层的网络编程方法，介绍如何在数据链路层直接接收从物理层发过来的原始数据数据包，文章给出了一个完整的范例程序。"><meta itemprop="datePublished" content="2022-12-07T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-12-07T16:43:29+08:00" />
-<meta itemprop="wordCount" content="5467">
+<meta itemprop="wordCount" content="5478">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,数据链路层编程,raw socket," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Linux下如何在数据链路层接收原始数据包"/>
 <meta name="twitter:description" content="大多数的网络编程都是在应用层接收数据和发送数据的，本文介绍在数据链路层的网络编程方法，介绍如何在数据链路层直接接收从物理层发过来的原始数据数据包，文章给出了一个完整的范例程序。"/>
@@ -216,16 +216,16 @@
 </span><span class="lnt">10
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">......
-</span></span><span class="line"><span class="cl">struct sockaddr_in addr;
-</span></span><span class="line"><span class="cl">int sock = socket(AF_INET, SOCK_DGRAM, 0);
-</span></span><span class="line"><span class="cl">......
-</span></span><span class="line"><span class="cl">addr.sin_family = AF_INET;
-</span></span><span class="line"><span class="cl">addr.sin_addr.s_addr = inet_addr(DST_IP);       // 目的IP
-</span></span><span class="line"><span class="cl">addr.sin_port = htons(PORT);                    // 端口号
-</span></span><span class="line"><span class="cl">.....
-</span></span><span class="line"><span class="cl">sendto(sock, &amp;DATA, DATA_LEN, 0, (struct sockaddr *)&amp;addr, sizeof(struct sockaddr_in));
-</span></span><span class="line"><span class="cl">close(fd);
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="n">addr</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">addr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">inet_addr</span><span class="p">(</span><span class="n">DST_IP</span><span class="p">);</span>       <span class="c1">// 目的IP
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">addr</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">PORT</span><span class="p">);</span>                    <span class="c1">// 端口号
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">.....</span>
+</span></span><span class="line"><span class="cl"><span class="n">sendto</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">DATA</span><span class="p">,</span> <span class="n">DATA_LEN</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">addr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -237,8 +237,8 @@
 <li>(IP头+UDP头+DATA)从网络层被送到了数据链路层，数据链路层的以太网协议会给这个数据包加上一个以太网头；</li>
 <li>(以太网头+IP头+UDP头+DATA)从数据链路层被送到了物理层，数据就被发送走了。</li>
 </ol>
-<p><img src="/images/180002/sending_data_from_app_with_socket.png" alt="使用socket从应用程序发送数据的过程"></p>
-<p><strong>图1：使用socket从应用程序发送数据的过程</strong></p>
+<p><img src="https://whowin.gitee.io/images/180002/sending_data_from_app_with_socket.png" alt="使用socket从应用程序发送数据的过程"></p>
+<center><b>图1：使用socket从应用程序发送数据的过程</b></center>
 </li>
 </ul>
 <hr>
@@ -260,17 +260,17 @@
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">......
-</span></span><span class="line"><span class="cl">struct sockaddr_in addr;
-</span></span><span class="line"><span class="cl">int addr_len = sizeof(struct sockaddr_in);
-</span></span><span class="line"><span class="cl">int sock = socket(AF_INET, SOCK_DGRAM, 0);
-</span></span><span class="line"><span class="cl">......
-</span></span><span class="line"><span class="cl">addr.sin_family = AF_INET;
-</span></span><span class="line"><span class="cl">addr.sin_port = htons(PORT);
-</span></span><span class="line"><span class="cl">addr.sin_addr.s_addr = inet_addr(SERVER_IP);
-</span></span><span class="line"><span class="cl">......
-</span></span><span class="line"><span class="cl">recvfrom(sock, buffer, sizeof(buffer), 0, &amp;addr, &amp;addr_len);
-</span></span><span class="line"><span class="cl">......
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">addr_len</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="n">addr</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">addr</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">PORT</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">addr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">inet_addr</span><span class="p">(</span><span class="n">SERVER_IP</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="n">recvfrom</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buffer</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">addr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">addr_len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -283,8 +283,8 @@
 <li>传输层从数据中提取出UDP头，其余部分交给应用程序(DATA)；</li>
 <li>所以我们在应用层收到的就只有数据了，报头已经被各协议层提取出来</li>
 </ol>
-<p><img src="/images/180002/receiving_data_in_app_with_socket.png" alt="在应用程序中用socket接收数据的过程"></p>
-<p><strong>图2：在应用程序中用socket接收数据的过程</strong></p>
+<p><img src="https://whowin.gitee.io/images/180002/receiving_data_in_app_with_socket.png" alt="在应用程序中用socket接收数据的过程"></p>
+<center><b>图2：在应用程序中用socket接收数据的过程</b></center>
 </li>
 </ul>
 <hr>
@@ -298,11 +298,13 @@
 <ul>
 <li>
 <p>raw socket也是一种socket，常用于接收原始数据包，所谓原始数据包指的是从物理层直接传送出来的数据包；使用raw socket可以绕过通常的TCP/IP处理流程，在应用程序中直接收到原始数据包(见图3)。使用raw socket编程，并不需要对Linux内核有深入的了解。</p>
-<p><img src="/images/180002/app_receive_data_with_raw_socket.png" alt="在应用程序中使用raw socket接收数据"></p>
-<p><strong>图3：在应用程序中使用raw socket接收数据</strong></p>
+<p><img src="https://whowin.gitee.io/images/180002/app_receive_data_with_raw_socket.png" alt="在应用程序中使用raw socket接收数据"></p>
+<center><b>图3：在应用程序中使用raw socket接收数据</b></center>
 </li>
-<li>
-<p>打开raw socket</p>
+</ul>
+<hr>
+<ul>
+<li>打开raw socket
 <ul>
 <li>
 <p>和普通socket一样，打开一个raw socket，必须要知道三件事：socket family、socket type 和 protocol；</p>
@@ -322,12 +324,12 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">int sock_raw;
-</span></span><span class="line"><span class="cl">sock_raw = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
-</span></span><span class="line"><span class="cl">if (sock_raw &lt; 0) {
-</span></span><span class="line"><span class="cl">    printf(&#34;error in socket\n&#34;);
-</span></span><span class="line"><span class="cl">    return -1;
-</span></span><span class="line"><span class="cl">}
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sock_raw</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">sock_raw</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_PACKET</span><span class="p">,</span> <span class="n">SOCK_RAW</span><span class="p">,</span> <span class="n">htons</span><span class="p">(</span><span class="n">ETH_P_ALL</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">sock_raw</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;error in socket</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -340,9 +342,9 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sock_raw = socket(AF_PACKET, SOCK_RAW, IPPROTO_RAW);
-</span></span><span class="line"><span class="cl">if (sock_raw == -1)
-</span></span><span class="line"><span class="cl">    printf(&#34;error in socket&#34;);
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">sock_raw</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_PACKET</span><span class="p">,</span> <span class="n">SOCK_RAW</span><span class="p">,</span> <span class="n">IPPROTO_RAW</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">sock_raw</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;error in socket&#34;</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -365,8 +367,8 @@
 <ul>
 <li>网络报文的报头分为三个部分：传输层的传输层协议头、网络层的网络层协议头和数据链路层的以太网头，见图4；</li>
 </ul>
-<p><img src="/images/180002/a_generic_representation_of_a_network_packet.png" alt="网络报头的通用定义"></p>
-<p><strong>图4：网络报头的通用定义</strong></p>
+<p><img src="https://whowin.gitee.io/images/180002/a_generic_representation_of_a_network_packet.png" alt="网络报头的通用定义"></p>
+<center><b>图4：网络报头的通用定义</b></center>
 <hr>
 <ul>
 <li>以下仅就本文范例中用到的报头结构做一个简单说明。</li>
@@ -385,11 +387,11 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct ethhdr {
-</span></span><span class="line"><span class="cl">    unsigned char  h_dest[ETH_ALEN];    /* destination eth addr  */
-</span></span><span class="line"><span class="cl">    unsigned char  h_source[ETH_ALEN];  /* source ether addr  */
-</span></span><span class="line"><span class="cl">    __be16         h_proto;             /* packet type ID field  */
-</span></span><span class="line"><span class="cl">} __attribute__((packed));
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ethhdr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span>  <span class="n">h_dest</span><span class="p">[</span><span class="n">ETH_ALEN</span><span class="p">];</span>    <span class="cm">/* destination eth addr  */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span>  <span class="n">h_source</span><span class="p">[</span><span class="n">ETH_ALEN</span><span class="p">];</span>  <span class="cm">/* source ether addr  */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>         <span class="n">h_proto</span><span class="p">;</span>             <span class="cm">/* packet type ID field  */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -430,31 +432,31 @@
 </span><span class="lnt">21
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct iphdr {
-</span></span><span class="line"><span class="cl">#if defined(__LITTLE_ENDIAN_BITFIELD)
-</span></span><span class="line"><span class="cl">    __u8  ihl:4,
-</span></span><span class="line"><span class="cl">          version:4;
-</span></span><span class="line"><span class="cl">#elif defined (__BIG_ENDIAN_BITFIELD)
-</span></span><span class="line"><span class="cl">    __u8  version:4,
-</span></span><span class="line"><span class="cl">          ihl:4;
-</span></span><span class="line"><span class="cl">#else
-</span></span><span class="line"><span class="cl">#error  &#34;Please fix &lt;asm/byteorder.h&gt;&#34;
-</span></span><span class="line"><span class="cl">#endif
-</span></span><span class="line"><span class="cl">    __u8    tos;
-</span></span><span class="line"><span class="cl">    __be16  tot_len;
-</span></span><span class="line"><span class="cl">    __be16  id;
-</span></span><span class="line"><span class="cl">    __be16  frag_off;
-</span></span><span class="line"><span class="cl">    __u8    ttl;
-</span></span><span class="line"><span class="cl">    __u8    protocol;
-</span></span><span class="line"><span class="cl">    __sum16 check;
-</span></span><span class="line"><span class="cl">    __be32  saddr;
-</span></span><span class="line"><span class="cl">    __be32  daddr;
-</span></span><span class="line"><span class="cl">    /*The options start here. */
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iphdr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#if defined(__LITTLE_ENDIAN_BITFIELD)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>    <span class="n">__u8</span>  <span class="nl">ihl</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">version</span><span class="p">:</span><span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#elif defined (__BIG_ENDIAN_BITFIELD)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>    <span class="n">__u8</span>  <span class="nl">version</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="nl">ihl</span><span class="p">:</span><span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#else
+</span></span></span><span class="line"><span class="cl"><span class="cp">#error  &#34;Please fix &lt;asm/byteorder.h&gt;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>    <span class="n">__u8</span>    <span class="n">tos</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>  <span class="n">tot_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>  <span class="n">id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>  <span class="n">frag_off</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>    <span class="n">ttl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>    <span class="n">protocol</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__sum16</span> <span class="n">check</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be32</span>  <span class="n">saddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be32</span>  <span class="n">daddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/*The options start here. */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p><img src="/images/180002/ip_header.png" alt="IP 报头"></p>
-<p><strong>图5：IP 报头</strong></p>
+</div><p><img src="https://whowin.gitee.io/images/180002/ip_header.png" alt="IP 报头"></p>
+<center><b>图5：IP 报头</b></center>
 </li>
 </ul>
 <hr>
@@ -466,7 +468,7 @@
 <li>id - IP报文的唯一标识，同一个IP报文分片传输时，其id是一样的，便于分片重组；</li>
 <li>frag_off(Fragment Offest) - 其中bit 0、bit 1 和 bit 2用于控制和识别分片，bit 3 - 15这13个bit表示每个分片相对于原始报文开头的偏移量，以8字节作单位；</li>
 <li>ttl(Time To Live) - 这个字段是为了防止报文在互联网上永远存在(比如进入路由环路)，在发送报文时设置这个值，最大255，通常设置为64，每经过一个路由器，该值将减1，当为0时，该报文将被丢弃；</li>
-<li>protocol - 该字段定义了在传输层所用的协议，协议号列表文件在/etc/protocols文件中，UDP为17，TCP为6；</li>
+<li>protocol - 该字段定义了在传输层所用的协议，协议号列表文件在/etc/protocols文件中，UDP为17，TCP为6，其取值定义在头文件linux/in.h中；</li>
 <li>check - IP头的检查和，不包括payload，关于IP头的检查和的计算方法有专门的文章介绍，开一参考<a href="https://www.thegeekstuff.com/2012/05/ip-header-checksum/">这里</a>，也可以参考本文的范例源代码；</li>
 <li>saddr - 源IP地址，此字段是一个4字节的IP地址转为二进制并拼在一起所得到的32位值；例如：10.9.8.7是00001010 00001001 00001000 00000111</li>
 <li>daddr - 目的IP地址，表示方法与saddr一样；</li>
@@ -489,12 +491,12 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct udphdr {
-</span></span><span class="line"><span class="cl">    __be16	source;
-</span></span><span class="line"><span class="cl">    __be16	dest;
-</span></span><span class="line"><span class="cl">    __be16	len;
-</span></span><span class="line"><span class="cl">    __sum16	check;
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">udphdr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>	<span class="n">source</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>	<span class="n">dest</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>	<span class="n">len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__sum16</span>	<span class="n">check</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -758,237 +760,237 @@
 </span><span class="lnt">231
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;signal.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;malloc.h&gt;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;signal.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;malloc.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;           // to avoid warning at inet_ntoa</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span><span class="cpf">&lt;linux/if_packet.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/in.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/if_ether.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/ip.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/udp.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/tcp.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define LOG_FILE       &#34;udp_packets.log&#34;    </span><span class="c1">// log file name
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ethhdr</span> <span class="o">*</span><span class="n">eth_hdr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iphdr</span> <span class="o">*</span><span class="n">ip_hdr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">udphdr</span> <span class="o">*</span><span class="n">udp_hdr</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/types.h&gt;
+</span></span><span class="line"><span class="cl"><span class="cm">/*****************************************************************************
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Function: unsigned int ethernet_header(unsigned char *buffer, int buflen)
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Description: Extracting the Ethernet header
+</span></span></span><span class="line"><span class="cl"><span class="cm">*              struct ethhdr is defined in if_ether.h
+</span></span></span><span class="line"><span class="cl"><span class="cm">* 
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Entry: buffer     data packet
+</span></span></span><span class="line"><span class="cl"><span class="cm">*        buf_len    length of data packet
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Return: protocol of network layer or -1 when error
+</span></span></span><span class="line"><span class="cl"><span class="cm">*****************************************************************************/</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">ethernet_header</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">int</span> <span class="n">buf_len</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">buf_len</span> <span class="o">&lt;</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Wrong data packet.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;           // to avoid warning at inet_ntoa
+</span></span><span class="line"><span class="cl">    <span class="n">eth_hdr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span> <span class="o">*</span><span class="p">)(</span><span class="n">buffer</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include&lt;linux/if_packet.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/in.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/if_ether.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/ip.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/udp.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/tcp.h&gt;
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_proto</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*********************************************************************************
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Function: void log_ethernet_header(FILE *log_file, struct ethhdr *eth_hdr)
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Description: write ether header into log file
+</span></span></span><span class="line"><span class="cl"><span class="cm">* 
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Entry:   log_file    log file object
+</span></span></span><span class="line"><span class="cl"><span class="cm">*          eth_hdr     pointer of ethernet header structure
+</span></span></span><span class="line"><span class="cl"><span class="cm">*********************************************************************************/</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">log_ethernet_header</span><span class="p">(</span><span class="n">FILE</span> <span class="o">*</span><span class="n">log_file</span><span class="p">,</span> <span class="k">struct</span> <span class="n">ethhdr</span> <span class="o">*</span><span class="n">eth_hdr</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">Ethernet Header</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Source MAC Address     : %.2X-%.2X-%.2X-%.2X-%.2X-%.2X</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_source</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_source</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_source</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_source</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_source</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_source</span><span class="p">[</span><span class="mi">5</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Destination MAC Address: %.2X-%.2X-%.2X-%.2X-%.2X-%.2X</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">5</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Protocol               : 0X%04X</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_proto</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// ETH_P_IP = 0x0800, ETH_P_LOOP = 0X0060
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/********************************************************************************
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Function: unsigned int ip_header(unsigned char *buffer, int buf_len)
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Description: Extracting the IP header
+</span></span></span><span class="line"><span class="cl"><span class="cm">*              struct iphdr is defined in ip.h
+</span></span></span><span class="line"><span class="cl"><span class="cm">* 
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Entry: buffer     data packet
+</span></span></span><span class="line"><span class="cl"><span class="cm">*        buf_len    length of data packet
+</span></span></span><span class="line"><span class="cl"><span class="cm">* return: protocol of transport layer or -1 when error
+</span></span></span><span class="line"><span class="cl"><span class="cm">********************************************************************************/</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">ip_header</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="kt">int</span> <span class="n">buf_len</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">buf_len</span> <span class="o">&lt;</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">)</span> <span class="o">+</span> <span class="mi">20</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Wrong data packet.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#define LOG_FILE       &#34;udp_packets.log&#34;    // log file name
+</span></span><span class="line"><span class="cl">    <span class="n">ip_hdr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span> <span class="o">*</span><span class="p">)(</span><span class="n">buffer</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">tot_len</span> <span class="o">=</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">tot_len</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">struct ethhdr *eth_hdr;
-</span></span><span class="line"><span class="cl">struct iphdr *ip_hdr;
-</span></span><span class="line"><span class="cl">struct udphdr *udp_hdr;
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">buf_len</span> <span class="o">&lt;</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">)</span> <span class="o">+</span> <span class="n">tot_len</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Wrong data packet.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">protocol</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/********************************************************************************
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Function: void log_ip_header(FILE *log_file, struct iphdr *ip_hdr)
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Description: write ip header into log file
+</span></span></span><span class="line"><span class="cl"><span class="cm">* 
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Entry:   log_file        log file&#39;s handler
+</span></span></span><span class="line"><span class="cl"><span class="cm">*          ip_hdr          the pointer of ip header structure
+</span></span></span><span class="line"><span class="cl"><span class="cm">********************************************************************************/</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">log_ip_header</span><span class="p">(</span><span class="n">FILE</span> <span class="o">*</span><span class="n">log_file</span><span class="p">,</span> <span class="k">struct</span> <span class="n">iphdr</span> <span class="o">*</span><span class="n">ip_hdr</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">source</span><span class="p">,</span> <span class="n">dest</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">/*****************************************************************************
-</span></span><span class="line"><span class="cl">* Function: unsigned int ethernet_header(unsigned char *buffer, int buflen)
-</span></span><span class="line"><span class="cl">* Description: Extracting the Ethernet header
-</span></span><span class="line"><span class="cl">*              struct ethhdr is defined in if_ether.h
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Entry: buffer     data packet
-</span></span><span class="line"><span class="cl">*        buf_len    length of data packet
-</span></span><span class="line"><span class="cl">* Return: protocol of network layer or -1 when error
-</span></span><span class="line"><span class="cl">*****************************************************************************/
-</span></span><span class="line"><span class="cl">int ethernet_header(unsigned char *buffer, int buf_len) {
-</span></span><span class="line"><span class="cl">    if (buf_len &lt; sizeof(struct ethhdr)) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Wrong data packet.\n&#34;);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">source</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">source</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">source</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">saddr</span><span class="p">;</span>     
+</span></span><span class="line"><span class="cl">    <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dest</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">dest</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dest</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">daddr</span><span class="p">;</span>     
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    eth_hdr = (struct ethhdr *)(buffer);
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">IP Header</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    return ntohs(eth_hdr-&gt;h_proto);
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">/*********************************************************************************
-</span></span><span class="line"><span class="cl">* Function: void log_ethernet_header(FILE *log_file, struct ethhdr *eth_hdr)
-</span></span><span class="line"><span class="cl">* Description: write ether header into log file
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Entry:   log_file    log file object
-</span></span><span class="line"><span class="cl">*          eth_hdr     pointer of ethernet header structure
-</span></span><span class="line"><span class="cl">*********************************************************************************/
-</span></span><span class="line"><span class="cl">void log_ethernet_header(FILE *log_file, struct ethhdr *eth_hdr) {
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\nEthernet Header\n&#34;);
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Source MAC Address     : %.2X-%.2X-%.2X-%.2X-%.2X-%.2X\n&#34;, 
-</span></span><span class="line"><span class="cl">            eth_hdr-&gt;h_source[0], eth_hdr-&gt;h_source[1], eth_hdr-&gt;h_source[2], 
-</span></span><span class="line"><span class="cl">            eth_hdr-&gt;h_source[3], eth_hdr-&gt;h_source[4], eth_hdr-&gt;h_source[5]);
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Destination MAC Address: %.2X-%.2X-%.2X-%.2X-%.2X-%.2X\n&#34;, 
-</span></span><span class="line"><span class="cl">            eth_hdr-&gt;h_dest[0], eth_hdr-&gt;h_dest[1], eth_hdr-&gt;h_dest[2], 
-</span></span><span class="line"><span class="cl">            eth_hdr-&gt;h_dest[3], eth_hdr-&gt;h_dest[4], eth_hdr-&gt;h_dest[5]);
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Protocol               : 0X%04X\n&#34;, ntohs(eth_hdr-&gt;h_proto));
-</span></span><span class="line"><span class="cl">    // ETH_P_IP = 0x0800, ETH_P_LOOP = 0X0060
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">/********************************************************************************
-</span></span><span class="line"><span class="cl">* Function: unsigned int ip_header(unsigned char *buffer, int buf_len)
-</span></span><span class="line"><span class="cl">* Description: Extracting the IP header
-</span></span><span class="line"><span class="cl">*              struct iphdr is defined in ip.h
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Entry: buffer     data packet
-</span></span><span class="line"><span class="cl">*        buf_len    length of data packet
-</span></span><span class="line"><span class="cl">* return: protocol of transport layer or -1 when error
-</span></span><span class="line"><span class="cl">********************************************************************************/
-</span></span><span class="line"><span class="cl">int ip_header(unsigned char *buffer, int buf_len) {
-</span></span><span class="line"><span class="cl">    if (buf_len &lt; sizeof(struct ethhdr) + 20) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Wrong data packet.\n&#34;);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Version               : %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">version</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Internet Header Length: %d DWORDS or %d Bytes</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">ihl</span><span class="p">,</span> <span class="p">((</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)(</span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">ihl</span><span class="p">))</span> <span class="o">*</span> <span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Type Of Service       : %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">tos</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Total Length          : %d  Bytes</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">tot_len</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Identification        : %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Time To Live          : %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">ttl</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Protocol              : %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="p">)</span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">protocol</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Header Checksum       : %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">check</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Source IP             : %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">inet_ntoa</span><span class="p">(</span><span class="n">source</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Destination IP        : %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">inet_ntoa</span><span class="p">(</span><span class="n">dest</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/************************************************************************
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Function: udp_header(FILE *log_file, struct iphdr *ip_hdr)
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Description: Extracting the UDP header
+</span></span></span><span class="line"><span class="cl"><span class="cm">* 
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Entry:   log_file    log file
+</span></span></span><span class="line"><span class="cl"><span class="cm">*          ip_hdr      pointer of IP header
+</span></span></span><span class="line"><span class="cl"><span class="cm">************************************************************************/</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">udp_header</span><span class="p">(</span><span class="n">FILE</span> <span class="o">*</span><span class="n">log_file</span><span class="p">,</span> <span class="k">struct</span> <span class="n">iphdr</span> <span class="o">*</span><span class="n">ip_hdr</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">UDP Header</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    ip_hdr = (struct iphdr *)(buffer + sizeof(struct ethhdr));
-</span></span><span class="line"><span class="cl">    int tot_len = ntohs(ip_hdr-&gt;tot_len);
+</span></span><span class="line"><span class="cl">    <span class="n">udp_hdr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">udphdr</span> <span class="o">*</span><span class="p">)((</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">ip_hdr</span> <span class="o">+</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">ihl</span> <span class="o">*</span> <span class="mi">4</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (buf_len &lt; sizeof(struct ethhdr) + tot_len) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Wrong data packet.\n&#34;);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    return (int)ip_hdr-&gt;protocol;
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">/********************************************************************************
-</span></span><span class="line"><span class="cl">* Function: void log_ip_header(FILE *log_file, struct iphdr *ip_hdr)
-</span></span><span class="line"><span class="cl">* Description: write ip header into log file
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Entry:   log_file        log file&#39;s handler
-</span></span><span class="line"><span class="cl">*          ip_hdr          the pointer of ip header structure
-</span></span><span class="line"><span class="cl">********************************************************************************/
-</span></span><span class="line"><span class="cl">void log_ip_header(FILE *log_file, struct iphdr *ip_hdr) {
-</span></span><span class="line"><span class="cl">    struct sockaddr_in source, dest;
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Source Port     : %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">udp_hdr</span><span class="o">-&gt;</span><span class="n">source</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-Destination Port: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">udp_hdr</span><span class="o">-&gt;</span><span class="n">dest</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-UDP Length      : %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">udp_hdr</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">|-UDP Checksum    : %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">udp_hdr</span><span class="o">-&gt;</span><span class="n">check</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/**************************************************************************
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Function: void udp_payload(FILE *log_file, struct udphdr *udp_hdr)
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Description: Show data
+</span></span></span><span class="line"><span class="cl"><span class="cm">* 
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Entry: buffer     data packet
+</span></span></span><span class="line"><span class="cl"><span class="cm">*        buf_len    length of data packet
+</span></span></span><span class="line"><span class="cl"><span class="cm">**************************************************************************/</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">udp_payload</span><span class="p">(</span><span class="n">FILE</span> <span class="o">*</span><span class="n">log_file</span><span class="p">,</span> <span class="k">struct</span> <span class="n">udphdr</span> <span class="o">*</span><span class="n">udp_hdr</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">udp_hdr</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">udphdr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">Data</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">data_len</span> <span class="o">=</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">udp_hdr</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">)</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">udphdr</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    memset(&amp;source, 0, sizeof(source));
-</span></span><span class="line"><span class="cl">    source.sin_addr.s_addr = ip_hdr-&gt;saddr;     
-</span></span><span class="line"><span class="cl">    memset(&amp;dest, 0, sizeof(dest));
-</span></span><span class="line"><span class="cl">    dest.sin_addr.s_addr = ip_hdr-&gt;daddr;     
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">data_len</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">16</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34; %.2X &#34;</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\nIP Header\n&#34;);
+</span></span><span class="line"><span class="cl">    <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/*****************************************************
+</span></span></span><span class="line"><span class="cl"><span class="cm">* Main 
+</span></span></span><span class="line"><span class="cl"><span class="cm">*****************************************************/</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">FILE</span><span class="o">*</span> <span class="n">log_file</span><span class="p">;</span>                             <span class="c1">// log file
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">saddr</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Version               : %d\n&#34;, (unsigned int)ip_hdr-&gt;version);
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Internet Header Length: %d DWORDS or %d Bytes\n&#34;, (unsigned int)ip_hdr-&gt;ihl, ((unsigned int)(ip_hdr-&gt;ihl)) * 4);
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Type Of Service       : %d\n&#34;, (unsigned int)ip_hdr-&gt;tos);
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Total Length          : %d  Bytes\n&#34;, ntohs(ip_hdr-&gt;tot_len));
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Identification        : %d\n&#34;, ntohs(ip_hdr-&gt;id));
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Time To Live          : %d\n&#34;, (unsigned int)ip_hdr-&gt;ttl);
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Protocol              : %d\n&#34;, (unsigned char)ip_hdr-&gt;protocol);
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Header Checksum       : %d\n&#34;, ntohs(ip_hdr-&gt;check));
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Source IP             : %s\n&#34;, inet_ntoa(source.sin_addr));
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Destination IP        : %s\n&#34;, inet_ntoa(dest.sin_addr));
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">/************************************************************************
-</span></span><span class="line"><span class="cl">* Function: udp_header(FILE *log_file, struct iphdr *ip_hdr)
-</span></span><span class="line"><span class="cl">* Description: Extracting the UDP header
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Entry:   log_file    log file
-</span></span><span class="line"><span class="cl">*          ip_hdr      pointer of IP header
-</span></span><span class="line"><span class="cl">************************************************************************/
-</span></span><span class="line"><span class="cl">void udp_header(FILE *log_file, struct iphdr *ip_hdr) {
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\nUDP Header\n&#34;);
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">sock_raw</span><span class="p">,</span> <span class="n">saddr_len</span><span class="p">,</span> <span class="n">buf_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">ret_value</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    udp_hdr = (struct udphdr *)((unsigned char *)ip_hdr + (unsigned int)ip_hdr-&gt;ihl * 4);
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">done</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>               <span class="c1">// exit loop when done=1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">udp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>                <span class="c1">// udp packet count
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// open a raw socket
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">sock_raw</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_PACKET</span><span class="p">,</span> <span class="n">SOCK_RAW</span><span class="p">,</span> <span class="n">htons</span><span class="p">(</span><span class="n">ETH_P_ALL</span><span class="p">));</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">sock_raw</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Error in socket</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Allocate a block of memory for the receive buffer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">buffer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="mi">65536</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">buffer</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Unable to allocate memory.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">close</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">memset</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">65536</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Source Port     : %d\n&#34;, ntohs(udp_hdr-&gt;source));
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-Destination Port: %d\n&#34;, ntohs(udp_hdr-&gt;dest));
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-UDP Length      : %d\n&#34;, ntohs(udp_hdr-&gt;len));
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\t|-UDP Checksum    : %d\n&#34;, ntohs(udp_hdr-&gt;check));
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">/**************************************************************************
-</span></span><span class="line"><span class="cl">* Function: void udp_payload(FILE *log_file, struct udphdr *udp_hdr)
-</span></span><span class="line"><span class="cl">* Description: Show data
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Entry: buffer     data packet
-</span></span><span class="line"><span class="cl">*        buf_len    length of data packet
-</span></span><span class="line"><span class="cl">**************************************************************************/
-</span></span><span class="line"><span class="cl">void udp_payload(FILE *log_file, struct udphdr *udp_hdr) {
-</span></span><span class="line"><span class="cl">    int i = 0;
-</span></span><span class="line"><span class="cl">    unsigned char *data = (unsigned char *)udp_hdr + sizeof(struct udphdr);
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\nData\n&#34;);
-</span></span><span class="line"><span class="cl">    int data_len = ntohs(udp_hdr-&gt;len) - sizeof(struct udphdr);
+</span></span><span class="line"><span class="cl">    <span class="c1">// Create a log file for storing output
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">log_file</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="n">LOG_FILE</span><span class="p">,</span> <span class="s">&#34;w&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">log_file</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Unable to open %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">LOG_FILE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">free</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">close</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; data_len; i++) {
-</span></span><span class="line"><span class="cl">        if (i != 0 &amp;&amp; i % 16 == 0) 
-</span></span><span class="line"><span class="cl">            fprintf(log_file, &#34;\n&#34;);
-</span></span><span class="line"><span class="cl">        fprintf(log_file, &#34; %.2X &#34;, data[i]);
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;starting .... %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">sock_raw</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">done</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Receive data packet
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">saddr_len</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="n">saddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">buf_len</span> <span class="o">=</span> <span class="n">recvfrom</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="mi">65536</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">saddr</span><span class="p">,</span> <span class="p">(</span><span class="n">socklen_t</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">saddr_len</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    fprintf(log_file, &#34;\n&#34;);
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">/*****************************************************
-</span></span><span class="line"><span class="cl">* Main 
-</span></span><span class="line"><span class="cl">*****************************************************/
-</span></span><span class="line"><span class="cl">int main() {
-</span></span><span class="line"><span class="cl">    FILE* log_file;                             // log file
-</span></span><span class="line"><span class="cl">    struct sockaddr saddr;
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">buf_len</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Error in reading recvfrom function</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ret_value</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">goto</span> <span class="n">QUIT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    int sock_raw, saddr_len, buf_len;
-</span></span><span class="line"><span class="cl">    int ret_value = 0;
+</span></span><span class="line"><span class="cl">        <span class="n">fflush</span><span class="p">(</span><span class="n">log_file</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Extracting the Ethernet header
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">ethernet_header</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">buf_len</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ETH_P_IP</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// drop the packet if network layer protocol is not IP
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Extracting the IP header
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">ip_header</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">buf_len</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">17</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// drop packet if transport layer protocol is not UDP
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">fprintf</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">**** UDP packet %02d*********************************</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">udp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Write ethernet header into log file
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">log_ethernet_header</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="n">eth_hdr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Write IP header into log file
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">log_ip_header</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="n">ip_hdr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Extracting the UDP header and write into log file
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">udp_header</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="n">ip_hdr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// write UDP payload into log file
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">udp_payload</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="n">udp_hdr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// exit when the count of received udp packets is more than 10
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="o">++</span><span class="n">udp</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="n">done</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    int done = 0;               // exit loop when done=1
-</span></span><span class="line"><span class="cl">    int udp = 0;                // udp packet count
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // open a raw socket
-</span></span><span class="line"><span class="cl">    sock_raw = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL)); 
-</span></span><span class="line"><span class="cl">    if (sock_raw &lt; 0) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Error in socket\n&#34;);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    // Allocate a block of memory for the receive buffer
-</span></span><span class="line"><span class="cl">    unsigned char *buffer = (unsigned char *)malloc(65536); 
-</span></span><span class="line"><span class="cl">    if (buffer == NULL) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Unable to allocate memory.\n&#34;);
-</span></span><span class="line"><span class="cl">        close(sock_raw);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    memset(buffer, 0, 65536);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Create a log file for storing output
-</span></span><span class="line"><span class="cl">    log_file = fopen(LOG_FILE, &#34;w&#34;);
-</span></span><span class="line"><span class="cl">    if (!log_file) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Unable to open %s\n&#34;, LOG_FILE);
-</span></span><span class="line"><span class="cl">        free(buffer);
-</span></span><span class="line"><span class="cl">        close(sock_raw);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    printf(&#34;starting .... %d\n&#34;, sock_raw);
-</span></span><span class="line"><span class="cl">    while (!done) {
-</span></span><span class="line"><span class="cl">        // Receive data packet
-</span></span><span class="line"><span class="cl">        saddr_len = sizeof saddr;
-</span></span><span class="line"><span class="cl">        buf_len = recvfrom(sock_raw, buffer, 65536, 0, &amp;saddr, (socklen_t *)&amp;saddr_len);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        if (buf_len &lt; 0) {
-</span></span><span class="line"><span class="cl">            printf(&#34;Error in reading recvfrom function\n&#34;);
-</span></span><span class="line"><span class="cl">            ret_value = -1;
-</span></span><span class="line"><span class="cl">            goto QUIT;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        fflush(log_file);
-</span></span><span class="line"><span class="cl">        // Extracting the Ethernet header
-</span></span><span class="line"><span class="cl">        if (ethernet_header(buffer, buf_len) != ETH_P_IP) {
-</span></span><span class="line"><span class="cl">            // drop the packet if network layer protocol is not IP
-</span></span><span class="line"><span class="cl">            continue;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">        // Extracting the IP header
-</span></span><span class="line"><span class="cl">        if (ip_header(buffer, buf_len) != 17) {
-</span></span><span class="line"><span class="cl">            // drop packet if transport layer protocol is not UDP
-</span></span><span class="line"><span class="cl">            continue;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">        fprintf(log_file, &#34;\n**** UDP packet %02d*********************************\n&#34;, udp + 1);
-</span></span><span class="line"><span class="cl">        // Write ethernet header into log file
-</span></span><span class="line"><span class="cl">        log_ethernet_header(log_file, eth_hdr);
-</span></span><span class="line"><span class="cl">        // Write IP header into log file
-</span></span><span class="line"><span class="cl">        log_ip_header(log_file, ip_hdr);
-</span></span><span class="line"><span class="cl">        // Extracting the UDP header and write into log file
-</span></span><span class="line"><span class="cl">        udp_header(log_file, ip_hdr);
-</span></span><span class="line"><span class="cl">        // write UDP payload into log file
-</span></span><span class="line"><span class="cl">        udp_payload(log_file, udp_hdr);
-</span></span><span class="line"><span class="cl">        // exit when the count of received udp packets is more than 10
-</span></span><span class="line"><span class="cl">        if (++udp &gt;= 10) done = 1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">QUIT:
-</span></span><span class="line"><span class="cl">    fclose(log_file);
-</span></span><span class="line"><span class="cl">    free(buffer);
-</span></span><span class="line"><span class="cl">    close(sock_raw);        // close raw socket 
-</span></span><span class="line"><span class="cl">    printf(&#34;DONE!!!!\n&#34;);
-</span></span><span class="line"><span class="cl">    return ret_value;
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl"><span class="nl">QUIT</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fclose</span><span class="p">(</span><span class="n">log_file</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">free</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">close</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">);</span>        <span class="c1">// close raw socket 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;DONE!!!!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">ret_value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -1017,7 +1019,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gcc -Wall receive_udp_packet.c -o receive_udp_packet
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall receive_udp_packet.c -o receive_udp_packet
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -1028,7 +1030,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo ./receive_udp_packet
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo ./receive_udp_packet
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
@@ -1053,8 +1055,8 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">echo -n &#34;udp packet 01&#34; &gt; /dev/udp/192.168.2.114/8000
-</span></span><span class="line"><span class="cl">echo -n &#34;udp packet 02&#34; &gt; /dev/udp/192.168.2.114/8001
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">echo</span> -n <span class="s2">&#34;udp packet 01&#34;</span> &gt; /dev/udp/192.168.2.114/8000
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> -n <span class="s2">&#34;udp packet 02&#34;</span> &gt; /dev/udp/192.168.2.114/8001
 </span></span><span class="line"><span class="cl">......
 </span></span></code></pre></td></tr></table>
 </div>
@@ -1072,14 +1074,14 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cat udp_packets.log
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat udp_packets.log
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
 <p>在我的电脑上看到的是这样的：</p>
-<p><img src="/images/180002/receive_udp_packet.png" alt="收到的 udp 数据包"></p>
-<p><strong>图6：收到的 UDP 数据包</strong></p>
+<p><img src="https://whowin.gitee.io/images/180002/receive_udp_packet.png" alt="收到的 udp 数据包"></p>
+<center><b>图6：收到的 UDP 数据包</b></center>
 </li>
 </ul>
 </li>
@@ -1087,7 +1089,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">

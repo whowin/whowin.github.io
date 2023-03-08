@@ -50,7 +50,7 @@
 <meta itemprop="name" content="简单的路由表查找程序">
 <meta itemprop="description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。"><meta itemprop="datePublished" content="2023-02-10T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-10T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4617">
+<meta itemprop="wordCount" content="3410">
 <meta itemprop="keywords" content="Linux,routing table,网络编程,最长前缀匹配,longest prefix match," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="简单的路由表查找程序"/>
 <meta name="twitter:description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。"/>
@@ -183,7 +183,7 @@
 </li>
 <li>
 <p>下面是在我的机器上的执行结果</p>
-<p><img src="/images/180016/screenshot-cat-rt_tables.png" alt="routing tables"></p>
+<p><img src="https://whowin.gitee.io/images/180016/screenshot-cat-rt_tables.png" alt="routing tables"></p>
 </li>
 </ul>
 <hr>
@@ -205,12 +205,12 @@
 </li>
 <li>
 <p>尽管有4个路由表，但有的表可以是空的，比如在我的机器上，默认路由表就是空的</p>
-<p><img src="/images/180016/screenshot-default-routing-table.png" alt="default routing table"></p>
+<p><img src="https://whowin.gitee.io/images/180016/screenshot-default-routing-table.png" alt="default routing table"></p>
 </li>
 </ul>
 <hr>
 <ul>
-<li>我的另一篇文章<a href="../0009-get-gateway-ip-via-netlink/">《linux下使用netlink获取gateway的IP地址》</a>中，程序中使用netlink获取了内核路由表，在程序中解析内核发回的信息时，使用了宏 <strong>RT_TABLE_MAIN</strong> 就是路由表的ID号，RT_TABLE_MAIN 显然指的是主路由表(main)，所以他的实际值是 254；</li>
+<li>我的另一篇文章<a href="https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/">《linux下使用netlink获取gateway的IP地址》</a>中，程序中使用netlink获取了内核路由表，在程序中解析内核发回的信息时，使用了宏 <strong>RT_TABLE_MAIN</strong> 就是路由表的ID号，RT_TABLE_MAIN 显然指的是主路由表(main)，所以他的实际值是 254；</li>
 </ul>
 <ol start="2">
 <li>Linux系统的路由策略</li>
@@ -224,7 +224,7 @@
 </li>
 <li>
 <p>下面是在我的机器上的执行结果</p>
-<p><img src="/images/180016/screenshot-routing-policy.png" alt="routing policy"></p>
+<p><img src="https://whowin.gitee.io/images/180016/screenshot-routing-policy.png" alt="routing policy"></p>
 </li>
 </ul>
 <hr>
@@ -248,7 +248,7 @@
 <ul>
 <li>
 <p>命令 <code>route -n</code> 可以用比较整齐的方式显示主路由表(main)</p>
-<p><img src="/images/180016/screenshot-of-main-routing-table.png" alt="main routing table"></p>
+<p><img src="https://whowin.gitee.io/images/180016/screenshot-of-main-routing-table.png" alt="main routing table"></p>
 </li>
 </ul>
 <hr>
@@ -261,7 +261,7 @@
 </li>
 <li>
 <p>我们把上面的例子说的再仔细一点</p>
-<p><img src="/images/180016/example.png" alt="Example"></p>
+<p><img src="https://whowin.gitee.io/images/180016/example.png" alt="Example"></p>
 </li>
 </ul>
 <hr>
@@ -295,7 +295,7 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ifname   destination   gateway        netmask
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">ifname   destination   gateway        netmask
 </span></span><span class="line"><span class="cl">eth1,    192.168.0.0,  0.0.0.0,       255.255.0.0
 </span></span><span class="line"><span class="cl">eth2,    0.0.0.0,      192.168.2.3,   0.0.0.0
 </span></span><span class="line"><span class="cl">eth3,    169.254.0.0,  0.0.0.0,       255.255.0.0
@@ -303,7 +303,7 @@
 </span></span><span class="line"><span class="cl">eth5,    192.168.0.0,  0.0.0.0,       255.255.255.0
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p><img src="/images/180016/content-of-routing-txt.png" alt="routing.txt"></p>
+</div><p><img src="https://whowin.gitee.io/images/180016/content-of-routing-txt.png" alt="routing.txt"></p>
 </li>
 </ul>
 <hr>
@@ -335,604 +335,8 @@
 </blockquote>
 </li>
 <li>
-<p>源代码，文件名：rt_lookup.c</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">  1
-</span><span class="lnt">  2
-</span><span class="lnt">  3
-</span><span class="lnt">  4
-</span><span class="lnt">  5
-</span><span class="lnt">  6
-</span><span class="lnt">  7
-</span><span class="lnt">  8
-</span><span class="lnt">  9
-</span><span class="lnt"> 10
-</span><span class="lnt"> 11
-</span><span class="lnt"> 12
-</span><span class="lnt"> 13
-</span><span class="lnt"> 14
-</span><span class="lnt"> 15
-</span><span class="lnt"> 16
-</span><span class="lnt"> 17
-</span><span class="lnt"> 18
-</span><span class="lnt"> 19
-</span><span class="lnt"> 20
-</span><span class="lnt"> 21
-</span><span class="lnt"> 22
-</span><span class="lnt"> 23
-</span><span class="lnt"> 24
-</span><span class="lnt"> 25
-</span><span class="lnt"> 26
-</span><span class="lnt"> 27
-</span><span class="lnt"> 28
-</span><span class="lnt"> 29
-</span><span class="lnt"> 30
-</span><span class="lnt"> 31
-</span><span class="lnt"> 32
-</span><span class="lnt"> 33
-</span><span class="lnt"> 34
-</span><span class="lnt"> 35
-</span><span class="lnt"> 36
-</span><span class="lnt"> 37
-</span><span class="lnt"> 38
-</span><span class="lnt"> 39
-</span><span class="lnt"> 40
-</span><span class="lnt"> 41
-</span><span class="lnt"> 42
-</span><span class="lnt"> 43
-</span><span class="lnt"> 44
-</span><span class="lnt"> 45
-</span><span class="lnt"> 46
-</span><span class="lnt"> 47
-</span><span class="lnt"> 48
-</span><span class="lnt"> 49
-</span><span class="lnt"> 50
-</span><span class="lnt"> 51
-</span><span class="lnt"> 52
-</span><span class="lnt"> 53
-</span><span class="lnt"> 54
-</span><span class="lnt"> 55
-</span><span class="lnt"> 56
-</span><span class="lnt"> 57
-</span><span class="lnt"> 58
-</span><span class="lnt"> 59
-</span><span class="lnt"> 60
-</span><span class="lnt"> 61
-</span><span class="lnt"> 62
-</span><span class="lnt"> 63
-</span><span class="lnt"> 64
-</span><span class="lnt"> 65
-</span><span class="lnt"> 66
-</span><span class="lnt"> 67
-</span><span class="lnt"> 68
-</span><span class="lnt"> 69
-</span><span class="lnt"> 70
-</span><span class="lnt"> 71
-</span><span class="lnt"> 72
-</span><span class="lnt"> 73
-</span><span class="lnt"> 74
-</span><span class="lnt"> 75
-</span><span class="lnt"> 76
-</span><span class="lnt"> 77
-</span><span class="lnt"> 78
-</span><span class="lnt"> 79
-</span><span class="lnt"> 80
-</span><span class="lnt"> 81
-</span><span class="lnt"> 82
-</span><span class="lnt"> 83
-</span><span class="lnt"> 84
-</span><span class="lnt"> 85
-</span><span class="lnt"> 86
-</span><span class="lnt"> 87
-</span><span class="lnt"> 88
-</span><span class="lnt"> 89
-</span><span class="lnt"> 90
-</span><span class="lnt"> 91
-</span><span class="lnt"> 92
-</span><span class="lnt"> 93
-</span><span class="lnt"> 94
-</span><span class="lnt"> 95
-</span><span class="lnt"> 96
-</span><span class="lnt"> 97
-</span><span class="lnt"> 98
-</span><span class="lnt"> 99
-</span><span class="lnt">100
-</span><span class="lnt">101
-</span><span class="lnt">102
-</span><span class="lnt">103
-</span><span class="lnt">104
-</span><span class="lnt">105
-</span><span class="lnt">106
-</span><span class="lnt">107
-</span><span class="lnt">108
-</span><span class="lnt">109
-</span><span class="lnt">110
-</span><span class="lnt">111
-</span><span class="lnt">112
-</span><span class="lnt">113
-</span><span class="lnt">114
-</span><span class="lnt">115
-</span><span class="lnt">116
-</span><span class="lnt">117
-</span><span class="lnt">118
-</span><span class="lnt">119
-</span><span class="lnt">120
-</span><span class="lnt">121
-</span><span class="lnt">122
-</span><span class="lnt">123
-</span><span class="lnt">124
-</span><span class="lnt">125
-</span><span class="lnt">126
-</span><span class="lnt">127
-</span><span class="lnt">128
-</span><span class="lnt">129
-</span><span class="lnt">130
-</span><span class="lnt">131
-</span><span class="lnt">132
-</span><span class="lnt">133
-</span><span class="lnt">134
-</span><span class="lnt">135
-</span><span class="lnt">136
-</span><span class="lnt">137
-</span><span class="lnt">138
-</span><span class="lnt">139
-</span><span class="lnt">140
-</span><span class="lnt">141
-</span><span class="lnt">142
-</span><span class="lnt">143
-</span><span class="lnt">144
-</span><span class="lnt">145
-</span><span class="lnt">146
-</span><span class="lnt">147
-</span><span class="lnt">148
-</span><span class="lnt">149
-</span><span class="lnt">150
-</span><span class="lnt">151
-</span><span class="lnt">152
-</span><span class="lnt">153
-</span><span class="lnt">154
-</span><span class="lnt">155
-</span><span class="lnt">156
-</span><span class="lnt">157
-</span><span class="lnt">158
-</span><span class="lnt">159
-</span><span class="lnt">160
-</span><span class="lnt">161
-</span><span class="lnt">162
-</span><span class="lnt">163
-</span><span class="lnt">164
-</span><span class="lnt">165
-</span><span class="lnt">166
-</span><span class="lnt">167
-</span><span class="lnt">168
-</span><span class="lnt">169
-</span><span class="lnt">170
-</span><span class="lnt">171
-</span><span class="lnt">172
-</span><span class="lnt">173
-</span><span class="lnt">174
-</span><span class="lnt">175
-</span><span class="lnt">176
-</span><span class="lnt">177
-</span><span class="lnt">178
-</span><span class="lnt">179
-</span><span class="lnt">180
-</span><span class="lnt">181
-</span><span class="lnt">182
-</span><span class="lnt">183
-</span><span class="lnt">184
-</span><span class="lnt">185
-</span><span class="lnt">186
-</span><span class="lnt">187
-</span><span class="lnt">188
-</span><span class="lnt">189
-</span><span class="lnt">190
-</span><span class="lnt">191
-</span><span class="lnt">192
-</span><span class="lnt">193
-</span><span class="lnt">194
-</span><span class="lnt">195
-</span><span class="lnt">196
-</span><span class="lnt">197
-</span><span class="lnt">198
-</span><span class="lnt">199
-</span><span class="lnt">200
-</span><span class="lnt">201
-</span><span class="lnt">202
-</span><span class="lnt">203
-</span><span class="lnt">204
-</span><span class="lnt">205
-</span><span class="lnt">206
-</span><span class="lnt">207
-</span><span class="lnt">208
-</span><span class="lnt">209
-</span><span class="lnt">210
-</span><span class="lnt">211
-</span><span class="lnt">212
-</span><span class="lnt">213
-</span><span class="lnt">214
-</span><span class="lnt">215
-</span><span class="lnt">216
-</span><span class="lnt">217
-</span><span class="lnt">218
-</span><span class="lnt">219
-</span><span class="lnt">220
-</span><span class="lnt">221
-</span><span class="lnt">222
-</span><span class="lnt">223
-</span><span class="lnt">224
-</span><span class="lnt">225
-</span><span class="lnt">226
-</span><span class="lnt">227
-</span><span class="lnt">228
-</span><span class="lnt">229
-</span><span class="lnt">230
-</span><span class="lnt">231
-</span><span class="lnt">232
-</span><span class="lnt">233
-</span><span class="lnt">234
-</span><span class="lnt">235
-</span><span class="lnt">236
-</span><span class="lnt">237
-</span><span class="lnt">238
-</span><span class="lnt">239
-</span><span class="lnt">240
-</span><span class="lnt">241
-</span><span class="lnt">242
-</span><span class="lnt">243
-</span><span class="lnt">244
-</span><span class="lnt">245
-</span><span class="lnt">246
-</span><span class="lnt">247
-</span><span class="lnt">248
-</span><span class="lnt">249
-</span><span class="lnt">250
-</span><span class="lnt">251
-</span><span class="lnt">252
-</span><span class="lnt">253
-</span><span class="lnt">254
-</span><span class="lnt">255
-</span><span class="lnt">256
-</span><span class="lnt">257
-</span><span class="lnt">258
-</span><span class="lnt">259
-</span><span class="lnt">260
-</span><span class="lnt">261
-</span><span class="lnt">262
-</span><span class="lnt">263
-</span><span class="lnt">264
-</span><span class="lnt">265
-</span><span class="lnt">266
-</span><span class="lnt">267
-</span><span class="lnt">268
-</span><span class="lnt">269
-</span><span class="lnt">270
-</span><span class="lnt">271
-</span><span class="lnt">272
-</span><span class="lnt">273
-</span><span class="lnt">274
-</span><span class="lnt">275
-</span><span class="lnt">276
-</span><span class="lnt">277
-</span><span class="lnt">278
-</span><span class="lnt">279
-</span><span class="lnt">280
-</span><span class="lnt">281
-</span><span class="lnt">282
-</span><span class="lnt">283
-</span><span class="lnt">284
-</span><span class="lnt">285
-</span><span class="lnt">286
-</span><span class="lnt">287
-</span><span class="lnt">288
-</span><span class="lnt">289
-</span><span class="lnt">290
-</span><span class="lnt">291
-</span><span class="lnt">292
-</span><span class="lnt">293
-</span><span class="lnt">294
-</span><span class="lnt">295
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdbool.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stddef.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;strings.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;ctype.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;netinet/in.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#define M               15
-</span></span><span class="line"><span class="cl">#define N               150
-</span></span><span class="line"><span class="cl">#define LINE_SIZE       200
-</span></span><span class="line"><span class="cl">#define IFNAME_SIZE     16
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#define ROUTING_FILE    &#34;routing.txt&#34;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">struct node {
-</span></span><span class="line"><span class="cl">    char ifname[IFNAME_SIZE];
-</span></span><span class="line"><span class="cl">    uint32_t net;
-</span></span><span class="line"><span class="cl">    uint32_t gateway;
-</span></span><span class="line"><span class="cl">    uint32_t mask;
-</span></span><span class="line"><span class="cl">    struct node *next;
-</span></span><span class="line"><span class="cl">};
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">struct node *head = NULL;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">/******************************************************
-</span></span><span class="line"><span class="cl">* Function: bool is_valid_ip(const char *ip)
-</span></span><span class="line"><span class="cl">* Description: Check if ip is valid
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Return   false   ip is invalid
-</span></span><span class="line"><span class="cl">*          true    ip is valid
-</span></span><span class="line"><span class="cl">*****************************************************/
-</span></span><span class="line"><span class="cl">bool is_valid_ip(const char *ip) {
-</span></span><span class="line"><span class="cl">    int dots    = 0;
-</span></span><span class="line"><span class="cl">    int setions = 0;
-</span></span><span class="line"><span class="cl">    int strnum  = 0;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (NULL == ip || *ip == &#39;.&#39;) {
-</span></span><span class="line"><span class="cl">        return false;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    while (*ip) {
-</span></span><span class="line"><span class="cl">        if (*ip == &#39;.&#39;) {
-</span></span><span class="line"><span class="cl">            dots++;
-</span></span><span class="line"><span class="cl">            if (setions &gt;= 0 &amp;&amp; setions &lt;= 255) {
-</span></span><span class="line"><span class="cl">                setions = 0;
-</span></span><span class="line"><span class="cl">            } else {
-</span></span><span class="line"><span class="cl">                return false;
-</span></span><span class="line"><span class="cl">            }
-</span></span><span class="line"><span class="cl">        } else if (*ip &gt;= &#39;0&#39; &amp;&amp; *ip &lt;= &#39;9&#39;) {
-</span></span><span class="line"><span class="cl">            setions = setions * 10 + (*ip - &#39;0&#39;);
-</span></span><span class="line"><span class="cl">        } else {
-</span></span><span class="line"><span class="cl">            return false;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">        ip++;
-</span></span><span class="line"><span class="cl">        if (++strnum &gt; 15) {
-</span></span><span class="line"><span class="cl">            return false;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (setions &gt;= 0 &amp;&amp; setions &lt;= 255) {                 
-</span></span><span class="line"><span class="cl">        if (dots == 3) {
-</span></span><span class="line"><span class="cl">            return true;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    return  false;
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">/******************************************************************
-</span></span><span class="line"><span class="cl">* Function: void print_route(struct node *route)
-</span></span><span class="line"><span class="cl">* Description: Print a route
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Return   none
-</span></span><span class="line"><span class="cl">******************************************************************/
-</span></span><span class="line"><span class="cl">void print_route(struct node *route) {
-</span></span><span class="line"><span class="cl">    printf(&#34;ifname: %s\tnet: %d.%d.%d.%d\tgataway: %d.%d.%d.%d\tmask: %d.%d.%d.%d\n&#34;,
-</span></span><span class="line"><span class="cl">            route-&gt;ifname, 
-</span></span><span class="line"><span class="cl">            (uint8_t)route-&gt;net, (uint8_t)*((uint8_t *)&amp;route-&gt;net + 1), 
-</span></span><span class="line"><span class="cl">            (uint8_t)*((uint8_t *)&amp;route-&gt;net + 2), (uint8_t)*((uint8_t *)&amp;route-&gt;net + 3),
-</span></span><span class="line"><span class="cl">            (uint8_t)route-&gt;gateway, (uint8_t)*((uint8_t *)&amp;route-&gt;gateway + 1), 
-</span></span><span class="line"><span class="cl">            (uint8_t)*((uint8_t *)&amp;route-&gt;gateway + 2), (uint8_t)*((uint8_t *)&amp;route-&gt;gateway + 3),
-</span></span><span class="line"><span class="cl">            (uint8_t)route-&gt;mask, (uint8_t)*((uint8_t *)&amp;route-&gt;mask + 1), 
-</span></span><span class="line"><span class="cl">            (uint8_t)*((uint8_t *)&amp;route-&gt;mask + 2), (uint8_t)*((uint8_t *)&amp;route-&gt;mask + 3));
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">/******************************************************************
-</span></span><span class="line"><span class="cl">* Function: int read_routing()
-</span></span><span class="line"><span class="cl">* Description: Read the routing table from file &#39;routing.txt&#39;
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Format of the routing table file: 1st row is header, then data. 
-</span></span><span class="line"><span class="cl">*      Each line represents one routing entry
-</span></span><span class="line"><span class="cl">*      [ifname], [destination ip], [gateway ip], [netmask]
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Return   &gt;0      how many routes being read
-</span></span><span class="line"><span class="cl">*          =0      no route being read
-</span></span><span class="line"><span class="cl">******************************************************************/
-</span></span><span class="line"><span class="cl">int read_routing() {
-</span></span><span class="line"><span class="cl">    FILE *fp;
-</span></span><span class="line"><span class="cl">    char line[LINE_SIZE], *ifname, *net, *gateway, *mask, *p, *comma;
-</span></span><span class="line"><span class="cl">    int i = 0, flag = 0, j;
-</span></span><span class="line"><span class="cl">    struct node *new_node = NULL, *curr_node = NULL;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if ((fp = fopen(ROUTING_FILE, &#34;r&#34;)) == NULL) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Can&#39;t open routing file. %s\n&#34;, ROUTING_FILE);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    // Read data from the file line by line and each line is stored in array separately.
-</span></span><span class="line"><span class="cl">    while (fgets(line, sizeof(line), fp)) {
-</span></span><span class="line"><span class="cl">        if (i++ == 0) continue;             // Skip the header of routing table
-</span></span><span class="line"><span class="cl">        flag = 0;
-</span></span><span class="line"><span class="cl">        ifname = NULL;
-</span></span><span class="line"><span class="cl">        net = NULL;
-</span></span><span class="line"><span class="cl">        gateway = NULL;
-</span></span><span class="line"><span class="cl">        mask = NULL;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        p = line;
-</span></span><span class="line"><span class="cl">        for (flag = 0; flag &lt; 4; ++flag) {
-</span></span><span class="line"><span class="cl">            while(isspace((int)*p) &amp;&amp; *p != 0) ++p;
-</span></span><span class="line"><span class="cl">            if (*p == 0) goto error;
-</span></span><span class="line"><span class="cl">            if (flag &lt; 3) comma = index(p, &#39;,&#39;);
-</span></span><span class="line"><span class="cl">            if (comma) {
-</span></span><span class="line"><span class="cl">                switch (flag) {
-</span></span><span class="line"><span class="cl">                case 0:
-</span></span><span class="line"><span class="cl">                    ifname = p;
-</span></span><span class="line"><span class="cl">                    break;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">                case 1:
-</span></span><span class="line"><span class="cl">                    net = p;
-</span></span><span class="line"><span class="cl">                    break;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">                case 2:
-</span></span><span class="line"><span class="cl">                    gateway = p;
-</span></span><span class="line"><span class="cl">                    break;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">                case 3:
-</span></span><span class="line"><span class="cl">                    mask = p;
-</span></span><span class="line"><span class="cl">                    j = strlen(mask) - 1;
-</span></span><span class="line"><span class="cl">                    while (*(p + j) == &#39;\n&#39;) *(p + j--) = 0;
-</span></span><span class="line"><span class="cl">                    break;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">                default:
-</span></span><span class="line"><span class="cl">                    break;
-</span></span><span class="line"><span class="cl">                }
-</span></span><span class="line"><span class="cl">            } else {
-</span></span><span class="line"><span class="cl">                if (flag &lt; 3) {
-</span></span><span class="line"><span class="cl">                    goto error;
-</span></span><span class="line"><span class="cl">                }
-</span></span><span class="line"><span class="cl">            }
-</span></span><span class="line"><span class="cl">            *comma = 0;
-</span></span><span class="line"><span class="cl">            j = strlen(p);
-</span></span><span class="line"><span class="cl">            while (isspace((int)*(p + --j))) *(p + j) = 0;
-</span></span><span class="line"><span class="cl">            p = ++comma;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">        if (ifname == NULL || net == NULL || gateway == NULL || mask == NULL) {
-</span></span><span class="line"><span class="cl">            goto error;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        new_node = malloc(sizeof(struct node));
-</span></span><span class="line"><span class="cl">        memset(new_node, 0, sizeof(struct node));
-</span></span><span class="line"><span class="cl">        if (curr_node == NULL) {
-</span></span><span class="line"><span class="cl">            head = new_node;
-</span></span><span class="line"><span class="cl">        } else {
-</span></span><span class="line"><span class="cl">            curr_node-&gt;next = new_node;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">        curr_node = new_node;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        new_node-&gt;next = NULL;
-</span></span><span class="line"><span class="cl">        strncpy(new_node-&gt;ifname, ifname, IFNAME_SIZE - 1);
-</span></span><span class="line"><span class="cl">        new_node-&gt;net = inet_addr(net);
-</span></span><span class="line"><span class="cl">        new_node-&gt;gateway = inet_addr(gateway);
-</span></span><span class="line"><span class="cl">        new_node-&gt;mask = inet_addr(mask);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // display all entries of routing table
-</span></span><span class="line"><span class="cl">    curr_node = head;
-</span></span><span class="line"><span class="cl">    printf(&#34;Routing table before sorting.\n&#34;);
-</span></span><span class="line"><span class="cl">    while (curr_node != NULL) {
-</span></span><span class="line"><span class="cl">        print_route(curr_node);
-</span></span><span class="line"><span class="cl">        curr_node = curr_node-&gt;next;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // sort by net
-</span></span><span class="line"><span class="cl">    do {
-</span></span><span class="line"><span class="cl">        j = 0;
-</span></span><span class="line"><span class="cl">        curr_node = head;
-</span></span><span class="line"><span class="cl">        struct node *prev = NULL, *next = NULL;
-</span></span><span class="line"><span class="cl">        while (curr_node-&gt;next != NULL) {
-</span></span><span class="line"><span class="cl">            next = curr_node-&gt;next;
-</span></span><span class="line"><span class="cl">            if ((ntohl(curr_node-&gt;net) &lt; ntohl(next-&gt;net)) ||
-</span></span><span class="line"><span class="cl">                ((ntohl(curr_node-&gt;net) == ntohl(next-&gt;net)) &amp;&amp; 
-</span></span><span class="line"><span class="cl">                (ntohl(curr_node-&gt;mask) &lt; ntohl(next-&gt;mask)))) {
-</span></span><span class="line"><span class="cl">                struct node *temp;
-</span></span><span class="line"><span class="cl">                temp = next-&gt;next;
-</span></span><span class="line"><span class="cl">                next-&gt;next = curr_node;
-</span></span><span class="line"><span class="cl">                curr_node-&gt;next = temp;
-</span></span><span class="line"><span class="cl">                j++;
-</span></span><span class="line"><span class="cl">                if (prev == NULL) {
-</span></span><span class="line"><span class="cl">                    head = next;
-</span></span><span class="line"><span class="cl">                    prev = next;
-</span></span><span class="line"><span class="cl">                } else {
-</span></span><span class="line"><span class="cl">                    prev-&gt;next = next;
-</span></span><span class="line"><span class="cl">                    prev = next;
-</span></span><span class="line"><span class="cl">                }
-</span></span><span class="line"><span class="cl">            } else {
-</span></span><span class="line"><span class="cl">                prev = curr_node;
-</span></span><span class="line"><span class="cl">                curr_node = next;
-</span></span><span class="line"><span class="cl">            }
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    } while (j &gt; 0);
-</span></span><span class="line"><span class="cl">    // display all entries of routing table again
-</span></span><span class="line"><span class="cl">    printf(&#34;\n&#34;);
-</span></span><span class="line"><span class="cl">    printf(&#34;Routing table after sorting.\n&#34;);
-</span></span><span class="line"><span class="cl">    curr_node = head;
-</span></span><span class="line"><span class="cl">    while (curr_node != NULL) {
-</span></span><span class="line"><span class="cl">        print_route(curr_node);
-</span></span><span class="line"><span class="cl">        curr_node = curr_node-&gt;next;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (fp) fclose(fp);
-</span></span><span class="line"><span class="cl">    return i;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">error:
-</span></span><span class="line"><span class="cl">    printf(&#34;Wrong format in file %s.\n&#34;, ROUTING_FILE);
-</span></span><span class="line"><span class="cl">    if (fp) fclose(fp);
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">void free_node() {
-</span></span><span class="line"><span class="cl">    struct node *next = NULL;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    while(head != NULL) {
-</span></span><span class="line"><span class="cl">        next = head-&gt;next;
-</span></span><span class="line"><span class="cl">        free(head);
-</span></span><span class="line"><span class="cl">        head = next;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">/**********************************************************************
-</span></span><span class="line"><span class="cl">* Function: int route_lookup(char *ip, struct node *result)
-</span></span><span class="line"><span class="cl">* Description: Look up the route in routing table
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Return:  1       Found the route
-</span></span><span class="line"><span class="cl">*          0       Not found 
-</span></span><span class="line"><span class="cl">**********************************************************************/
-</span></span><span class="line"><span class="cl">int route_lookup(char *ip, struct node *result) {
-</span></span><span class="line"><span class="cl">    struct node *route = NULL;
-</span></span><span class="line"><span class="cl">    uint32_t val;
-</span></span><span class="line"><span class="cl">    int is_found = 0;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    route = head;
-</span></span><span class="line"><span class="cl">    while (route != NULL) {
-</span></span><span class="line"><span class="cl">        // Perform bitwise AND operation
-</span></span><span class="line"><span class="cl">        val = inet_addr(ip) &amp; route-&gt;mask;
-</span></span><span class="line"><span class="cl">        if (val == route-&gt;net) {
-</span></span><span class="line"><span class="cl">            is_found = 1;
-</span></span><span class="line"><span class="cl">            *result = *route;
-</span></span><span class="line"><span class="cl">            break;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">        route = route-&gt;next;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    return is_found;
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main(int argc, char* argv[]) {
-</span></span><span class="line"><span class="cl">    if (argc != 2) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Usage: %s [IP address]\n&#34;, argv[0]);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (!is_valid_ip(argv[1])) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Wrong IP format.\n&#34;);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    // Read routing table from file routing.txt
-</span></span><span class="line"><span class="cl">    if (read_routing() &lt;= 0) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Can&#39;t read routing table file.\n&#34;);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // route lookup
-</span></span><span class="line"><span class="cl">    struct node result;
-</span></span><span class="line"><span class="cl">    if (!route_lookup(argv[1], &amp;result)) {
-</span></span><span class="line"><span class="cl">        printf(&#34;\nNo result\n&#34;);
-</span></span><span class="line"><span class="cl">    } else {
-</span></span><span class="line"><span class="cl">        printf(&#34;\nResult(%s):\n&#34;, argv[1]);
-</span></span><span class="line"><span class="cl">        print_route(&amp;result);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    free_node();
-</span></span><span class="line"><span class="cl">    return EXIT_SUCCESS;
-</span></span><span class="line"><span class="cl">}
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<p>源代码，文件名：<a href="/sourcecodes/180016/rt-lookup.c">rt-lookup.c</a>(<strong>点击文件名下载源文件</strong>)</p>
+</li>
 <li>
 <p>实际的路由表要比我们这个复杂的多，路由决策的因素也不仅仅是所谓的&rsquo;最长前缀匹配&rsquo;。</p>
 </li>
@@ -940,7 +344,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">

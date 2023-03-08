@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用select实现的UDP/TCP组合服务器">
 <meta itemprop="description" content="在以前的文章中，我们给出过UDP服务器和TCP服务器的例子，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码。"><meta itemprop="datePublished" content="2023-01-07T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-01-07T16:43:29+08:00" />
-<meta itemprop="wordCount" content="3292">
+<meta itemprop="wordCount" content="2435">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,udp,tcp," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用select实现的UDP/TCP组合服务器"/>
 <meta name="twitter:description" content="在以前的文章中，我们给出过UDP服务器和TCP服务器的例子，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码。"/>
@@ -225,7 +225,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">select</span><span class="p">(</span><span class="kt">int</span> <span class="n">nfds</span><span class="p">,</span> <span class="n">fd_set</span> <span class="o">*</span><span class="n">readfds</span><span class="p">,</span> <span class="n">fd_set</span> <span class="o">*</span><span class="n">writefds</span><span class="p">,</span> <span class="n">fd_set</span> <span class="o">*</span><span class="n">exceptfds</span><span class="p">,</span> <span class="k">struct</span> <span class="n">timeval</span> <span class="o">*</span><span class="n">timeout</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -253,10 +253,10 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct timeval {
-</span></span><span class="line"><span class="cl">    long    tv_sec;         /* seconds */
-</span></span><span class="line"><span class="cl">    long    tv_usec;        /* microseconds */
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">timeval</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span>    <span class="n">tv_sec</span><span class="p">;</span>         <span class="cm">/* seconds */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span>    <span class="n">tv_usec</span><span class="p">;</span>        <span class="cm">/* microseconds */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -282,8 +282,8 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">fd_set fds;
-</span></span><span class="line"><span class="cl">FD_SET(fds);
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">fd_set</span> <span class="n">fds</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">FD_SET</span><span class="p">(</span><span class="n">fds</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -300,8 +300,8 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">fd_set fds;
-</span></span><span class="line"><span class="cl">FD_SET(FD, fds);
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">fd_set</span> <span class="n">fds</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">FD_SET</span><span class="p">(</span><span class="n">FD</span><span class="p">,</span> <span class="n">fds</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -325,255 +325,35 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">fd_set fds
-</span></span><span class="line"><span class="cl">......
-</span></span><span class="line"><span class="cl">if (FD_ISSET(fd, &amp;fds)) {
-</span></span><span class="line"><span class="cl">    // fd is part of the set fds.
-</span></span><span class="line"><span class="cl">    some codes
-</span></span><span class="line"><span class="cl">} else {
-</span></span><span class="line"><span class="cl">    // fd is not in the fds
-</span></span><span class="line"><span class="cl">    some codes
-</span></span><span class="line"><span class="cl">}
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">fd_set</span> <span class="n">fds</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">FD_ISSET</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">fds</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// fd is part of the set fds.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">some</span> <span class="n">codes</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// fd is not in the fds
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">some</span> <span class="n">codes</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 </ul>
 </li>
 <li>
-<p>其它函数和数据结构的介绍，请参考另两篇文章<a href="../0013-udp-server-client-implementation-in-c/">《使用C语言实现服务器/客户端的UDP通信》</a>和<a href="../0012-tcp-server-client-implementation-in-c/">《使用C语言实现服务器/客户端的TCP通信》</a></p>
+<p>其它函数和数据结构的介绍，请参考另两篇文章<a href="https://whowin.gitee.io/post/blog/network/0013-udp-server-client-implementation-in-c/">《使用C语言实现服务器/客户端的UDP通信》</a>和<a href="https://whowin.gitee.io/post/blog/network/0012-tcp-server-client-implementation-in-c/">《使用C语言实现服务器/客户端的TCP通信》</a></p>
 </li>
 </ul>
 <h2 id="3-实例">3. 实例</h2>
 <ul>
 <li>
-<p>本示例一共有三个程序，tcp/udp服务器：tuserver.c，tcp客户端：tclient.c和udp客户端uclient.c</p>
+<p>本示例一共有三个程序，tcp/udp服务器：tcp-udp-server.c，tcp客户端：tcp-client.c和udp客户端udp-client.c</p>
 </li>
 <li>
 <p>本示例演示了如何使用select机制在一个服务器程序里既提供TCP服务，又提供UDP服务；有些服务(比如聊天)，可以既允许UDP接入，也允许TCP接入的，这种情况下，这样一种机制就显得比较实用；</p>
 </li>
 <li>
-<p>服务器端程序：tuserver.c</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">  1
-</span><span class="lnt">  2
-</span><span class="lnt">  3
-</span><span class="lnt">  4
-</span><span class="lnt">  5
-</span><span class="lnt">  6
-</span><span class="lnt">  7
-</span><span class="lnt">  8
-</span><span class="lnt">  9
-</span><span class="lnt"> 10
-</span><span class="lnt"> 11
-</span><span class="lnt"> 12
-</span><span class="lnt"> 13
-</span><span class="lnt"> 14
-</span><span class="lnt"> 15
-</span><span class="lnt"> 16
-</span><span class="lnt"> 17
-</span><span class="lnt"> 18
-</span><span class="lnt"> 19
-</span><span class="lnt"> 20
-</span><span class="lnt"> 21
-</span><span class="lnt"> 22
-</span><span class="lnt"> 23
-</span><span class="lnt"> 24
-</span><span class="lnt"> 25
-</span><span class="lnt"> 26
-</span><span class="lnt"> 27
-</span><span class="lnt"> 28
-</span><span class="lnt"> 29
-</span><span class="lnt"> 30
-</span><span class="lnt"> 31
-</span><span class="lnt"> 32
-</span><span class="lnt"> 33
-</span><span class="lnt"> 34
-</span><span class="lnt"> 35
-</span><span class="lnt"> 36
-</span><span class="lnt"> 37
-</span><span class="lnt"> 38
-</span><span class="lnt"> 39
-</span><span class="lnt"> 40
-</span><span class="lnt"> 41
-</span><span class="lnt"> 42
-</span><span class="lnt"> 43
-</span><span class="lnt"> 44
-</span><span class="lnt"> 45
-</span><span class="lnt"> 46
-</span><span class="lnt"> 47
-</span><span class="lnt"> 48
-</span><span class="lnt"> 49
-</span><span class="lnt"> 50
-</span><span class="lnt"> 51
-</span><span class="lnt"> 52
-</span><span class="lnt"> 53
-</span><span class="lnt"> 54
-</span><span class="lnt"> 55
-</span><span class="lnt"> 56
-</span><span class="lnt"> 57
-</span><span class="lnt"> 58
-</span><span class="lnt"> 59
-</span><span class="lnt"> 60
-</span><span class="lnt"> 61
-</span><span class="lnt"> 62
-</span><span class="lnt"> 63
-</span><span class="lnt"> 64
-</span><span class="lnt"> 65
-</span><span class="lnt"> 66
-</span><span class="lnt"> 67
-</span><span class="lnt"> 68
-</span><span class="lnt"> 69
-</span><span class="lnt"> 70
-</span><span class="lnt"> 71
-</span><span class="lnt"> 72
-</span><span class="lnt"> 73
-</span><span class="lnt"> 74
-</span><span class="lnt"> 75
-</span><span class="lnt"> 76
-</span><span class="lnt"> 77
-</span><span class="lnt"> 78
-</span><span class="lnt"> 79
-</span><span class="lnt"> 80
-</span><span class="lnt"> 81
-</span><span class="lnt"> 82
-</span><span class="lnt"> 83
-</span><span class="lnt"> 84
-</span><span class="lnt"> 85
-</span><span class="lnt"> 86
-</span><span class="lnt"> 87
-</span><span class="lnt"> 88
-</span><span class="lnt"> 89
-</span><span class="lnt"> 90
-</span><span class="lnt"> 91
-</span><span class="lnt"> 92
-</span><span class="lnt"> 93
-</span><span class="lnt"> 94
-</span><span class="lnt"> 95
-</span><span class="lnt"> 96
-</span><span class="lnt"> 97
-</span><span class="lnt"> 98
-</span><span class="lnt"> 99
-</span><span class="lnt">100
-</span><span class="lnt">101
-</span><span class="lnt">102
-</span><span class="lnt">103
-</span><span class="lnt">104
-</span><span class="lnt">105
-</span><span class="lnt">106
-</span><span class="lnt">107
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;sys/select.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;netinet/in.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#define PORT            5000
-</span></span><span class="line"><span class="cl">#define BUF_SIZE        1024
-</span></span><span class="line"><span class="cl">#define MAXFD(x, y)     (x&gt;y)?x:y
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main() {
-</span></span><span class="line"><span class="cl">    int tcp_fd, conn_fd, udp_fd;
-</span></span><span class="line"><span class="cl">    struct sockaddr_in server_addr, client_addr;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    fd_set rset;
-</span></span><span class="line"><span class="cl">    int nready, max_fd;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    char buffer[BUF_SIZE];
-</span></span><span class="line"><span class="cl">    ssize_t n;
-</span></span><span class="line"><span class="cl">    socklen_t len;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    char *tcp_msg = &#34;Hello TCP Client&#34;;
-</span></span><span class="line"><span class="cl">    char *udp_msg = &#34;Hello UDP Client&#34;;
-</span></span><span class="line"><span class="cl">    void sig_chld(int);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Step 1: Create a TCP socket
-</span></span><span class="line"><span class="cl">    //=============================
-</span></span><span class="line"><span class="cl">    tcp_fd = socket(AF_INET, SOCK_STREAM, 0);
-</span></span><span class="line"><span class="cl">    // Step 2: Create an UDP socket
-</span></span><span class="line"><span class="cl">    //==============================
-</span></span><span class="line"><span class="cl">    udp_fd = socket(AF_INET, SOCK_DGRAM, 0);
-</span></span><span class="line"><span class="cl">    // Step 3: Bind both sockets to the server address.
-</span></span><span class="line"><span class="cl">    //=================================================
-</span></span><span class="line"><span class="cl">    bzero(&amp;server_addr, sizeof(server_addr));
-</span></span><span class="line"><span class="cl">    server_addr.sin_family = AF_INET;
-</span></span><span class="line"><span class="cl">    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-</span></span><span class="line"><span class="cl">    server_addr.sin_port = htons(PORT);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // binding server addr structure to listenfd
-</span></span><span class="line"><span class="cl">    bind(tcp_fd, (struct sockaddr *)&amp;server_addr, sizeof(server_addr));
-</span></span><span class="line"><span class="cl">    // binding server addr structure to udp sockfd
-</span></span><span class="line"><span class="cl">    bind(udp_fd, (struct sockaddr*)&amp;server_addr, sizeof(server_addr));
-</span></span><span class="line"><span class="cl">    // Step 4: Listen on the TCP socket
-</span></span><span class="line"><span class="cl">    //==================================
-</span></span><span class="line"><span class="cl">    listen(tcp_fd, 5);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // get maxfd
-</span></span><span class="line"><span class="cl">    max_fd = MAXFD(tcp_fd, udp_fd) + 1;
-</span></span><span class="line"><span class="cl">    while (1) {
-</span></span><span class="line"><span class="cl">        // Step 5: Put TCP socket and UDP socket descriptors into descriptor set
-</span></span><span class="line"><span class="cl">        //=======================================================================
-</span></span><span class="line"><span class="cl">        // clear the descriptor set
-</span></span><span class="line"><span class="cl">        FD_ZERO(&amp;rset);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        // set listenfd and udpfd in readset
-</span></span><span class="line"><span class="cl">        FD_SET(tcp_fd, &amp;rset);
-</span></span><span class="line"><span class="cl">        FD_SET(udp_fd, &amp;rset);
-</span></span><span class="line"><span class="cl">        // Step 6: Call select and get the ready descriptor(TCP or UDP)
-</span></span><span class="line"><span class="cl">        //==============================================================
-</span></span><span class="line"><span class="cl">        // select the ready descriptor
-</span></span><span class="line"><span class="cl">        nready = select(max_fd, &amp;rset, NULL, NULL, NULL);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        if (nready &lt; 0) {
-</span></span><span class="line"><span class="cl">            printf(&#34;select() failed....\n&#34;);
-</span></span><span class="line"><span class="cl">            close(tcp_fd);
-</span></span><span class="line"><span class="cl">            close(udp_fd);
-</span></span><span class="line"><span class="cl">            return -1;
-</span></span><span class="line"><span class="cl">        } else if (nready &gt; 0) {
-</span></span><span class="line"><span class="cl">            if (FD_ISSET(tcp_fd, &amp;rset)) {
-</span></span><span class="line"><span class="cl">                // Step 7: if tcp socket is readable then handle it by accepting the connection
-</span></span><span class="line"><span class="cl">                //==============================================================================
-</span></span><span class="line"><span class="cl">                len = sizeof(client_addr);
-</span></span><span class="line"><span class="cl">                conn_fd = accept(tcp_fd, (struct sockaddr*)&amp;client_addr, &amp;len);
-</span></span><span class="line"><span class="cl">                if (conn_fd &gt; 0) {
-</span></span><span class="line"><span class="cl">                    bzero(buffer, sizeof(buffer));
-</span></span><span class="line"><span class="cl">                    n = 0;
-</span></span><span class="line"><span class="cl">                    n = read(conn_fd, buffer, sizeof(buffer));
-</span></span><span class="line"><span class="cl">                    if (n &gt; 0) {
-</span></span><span class="line"><span class="cl">                        buffer[n] = &#39;\0&#39;;
-</span></span><span class="line"><span class="cl">                        printf(&#34;Message From TCP client: %s\n&#34;, buffer);
-</span></span><span class="line"><span class="cl">                        write(conn_fd, tcp_msg, strlen(tcp_msg));
-</span></span><span class="line"><span class="cl">                        sleep(1);
-</span></span><span class="line"><span class="cl">                    }
-</span></span><span class="line"><span class="cl">                    close(conn_fd);
-</span></span><span class="line"><span class="cl">                }
-</span></span><span class="line"><span class="cl">            } else if (FD_ISSET(udp_fd, &amp;rset)) {
-</span></span><span class="line"><span class="cl">                // Step 8: if udp socket is readable receive the message.
-</span></span><span class="line"><span class="cl">                //=======================================================
-</span></span><span class="line"><span class="cl">                len = sizeof(client_addr);
-</span></span><span class="line"><span class="cl">                bzero(buffer, sizeof(buffer));
-</span></span><span class="line"><span class="cl">                n = 0;
-</span></span><span class="line"><span class="cl">                n = recvfrom(udp_fd, buffer, sizeof(buffer), 0, (struct sockaddr *)&amp;client_addr, &amp;len);
-</span></span><span class="line"><span class="cl">                if (n &gt; 0) {
-</span></span><span class="line"><span class="cl">                    buffer[n] = &#39;\0&#39;;
-</span></span><span class="line"><span class="cl">                    printf(&#34;\nMessage from UDP client: %s\n&#34;, buffer);
-</span></span><span class="line"><span class="cl">                    sendto(udp_fd, udp_msg, strlen(udp_msg), 0, (struct sockaddr *)&amp;client_addr, sizeof(client_addr));
-</span></span><span class="line"><span class="cl">                }
-</span></span><span class="line"><span class="cl">            }
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">        // Go back step 5
-</span></span><span class="line"><span class="cl">    } // end of while
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<p>服务器端程序：<a href="/sourcecodes/180010/tcp-udp-server.c">tcp-udp-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
 <li>
 <p>服务器端程序的编译</p>
 <div class="highlight"><div class="chroma">
@@ -581,7 +361,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gcc -Wall tuserver.c -o tuserver
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall tcp-udp-server.c -o tcp-udp-server
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -595,7 +375,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">./tuserver
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./tcp-udp-server
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -607,7 +387,7 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">nc -n 192.168.2.112 5000
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">nc -n 192.168.2.112 <span class="m">5000</span>
 </span></span><span class="line"><span class="cl">hello server
 </span></span></code></pre></td></tr></table>
 </div>
@@ -619,30 +399,30 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">nc -n -u 192.168.2.112 5000
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">nc -n -u 192.168.2.112 <span class="m">5000</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
-<p>有关nc命令的使用方法，可以参考另一篇文章<a href="../0005-send-udp-via-linux-cli/">《如何在Linux命令行下发送和接收UDP数据包》</a></p>
+<p>有关nc命令的使用方法，可以参考另一篇文章<a href="https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/">《如何在Linux命令行下发送和接收UDP数据包》</a></p>
 </li>
 <li>
 <p>在服务器端的运行截屏</p>
-<p><img src="/images/180010/server_test.png" alt="screenshot of tcp/udp server test"></p>
+<p><img src="https://whowin.gitee.io/images/180010/server_test.png" alt="screenshot of tcp/udp server test"></p>
 </li>
 </ul>
 <hr>
 <ul>
 <li>
 <p>TCP测试客户端的截屏</p>
-<p><img src="/images/180010/tcpclient_test.png" alt="screenshot of tcp client test"></p>
+<p><img src="https://whowin.gitee.io/images/180010/tcpclient_test.png" alt="screenshot of tcp client test"></p>
 </li>
 </ul>
 <hr>
 <ul>
 <li>
 <p>UDP测试客户端的截屏</p>
-<p><img src="/images/180010/udpclient_test.png" alt="screenshot of udp client test"></p>
+<p><img src="https://whowin.gitee.io/images/180010/udpclient_test.png" alt="screenshot of udp client test"></p>
 </li>
 </ul>
 </li>
@@ -650,247 +430,11 @@
 <hr>
 <ul>
 <li>
-<p>TCP客户端程序：tclient.c</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span><span class="lnt">54
-</span><span class="lnt">55
-</span><span class="lnt">56
-</span><span class="lnt">57
-</span><span class="lnt">58
-</span><span class="lnt">59
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;netinet/in.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#define SERVER_IP   &#34;192.168.2.112&#34;
-</span></span><span class="line"><span class="cl">#define PORT        5000
-</span></span><span class="line"><span class="cl">#define BUF_SIZE    1024
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main() {
-</span></span><span class="line"><span class="cl">    int sockfd;
-</span></span><span class="line"><span class="cl">    char buffer[BUF_SIZE];
-</span></span><span class="line"><span class="cl">    int n;
-</span></span><span class="line"><span class="cl">    char *message = &#34;Hello Server&#34;;
-</span></span><span class="line"><span class="cl">    struct sockaddr_in server_addr;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Step1: Creating socket file descriptor
-</span></span><span class="line"><span class="cl">    //========================================
-</span></span><span class="line"><span class="cl">    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) &lt; 0) {
-</span></span><span class="line"><span class="cl">        printf(&#34;socket creation failed&#34;);
-</span></span><span class="line"><span class="cl">        exit(0);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Step 2: Establish a connection with the server.
-</span></span><span class="line"><span class="cl">    //=================================================
-</span></span><span class="line"><span class="cl">    memset(&amp;server_addr, 0, sizeof(server_addr));
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Filling server information
-</span></span><span class="line"><span class="cl">    server_addr.sin_family      = AF_INET;
-</span></span><span class="line"><span class="cl">    server_addr.sin_port        = htons(PORT);
-</span></span><span class="line"><span class="cl">    server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (connect(sockfd, (struct sockaddr *)&amp;server_addr, sizeof(server_addr)) &lt; 0) {
-</span></span><span class="line"><span class="cl">        printf(&#34;\n Error : Connect Failed \n&#34;);
-</span></span><span class="line"><span class="cl">        close(sockfd);
-</span></span><span class="line"><span class="cl">        exit(0);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Step 3: When the connection is accepted write a message to a server
-</span></span><span class="line"><span class="cl">    //=====================================================================
-</span></span><span class="line"><span class="cl">    write(sockfd, message, strlen(message));
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Step 4: Read the response of the Server
-</span></span><span class="line"><span class="cl">    //==========================================
-</span></span><span class="line"><span class="cl">    n = 0;
-</span></span><span class="line"><span class="cl">    memset(buffer, 0, sizeof(buffer));
-</span></span><span class="line"><span class="cl">    n = read(sockfd, buffer, sizeof(buffer));
-</span></span><span class="line"><span class="cl">    buffer[n] = &#39;\0&#39;;
-</span></span><span class="line"><span class="cl">    printf(&#34;Message from server: %s\n&#34;, buffer);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Step 5: Close socket descriptor and exit
-</span></span><span class="line"><span class="cl">    //==========================================
-</span></span><span class="line"><span class="cl">    close(sockfd);
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<p>TCP客户端程序：<a href="/sourcecodes/180010/tcp-client.c">tcp-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
 <li>
-<p>UDP客户端程序：uclient.c</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;netinet/in.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#define SERVER_IP   &#34;192.168.2.112&#34;
-</span></span><span class="line"><span class="cl">#define PORT        5000
-</span></span><span class="line"><span class="cl">#define BUF_SIZE    1024
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main() {
-</span></span><span class="line"><span class="cl">    int sockfd;
-</span></span><span class="line"><span class="cl">    char buffer[BUF_SIZE];
-</span></span><span class="line"><span class="cl">    char *message = &#34;Hello Server&#34;;
-</span></span><span class="line"><span class="cl">    struct sockaddr_in server_addr;
-</span></span><span class="line"><span class="cl">    int n, len;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Step 1: Creating socket file descriptor
-</span></span><span class="line"><span class="cl">    //=========================================
-</span></span><span class="line"><span class="cl">    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) &lt; 0) {
-</span></span><span class="line"><span class="cl">        printf(&#34;socket creation failed&#34;);
-</span></span><span class="line"><span class="cl">        exit(0);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Step 2: Send a message to the server
-</span></span><span class="line"><span class="cl">    //======================================
-</span></span><span class="line"><span class="cl">    memset(&amp;server_addr, 0, sizeof(server_addr));
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Filling server information
-</span></span><span class="line"><span class="cl">    server_addr.sin_family      = AF_INET;
-</span></span><span class="line"><span class="cl">    server_addr.sin_port        = htons(PORT);
-</span></span><span class="line"><span class="cl">    server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
-</span></span><span class="line"><span class="cl">    // send hello message to server
-</span></span><span class="line"><span class="cl">    sendto(sockfd, message, strlen(message), 0, (const struct sockaddr *)&amp;server_addr, sizeof(server_addr));
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Step 3: Wait until a response from the server is received
-</span></span><span class="line"><span class="cl">    //===========================================================
-</span></span><span class="line"><span class="cl">    // receive server&#39;s response
-</span></span><span class="line"><span class="cl">    len = sizeof(struct sockaddr_in);
-</span></span><span class="line"><span class="cl">    n = 0;
-</span></span><span class="line"><span class="cl">    memset(buffer, 0, BUF_SIZE);
-</span></span><span class="line"><span class="cl">    n = recvfrom(sockfd, buffer, BUF_SIZE, 0, (struct sockaddr *)&amp;server_addr, (socklen_t *)&amp;len);
-</span></span><span class="line"><span class="cl">    buffer[n] = &#39;\0&#39;;
-</span></span><span class="line"><span class="cl">    printf(&#34;Message from server: %s\n&#34;, buffer);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Step 4: Close socket descriptor and exit
-</span></span><span class="line"><span class="cl">    //==========================================
-</span></span><span class="line"><span class="cl">    close(sockfd);
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<p>UDP客户端程序：<a href="/sourcecodes/180010/udp-client.c">udp-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
 <li>
 <p>客户端程序编译</p>
 <div class="highlight"><div class="chroma">
@@ -899,8 +443,8 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gcc -Wall tclient.c -o tclient
-</span></span><span class="line"><span class="cl">gcc -Wall uclient.c -o uclient
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall tcp-client.c -o tcp-client
+</span></span><span class="line"><span class="cl">gcc -Wall udp-client.c -o udp-client
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -914,7 +458,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">./tuserver
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./tcp-udp-server
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -926,21 +470,21 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">./tclient
-</span></span><span class="line"><span class="cl">./uclient
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./tcp-client
+</span></span><span class="line"><span class="cl">./udp-client
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
 <p>服务器端的运行截图</p>
-<p><img src="/images/180010/screenshot_of_server.png" alt="Screenshot of server"></p>
+<p><img src="https://whowin.gitee.io/images/180010/screenshot_of_server.png" alt="Screenshot of server"></p>
 </li>
 </ul>
 <hr>
 <ul>
 <li>
 <p>客户端的运行截图</p>
-<p><img src="/images/180010/screenshot_of_client.png" alt="Screenshot of client"></p>
+<p><img src="https://whowin.gitee.io/images/180010/screenshot_of_client.png" alt="Screenshot of client"></p>
 </li>
 </ul>
 </li>
@@ -948,7 +492,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">

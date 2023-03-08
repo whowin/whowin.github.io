@@ -6,7 +6,16 @@
     <description>Recent content in linux on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 13 Feb 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 07 Mar 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用tun虚拟网络接口建立IP隧道的实例</title>
+      <link>https://whowin.gitee.io/post/blog/network/0018-tun-example-for-setting-up-ip-tunnel/</link>
+      <pubDate>Tue, 07 Mar 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0018-tun-example-for-setting-up-ip-tunnel/</guid>
+      <description>&lt;p&gt;通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；本文假定读者已经拥有了在Linux下使用C语言进行IPv4下socket编程的基本能力。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>使用SNTP协议从时间服务器同步时间</title>
       <link>https://whowin.gitee.io/post/blog/network/0017-sync-time-from-time-server-using-sntp/</link>

@@ -50,7 +50,7 @@
 <meta itemprop="name" content="如何计算UDP头的checksum">
 <meta itemprop="description" content="UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序。"><meta itemprop="datePublished" content="2022-12-12T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-12-12T16:43:29+08:00" />
-<meta itemprop="wordCount" content="2362">
+<meta itemprop="wordCount" content="2358">
 <meta itemprop="keywords" content="C语言,UDP,internet checksum,UDP checksum," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="如何计算UDP头的checksum"/>
 <meta name="twitter:description" content="UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序。"/>
@@ -186,12 +186,12 @@
 </span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct udphdr {
-</span></span><span class="line"><span class="cl">    __be16	source;
-</span></span><span class="line"><span class="cl">    __be16	dest;
-</span></span><span class="line"><span class="cl">    __be16	len;
-</span></span><span class="line"><span class="cl">    __sum16	check;
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">udphdr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>	<span class="n">source</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>	<span class="n">dest</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>	<span class="n">len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__sum16</span>	<span class="n">check</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
@@ -200,8 +200,8 @@
 <li>len - 报文长度；</li>
 <li>check - 报头的校验和，在IPv4中是可选的，IPv6中是强制的，如果不使用，应填充0；</li>
 </ul>
-<p><img src="/images/180003/udp_packet_structure.png" alt="UDP数据报结构">
-<strong><center>图1：UDP数据报结构</center></strong></p>
+<p><img src="https://whowin.gitee.io/images/180003/udp_packet_structure.png" alt="UDP数据报结构"></p>
+  <center><b>图1：UDP数据报结构</b></center>
 </li>
 </ul>
 <hr>
@@ -212,8 +212,8 @@
 </li>
 <li>
 <p>在Linux下，IP报头定义在头文件linux/ip.h中，可以自行查看，我们这里仅给出图示；</p>
-<p><img src="/images/180003/ip_header.png" alt="IP报头">
-<strong><center>图2：IP报头结构</center></strong></p>
+<p><img src="https://whowin.gitee.io/images/180003/ip_header.png" alt="IP报头"></p>
+  <center><b>图2：IP报头结构</b></center>
 </li>
 </ul>
 <hr>
@@ -230,8 +230,8 @@
 </li>
 <li>
 <p>加上伪报头的UDP报文格式如下：</p>
-<p><img src="/images/180003/udp_packet_pseudo_header.png.png" alt="伪报头">
-<strong><center>图3：伪报头</center></strong></p>
+<p><img src="https://whowin.gitee.io/images/180003/udp_packet_pseudo_header.png.png" alt="伪报头"></p>
+  <center><b>图3：伪报头</b></center>
 </li>
 </ul>
 <hr>
@@ -403,137 +403,137 @@
 </span><span class="lnt">131
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdint.h&gt;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/udp.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// udp pseudo header structure
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="n">pseudohdr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint32_t</span> <span class="n">source_ip</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint32_t</span> <span class="n">destination_ip</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">zero</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">protocol</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">udp_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// udp packet structure for calculating checksum
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="n">udpcheckhdr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">pseudohdr</span> <span class="n">pseudo_hdr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">udphdr</span> <span class="n">udp_hdr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">data</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// initial pseudo header
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">init_pseudohdr</span><span class="p">(</span><span class="k">struct</span> <span class="n">udpcheckhdr</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p</span><span class="o">-&gt;</span><span class="n">pseudo_hdr</span><span class="p">.</span><span class="n">source_ip</span> <span class="o">=</span> <span class="n">inet_addr</span><span class="p">(</span><span class="s">&#34;152.1.51.27&#34;</span><span class="p">);</span>         <span class="c1">// 0X0198 0X1B33
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span><span class="o">-&gt;</span><span class="n">pseudo_hdr</span><span class="p">.</span><span class="n">destination_ip</span> <span class="o">=</span> <span class="n">inet_addr</span><span class="p">(</span><span class="s">&#34;152.14.94.75&#34;</span><span class="p">);</span>   <span class="c1">// 0X0E98 0X4B5E
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span><span class="o">-&gt;</span><span class="n">pseudo_hdr</span><span class="p">.</span><span class="n">zero</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>                     <span class="c1">// 0X00 - 0X1100
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span><span class="o">-&gt;</span><span class="n">pseudo_hdr</span><span class="p">.</span><span class="n">protocol</span> <span class="o">=</span> <span class="mi">17</span><span class="p">;</span>                <span class="c1">// 0X11
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span><span class="o">-&gt;</span><span class="n">pseudo_hdr</span><span class="p">.</span><span class="n">udp_len</span> <span class="o">=</span> <span class="mi">13</span><span class="p">;</span>                 <span class="c1">// 0X000D
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// initial udp header
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">init_udphdr</span><span class="p">(</span><span class="k">struct</span> <span class="n">udpcheckhdr</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p</span><span class="o">-&gt;</span><span class="n">udp_hdr</span><span class="p">.</span><span class="n">source</span> <span class="o">=</span> <span class="mi">56020</span><span class="p">;</span>                  <span class="c1">// 0xDAD4
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span><span class="o">-&gt;</span><span class="n">udp_hdr</span><span class="p">.</span><span class="n">dest</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">;</span>                     <span class="c1">// 0X1F40
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span><span class="o">-&gt;</span><span class="n">udp_hdr</span><span class="p">.</span><span class="n">len</span> <span class="o">=</span> <span class="mi">13</span><span class="p">;</span>                        <span class="c1">// 0X000D
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span><span class="o">-&gt;</span><span class="n">udp_hdr</span><span class="p">.</span><span class="n">check</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>                       <span class="c1">// 0X0000
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// initial udp data
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span> <span class="nf">init_udpdata</span><span class="p">(</span><span class="k">struct</span> <span class="n">udpcheckhdr</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;h&#39;</span><span class="p">;</span>                           <span class="c1">// 0X68 - 0X6568
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;e&#39;</span><span class="p">;</span>                           <span class="c1">// 0X65
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;l&#39;</span><span class="p">;</span>                           <span class="c1">// 0X6C - 0X6C6C
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;l&#39;</span><span class="p">;</span>                           <span class="c1">// 0X6C
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;o&#39;</span><span class="p">;</span>                           <span class="c1">// 0X6F - 0X006F
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/udp.h&gt;
+</span></span><span class="line"><span class="cl"><span class="kt">uint16_t</span> <span class="nf">checksum1</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">count</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">register</span> <span class="kt">long</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">checksum</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">// udp pseudo header structure
-</span></span><span class="line"><span class="cl">struct pseudohdr {
-</span></span><span class="line"><span class="cl">    uint32_t source_ip;
-</span></span><span class="line"><span class="cl">    uint32_t destination_ip;
-</span></span><span class="line"><span class="cl">    uint8_t zero;
-</span></span><span class="line"><span class="cl">    uint8_t protocol;
-</span></span><span class="line"><span class="cl">    uint16_t udp_len;
-</span></span><span class="line"><span class="cl">};
-</span></span><span class="line"><span class="cl">// udp packet structure for calculating checksum
-</span></span><span class="line"><span class="cl">struct udpcheckhdr {
-</span></span><span class="line"><span class="cl">    struct pseudohdr pseudo_hdr;
-</span></span><span class="line"><span class="cl">    struct udphdr udp_hdr;
-</span></span><span class="line"><span class="cl">    unsigned char data[16];
-</span></span><span class="line"><span class="cl">};
-</span></span><span class="line"><span class="cl">// initial pseudo header
-</span></span><span class="line"><span class="cl">void init_pseudohdr(struct udpcheckhdr *p) {
-</span></span><span class="line"><span class="cl">    p-&gt;pseudo_hdr.source_ip = inet_addr(&#34;152.1.51.27&#34;);         // 0X0198 0X1B33
-</span></span><span class="line"><span class="cl">    p-&gt;pseudo_hdr.destination_ip = inet_addr(&#34;152.14.94.75&#34;);   // 0X0E98 0X4B5E
-</span></span><span class="line"><span class="cl">    p-&gt;pseudo_hdr.zero = 0;                     // 0X00 - 0X1100
-</span></span><span class="line"><span class="cl">    p-&gt;pseudo_hdr.protocol = 17;                // 0X11
-</span></span><span class="line"><span class="cl">    p-&gt;pseudo_hdr.udp_len = 13;                 // 0X000D
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">// initial udp header
-</span></span><span class="line"><span class="cl">void init_udphdr(struct udpcheckhdr *p) {
-</span></span><span class="line"><span class="cl">    p-&gt;udp_hdr.source = 56020;                  // 0xDAD4
-</span></span><span class="line"><span class="cl">    p-&gt;udp_hdr.dest = 8000;                     // 0X1F40
-</span></span><span class="line"><span class="cl">    p-&gt;udp_hdr.len = 13;                        // 0X000D
-</span></span><span class="line"><span class="cl">    p-&gt;udp_hdr.check = 0;                       // 0X0000
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">// initial udp data
-</span></span><span class="line"><span class="cl">void init_udpdata(struct udpcheckhdr *p) {
-</span></span><span class="line"><span class="cl">    p-&gt;data[0] = &#39;h&#39;;                           // 0X68 - 0X6568
-</span></span><span class="line"><span class="cl">    p-&gt;data[1] = &#39;e&#39;;                           // 0X65
-</span></span><span class="line"><span class="cl">    p-&gt;data[2] = &#39;l&#39;;                           // 0X6C - 0X6C6C
-</span></span><span class="line"><span class="cl">    p-&gt;data[3] = &#39;l&#39;;                           // 0X6C
-</span></span><span class="line"><span class="cl">    p-&gt;data[4] = &#39;o&#39;;                           // 0X6F - 0X006F
-</span></span><span class="line"><span class="cl">    p-&gt;data[5] = 0;
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">temp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="cm">/*  This is the inner loop */</span>
+</span></span><span class="line"><span class="cl">        <span class="n">temp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span> <span class="o">*</span><span class="p">)</span><span class="n">p</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Step %02d: 0X%08lX + 0X%04X</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">++</span><span class="n">i</span><span class="p">,</span> <span class="n">sum</span><span class="p">,</span> <span class="n">temp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sum</span> <span class="o">+=</span> <span class="n">temp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">count</span> <span class="o">-=</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">uint16_t checksum1(uint16_t *p, int count) {
-</span></span><span class="line"><span class="cl">    register long sum = 0;
-</span></span><span class="line"><span class="cl">    unsigned short checksum;
+</span></span><span class="line"><span class="cl">    <span class="cm">/*  Add left-over byte, if any */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">temp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span> <span class="o">*</span><span class="p">)</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Step %02d: 0X%08lX + 0X%04X</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">++</span><span class="n">i</span><span class="p">,</span> <span class="n">sum</span><span class="p">,</span> <span class="n">temp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sum</span> <span class="o">+=</span> <span class="o">*</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    uint16_t temp;
-</span></span><span class="line"><span class="cl">    uint16_t i = 0;
-</span></span><span class="line"><span class="cl">    while (count &gt; 1) {
-</span></span><span class="line"><span class="cl">        /*  This is the inner loop */
-</span></span><span class="line"><span class="cl">        temp = (unsigned short)*(unsigned short *)p++;
-</span></span><span class="line"><span class="cl">        printf(&#34;Step %02d: 0X%08lX + 0X%04X\n&#34;, ++i, sum, temp);
-</span></span><span class="line"><span class="cl">        sum += temp;
-</span></span><span class="line"><span class="cl">        count -= 2;
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Result before folding: 0X%08lX</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">sum</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/*  Fold 32-bit sum to 16 bits */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="n">sum</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sum</span> <span class="o">=</span> <span class="p">(</span><span class="n">sum</span> <span class="o">&amp;</span> <span class="mh">0xffff</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">sum</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    /*  Add left-over byte, if any */
-</span></span><span class="line"><span class="cl">    if (count &gt; 0) {
-</span></span><span class="line"><span class="cl">        temp = (unsigned short)*(unsigned short *)p;
-</span></span><span class="line"><span class="cl">        printf(&#34;Step %02d: 0X%08lX + 0X%04X\n&#34;, ++i, sum, temp);
-</span></span><span class="line"><span class="cl">        sum += *(unsigned char *)p;
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Result after folding: 0X%08lX</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">sum</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    printf(&#34;Result before folding: 0X%08lX\n&#34;, sum);
-</span></span><span class="line"><span class="cl">    /*  Fold 32-bit sum to 16 bits */
-</span></span><span class="line"><span class="cl">    while (sum &gt;&gt; 16)
-</span></span><span class="line"><span class="cl">        sum = (sum &amp; 0xffff) + (sum &gt;&gt; 16);
+</span></span><span class="line"><span class="cl">    <span class="n">checksum</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">)</span><span class="n">sum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">Checksum = 0x%04X</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">checksum</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    printf(&#34;Result after folding: 0X%08lX\n&#34;, sum);
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">checksum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    checksum = ~(unsigned short)sum;
-</span></span><span class="line"><span class="cl">    printf(&#34;\nChecksum = 0x%04X\n&#34;, checksum);
+</span></span><span class="line"><span class="cl"><span class="kt">uint16_t</span> <span class="nf">checksum2</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">count</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">register</span> <span class="kt">long</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">checksum</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    return checksum;
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">temp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="cm">/*  This is the inner loop */</span>
+</span></span><span class="line"><span class="cl">        <span class="n">temp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span> <span class="o">*</span><span class="p">)</span><span class="n">p</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Step %02d: 0X%08lX + 0X%04X(0X%04X)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">++</span><span class="n">i</span><span class="p">,</span> <span class="n">sum</span><span class="p">,</span> <span class="p">(</span><span class="kt">uint16_t</span><span class="p">)</span><span class="o">~</span><span class="n">temp</span><span class="p">,</span> <span class="n">temp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sum</span> <span class="o">+=</span> <span class="p">(</span><span class="kt">uint16_t</span><span class="p">)</span><span class="o">~</span><span class="n">temp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">count</span> <span class="o">-=</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">uint16_t checksum2(uint16_t *p, int count) {
-</span></span><span class="line"><span class="cl">    register long sum = 0;
-</span></span><span class="line"><span class="cl">    unsigned short checksum;
+</span></span><span class="line"><span class="cl">    <span class="cm">/*  Add left-over byte, if any */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">temp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span> <span class="o">*</span><span class="p">)</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Step %02d: 0X%08lX + 0X%04X(0X%04X)</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">++</span><span class="n">i</span><span class="p">,</span> <span class="n">sum</span><span class="p">,</span> <span class="p">(</span><span class="kt">uint16_t</span><span class="p">)</span><span class="o">~</span><span class="n">temp</span><span class="p">,</span> <span class="n">temp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sum</span> <span class="o">+=</span> <span class="p">(</span><span class="kt">uint16_t</span><span class="p">)</span><span class="o">~</span><span class="n">temp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    uint16_t temp;
-</span></span><span class="line"><span class="cl">    uint16_t i = 0;
-</span></span><span class="line"><span class="cl">    while (count &gt; 1) {
-</span></span><span class="line"><span class="cl">        /*  This is the inner loop */
-</span></span><span class="line"><span class="cl">        temp = (unsigned short)*(unsigned short *)p++;
-</span></span><span class="line"><span class="cl">        printf(&#34;Step %02d: 0X%08lX + 0X%04X(0X%04X)\n&#34;, ++i, sum, (uint16_t)~temp, temp);
-</span></span><span class="line"><span class="cl">        sum += (uint16_t)~temp;
-</span></span><span class="line"><span class="cl">        count -= 2;
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Result before folding: 0X%08lX</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">sum</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/*  Fold 32-bit sum to 16 bits */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="n">sum</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sum</span> <span class="o">=</span> <span class="p">(</span><span class="n">sum</span> <span class="o">&amp;</span> <span class="mh">0xffff</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">sum</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    /*  Add left-over byte, if any */
-</span></span><span class="line"><span class="cl">    if (count &gt; 0) {
-</span></span><span class="line"><span class="cl">        temp = (unsigned short)*(unsigned short *)p;
-</span></span><span class="line"><span class="cl">        printf(&#34;Step %02d: 0X%08lX + 0X%04X(0X%04X)\n&#34;, ++i, sum, (uint16_t)~temp, temp);
-</span></span><span class="line"><span class="cl">        sum += (uint16_t)~temp;
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Result after folding: 0X%08lX</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">sum</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    printf(&#34;Result before folding: 0X%08lX\n&#34;, sum);
-</span></span><span class="line"><span class="cl">    /*  Fold 32-bit sum to 16 bits */
-</span></span><span class="line"><span class="cl">    while (sum &gt;&gt; 16)
-</span></span><span class="line"><span class="cl">        sum = (sum &amp; 0xffff) + (sum &gt;&gt; 16);
+</span></span><span class="line"><span class="cl">    <span class="n">checksum</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">)</span><span class="n">sum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">Checksum = 0x%04X</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">checksum</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">checksum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    printf(&#34;Result after folding: 0X%08lX\n&#34;, sum);
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">udpcheckhdr</span> <span class="n">udp_packet</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    checksum = (unsigned short)sum;
-</span></span><span class="line"><span class="cl">    printf(&#34;\nChecksum = 0x%04X\n&#34;, checksum);
-</span></span><span class="line"><span class="cl">    return checksum;
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="n">init_pseudohdr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">udp_packet</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">init_udphdr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">udp_packet</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">init_udpdata</span><span class="p">(</span><span class="o">&amp;</span><span class="n">udp_packet</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main(int argc, char **argv) {
-</span></span><span class="line"><span class="cl">    struct udpcheckhdr udp_packet;
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">udp_packet</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">pseudohdr</span><span class="p">)</span> <span class="o">+</span> <span class="n">udp_packet</span><span class="p">.</span><span class="n">udp_hdr</span><span class="p">.</span><span class="n">len</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    init_pseudohdr(&amp;udp_packet);
-</span></span><span class="line"><span class="cl">    init_udphdr(&amp;udp_packet);
-</span></span><span class="line"><span class="cl">    init_udpdata(&amp;udp_packet);
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">The one&#39;s complement code of 16-bit true code sum</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">checksum1</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">count</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">The one&#39;s complement sum</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">checksum2</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">count</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    unsigned short *p = (unsigned short *)&amp;udp_packet;
-</span></span><span class="line"><span class="cl">    int count = sizeof(struct pseudohdr) + udp_packet.udp_hdr.len;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    printf(&#34;\nThe one&#39;s complement code of 16-bit true code sum\n&#34;);
-</span></span><span class="line"><span class="cl">    checksum1(p, count);
-</span></span><span class="line"><span class="cl">    printf(&#34;\nThe one&#39;s complement sum\n&#34;);
-</span></span><span class="line"><span class="cl">    checksum2(p, count);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -548,8 +548,8 @@
 </li>
 <li>
 <p>下面是我的机器上的运行结果截屏</p>
-<p><img src="/images/180003/udp_checksum_screenshot.png" alt="程序运行截屏">
-<strong><center>图4：程序运行截屏</center></strong></p>
+<p><img src="https://whowin.gitee.io/images/180003/udp_checksum_screenshot.png" alt="程序运行截屏"></p>
+  <center><b>图4：程序运行截屏</b></center>
 </li>
 </ul>
 <hr>
@@ -567,7 +567,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">

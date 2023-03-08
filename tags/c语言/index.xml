@@ -22,7 +22,7 @@
       <pubDate>Sun, 16 Oct 2022 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0001-how-to-get-ipv6-in-c/</guid>
-      <description>&lt;p&gt;使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。&lt;/p&gt;</description>
+      <description>&lt;p&gt;使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法：从proc文件从系统获取ipv6地址、使用getifaddrs()函数获取ipv6地址和使用netlink获取ipv6地址，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。&lt;/p&gt;</description>
     </item>
     
     <item>

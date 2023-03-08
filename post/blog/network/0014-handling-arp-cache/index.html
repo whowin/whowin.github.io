@@ -50,7 +50,7 @@
 <meta itemprop="name" content="如何用C语言操作arp cache">
 <meta itemprop="description" content="arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0"><meta itemprop="datePublished" content="2023-01-12T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-01-12T16:43:29+08:00" />
-<meta itemprop="wordCount" content="5276">
+<meta itemprop="wordCount" content="3840">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,arp,ioctl," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="如何用C语言操作arp cache"/>
 <meta name="twitter:description" content="arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0"/>
@@ -233,17 +233,17 @@
 </span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;sys/sockio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/sockio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;net/if.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;net/if_arp.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">arpreq</span> <span class="n">arpreq</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;net/if.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;net/if_arp.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">struct arpreq arpreq;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">ioctl(s, SIOCSARP, (struct arpreq *)&amp;arpreq);
-</span></span><span class="line"><span class="cl">ioctl(s, SIOCGARP, (struct arpreq *)&amp;arpreq);
-</span></span><span class="line"><span class="cl">ioctl(s, SIOCDARP, (struct arpreq *)&amp;arpreq);
+</span></span><span class="line"><span class="cl"><span class="n">ioctl</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">SIOCSARP</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">arpreq</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">arpreq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">ioctl</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">SIOCGARP</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">arpreq</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">arpreq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">ioctl</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">SIOCDARP</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">arpreq</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">arpreq</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -262,14 +262,14 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">/* ARP ioctl request.  */
-</span></span><span class="line"><span class="cl">struct arpreq {
-</span></span><span class="line"><span class="cl">    struct sockaddr arp_pa;       /* Protocol address.  */
-</span></span><span class="line"><span class="cl">    struct sockaddr arp_ha;       /* Hardware address.  */
-</span></span><span class="line"><span class="cl">    int arp_flags;                /* Flags.  */
-</span></span><span class="line"><span class="cl">    struct sockaddr arp_netmask;  /* Netmask (only for proxy arps).  */
-</span></span><span class="line"><span class="cl">    char arp_dev[16];
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cm">/* ARP ioctl request.  */</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">arpreq</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">arp_pa</span><span class="p">;</span>       <span class="cm">/* Protocol address.  */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">arp_ha</span><span class="p">;</span>       <span class="cm">/* Hardware address.  */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">arp_flags</span><span class="p">;</span>                <span class="cm">/* Flags.  */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">arp_netmask</span><span class="p">;</span>  <span class="cm">/* Netmask (only for proxy arps).  */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">arp_dev</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
@@ -300,19 +300,19 @@
 </span><span class="lnt">13
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct sockaddr {  
-</span></span><span class="line"><span class="cl">    sa_family_t sin_family;       /* Protocol family.  */
-</span></span><span class="line"><span class="cl">　　 char sa_data[14];
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr</span> <span class="p">{</span>  
+</span></span><span class="line"><span class="cl">    <span class="n">sa_family_t</span> <span class="n">sin_family</span><span class="p">;</span>       <span class="cm">/* Protocol family.  */</span>
+</span></span><span class="line"><span class="cl">　　 <span class="kt">char</span> <span class="n">sa_data</span><span class="p">[</span><span class="mi">14</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">struct sockaddr_in {
-</span></span><span class="line"><span class="cl">    sa_family_t sin_family;       /* Protocol family.  */
-</span></span><span class="line"><span class="cl">    in_port_t sin_port;           /* Port number.  */
-</span></span><span class="line"><span class="cl">    struct in_addr sin_addr;      /* Internet address.  */
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sa_family_t</span> <span class="n">sin_family</span><span class="p">;</span>       <span class="cm">/* Protocol family.  */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">in_port_t</span> <span class="n">sin_port</span><span class="p">;</span>           <span class="cm">/* Port number.  */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">in_addr</span> <span class="n">sin_addr</span><span class="p">;</span>      <span class="cm">/* Internet address.  */</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    /* Pad to size of `struct sockaddr&#39;.  */
-</span></span><span class="line"><span class="cl">    unsigned char sin_zero[8];
-</span></span><span class="line"><span class="cl">};
+</span></span><span class="line"><span class="cl">    <span class="cm">/* Pad to size of `struct sockaddr&#39;.  */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">sin_zero</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -341,16 +341,16 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">/* ARP Flag values.  */
-</span></span><span class="line"><span class="cl">#define ATF_COM         0x02      /* Completed entry (ha valid).  */
-</span></span><span class="line"><span class="cl">#define ATF_PERM        0x04      /* Permanent entry.  */
-</span></span><span class="line"><span class="cl">#define ATF_PUBL        0x08      /* Publish entry.  */
-</span></span><span class="line"><span class="cl">#define ATF_USETRAILERS 0x10      /* Has requested trailers.  */
-</span></span><span class="line"><span class="cl">#define ATF_NETMASK     0x20      /* Want to use a netmask (only
-</span></span><span class="line"><span class="cl">                                     for proxy entries).  */
-</span></span><span class="line"><span class="cl">#define ATF_DONTPUB     0x40      /* Don&#39;t answer this addresses.  */
-</span></span><span class="line"><span class="cl">#define ATF_MAGIC       0x80      /* Automatically added entry.  */
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cm">/* ARP Flag values.  */</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define ATF_COM         0x02      </span><span class="cm">/* Completed entry (ha valid).  */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define ATF_PERM        0x04      </span><span class="cm">/* Permanent entry.  */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define ATF_PUBL        0x08      </span><span class="cm">/* Publish entry.  */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define ATF_USETRAILERS 0x10      </span><span class="cm">/* Has requested trailers.  */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define ATF_NETMASK     0x20      </span><span class="cm">/* Want to use a netmask (only
+</span></span></span><span class="line"><span class="cl"><span class="cm">                                     for proxy entries).  */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define ATF_DONTPUB     0x40      </span><span class="cm">/* Don&#39;t answer this addresses.  */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define ATF_MAGIC       0x80      </span><span class="cm">/* Automatically added entry.  */</span><span class="cp">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 </ul>
@@ -370,224 +370,8 @@
 <p>ioctl获取arp cache的记录，只能一条一条的获取，不能一下获取一个完整的arp cache，要获取一个完整的arp cache，似乎唯一的办法就是读取文件：/proc/net/arp，至少我还没有找到其它方法；</p>
 </li>
 <li>
-<p>在这个实例中，我们仅仅获得arp cache中的一条记录，文件名为：arp_get.c</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">  1
-</span><span class="lnt">  2
-</span><span class="lnt">  3
-</span><span class="lnt">  4
-</span><span class="lnt">  5
-</span><span class="lnt">  6
-</span><span class="lnt">  7
-</span><span class="lnt">  8
-</span><span class="lnt">  9
-</span><span class="lnt"> 10
-</span><span class="lnt"> 11
-</span><span class="lnt"> 12
-</span><span class="lnt"> 13
-</span><span class="lnt"> 14
-</span><span class="lnt"> 15
-</span><span class="lnt"> 16
-</span><span class="lnt"> 17
-</span><span class="lnt"> 18
-</span><span class="lnt"> 19
-</span><span class="lnt"> 20
-</span><span class="lnt"> 21
-</span><span class="lnt"> 22
-</span><span class="lnt"> 23
-</span><span class="lnt"> 24
-</span><span class="lnt"> 25
-</span><span class="lnt"> 26
-</span><span class="lnt"> 27
-</span><span class="lnt"> 28
-</span><span class="lnt"> 29
-</span><span class="lnt"> 30
-</span><span class="lnt"> 31
-</span><span class="lnt"> 32
-</span><span class="lnt"> 33
-</span><span class="lnt"> 34
-</span><span class="lnt"> 35
-</span><span class="lnt"> 36
-</span><span class="lnt"> 37
-</span><span class="lnt"> 38
-</span><span class="lnt"> 39
-</span><span class="lnt"> 40
-</span><span class="lnt"> 41
-</span><span class="lnt"> 42
-</span><span class="lnt"> 43
-</span><span class="lnt"> 44
-</span><span class="lnt"> 45
-</span><span class="lnt"> 46
-</span><span class="lnt"> 47
-</span><span class="lnt"> 48
-</span><span class="lnt"> 49
-</span><span class="lnt"> 50
-</span><span class="lnt"> 51
-</span><span class="lnt"> 52
-</span><span class="lnt"> 53
-</span><span class="lnt"> 54
-</span><span class="lnt"> 55
-</span><span class="lnt"> 56
-</span><span class="lnt"> 57
-</span><span class="lnt"> 58
-</span><span class="lnt"> 59
-</span><span class="lnt"> 60
-</span><span class="lnt"> 61
-</span><span class="lnt"> 62
-</span><span class="lnt"> 63
-</span><span class="lnt"> 64
-</span><span class="lnt"> 65
-</span><span class="lnt"> 66
-</span><span class="lnt"> 67
-</span><span class="lnt"> 68
-</span><span class="lnt"> 69
-</span><span class="lnt"> 70
-</span><span class="lnt"> 71
-</span><span class="lnt"> 72
-</span><span class="lnt"> 73
-</span><span class="lnt"> 74
-</span><span class="lnt"> 75
-</span><span class="lnt"> 76
-</span><span class="lnt"> 77
-</span><span class="lnt"> 78
-</span><span class="lnt"> 79
-</span><span class="lnt"> 80
-</span><span class="lnt"> 81
-</span><span class="lnt"> 82
-</span><span class="lnt"> 83
-</span><span class="lnt"> 84
-</span><span class="lnt"> 85
-</span><span class="lnt"> 86
-</span><span class="lnt"> 87
-</span><span class="lnt"> 88
-</span><span class="lnt"> 89
-</span><span class="lnt"> 90
-</span><span class="lnt"> 91
-</span><span class="lnt"> 92
-</span><span class="lnt"> 93
-</span><span class="lnt"> 94
-</span><span class="lnt"> 95
-</span><span class="lnt"> 96
-</span><span class="lnt"> 97
-</span><span class="lnt"> 98
-</span><span class="lnt"> 99
-</span><span class="lnt">100
-</span><span class="lnt">101
-</span><span class="lnt">102
-</span><span class="lnt">103
-</span><span class="lnt">104
-</span><span class="lnt">105
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;errno.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;net/if.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;net/if_arp.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;sys/ioctl.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/types.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;netinet/in.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#define TRUE        1
-</span></span><span class="line"><span class="cl">#define FALSE       0
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">// Check if the IP address is valid
-</span></span><span class="line"><span class="cl">int valid_ip(char *p) {
-</span></span><span class="line"><span class="cl">    int i, j = strlen(p);
-</span></span><span class="line"><span class="cl">    char *p1;
-</span></span><span class="line"><span class="cl">    int n = 0;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (j &gt; 15 || j &lt; 7) return FALSE;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    p1 = p;
-</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; j; ++i) {
-</span></span><span class="line"><span class="cl">        if ((p[i] &lt; &#39;0&#39; || p[i] &gt; &#39;9&#39;) &amp;&amp; p[i] != &#39;.&#39;) return FALSE;
-</span></span><span class="line"><span class="cl">        if (p[i] == &#39;.&#39;) {
-</span></span><span class="line"><span class="cl">            ++n;
-</span></span><span class="line"><span class="cl">            if (atoi(p1) &gt; 255 || *p1 == &#39;.&#39;) return FALSE;
-</span></span><span class="line"><span class="cl">            p1 = p + i + 1;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    if (n != 3 || p1 == p + j) return FALSE;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    return TRUE;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main(int argc, char *argv[]) {
-</span></span><span class="line"><span class="cl">    // Check arguments
-</span></span><span class="line"><span class="cl">    if (argc != 3) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Usage: %s [interface name] [dst IP]\n&#34;, argv[0]);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Interface name
-</span></span><span class="line"><span class="cl">    char ifname[IF_NAMESIZE] = {&#39;\0&#39;};
-</span></span><span class="line"><span class="cl">    strncpy(ifname, argv[1], IF_NAMESIZE - 1);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // IP address
-</span></span><span class="line"><span class="cl">    char ipaddr[INET_ADDRSTRLEN] = {&#39;\0&#39;};
-</span></span><span class="line"><span class="cl">    strncpy(ipaddr, argv[2], INET_ADDRSTRLEN);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Check if the IP address is valid
-</span></span><span class="line"><span class="cl">    if (!valid_ip(ipaddr)) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Invalid IP address: %s\n&#34;, ipaddr);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    int sockfd;
-</span></span><span class="line"><span class="cl">    unsigned char *mac;
-</span></span><span class="line"><span class="cl">    struct arpreq arp_req;
-</span></span><span class="line"><span class="cl">    struct sockaddr_in *sin;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // initialize struct arpreq
-</span></span><span class="line"><span class="cl">    memset(&amp;arp_req, 0, sizeof(arp_req));
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    sin = (struct sockaddr_in *)&amp;(arp_req.arp_pa);
-</span></span><span class="line"><span class="cl">    sin-&gt;sin_family = AF_INET;
-</span></span><span class="line"><span class="cl">    inet_pton(AF_INET, ipaddr, &amp;(sin-&gt;sin_addr));
-</span></span><span class="line"><span class="cl">    strncpy(arp_req.arp_dev, ifname, IF_NAMESIZE - 1);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Create socket
-</span></span><span class="line"><span class="cl">    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) &lt; 0) {
-</span></span><span class="line"><span class="cl">        perror(&#34;Socket creation failed...&#34;);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // getting arp entry via ioctl
-</span></span><span class="line"><span class="cl">    if (ioctl(sockfd, SIOCGARP, &amp;arp_req) &lt; 0) {
-</span></span><span class="line"><span class="cl">        perror(&#34;Getting arp entry failed...&#34;);
-</span></span><span class="line"><span class="cl">        close(sockfd);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // ioctl successfully.
-</span></span><span class="line"><span class="cl">    if (arp_req.arp_flags &amp; ATF_COM) {
-</span></span><span class="line"><span class="cl">        // the entry in arp cache is okay.
-</span></span><span class="line"><span class="cl">        mac = (unsigned char *)arp_req.arp_ha.sa_data;
-</span></span><span class="line"><span class="cl">        printf(&#34;Interface name: %s\tIP: %s\n&#34;, ifname, ipaddr);
-</span></span><span class="line"><span class="cl">        printf(&#34;MAC: %02x:%02x:%02x:%02x:%02x:%02x\n&#34;,
-</span></span><span class="line"><span class="cl">                mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-</span></span><span class="line"><span class="cl">    } else {
-</span></span><span class="line"><span class="cl">        // the entry in arp cache is incomplete.
-</span></span><span class="line"><span class="cl">        printf(&#34;The entry in arp cache is incomplete. IP: %s\tInterface name: %s\n&#34;, ipaddr, ifname);
-</span></span><span class="line"><span class="cl">        printf(&#34;Sometimes just wait for a moment, will get complete MAC address.\n&#34;);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    close(sockfd);
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<p>在这个实例中，我们仅仅获得arp cache中的一条记录，文件名为：<a href="/sourcecodes/180014/arp-get.c">arp-get.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
 <li>
 <p>编译</p>
 <div class="highlight"><div class="chroma">
@@ -595,7 +379,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gcc -Wall arp_get.c -o arp_get
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall arp-get.c -o arp-get
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -607,14 +391,14 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cat /proc/net/arp
-</span></span><span class="line"><span class="cl">./arp_get enp0s3 192.168.2.112
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat /proc/net/arp
+</span></span><span class="line"><span class="cl">./arp-get enp0s3 192.168.2.112
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
 <p>运行截屏</p>
-<p><img src="/images/180014/screenshot_arp_get.png" alt="screenshot of arp_get"></p>
+<p><img src="https://whowin.gitee.io/images/180014/screenshot_arp_get.png" alt="screenshot of arp_get"></p>
 </li>
 </ul>
 <hr>
@@ -627,86 +411,8 @@
 <p>如果你对宏str(s)和xstr(s)的用法不熟悉，可以参考<a href="https://www.includehelp.com/c/stringize-operator-in-c.aspx">《Stringizing Operator (#) in C》</a></p>
 </li>
 <li>
-<p>文件名：arp_get_all.c</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#define xstr(s) str(s)
-</span></span><span class="line"><span class="cl">#define str(s) #s
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#define ARP_CACHE_FILE      &#34;/proc/net/arp&#34;
-</span></span><span class="line"><span class="cl">#define ARP_STRING_LEN      1023
-</span></span><span class="line"><span class="cl">#define ARP_BUFFER_LEN      (ARP_STRING_LEN + 1)
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">/* Format for fscanf() to read the 1st, 4th, and 6th space-delimited fields */
-</span></span><span class="line"><span class="cl">#define ARP_LINE_FORMAT     &#34;%&#34; xstr(ARP_STRING_LEN) &#34;s %*s %*s &#34; \
-</span></span><span class="line"><span class="cl">                            &#34;%&#34; xstr(ARP_STRING_LEN) &#34;s %*s &#34; \
-</span></span><span class="line"><span class="cl">                            &#34;%&#34; xstr(ARP_STRING_LEN) &#34;s&#34;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main() {
-</span></span><span class="line"><span class="cl">    FILE *arp_cache = fopen(ARP_CACHE_FILE, &#34;r&#34;);
-</span></span><span class="line"><span class="cl">    if (!arp_cache) {
-</span></span><span class="line"><span class="cl">        perror(&#34;Arp Cache: Failed to open file \&#34;&#34; ARP_CACHE_FILE &#34;\&#34;&#34;);
-</span></span><span class="line"><span class="cl">        return 1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Ignore the first line, which contains the header
-</span></span><span class="line"><span class="cl">    char header[ARP_BUFFER_LEN];
-</span></span><span class="line"><span class="cl">    if (!fgets(header, sizeof(header), arp_cache)) {
-</span></span><span class="line"><span class="cl">        return 1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    char ip_addr[ARP_BUFFER_LEN], hw_addr[ARP_BUFFER_LEN], device[ARP_BUFFER_LEN];
-</span></span><span class="line"><span class="cl">    int count = 0;
-</span></span><span class="line"><span class="cl">    while (3 == fscanf(arp_cache, ARP_LINE_FORMAT, ip_addr, hw_addr, device)) {
-</span></span><span class="line"><span class="cl">        printf(&#34;%03d: Mac Address of [%s] on [%s] is \&#34;%s\&#34;\n&#34;,
-</span></span><span class="line"><span class="cl">                ++count, ip_addr, device, hw_addr);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    fclose(arp_cache);
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<p>文件名：<a href="/sourcecodes/180014/arp-get-all.c">arp-get-all.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
 <li>
 <p>文件/proc/net/arp中有6个字段，本程序只读出了其中的3个：IP地址、设备名称和MAC地址，如果需要，可以修改程序读出全部字段；</p>
 </li>
@@ -717,7 +423,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gcc -Wall arp_get_all.c -o arp_get_all
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall arp-get-all.c -o arp-get-all
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -728,13 +434,13 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">./arp_get_all
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./arp-get-all
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
 <p>运行截图</p>
-<p><img src="/images/180014/screenshot_of_arp_get_all.png" alt="screenshot of arp_get_all"></p>
+<p><img src="https://whowin.gitee.io/images/180014/screenshot_of_arp_get_all.png" alt="screenshot of arp_get_all"></p>
 </li>
 </ul>
 <hr>
@@ -747,7 +453,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">arp_req.arp_flags = ATF_PERM | ATF_COM;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">arp_req</span><span class="p">.</span><span class="n">arp_flags</span> <span class="o">=</span> <span class="n">ATF_PERM</span> <span class="o">|</span> <span class="n">ATF_COM</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -761,274 +467,8 @@
 <p>当需要添加一条动态记录时，arp_flags = ATF_COM即可，当需要添加一条静态记录时，要设置arp_flags = ATF_COM | ATF_PERM</p>
 </li>
 <li>
-<p>文件名：arp_set.c</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">  1
-</span><span class="lnt">  2
-</span><span class="lnt">  3
-</span><span class="lnt">  4
-</span><span class="lnt">  5
-</span><span class="lnt">  6
-</span><span class="lnt">  7
-</span><span class="lnt">  8
-</span><span class="lnt">  9
-</span><span class="lnt"> 10
-</span><span class="lnt"> 11
-</span><span class="lnt"> 12
-</span><span class="lnt"> 13
-</span><span class="lnt"> 14
-</span><span class="lnt"> 15
-</span><span class="lnt"> 16
-</span><span class="lnt"> 17
-</span><span class="lnt"> 18
-</span><span class="lnt"> 19
-</span><span class="lnt"> 20
-</span><span class="lnt"> 21
-</span><span class="lnt"> 22
-</span><span class="lnt"> 23
-</span><span class="lnt"> 24
-</span><span class="lnt"> 25
-</span><span class="lnt"> 26
-</span><span class="lnt"> 27
-</span><span class="lnt"> 28
-</span><span class="lnt"> 29
-</span><span class="lnt"> 30
-</span><span class="lnt"> 31
-</span><span class="lnt"> 32
-</span><span class="lnt"> 33
-</span><span class="lnt"> 34
-</span><span class="lnt"> 35
-</span><span class="lnt"> 36
-</span><span class="lnt"> 37
-</span><span class="lnt"> 38
-</span><span class="lnt"> 39
-</span><span class="lnt"> 40
-</span><span class="lnt"> 41
-</span><span class="lnt"> 42
-</span><span class="lnt"> 43
-</span><span class="lnt"> 44
-</span><span class="lnt"> 45
-</span><span class="lnt"> 46
-</span><span class="lnt"> 47
-</span><span class="lnt"> 48
-</span><span class="lnt"> 49
-</span><span class="lnt"> 50
-</span><span class="lnt"> 51
-</span><span class="lnt"> 52
-</span><span class="lnt"> 53
-</span><span class="lnt"> 54
-</span><span class="lnt"> 55
-</span><span class="lnt"> 56
-</span><span class="lnt"> 57
-</span><span class="lnt"> 58
-</span><span class="lnt"> 59
-</span><span class="lnt"> 60
-</span><span class="lnt"> 61
-</span><span class="lnt"> 62
-</span><span class="lnt"> 63
-</span><span class="lnt"> 64
-</span><span class="lnt"> 65
-</span><span class="lnt"> 66
-</span><span class="lnt"> 67
-</span><span class="lnt"> 68
-</span><span class="lnt"> 69
-</span><span class="lnt"> 70
-</span><span class="lnt"> 71
-</span><span class="lnt"> 72
-</span><span class="lnt"> 73
-</span><span class="lnt"> 74
-</span><span class="lnt"> 75
-</span><span class="lnt"> 76
-</span><span class="lnt"> 77
-</span><span class="lnt"> 78
-</span><span class="lnt"> 79
-</span><span class="lnt"> 80
-</span><span class="lnt"> 81
-</span><span class="lnt"> 82
-</span><span class="lnt"> 83
-</span><span class="lnt"> 84
-</span><span class="lnt"> 85
-</span><span class="lnt"> 86
-</span><span class="lnt"> 87
-</span><span class="lnt"> 88
-</span><span class="lnt"> 89
-</span><span class="lnt"> 90
-</span><span class="lnt"> 91
-</span><span class="lnt"> 92
-</span><span class="lnt"> 93
-</span><span class="lnt"> 94
-</span><span class="lnt"> 95
-</span><span class="lnt"> 96
-</span><span class="lnt"> 97
-</span><span class="lnt"> 98
-</span><span class="lnt"> 99
-</span><span class="lnt">100
-</span><span class="lnt">101
-</span><span class="lnt">102
-</span><span class="lnt">103
-</span><span class="lnt">104
-</span><span class="lnt">105
-</span><span class="lnt">106
-</span><span class="lnt">107
-</span><span class="lnt">108
-</span><span class="lnt">109
-</span><span class="lnt">110
-</span><span class="lnt">111
-</span><span class="lnt">112
-</span><span class="lnt">113
-</span><span class="lnt">114
-</span><span class="lnt">115
-</span><span class="lnt">116
-</span><span class="lnt">117
-</span><span class="lnt">118
-</span><span class="lnt">119
-</span><span class="lnt">120
-</span><span class="lnt">121
-</span><span class="lnt">122
-</span><span class="lnt">123
-</span><span class="lnt">124
-</span><span class="lnt">125
-</span><span class="lnt">126
-</span><span class="lnt">127
-</span><span class="lnt">128
-</span><span class="lnt">129
-</span><span class="lnt">130
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;errno.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;net/if.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;netinet/if_ether.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;net/if_arp.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;sys/ioctl.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/types.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;netinet/in.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#define TRUE        1
-</span></span><span class="line"><span class="cl">#define FALSE       0
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">// Check if the IP address is valid
-</span></span><span class="line"><span class="cl">int valid_ip(char *p) {
-</span></span><span class="line"><span class="cl">    int i, j = strlen(p);
-</span></span><span class="line"><span class="cl">    char *p1;
-</span></span><span class="line"><span class="cl">    int n = 0;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (j &gt; 15 || j &lt; 7) return FALSE;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    p1 = p;
-</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; j; ++i) {
-</span></span><span class="line"><span class="cl">        if ((p[i] &lt; &#39;0&#39; || p[i] &gt; &#39;9&#39;) &amp;&amp; p[i] != &#39;.&#39;) return FALSE;
-</span></span><span class="line"><span class="cl">        if (p[i] == &#39;.&#39;) {
-</span></span><span class="line"><span class="cl">            ++n;
-</span></span><span class="line"><span class="cl">            if (atoi(p1) &gt; 255 || *p1 == &#39;.&#39;) return FALSE;
-</span></span><span class="line"><span class="cl">            p1 = p + i + 1;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    if (n != 3 || p1 == p + j) return FALSE;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    return TRUE;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int valid_mac(char *macaddr, unsigned char *mac) {
-</span></span><span class="line"><span class="cl">    int i;
-</span></span><span class="line"><span class="cl">    unsigned int hex_int;
-</span></span><span class="line"><span class="cl">    char *s;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    i = 0;
-</span></span><span class="line"><span class="cl">    while ((s = strsep(&amp;macaddr, &#34;:&#34;)) != NULL) {
-</span></span><span class="line"><span class="cl">        if (i &gt;= ETH_ALEN) return FALSE;
-</span></span><span class="line"><span class="cl">        if (sscanf(s, &#34;%x&#34;, &amp;hex_int) != 1 || hex_int &gt; 0xff)
-</span></span><span class="line"><span class="cl">            return FALSE;
-</span></span><span class="line"><span class="cl">        *(mac + i) = (unsigned char)hex_int;
-</span></span><span class="line"><span class="cl">        i++;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    return TRUE;
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main(int argc, char *argv[]) {
-</span></span><span class="line"><span class="cl">    int sockfd;
-</span></span><span class="line"><span class="cl">    struct arpreq arp_req;
-</span></span><span class="line"><span class="cl">    struct sockaddr_in *sin;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (argc != 4) {
-</span></span><span class="line"><span class="cl">        fprintf(stderr,
-</span></span><span class="line"><span class="cl">        &#34;Usage: %s [interface name] [dst IP] [dst MAC]\n&#34;, argv[0]);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Interface name
-</span></span><span class="line"><span class="cl">    char ifname[IF_NAMESIZE] = {&#39;\0&#39;};
-</span></span><span class="line"><span class="cl">    strncpy(ifname, argv[1], IF_NAMESIZE - 1);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // IP address
-</span></span><span class="line"><span class="cl">    char ipaddr[INET_ADDRSTRLEN] = {&#39;\0&#39;};
-</span></span><span class="line"><span class="cl">    strncpy(ipaddr, argv[2], INET_ADDRSTRLEN);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Check if the IP address is valid
-</span></span><span class="line"><span class="cl">    if (!valid_ip(ipaddr)) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Invalid IP address: %s\n&#34;, ipaddr);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // MAC address
-</span></span><span class="line"><span class="cl">    if (strlen(argv[3]) &lt; 11) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Wrong MAC address: %s\n&#34;, argv[3]);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    char *macaddr = (char *)malloc(strlen(argv[3]) + 1);
-</span></span><span class="line"><span class="cl">    memcpy(macaddr, argv[3], strlen(argv[3]));
-</span></span><span class="line"><span class="cl">    macaddr[strlen(argv[3])] = &#39;\0&#39;;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // clear struct arpreq
-</span></span><span class="line"><span class="cl">    memset(&amp;arp_req, 0, sizeof(arp_req));
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Check if MAC address is valid
-</span></span><span class="line"><span class="cl">    if (!valid_mac(macaddr, (unsigned char *)arp_req.arp_ha.sa_data)) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Invalid MAC address: %s\n&#34;, macaddr);
-</span></span><span class="line"><span class="cl">        free(macaddr);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    free(macaddr);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Fill the fields in struct arpreq
-</span></span><span class="line"><span class="cl">    sin = (struct sockaddr_in *)&amp;(arp_req.arp_pa);
-</span></span><span class="line"><span class="cl">    sin-&gt;sin_family = AF_INET;
-</span></span><span class="line"><span class="cl">    inet_pton(AF_INET, ipaddr, &amp;(sin-&gt;sin_addr));
-</span></span><span class="line"><span class="cl">    strncpy(arp_req.arp_dev, ifname, IF_NAMESIZE - 1);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    arp_req.arp_flags = ATF_PERM | ATF_COM;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Create socket
-</span></span><span class="line"><span class="cl">    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) &lt; 0) {
-</span></span><span class="line"><span class="cl">        perror(&#34;Socket creation failed...&#34;);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Set an entry in arp cache
-</span></span><span class="line"><span class="cl">    if (ioctl(sockfd, SIOCSARP, &amp;arp_req) &lt; 0) {
-</span></span><span class="line"><span class="cl">        perror(&#34;Set arp entry failed: &#34;);
-</span></span><span class="line"><span class="cl">        close(sockfd);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    printf(&#34;Setting an arp entry done.\n&#34;);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    close(sockfd);
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<p>文件名：<a href="/sourcecodes/180014/arp-set.c">arp-set.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
 <li>
 <p>编译</p>
 <div class="highlight"><div class="chroma">
@@ -1036,7 +476,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gcc -Wall arp_set.c -o arp_set
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall arp-set.c -o arp-set
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -1049,15 +489,15 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">arp -ae
-</span></span><span class="line"><span class="cl">sudo ./arp_set enp0s3 192.168.2.118 85:3b:4c:36:41:f5
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">arp -ae
+</span></span><span class="line"><span class="cl">sudo ./arp-set enp0s3 192.168.2.118 85:3b:4c:36:41:f5
 </span></span><span class="line"><span class="cl">arp -ae
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
 <p>运行截图</p>
-<p><img src="/images/180014/screenshot_of_arp_set.png" alt="screenshot of arp_set"></p>
+<p><img src="https://whowin.gitee.io/images/180014/screenshot_of_arp_set.png" alt="screenshot of arp_set"></p>
 </li>
 </ul>
 <hr>
@@ -1070,190 +510,8 @@
 <p>arp cache实际上是以[IP address]为键值的，所以，删除时只需要知道设备名称和IP地址即可；</p>
 </li>
 <li>
-<p>文件名：arp_del.c</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span><span class="lnt">54
-</span><span class="lnt">55
-</span><span class="lnt">56
-</span><span class="lnt">57
-</span><span class="lnt">58
-</span><span class="lnt">59
-</span><span class="lnt">60
-</span><span class="lnt">61
-</span><span class="lnt">62
-</span><span class="lnt">63
-</span><span class="lnt">64
-</span><span class="lnt">65
-</span><span class="lnt">66
-</span><span class="lnt">67
-</span><span class="lnt">68
-</span><span class="lnt">69
-</span><span class="lnt">70
-</span><span class="lnt">71
-</span><span class="lnt">72
-</span><span class="lnt">73
-</span><span class="lnt">74
-</span><span class="lnt">75
-</span><span class="lnt">76
-</span><span class="lnt">77
-</span><span class="lnt">78
-</span><span class="lnt">79
-</span><span class="lnt">80
-</span><span class="lnt">81
-</span><span class="lnt">82
-</span><span class="lnt">83
-</span><span class="lnt">84
-</span><span class="lnt">85
-</span><span class="lnt">86
-</span><span class="lnt">87
-</span><span class="lnt">88
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;errno.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;net/if.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;net/if_arp.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;sys/ioctl.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/types.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;netinet/in.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#define TRUE        1
-</span></span><span class="line"><span class="cl">#define FALSE       0
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">// Check if the IP address is valid
-</span></span><span class="line"><span class="cl">int valid_ip(char *p) {
-</span></span><span class="line"><span class="cl">    int i, j = strlen(p);
-</span></span><span class="line"><span class="cl">    char *p1;
-</span></span><span class="line"><span class="cl">    int n = 0;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (j &gt; 15 || j &lt; 7) return FALSE;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    p1 = p;
-</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; j; ++i) {
-</span></span><span class="line"><span class="cl">        if ((p[i] &lt; &#39;0&#39; || p[i] &gt; &#39;9&#39;) &amp;&amp; p[i] != &#39;.&#39;) return FALSE;
-</span></span><span class="line"><span class="cl">        if (p[i] == &#39;.&#39;) {
-</span></span><span class="line"><span class="cl">            ++n;
-</span></span><span class="line"><span class="cl">            if (atoi(p1) &gt; 255 || *p1 == &#39;.&#39;) return FALSE;
-</span></span><span class="line"><span class="cl">            p1 = p + i + 1;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    if (n != 3 || p1 == p + j) return FALSE;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    return TRUE;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main(int argc, char *argv[]) {
-</span></span><span class="line"><span class="cl">    // Check arguments
-</span></span><span class="line"><span class="cl">    if (argc != 3) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Usage: %s [interface name] [dst IP]\n&#34;, argv[0]);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Interface name
-</span></span><span class="line"><span class="cl">    char ifname[IF_NAMESIZE] = {&#39;\0&#39;};
-</span></span><span class="line"><span class="cl">    strncpy(ifname, argv[1], IF_NAMESIZE - 1);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // IP address
-</span></span><span class="line"><span class="cl">    char ipaddr[INET_ADDRSTRLEN] = {&#39;\0&#39;};
-</span></span><span class="line"><span class="cl">    strncpy(ipaddr, argv[2], INET_ADDRSTRLEN);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Check if the IP address is valid
-</span></span><span class="line"><span class="cl">    if (!valid_ip(ipaddr)) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Invalid IP address: %s\n&#34;, ipaddr);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    int sockfd;
-</span></span><span class="line"><span class="cl">    struct arpreq arp_req;
-</span></span><span class="line"><span class="cl">    struct sockaddr_in *sin;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // initialize struct arpreq
-</span></span><span class="line"><span class="cl">    memset(&amp;arp_req, 0, sizeof(arp_req));
-</span></span><span class="line"><span class="cl">    sin = (struct sockaddr_in *)&amp;(arp_req.arp_pa);
-</span></span><span class="line"><span class="cl">    sin-&gt;sin_family = AF_INET;
-</span></span><span class="line"><span class="cl">    strncpy(arp_req.arp_dev, ifname, IF_NAMESIZE - 1);
-</span></span><span class="line"><span class="cl">    inet_pton(AF_INET, ipaddr, &amp;(sin-&gt;sin_addr));
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Create socket
-</span></span><span class="line"><span class="cl">    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // deleting an arp entry via ioctl
-</span></span><span class="line"><span class="cl">    if (ioctl(sockfd, SIOCDARP, &amp;arp_req) &lt; 0) {
-</span></span><span class="line"><span class="cl">        perror(&#34;Deleting arp entry failed: &#34;);
-</span></span><span class="line"><span class="cl">        close(sockfd);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    printf(&#34;Deleting an arp entry done.\n&#34;);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    close(sockfd);
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<p>文件名：<a href="/sourcecodes/180014/arp-del.c">arp-del.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
 <li>
 <p>编译</p>
 <div class="highlight"><div class="chroma">
@@ -1261,7 +519,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gcc -Wall arp_del.c -o arp_del
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall arp-del.c -o arp-del
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -1274,21 +532,21 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">arp -ae
-</span></span><span class="line"><span class="cl">sudo ./arp_del enp0s3 192.168.2.118
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">arp -ae
+</span></span><span class="line"><span class="cl">sudo ./arp-del enp0s3 192.168.2.118
 </span></span><span class="line"><span class="cl">arp -ae
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
 <p>运行截屏</p>
-<p><img src="/images/180014/screenshot_of_arp_del.png" alt="screenshot of arp_del"></p>
+<p><img src="https://whowin.gitee.io/images/180014/screenshot_of_arp_del.png" alt="screenshot of arp_del"></p>
 </li>
 </ul>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">

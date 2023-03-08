@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="whowin" /><meta name="description" content="使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。
+<meta name="author" content="whowin" /><meta name="description" content="使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法：从proc文件从系统获取ipv6地址、使用getifaddrs()函数获取ipv6地址和使用netlink获取ipv6地址，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。
 " /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
@@ -41,19 +41,19 @@
 
 
 <meta property="og:title" content="C语言如何获取ipv6地址" />
-<meta property="og:description" content="使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。" />
+<meta property="og:description" content="使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法：从proc文件从系统获取ipv6地址、使用getifaddrs()函数获取ipv6地址和使用netlink获取ipv6地址，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0001-how-to-get-ipv6-in-c/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2022-10-16T16:43:29+08:00" />
 <meta property="article:modified_time" content="2022-10-16T16:43:29+08:00" />
 
 <meta itemprop="name" content="C语言如何获取ipv6地址">
-<meta itemprop="description" content="使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。"><meta itemprop="datePublished" content="2022-10-16T16:43:29+08:00" />
+<meta itemprop="description" content="使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法：从proc文件从系统获取ipv6地址、使用getifaddrs()函数获取ipv6地址和使用netlink获取ipv6地址，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。"><meta itemprop="datePublished" content="2022-10-16T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-10-16T16:43:29+08:00" />
-<meta itemprop="wordCount" content="3580">
+<meta itemprop="wordCount" content="3619">
 <meta itemprop="keywords" content="C语言,ipv6,Network Programming,网络编程," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="C语言如何获取ipv6地址"/>
-<meta name="twitter:description" content="使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。"/>
+<meta name="twitter:description" content="使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法：从proc文件从系统获取ipv6地址、使用getifaddrs()函数获取ipv6地址和使用netlink获取ipv6地址，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -170,7 +170,7 @@
   </div>
 </div>
     <div class="post-content">
-      <p>使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。</p>
+      <p>使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法：从proc文件从系统获取ipv6地址、使用getifaddrs()函数获取ipv6地址和使用netlink获取ipv6地址，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。</p>
 <h2 id="1-ipv4的ip地址的获取方法">1. ipv4的IP地址的获取方法</h2>
 <ul>
 <li>
@@ -212,36 +212,36 @@
 </span><span class="lnt">30
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/ioctl.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/if.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">sockfd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">ifconf</span> <span class="n">ifc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">512</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">ifreq</span> <span class="o">*</span><span class="n">ifr</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;sys/ioctl.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/if.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
+</span></span><span class="line"><span class="cl">    <span class="n">ifc</span><span class="p">.</span><span class="n">ifc_len</span> <span class="o">=</span> <span class="mi">512</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ifc</span><span class="p">.</span><span class="n">ifc_buf</span> <span class="o">=</span> <span class="n">buf</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main() {
-</span></span><span class="line"><span class="cl">    int i = 0;
-</span></span><span class="line"><span class="cl">    int sockfd;
-</span></span><span class="line"><span class="cl">    struct ifconf ifc;
-</span></span><span class="line"><span class="cl">    char buf[512] = {0};
-</span></span><span class="line"><span class="cl">    struct ifreq *ifr;
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">((</span><span class="n">sockfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">perror</span><span class="p">(</span><span class="s">&#34;socket&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ioctl</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">SIOCGIFCONF</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ifc</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ifr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">ifreq</span><span class="o">*</span><span class="p">)</span><span class="n">buf</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    ifc.ifc_len = 512;
-</span></span><span class="line"><span class="cl">    ifc.ifc_buf = buf;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) &lt; 0) {
-</span></span><span class="line"><span class="cl">        perror(&#34;socket&#34;);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    ioctl(sockfd, SIOCGIFCONF, &amp;ifc);
-</span></span><span class="line"><span class="cl">    ifr = (struct ifreq*)buf;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    for (i = (ifc.ifc_len /sizeof(struct ifreq)); i &gt; 0; i--) {
-</span></span><span class="line"><span class="cl">        printf(&#34;%s: %s\n&#34;,ifr-&gt;ifr_name, inet_ntoa(((struct sockaddr_in *)&amp;(ifr-&gt;ifr_addr))-&gt;sin_addr));
-</span></span><span class="line"><span class="cl">        ifr++;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">ifc</span><span class="p">.</span><span class="n">ifc_len</span> <span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ifreq</span><span class="p">));</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="n">ifr</span><span class="o">-&gt;</span><span class="n">ifr_name</span><span class="p">,</span> <span class="n">inet_ntoa</span><span class="p">(((</span><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">ifr</span><span class="o">-&gt;</span><span class="n">ifr_addr</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ifr</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -289,53 +289,51 @@
 </span><span class="lnt">38
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/ioctl.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/if.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">sockfd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">ifconf</span> <span class="n">ifc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1024</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">ifreq</span> <span class="o">*</span><span class="n">ifr</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;sys/ioctl.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/if.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
+</span></span><span class="line"><span class="cl">    <span class="n">ifc</span><span class="p">.</span><span class="n">ifc_len</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ifc</span><span class="p">.</span><span class="n">ifc_buf</span> <span class="o">=</span> <span class="n">buf</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main() {
-</span></span><span class="line"><span class="cl">    int i = 0;
-</span></span><span class="line"><span class="cl">    int sockfd;
-</span></span><span class="line"><span class="cl">    struct ifconf ifc;
-</span></span><span class="line"><span class="cl">    char buf[1024] = {0};
-</span></span><span class="line"><span class="cl">    struct ifreq *ifr;
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">((</span><span class="n">sockfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET6</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">perror</span><span class="p">(</span><span class="s">&#34;socket&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ioctl</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">SIOCGIFCONF</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ifc</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ifr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">ifreq</span><span class="o">*</span><span class="p">)</span><span class="n">buf</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    ifc.ifc_len = 1024;
-</span></span><span class="line"><span class="cl">    ifc.ifc_buf = buf;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if ((sockfd = socket(AF_INET6, SOCK_DGRAM, 0)) &lt; 0) {
-</span></span><span class="line"><span class="cl">        perror(&#34;socket&#34;);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    ioctl(sockfd, SIOCGIFCONF, &amp;ifc);
-</span></span><span class="line"><span class="cl">    ifr = (struct ifreq*)buf;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    struct sockaddr_in *sa;
-</span></span><span class="line"><span class="cl">    for (i = (ifc.ifc_len /sizeof(struct ifreq)); i &gt; 0; i--) {
-</span></span><span class="line"><span class="cl">        sa = (struct sockaddr_in *)&amp;(ifr-&gt;ifr_addr);
-</span></span><span class="line"><span class="cl">        if (sa-&gt;sin_family == AF_INET6) {
-</span></span><span class="line"><span class="cl">            printf(&#34;%s: AF_INET6\n&#34;, ifr-&gt;ifr_name);
-</span></span><span class="line"><span class="cl">        } else if (sa-&gt;sin_family == AF_INET){
-</span></span><span class="line"><span class="cl">            printf(&#34;%s: AF_INET\n&#34;, ifr-&gt;ifr_name);
-</span></span><span class="line"><span class="cl">        } else {
-</span></span><span class="line"><span class="cl">            printf(&#34;%s: %d.  It is an unknown address family.\n&#34;, ifr-&gt;ifr_name, sa-&gt;sin_family);
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">        ifr++;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="o">*</span><span class="n">sa</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">ifc</span><span class="p">.</span><span class="n">ifc_len</span> <span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ifreq</span><span class="p">));</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sa</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">ifr</span><span class="o">-&gt;</span><span class="n">ifr_addr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">sa</span><span class="o">-&gt;</span><span class="n">sin_family</span> <span class="o">==</span> <span class="n">AF_INET6</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: AF_INET6</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ifr</span><span class="o">-&gt;</span><span class="n">ifr_name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">sa</span><span class="o">-&gt;</span><span class="n">sin_family</span> <span class="o">==</span> <span class="n">AF_INET</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: AF_INET</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ifr</span><span class="o">-&gt;</span><span class="n">ifr_name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: %d.  It is an unknown address family.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ifr</span><span class="o">-&gt;</span><span class="n">ifr_name</span><span class="p">,</span> <span class="n">sa</span><span class="o">-&gt;</span><span class="n">sin_family</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ifr</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
 <p>这段程序在我的机器上的运行结果是这样的：</p>
-<p><img src="/images/180001/ipv6_ioctl.png" alt="ioctl无法获取ipv6地址"></p>
-<ul>
-<li><strong>图1：ioctl无法获取ipv6地址</strong></li>
-</ul>
+<p><img src="https://whowin.gitee.io/images/180001/ipv6_ioctl.png" alt="ioctl无法获取ipv6地址"></p>
+  <center><b>图1：ioctl无法获取ipv6地址</b></center>
 </li>
 </ul>
 <hr>
@@ -346,10 +344,8 @@
 <ul>
 <li>
 <p>我们先来看看文件/proc/net/if_inet6中有什么内容</p>
-<p><img src="/images/180001/file_if_inet6.png" alt="文件/proc/net/if_inet6内容"></p>
-<ul>
-<li><strong>图2：文件/proc/net/if_inet6内容</strong></li>
-</ul>
+<p><img src="https://whowin.gitee.io/images/180001/file_if_inet6.png" alt="文件/proc/net/if_inet6内容"></p>
+  <center><b>图2：文件/proc/net/if_inet6内容</b></center>
 </li>
 </ul>
 <hr>
@@ -434,36 +430,36 @@
 </span><span class="lnt">30
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/if.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;netinet/in.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/if.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;netinet/in.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">scope</span><span class="p">,</span> <span class="n">prefix</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">_ipv6</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">dname</span><span class="p">[</span><span class="n">IFNAMSIZ</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">address</span><span class="p">[</span><span class="n">INET6_ADDRSTRLEN</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main(void) {
-</span></span><span class="line"><span class="cl">    FILE *f;
-</span></span><span class="line"><span class="cl">    int scope, prefix;
-</span></span><span class="line"><span class="cl">    unsigned char _ipv6[16];
-</span></span><span class="line"><span class="cl">    char dname[IFNAMSIZ];
-</span></span><span class="line"><span class="cl">    char address[INET6_ADDRSTRLEN];
+</span></span><span class="line"><span class="cl">    <span class="n">f</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s">&#34;/proc/net/if_inet6&#34;</span><span class="p">,</span> <span class="s">&#34;r&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">f</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="mi">19</span> <span class="o">==</span> <span class="n">fscanf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="s">&#34; %2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx %*x %x %x %*x %s&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">                        <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">12</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">14</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">15</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">                        <span class="o">&amp;</span><span class="n">prefix</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">scope</span><span class="p">,</span> <span class="n">dname</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">inet_ntop</span><span class="p">(</span><span class="n">AF_INET6</span><span class="p">,</span> <span class="n">_ipv6</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">address</span><span class="p">))</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">dname</span><span class="p">,</span> <span class="n">address</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fclose</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    f = fopen(&#34;/proc/net/if_inet6&#34;, &#34;r&#34;);
-</span></span><span class="line"><span class="cl">    if (f == NULL) {
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    while (19 == fscanf(f,
-</span></span><span class="line"><span class="cl">                        &#34; %2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx %*x %x %x %*x %s&#34;,
-</span></span><span class="line"><span class="cl">                        &amp;_ipv6[0], &amp;_ipv6[1], &amp;_ipv6[2], &amp;_ipv6[3], &amp;_ipv6[4], &amp;_ipv6[5], &amp;_ipv6[6], &amp;_ipv6[7],
-</span></span><span class="line"><span class="cl">                        &amp;_ipv6[8], &amp;_ipv6[9], &amp;_ipv6[10], &amp;_ipv6[11], &amp;_ipv6[12], &amp;_ipv6[13], &amp;_ipv6[14], &amp;_ipv6[15],
-</span></span><span class="line"><span class="cl">                        &amp;prefix, &amp;scope, dname)) {
-</span></span><span class="line"><span class="cl">        if (inet_ntop(AF_INET6, _ipv6, address, sizeof(address)) == NULL) {
-</span></span><span class="line"><span class="cl">            continue;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">        printf(&#34;%s: %s\n&#34;, dname, address);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    fclose(f);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -482,7 +478,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="nf">inet_ntop</span><span class="p">(</span><span class="kt">int</span> <span class="n">af</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">src</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">dst</span><span class="p">,</span> <span class="n">socklen_t</span> <span class="n">size</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -495,7 +491,7 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">AF_INET6
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">AF_INET6
 </span></span><span class="line"><span class="cl">    src  points  to  a struct in6_addr (in network byte order) which is converted to a representation of
 </span></span><span class="line"><span class="cl">    this address in the most appropriate IPv6 network address format for this address.  The  buffer  dst
 </span></span><span class="line"><span class="cl">    must be at least INET6_ADDRSTRLEN bytes long.
@@ -522,21 +518,21 @@
 </span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">/* IPv6 address */
-</span></span><span class="line"><span class="cl">struct in6_addr
-</span></span><span class="line"><span class="cl">{
-</span></span><span class="line"><span class="cl">    union
-</span></span><span class="line"><span class="cl">    {
-</span></span><span class="line"><span class="cl">        uint8_t  __u6_addr8[16];
-</span></span><span class="line"><span class="cl">        uint16_t __u6_addr16[8];
-</span></span><span class="line"><span class="cl">        uint32_t __u6_addr32[4];
-</span></span><span class="line"><span class="cl">    } __in6_u;
-</span></span><span class="line"><span class="cl">#define s6_addr         __in6_u.__u6_addr8
-</span></span><span class="line"><span class="cl">#ifdef __USE_MISC
-</span></span><span class="line"><span class="cl"># define s6_addr16      __in6_u.__u6_addr16
-</span></span><span class="line"><span class="cl"># define s6_addr32      __in6_u.__u6_addr32
-</span></span><span class="line"><span class="cl">#endif
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cm">/* IPv6 address */</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">in6_addr</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">union</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">uint8_t</span>  <span class="n">__u6_addr8</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">uint16_t</span> <span class="n">__u6_addr16</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">uint32_t</span> <span class="n">__u6_addr32</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">__in6_u</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define s6_addr         __in6_u.__u6_addr8
+</span></span></span><span class="line"><span class="cl"><span class="cp">#ifdef __USE_MISC
+</span></span></span><span class="line"><span class="cl"><span class="cp"># define s6_addr16      __in6_u.__u6_addr16
+</span></span></span><span class="line"><span class="cl"><span class="cp"># define s6_addr32      __in6_u.__u6_addr32
+</span></span></span><span class="line"><span class="cl"><span class="cp">#endif
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -549,9 +545,9 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct in6_addr {
-</span></span><span class="line"><span class="cl">    unsigned char __u6_addr8[16];
-</span></span><span class="line"><span class="cl">}
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">in6_addr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">__u6_addr8</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -574,14 +570,14 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">unsigned char _ipv6[16];
-</span></span><span class="line"><span class="cl">fscanf(f, &#34;%2hhx2hhx&#34;, &amp;_ipv6[0], &amp;_ipv6[1]);
-</span></span><span class="line"><span class="cl">unsigned char *p = _ipv6
-</span></span><span class="line"><span class="cl">f8  e9
-</span></span><span class="line"><span class="cl">-+  -+
-</span></span><span class="line"><span class="cl"> |   |
-</span></span><span class="line"><span class="cl"> |   +------- p + 1
-</span></span><span class="line"><span class="cl"> +----------- p
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">_ipv6</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="n">fscanf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">&#34;%2hhx2hhx&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">_ipv6</span>
+</span></span><span class="line"><span class="cl"><span class="n">f8</span>  <span class="n">e9</span>
+</span></span><span class="line"><span class="cl"><span class="o">-+</span>  <span class="o">-+</span>
+</span></span><span class="line"><span class="cl"> <span class="o">|</span>   <span class="o">|</span>
+</span></span><span class="line"><span class="cl"> <span class="o">|</span>   <span class="o">+-------</span> <span class="n">p</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"> <span class="o">+-----------</span> <span class="n">p</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -598,14 +594,14 @@
 </span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">unsigned int _ipv6[8]
-</span></span><span class="line"><span class="cl">fscanf(f, &#34;%4x&#34;, &amp;_ipv6[0])
-</span></span><span class="line"><span class="cl">unsigned char *p = (unsigned char *)_ipv6
-</span></span><span class="line"><span class="cl">e9  f8
-</span></span><span class="line"><span class="cl">-+  -+
-</span></span><span class="line"><span class="cl"> |   |
-</span></span><span class="line"><span class="cl"> |   +------- p + 1
-</span></span><span class="line"><span class="cl"> +----------- p
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">_ipv6</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">fscanf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s">&#34;%4x&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">_ipv6</span>
+</span></span><span class="line"><span class="cl"><span class="n">e9</span>  <span class="n">f8</span>
+</span></span><span class="line"><span class="cl"><span class="o">-+</span>  <span class="o">-+</span>
+</span></span><span class="line"><span class="cl"> <span class="o">|</span>   <span class="o">|</span>
+</span></span><span class="line"><span class="cl"> <span class="o">|</span>   <span class="o">+-------</span> <span class="n">p</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"> <span class="o">+-----------</span> <span class="n">p</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -634,25 +630,25 @@
 </span><span class="lnt">19
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">unsigned short int _ipv6[8];
-</span></span><span class="line"><span class="cl">int zero_flag = 0;
-</span></span><span class="line"><span class="cl">while (11 == fscanf(f,
-</span></span><span class="line"><span class="cl">                &#34; %4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx %*x %x %x %*x %s&#34;,
-</span></span><span class="line"><span class="cl">                    &amp;_ipv6[0], &amp;_ipv6[1], &amp;_ipv6[2], &amp;_ipv6[3], &amp;_ipv6[4], &amp;_ipv6[5], &amp;_ipv6[6], &amp;_ipv6[7],
-</span></span><span class="line"><span class="cl">                    &amp;prefix, &amp;scope, dname)) {
-</span></span><span class="line"><span class="cl">    printf(&#34;%s: &#34;, dname);
-</span></span><span class="line"><span class="cl">    for (int i = 0; i &lt; 8; ++i) {
-</span></span><span class="line"><span class="cl">        if (_ipv6[i] != 0) {
-</span></span><span class="line"><span class="cl">            if (i) putc(&#39;:&#39;, stdout); 
-</span></span><span class="line"><span class="cl">            printf(&#34;%x&#34;, _ipv6[i]);
-</span></span><span class="line"><span class="cl">            zero_flag = 0;
-</span></span><span class="line"><span class="cl">        } else {
-</span></span><span class="line"><span class="cl">            if (!zero_flag) putc(&#39;:&#39;, stdout);
-</span></span><span class="line"><span class="cl">            zero_flag = 1;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    putc(&#39;\n&#39;, stdout);
-</span></span><span class="line"><span class="cl">}
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">short</span> <span class="kt">int</span> <span class="n">_ipv6</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">zero_flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="mi">11</span> <span class="o">==</span> <span class="n">fscanf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="s">&#34; %4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx %*x %x %x %*x %s&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">&amp;</span><span class="n">prefix</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">scope</span><span class="p">,</span> <span class="n">dname</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: &#34;</span><span class="p">,</span> <span class="n">dname</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">_ipv6</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="n">putc</span><span class="p">(</span><span class="sc">&#39;:&#39;</span><span class="p">,</span> <span class="n">stdout</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%x&#34;</span><span class="p">,</span> <span class="n">_ipv6</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">zero_flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">zero_flag</span><span class="p">)</span> <span class="n">putc</span><span class="p">(</span><span class="sc">&#39;:&#39;</span><span class="p">,</span> <span class="n">stdout</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">zero_flag</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">putc</span><span class="p">(</span><span class="sc">&#39;\n&#39;</span><span class="p">,</span> <span class="n">stdout</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -690,22 +686,22 @@
 </span><span class="lnt">16
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct ifaddrs {
-</span></span><span class="line"><span class="cl">    struct ifaddrs  *ifa_next;    /* Next item in list */
-</span></span><span class="line"><span class="cl">    char            *ifa_name;    /* Name of interface */
-</span></span><span class="line"><span class="cl">    unsigned int     ifa_flags;   /* Flags from SIOCGIFFLAGS */
-</span></span><span class="line"><span class="cl">    struct sockaddr *ifa_addr;    /* Address of interface */
-</span></span><span class="line"><span class="cl">    struct sockaddr *ifa_netmask; /* Netmask of interface */
-</span></span><span class="line"><span class="cl">    union {
-</span></span><span class="line"><span class="cl">        struct sockaddr *ifu_broadaddr;
-</span></span><span class="line"><span class="cl">                        /* Broadcast address of interface */
-</span></span><span class="line"><span class="cl">        struct sockaddr *ifu_dstaddr;
-</span></span><span class="line"><span class="cl">                        /* Point-to-point destination address */
-</span></span><span class="line"><span class="cl">    } ifa_ifu;
-</span></span><span class="line"><span class="cl">#define              ifa_broadaddr ifa_ifu.ifu_broadaddr
-</span></span><span class="line"><span class="cl">#define              ifa_dstaddr   ifa_ifu.ifu_dstaddr
-</span></span><span class="line"><span class="cl">    void            *ifa_data;    /* Address-specific data */
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ifaddrs</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">ifaddrs</span>  <span class="o">*</span><span class="n">ifa_next</span><span class="p">;</span>    <span class="cm">/* Next item in list */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span>            <span class="o">*</span><span class="n">ifa_name</span><span class="p">;</span>    <span class="cm">/* Name of interface */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">int</span>     <span class="n">ifa_flags</span><span class="p">;</span>   <span class="cm">/* Flags from SIOCGIFFLAGS */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">ifa_addr</span><span class="p">;</span>    <span class="cm">/* Address of interface */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">ifa_netmask</span><span class="p">;</span> <span class="cm">/* Netmask of interface */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">union</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">ifu_broadaddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="cm">/* Broadcast address of interface */</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">ifu_dstaddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                        <span class="cm">/* Point-to-point destination address */</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">ifa_ifu</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define              ifa_broadaddr ifa_ifu.ifu_broadaddr
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define              ifa_dstaddr   ifa_ifu.ifu_dstaddr
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>    <span class="kt">void</span>            <span class="o">*</span><span class="n">ifa_data</span><span class="p">;</span>    <span class="cm">/* Address-specific data */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -722,10 +718,10 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct sockaddr {
-</span></span><span class="line"><span class="cl">    sa_family_t sa_family;
-</span></span><span class="line"><span class="cl">    char        sa_data[14];
-</span></span><span class="line"><span class="cl">}
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sa_family_t</span> <span class="n">sa_family</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span>        <span class="n">sa_data</span><span class="p">[</span><span class="mi">14</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -769,34 +765,34 @@
 </span><span class="lnt">28
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;ifaddrs.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;ifaddrs.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">ifaddrs</span> <span class="o">*</span><span class="n">ifap</span><span class="p">,</span> <span class="o">*</span><span class="n">ifa</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sockaddr_in6</span> <span class="o">*</span><span class="n">sa</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">addr</span><span class="p">[</span><span class="n">INET6_ADDRSTRLEN</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main () {
-</span></span><span class="line"><span class="cl">    struct ifaddrs *ifap, *ifa;
-</span></span><span class="line"><span class="cl">    struct sockaddr_in6 *sa;
-</span></span><span class="line"><span class="cl">    char addr[INET6_ADDRSTRLEN];
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">getifaddrs</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ifap</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">perror</span><span class="p">(</span><span class="s">&#34;getifaddrs&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (getifaddrs(&amp;ifap) == -1) {
-</span></span><span class="line"><span class="cl">        perror(&#34;getifaddrs&#34;);
-</span></span><span class="line"><span class="cl">        exit(1);
-</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">ifa</span> <span class="o">=</span> <span class="n">ifap</span><span class="p">;</span> <span class="n">ifa</span><span class="p">;</span> <span class="n">ifa</span> <span class="o">=</span> <span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_next</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_addr</span> <span class="o">&amp;&amp;</span> <span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_addr</span><span class="o">-&gt;</span><span class="n">sa_family</span> <span class="o">==</span> <span class="n">AF_INET6</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 打印ipv6地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">sa</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in6</span> <span class="o">*</span><span class="p">)</span><span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">inet_ntop</span><span class="p">(</span><span class="n">AF_INET6</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">sa</span><span class="o">-&gt;</span><span class="n">sin6_addr</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="n">INET6_ADDRSTRLEN</span><span class="p">)</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_name</span><span class="p">,</span> <span class="n">addr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    for (ifa = ifap; ifa; ifa = ifa-&gt;ifa_next) {
-</span></span><span class="line"><span class="cl">        if (ifa-&gt;ifa_addr &amp;&amp; ifa-&gt;ifa_addr-&gt;sa_family == AF_INET6) {
-</span></span><span class="line"><span class="cl">            // 打印ipv6地址
-</span></span><span class="line"><span class="cl">            sa = (struct sockaddr_in6 *)ifa-&gt;ifa_addr;
-</span></span><span class="line"><span class="cl">            if (inet_ntop(AF_INET6, (void *)&amp;sa-&gt;sin6_addr, addr, INET6_ADDRSTRLEN) == NULL)
-</span></span><span class="line"><span class="cl">                continue;
-</span></span><span class="line"><span class="cl">            printf(&#34;%s: %s\n&#34;, ifa-&gt;ifa_name, addr);
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    freeifaddrs(ifap);
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="n">freeifaddrs</span><span class="p">(</span><span class="n">ifap</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -843,34 +839,34 @@
 </span><span class="lnt">28
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;ifaddrs.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;ifaddrs.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;netdb.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">ifaddrs</span> <span class="o">*</span><span class="n">ifap</span><span class="p">,</span> <span class="o">*</span><span class="n">ifa</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">addr</span><span class="p">[</span><span class="n">INET6_ADDRSTRLEN</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;netdb.h&gt;
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">getifaddrs</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ifap</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">perror</span><span class="p">(</span><span class="s">&#34;getifaddrs&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main () {
-</span></span><span class="line"><span class="cl">    struct ifaddrs *ifap, *ifa;
-</span></span><span class="line"><span class="cl">    char addr[INET6_ADDRSTRLEN];
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">ifa</span> <span class="o">=</span> <span class="n">ifap</span><span class="p">;</span> <span class="n">ifa</span><span class="p">;</span> <span class="n">ifa</span> <span class="o">=</span> <span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_next</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_addr</span> <span class="o">&amp;&amp;</span> <span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_addr</span><span class="o">-&gt;</span><span class="n">sa_family</span> <span class="o">==</span> <span class="n">AF_INET6</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 打印ipv6地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">getnameinfo</span><span class="p">(</span><span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_addr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in6</span><span class="p">),</span> <span class="n">addr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">addr</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">NI_NUMERICHOST</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">                <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_name</span><span class="p">,</span> <span class="n">addr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if (getifaddrs(&amp;ifap) == -1) {
-</span></span><span class="line"><span class="cl">        perror(&#34;getifaddrs&#34;);
-</span></span><span class="line"><span class="cl">        exit(1);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    for (ifa = ifap; ifa; ifa = ifa-&gt;ifa_next) {
-</span></span><span class="line"><span class="cl">        if (ifa-&gt;ifa_addr &amp;&amp; ifa-&gt;ifa_addr-&gt;sa_family == AF_INET6) {
-</span></span><span class="line"><span class="cl">            // 打印ipv6地址
-</span></span><span class="line"><span class="cl">            if (getnameinfo(ifa-&gt;ifa_addr, sizeof(struct sockaddr_in6), addr, sizeof(addr), NULL, 0, NI_NUMERICHOST))
-</span></span><span class="line"><span class="cl">                continue;
-</span></span><span class="line"><span class="cl">            printf(&#34;%s: %s\n&#34;, ifa-&gt;ifa_name, addr);
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    freeifaddrs(ifap);
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">    <span class="n">freeifaddrs</span><span class="p">(</span><span class="n">ifap</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -882,10 +878,8 @@
 </li>
 <li>
 <p>和上面的例子略有不同的是，使用 getnameinfo 获取的 ipv6 地址的最后会使用 ‘%’ 连接一个网络接口的名称，如下图所示：</p>
-<p><img src="/images/180001/ipv6_getnameinfo.png" alt="使用getnameinfo获取ipv6地址"></p>
-<ul>
-<li><strong>图3：使用getnameinfo获取ipv6地址</strong></li>
-</ul>
+<p><img src="https://whowin.gitee.io/images/180001/ipv6_getnameinfo.png" alt="使用getnameinfo获取ipv6地址"></p>
+  <center><b>图3：使用getnameinfo获取ipv6地址</b></center>
 </li>
 </ul>
 <hr>
@@ -990,98 +984,98 @@
 </span><span class="lnt">92
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;asm/types.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/netlink.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/rtnetlink.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdio.h&gt;
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;asm/types.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/netlink.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/rtnetlink.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">buf1</span><span class="p">[</span><span class="mi">16384</span><span class="p">],</span> <span class="n">buf2</span><span class="p">[</span><span class="mi">16384</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">int main(int argc, char ** argv) {
-</span></span><span class="line"><span class="cl">    char buf1[16384], buf2[16384];
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="n">nlhdr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">ifaddrmsg</span> <span class="n">addrmsg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">msg1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    struct {
-</span></span><span class="line"><span class="cl">        struct nlmsghdr nlhdr;
-</span></span><span class="line"><span class="cl">        struct ifaddrmsg addrmsg;
-</span></span><span class="line"><span class="cl">    } msg1;
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="n">nlhdr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">ifinfomsg</span> <span class="n">infomsg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">msg2</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    struct {
-</span></span><span class="line"><span class="cl">        struct nlmsghdr nlhdr;
-</span></span><span class="line"><span class="cl">        struct ifinfomsg infomsg;
-</span></span><span class="line"><span class="cl">    } msg2;
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="n">retmsg1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="n">retmsg2</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    struct nlmsghdr *retmsg1;
-</span></span><span class="line"><span class="cl">    struct nlmsghdr *retmsg2;
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">len1</span><span class="p">,</span> <span class="n">len2</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    int len1, len2;
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">rtattr</span> <span class="o">*</span><span class="n">retrta1</span><span class="p">,</span> <span class="o">*</span><span class="n">retrta2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">attlen1</span><span class="p">,</span> <span class="n">attlen2</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    struct rtattr *retrta1, *retrta2;
-</span></span><span class="line"><span class="cl">    int attlen1, attlen2;
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">pradd</span><span class="p">[</span><span class="mi">128</span><span class="p">],</span> <span class="n">prname</span><span class="p">[</span><span class="mi">128</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    char pradd[128], prname[128];
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_NETLINK</span><span class="p">,</span> <span class="n">SOCK_RAW</span><span class="p">,</span> <span class="n">NETLINK_ROUTE</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    int sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+</span></span><span class="line"><span class="cl">    <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">msg1</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">msg1</span><span class="p">.</span><span class="n">nlhdr</span><span class="p">.</span><span class="n">nlmsg_len</span> <span class="o">=</span> <span class="n">NLMSG_LENGTH</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ifaddrmsg</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">msg1</span><span class="p">.</span><span class="n">nlhdr</span><span class="p">.</span><span class="n">nlmsg_flags</span> <span class="o">=</span> <span class="n">NLM_F_REQUEST</span> <span class="o">|</span> <span class="n">NLM_F_ROOT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">msg1</span><span class="p">.</span><span class="n">nlhdr</span><span class="p">.</span><span class="n">nlmsg_type</span> <span class="o">=</span> <span class="n">RTM_GETADDR</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">msg1</span><span class="p">.</span><span class="n">addrmsg</span><span class="p">.</span><span class="n">ifa_family</span> <span class="o">=</span> <span class="n">AF_INET6</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    memset(&amp;msg1, 0, sizeof(msg1));
-</span></span><span class="line"><span class="cl">    msg1.nlhdr.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifaddrmsg));
-</span></span><span class="line"><span class="cl">    msg1.nlhdr.nlmsg_flags = NLM_F_REQUEST | NLM_F_ROOT;
-</span></span><span class="line"><span class="cl">    msg1.nlhdr.nlmsg_type = RTM_GETADDR;
-</span></span><span class="line"><span class="cl">    msg1.addrmsg.ifa_family = AF_INET6;
+</span></span><span class="line"><span class="cl">    <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">msg2</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">msg2</span><span class="p">.</span><span class="n">nlhdr</span><span class="p">.</span><span class="n">nlmsg_len</span> <span class="o">=</span> <span class="n">NLMSG_LENGTH</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ifinfomsg</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">msg2</span><span class="p">.</span><span class="n">nlhdr</span><span class="p">.</span><span class="n">nlmsg_flags</span> <span class="o">=</span> <span class="n">NLM_F_REQUEST</span> <span class="o">|</span> <span class="n">NLM_F_ROOT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">msg2</span><span class="p">.</span><span class="n">nlhdr</span><span class="p">.</span><span class="n">nlmsg_type</span> <span class="o">=</span> <span class="n">RTM_GETLINK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">msg2</span><span class="p">.</span><span class="n">infomsg</span><span class="p">.</span><span class="n">ifi_family</span> <span class="o">=</span> <span class="n">AF_UNSPEC</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    memset(&amp;msg2, 0, sizeof(msg2));
-</span></span><span class="line"><span class="cl">    msg2.nlhdr.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifinfomsg));
-</span></span><span class="line"><span class="cl">    msg2.nlhdr.nlmsg_flags = NLM_F_REQUEST | NLM_F_ROOT;
-</span></span><span class="line"><span class="cl">    msg2.nlhdr.nlmsg_type = RTM_GETLINK;
-</span></span><span class="line"><span class="cl">    msg2.infomsg.ifi_family = AF_UNSPEC;
+</span></span><span class="line"><span class="cl">    <span class="n">send</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">msg1</span><span class="p">,</span> <span class="n">msg1</span><span class="p">.</span><span class="n">nlhdr</span><span class="p">.</span><span class="n">nlmsg_len</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">len1</span> <span class="o">=</span> <span class="n">recv</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">buf1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf1</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">retmsg1</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="p">)</span><span class="n">buf1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    send(sock, &amp;msg1, msg1.nlhdr.nlmsg_len, 0);
-</span></span><span class="line"><span class="cl">    len1 = recv(sock, buf1, sizeof(buf1), 0);
-</span></span><span class="line"><span class="cl">    retmsg1 = (struct nlmsghdr *)buf1;
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="n">NLMSG_OK</span><span class="p">(</span><span class="n">retmsg1</span><span class="p">,</span> <span class="n">len1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">ifaddrmsg</span> <span class="o">*</span><span class="n">retaddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">retaddr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">ifaddrmsg</span> <span class="o">*</span><span class="p">)</span><span class="n">NLMSG_DATA</span><span class="p">(</span><span class="n">retmsg1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">iface_idx</span> <span class="o">=</span> <span class="n">retaddr</span><span class="o">-&gt;</span><span class="n">ifa_index</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    while NLMSG_OK(retmsg1, len1) {
-</span></span><span class="line"><span class="cl">        struct ifaddrmsg *retaddr;
-</span></span><span class="line"><span class="cl">        retaddr = (struct ifaddrmsg *)NLMSG_DATA(retmsg1);
-</span></span><span class="line"><span class="cl">        int iface_idx = retaddr-&gt;ifa_index;
+</span></span><span class="line"><span class="cl">        <span class="n">retrta1</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">rtattr</span> <span class="o">*</span><span class="p">)</span><span class="n">IFA_RTA</span><span class="p">(</span><span class="n">retaddr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">attlen1</span> <span class="o">=</span> <span class="n">IFA_PAYLOAD</span><span class="p">(</span><span class="n">retmsg1</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        retrta1 = (struct rtattr *)IFA_RTA(retaddr);
-</span></span><span class="line"><span class="cl">        attlen1 = IFA_PAYLOAD(retmsg1);
+</span></span><span class="line"><span class="cl">        <span class="k">while</span> <span class="n">RTA_OK</span><span class="p">(</span><span class="n">retrta1</span><span class="p">,</span> <span class="n">attlen1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">retrta1</span><span class="o">-&gt;</span><span class="n">rta_type</span> <span class="o">==</span> <span class="n">IFA_ADDRESS</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">inet_ntop</span><span class="p">(</span><span class="n">AF_INET6</span><span class="p">,</span> <span class="n">RTA_DATA</span><span class="p">(</span><span class="n">retrta1</span><span class="p">),</span> <span class="n">pradd</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">pradd</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        while RTA_OK(retrta1, attlen1) {
-</span></span><span class="line"><span class="cl">            if (retrta1-&gt;rta_type == IFA_ADDRESS) {
-</span></span><span class="line"><span class="cl">                inet_ntop(AF_INET6, RTA_DATA(retrta1), pradd, sizeof(pradd));
+</span></span><span class="line"><span class="cl">                <span class="n">len2</span> <span class="o">=</span> <span class="n">recv</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">buf2</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf2</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">send</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">msg2</span><span class="p">,</span> <span class="n">msg2</span><span class="p">.</span><span class="n">nlhdr</span><span class="p">.</span><span class="n">nlmsg_len</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">len2</span> <span class="o">=</span> <span class="n">recv</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">buf2</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf2</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">retmsg2</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">nlmsghdr</span> <span class="o">*</span><span class="p">)</span><span class="n">buf2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">while</span> <span class="n">NLMSG_OK</span><span class="p">(</span><span class="n">retmsg2</span><span class="p">,</span> <span class="n">len2</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">struct</span> <span class="n">ifinfomsg</span> <span class="o">*</span><span class="n">retinfo</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">retinfo</span> <span class="o">=</span> <span class="n">NLMSG_DATA</span><span class="p">(</span><span class="n">retmsg2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">memset</span><span class="p">(</span><span class="n">prname</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">prname</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="p">(</span><span class="n">retinfo</span><span class="o">-&gt;</span><span class="n">ifi_index</span> <span class="o">==</span> <span class="n">iface_idx</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">retrta2</span> <span class="o">=</span> <span class="n">IFLA_RTA</span><span class="p">(</span><span class="n">retinfo</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">attlen2</span> <span class="o">=</span> <span class="n">IFLA_PAYLOAD</span><span class="p">(</span><span class="n">retmsg2</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">                len2 = recv(sock, buf2, sizeof(buf2), 0);
-</span></span><span class="line"><span class="cl">                send(sock, &amp;msg2, msg2.nlhdr.nlmsg_len, 0);
-</span></span><span class="line"><span class="cl">                len2 = recv(sock, buf2, sizeof(buf2), 0);
-</span></span><span class="line"><span class="cl">                retmsg2 = (struct nlmsghdr *)buf2;
-</span></span><span class="line"><span class="cl">                while NLMSG_OK(retmsg2, len2) {
-</span></span><span class="line"><span class="cl">                    struct ifinfomsg *retinfo;
-</span></span><span class="line"><span class="cl">                    retinfo = NLMSG_DATA(retmsg2);
-</span></span><span class="line"><span class="cl">                    memset(prname, 0, sizeof(prname));
-</span></span><span class="line"><span class="cl">                    if (retinfo-&gt;ifi_index == iface_idx) {
-</span></span><span class="line"><span class="cl">                        retrta2 = IFLA_RTA(retinfo);
-</span></span><span class="line"><span class="cl">                        attlen2 = IFLA_PAYLOAD(retmsg2);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">                        while RTA_OK(retrta2, attlen2) {
-</span></span><span class="line"><span class="cl">                            if (retrta2-&gt;rta_type == IFLA_IFNAME) {
-</span></span><span class="line"><span class="cl">                                strcpy(prname, RTA_DATA(retrta2));
-</span></span><span class="line"><span class="cl">                                break;
-</span></span><span class="line"><span class="cl">                            }
-</span></span><span class="line"><span class="cl">                            retrta2 = RTA_NEXT(retrta2, attlen2);
-</span></span><span class="line"><span class="cl">                        }
-</span></span><span class="line"><span class="cl">                        break;
-</span></span><span class="line"><span class="cl">                    }
-</span></span><span class="line"><span class="cl">                    retmsg2 = NLMSG_NEXT(retmsg2, len2);       
-</span></span><span class="line"><span class="cl">                }
-</span></span><span class="line"><span class="cl">                printf(&#34;%s: %s\n&#34;, prname, pradd);
-</span></span><span class="line"><span class="cl">            }
-</span></span><span class="line"><span class="cl">            retrta1 = RTA_NEXT(retrta1, attlen1);
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">        retmsg1 = NLMSG_NEXT(retmsg1, len1);       
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">                        <span class="k">while</span> <span class="n">RTA_OK</span><span class="p">(</span><span class="n">retrta2</span><span class="p">,</span> <span class="n">attlen2</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                            <span class="k">if</span> <span class="p">(</span><span class="n">retrta2</span><span class="o">-&gt;</span><span class="n">rta_type</span> <span class="o">==</span> <span class="n">IFLA_IFNAME</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                                <span class="n">strcpy</span><span class="p">(</span><span class="n">prname</span><span class="p">,</span> <span class="n">RTA_DATA</span><span class="p">(</span><span class="n">retrta2</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">                                <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                            <span class="n">retrta2</span> <span class="o">=</span> <span class="n">RTA_NEXT</span><span class="p">(</span><span class="n">retrta2</span><span class="p">,</span> <span class="n">attlen2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">retmsg2</span> <span class="o">=</span> <span class="n">NLMSG_NEXT</span><span class="p">(</span><span class="n">retmsg2</span><span class="p">,</span> <span class="n">len2</span><span class="p">);</span>       
+</span></span><span class="line"><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">prname</span><span class="p">,</span> <span class="n">pradd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="n">retrta1</span> <span class="o">=</span> <span class="n">RTA_NEXT</span><span class="p">(</span><span class="n">retrta1</span><span class="p">,</span> <span class="n">attlen1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">retmsg1</span> <span class="o">=</span> <span class="n">NLMSG_NEXT</span><span class="p">(</span><span class="n">retmsg1</span><span class="p">,</span> <span class="n">len1</span><span class="p">);</span>       
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -1104,7 +1098,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">

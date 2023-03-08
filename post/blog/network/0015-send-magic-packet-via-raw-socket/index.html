@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用raw socket发送magic packet">
 <meta itemprop="description" content="Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。"><meta itemprop="datePublished" content="2023-02-09T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-09T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4194">
+<meta itemprop="wordCount" content="3236">
 <meta itemprop="keywords" content="Linux,raw Socket,网络编程," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用raw socket发送magic packet"/>
 <meta name="twitter:description" content="Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。"/>
@@ -172,7 +172,7 @@
 <h2 id="1-magic-packet">1. Magic Packet</h2>
 <ul>
 <li>我比较喜欢把这个数据包称作&quot;网络唤醒包&quot;；有很多地方把它翻译成&quot;魔术包&quot;或者&quot;魔法数据包&quot;，我个人觉着太过表面，无法表达其实际的含义；本文将这个数据包称为&quot;网络唤醒包&quot;或者&quot;Magic Packet&quot;，二者具有完全相同的含义；</li>
-<li>以前写过一篇与嵌入式相关的文章<a href="../embedded/0001-wake-on-lan/">《远程开机：一个简单的嵌入式项目开发》</a>，在嵌入式环境下使用Magic Packet进行远程开机的小项目，有兴趣的读者可以参考；</li>
+<li>以前写过一篇与嵌入式相关的文章<a href="https://whowin.gitee.io/post/blog/network/embedded/0001-wake-on-lan/">《远程开机：一个简单的嵌入式项目开发》</a>，在嵌入式环境下使用Magic Packet进行远程开机的小项目，有兴趣的读者可以参考；</li>
 <li><code>Magic Packet</code> 就是一个指定格式的数据包，其格式为：6 个 <strong>0xff</strong>，然后16组需要被网络唤醒的电脑的 <strong>MAC</strong> 地址，比如需要被唤醒的电脑的 MAC 为：<code>00:e0:2b:69:00:03</code>，则 <code>Magic Packet</code> 为(16进制表述)：
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -183,7 +183,7 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ff ff ff ff ff ff 
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">ff ff ff ff ff ff 
 </span></span><span class="line"><span class="cl">00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 
 </span></span><span class="line"><span class="cl">00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 
 </span></span><span class="line"><span class="cl">00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 00 e0 2b 69 00 03 
@@ -199,7 +199,7 @@
 </li>
 <li>对Magic Packet也没有什么好解释的，理论上只要一个报文中存在这个Magic Packet，那么有网络唤醒功能的NIC都会相应，What is NIC? NIC就是网卡，Network Interface Controller；</li>
 <li>但是大多数的 802.11 的无线网卡是收不到 Magic Packet 的，这一点在<a href="https://en.wikipedia.org/wiki/Wake-on-LAN">wikipedia-Wake-On-Lan</a>上有明确的说明；所以不要尝试在无线网卡上做网络唤醒，但是有一个叫做<strong>WoWLAN</strong>的标准是专门支持无线网卡的网络唤醒的，以后有时间的时候试一下；</li>
-<li>通常发送Magic Packet是使用UDP广播的方式发，这方面的文章很多，有兴趣的读者可以百个度或者谷个歌去找一下，我的另一篇文章<a href="../embedded/0001-wake-on-lan/">《远程开机：一个简单的嵌入式项目开发》</a>也是用这种方式发的，这里就不赘述了；</li>
+<li>通常发送Magic Packet是使用UDP广播的方式发，这方面的文章很多，有兴趣的读者可以百个度或者谷个歌去找一下，我的另一篇文章<a href="https://whowin.gitee.io/post/blog/network/embedded/0001-wake-on-lan/">《远程开机：一个简单的嵌入式项目开发》</a>也是用这种方式发的，这里就不赘述了；</li>
 </ul>
 <h2 id="2-相关技术要点">2. 相关技术要点</h2>
 <blockquote>
@@ -221,7 +221,7 @@
 <ul>
 <li>一个基于TCP/IP的完整报文结构为：以太网报头 + IP报头 + TCP/UDP报头 + data，如下图：</li>
 </ul>
-<p><img src="/images/180002/sending_data_from_app_with_socket.png" alt="Packet structure based on TCP/IP"></p>
+<p><img src="https://whowin.gitee.io/images/180002/sending_data_from_app_with_socket.png" alt="Packet structure based on TCP/IP"></p>
 <hr>
 </li>
 <li>
@@ -237,11 +237,11 @@
 </span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct ethhdr {
-</span></span><span class="line"><span class="cl">    unsigned char  h_dest[ETH_ALEN];    /* destination eth addr  */
-</span></span><span class="line"><span class="cl">    unsigned char  h_source[ETH_ALEN];  /* source ether addr  */
-</span></span><span class="line"><span class="cl">    __be16         h_proto;             /* packet type ID field  */
-</span></span><span class="line"><span class="cl">} __attribute__((packed));
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ethhdr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span>  <span class="n">h_dest</span><span class="p">[</span><span class="n">ETH_ALEN</span><span class="p">];</span>    <span class="cm">/* destination eth addr  */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span>  <span class="n">h_source</span><span class="p">[</span><span class="n">ETH_ALEN</span><span class="p">];</span>  <span class="cm">/* source ether addr  */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>         <span class="n">h_proto</span><span class="p">;</span>             <span class="cm">/* packet type ID field  */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -253,7 +253,7 @@
 <li>
 <p><strong>raw socket</strong></p>
 <ul>
-<li>可以参考我的另两篇文章<a href="../0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>和<a href="../0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a>，这里仅做一个简单回顾；</li>
+<li>可以参考我的另两篇文章<a href="https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>和<a href="https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a>，这里仅做一个简单回顾；</li>
 <li>打开一个raw socket
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -261,8 +261,8 @@
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">int sock_raw;
-</span></span><span class="line"><span class="cl">sock_raw = socket(AF_PACKET, SOCK_RAW, 0);
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sock_raw</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">sock_raw</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_PACKET</span><span class="p">,</span> <span class="n">SOCK_RAW</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -287,15 +287,15 @@
 </span><span class="lnt">9
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">struct sockaddr_ll {
-</span></span><span class="line"><span class="cl">    unsigned short  sll_family;
-</span></span><span class="line"><span class="cl">    __be16          sll_protocol;
-</span></span><span class="line"><span class="cl">    int             sll_ifindex;
-</span></span><span class="line"><span class="cl">    unsigned short  sll_hatype;     // Hardware Address Type
-</span></span><span class="line"><span class="cl">    unsigned char   sll_pkttype;    // Packet Type
-</span></span><span class="line"><span class="cl">    unsigned char   sll_halen;      // Hardware Address Length
-</span></span><span class="line"><span class="cl">    unsigned char   sll_addr[8];    // Address(Hardware Address)
-</span></span><span class="line"><span class="cl">};
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr_ll</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span>  <span class="n">sll_family</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>          <span class="n">sll_protocol</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>             <span class="n">sll_ifindex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span>  <span class="n">sll_hatype</span><span class="p">;</span>     <span class="c1">// Hardware Address Type
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">unsigned</span> <span class="kt">char</span>   <span class="n">sll_pkttype</span><span class="p">;</span>    <span class="c1">// Packet Type
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">unsigned</span> <span class="kt">char</span>   <span class="n">sll_halen</span><span class="p">;</span>      <span class="c1">// Hardware Address Length
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">unsigned</span> <span class="kt">char</span>   <span class="n">sll_addr</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>    <span class="c1">// Address(Hardware Address)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -314,434 +314,8 @@
 <p>先说一下目标，通常使用UDP发送Magic Packet的报文结构为：以太网报头 + IP报头 + UDP报头 + Magic Packet，我们的目标是：<strong>以太网报头 + Magic Packet</strong></p>
 </li>
 <li>
-<p>先看源程序，文件名为：magic_packet.c</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">  1
-</span><span class="lnt">  2
-</span><span class="lnt">  3
-</span><span class="lnt">  4
-</span><span class="lnt">  5
-</span><span class="lnt">  6
-</span><span class="lnt">  7
-</span><span class="lnt">  8
-</span><span class="lnt">  9
-</span><span class="lnt"> 10
-</span><span class="lnt"> 11
-</span><span class="lnt"> 12
-</span><span class="lnt"> 13
-</span><span class="lnt"> 14
-</span><span class="lnt"> 15
-</span><span class="lnt"> 16
-</span><span class="lnt"> 17
-</span><span class="lnt"> 18
-</span><span class="lnt"> 19
-</span><span class="lnt"> 20
-</span><span class="lnt"> 21
-</span><span class="lnt"> 22
-</span><span class="lnt"> 23
-</span><span class="lnt"> 24
-</span><span class="lnt"> 25
-</span><span class="lnt"> 26
-</span><span class="lnt"> 27
-</span><span class="lnt"> 28
-</span><span class="lnt"> 29
-</span><span class="lnt"> 30
-</span><span class="lnt"> 31
-</span><span class="lnt"> 32
-</span><span class="lnt"> 33
-</span><span class="lnt"> 34
-</span><span class="lnt"> 35
-</span><span class="lnt"> 36
-</span><span class="lnt"> 37
-</span><span class="lnt"> 38
-</span><span class="lnt"> 39
-</span><span class="lnt"> 40
-</span><span class="lnt"> 41
-</span><span class="lnt"> 42
-</span><span class="lnt"> 43
-</span><span class="lnt"> 44
-</span><span class="lnt"> 45
-</span><span class="lnt"> 46
-</span><span class="lnt"> 47
-</span><span class="lnt"> 48
-</span><span class="lnt"> 49
-</span><span class="lnt"> 50
-</span><span class="lnt"> 51
-</span><span class="lnt"> 52
-</span><span class="lnt"> 53
-</span><span class="lnt"> 54
-</span><span class="lnt"> 55
-</span><span class="lnt"> 56
-</span><span class="lnt"> 57
-</span><span class="lnt"> 58
-</span><span class="lnt"> 59
-</span><span class="lnt"> 60
-</span><span class="lnt"> 61
-</span><span class="lnt"> 62
-</span><span class="lnt"> 63
-</span><span class="lnt"> 64
-</span><span class="lnt"> 65
-</span><span class="lnt"> 66
-</span><span class="lnt"> 67
-</span><span class="lnt"> 68
-</span><span class="lnt"> 69
-</span><span class="lnt"> 70
-</span><span class="lnt"> 71
-</span><span class="lnt"> 72
-</span><span class="lnt"> 73
-</span><span class="lnt"> 74
-</span><span class="lnt"> 75
-</span><span class="lnt"> 76
-</span><span class="lnt"> 77
-</span><span class="lnt"> 78
-</span><span class="lnt"> 79
-</span><span class="lnt"> 80
-</span><span class="lnt"> 81
-</span><span class="lnt"> 82
-</span><span class="lnt"> 83
-</span><span class="lnt"> 84
-</span><span class="lnt"> 85
-</span><span class="lnt"> 86
-</span><span class="lnt"> 87
-</span><span class="lnt"> 88
-</span><span class="lnt"> 89
-</span><span class="lnt"> 90
-</span><span class="lnt"> 91
-</span><span class="lnt"> 92
-</span><span class="lnt"> 93
-</span><span class="lnt"> 94
-</span><span class="lnt"> 95
-</span><span class="lnt"> 96
-</span><span class="lnt"> 97
-</span><span class="lnt"> 98
-</span><span class="lnt"> 99
-</span><span class="lnt">100
-</span><span class="lnt">101
-</span><span class="lnt">102
-</span><span class="lnt">103
-</span><span class="lnt">104
-</span><span class="lnt">105
-</span><span class="lnt">106
-</span><span class="lnt">107
-</span><span class="lnt">108
-</span><span class="lnt">109
-</span><span class="lnt">110
-</span><span class="lnt">111
-</span><span class="lnt">112
-</span><span class="lnt">113
-</span><span class="lnt">114
-</span><span class="lnt">115
-</span><span class="lnt">116
-</span><span class="lnt">117
-</span><span class="lnt">118
-</span><span class="lnt">119
-</span><span class="lnt">120
-</span><span class="lnt">121
-</span><span class="lnt">122
-</span><span class="lnt">123
-</span><span class="lnt">124
-</span><span class="lnt">125
-</span><span class="lnt">126
-</span><span class="lnt">127
-</span><span class="lnt">128
-</span><span class="lnt">129
-</span><span class="lnt">130
-</span><span class="lnt">131
-</span><span class="lnt">132
-</span><span class="lnt">133
-</span><span class="lnt">134
-</span><span class="lnt">135
-</span><span class="lnt">136
-</span><span class="lnt">137
-</span><span class="lnt">138
-</span><span class="lnt">139
-</span><span class="lnt">140
-</span><span class="lnt">141
-</span><span class="lnt">142
-</span><span class="lnt">143
-</span><span class="lnt">144
-</span><span class="lnt">145
-</span><span class="lnt">146
-</span><span class="lnt">147
-</span><span class="lnt">148
-</span><span class="lnt">149
-</span><span class="lnt">150
-</span><span class="lnt">151
-</span><span class="lnt">152
-</span><span class="lnt">153
-</span><span class="lnt">154
-</span><span class="lnt">155
-</span><span class="lnt">156
-</span><span class="lnt">157
-</span><span class="lnt">158
-</span><span class="lnt">159
-</span><span class="lnt">160
-</span><span class="lnt">161
-</span><span class="lnt">162
-</span><span class="lnt">163
-</span><span class="lnt">164
-</span><span class="lnt">165
-</span><span class="lnt">166
-</span><span class="lnt">167
-</span><span class="lnt">168
-</span><span class="lnt">169
-</span><span class="lnt">170
-</span><span class="lnt">171
-</span><span class="lnt">172
-</span><span class="lnt">173
-</span><span class="lnt">174
-</span><span class="lnt">175
-</span><span class="lnt">176
-</span><span class="lnt">177
-</span><span class="lnt">178
-</span><span class="lnt">179
-</span><span class="lnt">180
-</span><span class="lnt">181
-</span><span class="lnt">182
-</span><span class="lnt">183
-</span><span class="lnt">184
-</span><span class="lnt">185
-</span><span class="lnt">186
-</span><span class="lnt">187
-</span><span class="lnt">188
-</span><span class="lnt">189
-</span><span class="lnt">190
-</span><span class="lnt">191
-</span><span class="lnt">192
-</span><span class="lnt">193
-</span><span class="lnt">194
-</span><span class="lnt">195
-</span><span class="lnt">196
-</span><span class="lnt">197
-</span><span class="lnt">198
-</span><span class="lnt">199
-</span><span class="lnt">200
-</span><span class="lnt">201
-</span><span class="lnt">202
-</span><span class="lnt">203
-</span><span class="lnt">204
-</span><span class="lnt">205
-</span><span class="lnt">206
-</span><span class="lnt">207
-</span><span class="lnt">208
-</span><span class="lnt">209
-</span><span class="lnt">210
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;unistd.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;string.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;malloc.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;errno.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#include &lt;sys/socket.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;sys/ioctl.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;arpa/inet.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/if.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/if_ether.h&gt;
-</span></span><span class="line"><span class="cl">#include &lt;linux/if_packet.h&gt;
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#define BUF_SIZE            256
-</span></span><span class="line"><span class="cl">#define MAGIC_PACKET_SIZE   102
-</span></span><span class="line"><span class="cl">#define MAGIC_PACKET_PROTO  0x842
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#define USING_SENDTO        1
-</span></span><span class="line"><span class="cl">/********************************************************************
-</span></span><span class="line"><span class="cl">* Function: int get_eth_index(int sock_raw, char *ifname)
-</span></span><span class="line"><span class="cl">* Description: Get iterface index number from ifname using ioctl
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* retuen
-</span></span><span class="line"><span class="cl">*          &gt;= 0        iterface index
-</span></span><span class="line"><span class="cl">*          &lt; 0         error  
-</span></span><span class="line"><span class="cl">********************************************************************/
-</span></span><span class="line"><span class="cl">int get_eth_index(int sock_raw, char *ifname) {
-</span></span><span class="line"><span class="cl">    struct ifreq if_req;
-</span></span><span class="line"><span class="cl">    memset(&amp;if_req, 0, sizeof(struct ifreq));
-</span></span><span class="line"><span class="cl">    strncpy(if_req.ifr_name, ifname, IFNAMSIZ - 1);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if ((ioctl(sock_raw, SIOCGIFINDEX, &amp;if_req)) &lt; 0) {
-</span></span><span class="line"><span class="cl">        printf(&#34;error in SIOCGIFINDEX ioctl reading.\n&#34;);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    printf(&#34;Interface Name: %s\tInterface Index=%d\n&#34;, ifname, if_req.ifr_ifindex);
-</span></span><span class="line"><span class="cl">    return if_req.ifr_ifindex;
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">/**************************************************************************
-</span></span><span class="line"><span class="cl">* Function: int get_mac(int sock_raw, unsigned char *mac, char *ifname)
-</span></span><span class="line"><span class="cl">* Description: Get local MAC from ifname using ioctl
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* retuen
-</span></span><span class="line"><span class="cl">*          = 0         success. MAC has been stored into mac
-</span></span><span class="line"><span class="cl">*          &lt; 0         error 
-</span></span><span class="line"><span class="cl">**************************************************************************/
-</span></span><span class="line"><span class="cl">int get_mac(int sock_raw, unsigned char *mac, char *ifname) {
-</span></span><span class="line"><span class="cl">    struct ifreq if_req;
-</span></span><span class="line"><span class="cl">    memset(&amp;if_req, 0, sizeof(struct ifreq));
-</span></span><span class="line"><span class="cl">    strncpy(if_req.ifr_name, ifname, IFNAMSIZ - 1);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    if ((ioctl(sock_raw, SIOCGIFHWADDR, &amp;if_req)) &lt; 0) { 
-</span></span><span class="line"><span class="cl">        printf(&#34;error in SIOCGIFHWADDR ioctl reading.\n&#34;);
-</span></span><span class="line"><span class="cl">        return -1;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    int i;
-</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; ETH_ALEN; ++i) mac[i] = (unsigned char)(if_req.ifr_hwaddr.sa_data[i]);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    printf(&#34;Source MAC: %.2x:%.2x:%.2x:%.2x:%.2x:%.2x\n&#34;, 
-</span></span><span class="line"><span class="cl">          mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]); 
-</span></span><span class="line"><span class="cl">    return 0;
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">/****************************************************************
-</span></span><span class="line"><span class="cl">* Function: int is_valid_mac(char *mac)
-</span></span><span class="line"><span class="cl">* Description: Check mac if valid or not
-</span></span><span class="line"><span class="cl">* 
-</span></span><span class="line"><span class="cl">* Return
-</span></span><span class="line"><span class="cl">*          1       mac is valid
-</span></span><span class="line"><span class="cl">*          0       mac is invalid
-</span></span><span class="line"><span class="cl">****************************************************************/
-</span></span><span class="line"><span class="cl">int is_valid_mac(char *mac){
-</span></span><span class="line"><span class="cl">    if (strlen(mac) != 17) return 0;
-</span></span><span class="line"><span class="cl">    int i;
-</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; 17; ++i) {
-</span></span><span class="line"><span class="cl">        if ((i + 1) % 3 == 0) {
-</span></span><span class="line"><span class="cl">            if (mac[i] != &#39;:&#39;) return 0;
-</span></span><span class="line"><span class="cl">        } else {
-</span></span><span class="line"><span class="cl">            if ((mac[i] &gt;= &#39;0&#39; &amp;&amp; mac[i] &lt;= &#39;9&#39;) || 
-</span></span><span class="line"><span class="cl">                (mac[i] &gt;= &#39;a&#39; &amp;&amp; mac[i] &lt;= &#39;f&#39;) ||
-</span></span><span class="line"><span class="cl">                (mac[i] &gt;= &#39;A&#39; &amp;&amp; mac[i] &lt;= &#39;F&#39;)) {
-</span></span><span class="line"><span class="cl">                continue;
-</span></span><span class="line"><span class="cl">            } else return 0;
-</span></span><span class="line"><span class="cl">        }
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    return 1;
-</span></span><span class="line"><span class="cl">}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">/******************************************************************
-</span></span><span class="line"><span class="cl">* Main
-</span></span><span class="line"><span class="cl">******************************************************************/
-</span></span><span class="line"><span class="cl">int main(int argc, char **argv) {
-</span></span><span class="line"><span class="cl">    int sock_raw;                           // raw socket
-</span></span><span class="line"><span class="cl">    unsigned char src_mac[ETH_ALEN] = {0};  // source MAC address
-</span></span><span class="line"><span class="cl">    unsigned char dest_mac[ETH_ALEN] = {0}; // destination MAC address
-</span></span><span class="line"><span class="cl">    int if_index;                           // interface index number
-</span></span><span class="line"><span class="cl">    char ifname[IFNAMSIZ] = {0};            // interface name
-</span></span><span class="line"><span class="cl">    unsigned char *send_buf;                // buffer for packet
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    int ret_value = EXIT_SUCCESS;           // return value
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // check parameters&#39; number
-</span></span><span class="line"><span class="cl">    if (argc != 3) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Usage: %s [ifname] [destination MAC]\n&#34;, argv[0]);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Check if MAC is valid
-</span></span><span class="line"><span class="cl">    if (!is_valid_mac(argv[2])) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Invalid destination MAC address. %s\n&#34;, argv[2]);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    // Check if ifname length is too long
-</span></span><span class="line"><span class="cl">    if (strlen(argv[1]) &gt; IFNAMSIZ) {
-</span></span><span class="line"><span class="cl">        printf(&#34;Invalid Interface Name. %s\n&#34;, argv[1]);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    // copy ifname
-</span></span><span class="line"><span class="cl">    strcpy(ifname, argv[1]);
-</span></span><span class="line"><span class="cl">    // convert MAC string to digits
-</span></span><span class="line"><span class="cl">    unsigned char *p = (unsigned char *)argv[2];
-</span></span><span class="line"><span class="cl">    sscanf(argv[2], &#34;%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx&#34;, 
-</span></span><span class="line"><span class="cl">            &amp;dest_mac[0], &amp;dest_mac[1],&amp;dest_mac[2], &amp;dest_mac[3], &amp;dest_mac[4],&amp;dest_mac[5]);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Create a raw socket
-</span></span><span class="line"><span class="cl">    sock_raw = socket(AF_PACKET, SOCK_RAW, 0);
-</span></span><span class="line"><span class="cl">    if (sock_raw == -1) {
-</span></span><span class="line"><span class="cl">        printf(&#34;error in socket.\n&#34;);
-</span></span><span class="line"><span class="cl">        exit(EXIT_FAILURE);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // allocate memory for sending
-</span></span><span class="line"><span class="cl">    send_buf = (unsigned char*)malloc(BUF_SIZE);
-</span></span><span class="line"><span class="cl">    memset(send_buf, 0, BUF_SIZE);
-</span></span><span class="line"><span class="cl">    // get interface index
-</span></span><span class="line"><span class="cl">    if_index = get_eth_index(sock_raw, ifname);         // get interface index number
-</span></span><span class="line"><span class="cl">    if (if_index &lt; 0) {
-</span></span><span class="line"><span class="cl">        ret_value = EXIT_FAILURE;
-</span></span><span class="line"><span class="cl">        goto quit;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    // get local MAC as source mac
-</span></span><span class="line"><span class="cl">    if (get_mac(sock_raw, src_mac, ifname) &lt; 0) {           // get MAC address
-</span></span><span class="line"><span class="cl">        ret_value = EXIT_FAILURE;
-</span></span><span class="line"><span class="cl">        goto quit;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    printf(&#34;Destination MAC: %02x:%02x:%02x:%02x:%02x:%02x\n&#34;,
-</span></span><span class="line"><span class="cl">            dest_mac[0], dest_mac[1], dest_mac[2], dest_mac[3], dest_mac[4], dest_mac[5]);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Fill ethernet header
-</span></span><span class="line"><span class="cl">    struct ethhdr *eth_hdr = (struct ethhdr *)(send_buf);
-</span></span><span class="line"><span class="cl">    int i;
-</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; ETH_ALEN; ++i) {
-</span></span><span class="line"><span class="cl">        eth_hdr-&gt;h_source[i] = src_mac[i];
-</span></span><span class="line"><span class="cl">        eth_hdr-&gt;h_dest[i] = 0xff;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    eth_hdr-&gt;h_proto = htons(MAGIC_PACKET_PROTO);   // 0x842
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Construct magic packet
-</span></span><span class="line"><span class="cl">    p = send_buf;
-</span></span><span class="line"><span class="cl">    p += sizeof(struct ethhdr);
-</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; ETH_ALEN; i++) *p++ = 0xFF;
-</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; 16; i++) memcpy((p + i * 6), dest_mac, ETH_ALEN);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // print the packet
-</span></span><span class="line"><span class="cl">    size_t total_len = MAGIC_PACKET_SIZE + sizeof(struct ethhdr);
-</span></span><span class="line"><span class="cl">    p = send_buf;
-</span></span><span class="line"><span class="cl">    for (i = 1; i &lt;= total_len; ++i) {
-</span></span><span class="line"><span class="cl">        printf(&#34; %02x&#34;, *p++);
-</span></span><span class="line"><span class="cl">        if ((i % 16) == 0) printf(&#34;\n&#34;);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">    printf(&#34;\n&#34;);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    // Construct struct sockaddr_ll
-</span></span><span class="line"><span class="cl">    struct sockaddr_ll saddr_ll;
-</span></span><span class="line"><span class="cl">    memset(&amp;saddr_ll, 0, sizeof(struct sockaddr_ll));
-</span></span><span class="line"><span class="cl">    saddr_ll.sll_family   = AF_PACKET;
-</span></span><span class="line"><span class="cl">    saddr_ll.sll_ifindex  = if_index;
-</span></span><span class="line"><span class="cl">    saddr_ll.sll_pkttype  = PACKET_BROADCAST;
-</span></span><span class="line"><span class="cl">    saddr_ll.sll_halen    = ETH_ALEN;
-</span></span><span class="line"><span class="cl">    for (i = 0; i &lt; ETH_ALEN; ++i) saddr_ll.sll_addr[i] = 0xff;
-</span></span><span class="line"><span class="cl">    saddr_ll.sll_protocol = htons(MAGIC_PACKET_PROTO);  // 0x842
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">#if !USING_SENDTO
-</span></span><span class="line"><span class="cl">    if (bind(sock_raw, (const struct sockaddr *)&amp;saddr_ll, sizeof(struct sockaddr_ll)) &lt; 0) {
-</span></span><span class="line"><span class="cl">        perror(&#34;Bind()&#34;);
-</span></span><span class="line"><span class="cl">        ret_value = EXIT_FAILURE;
-</span></span><span class="line"><span class="cl">        goto quit;
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">#endif
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  // Send the packet
-</span></span><span class="line"><span class="cl">    int send_len = 0;       // how many bytes sent
-</span></span><span class="line"><span class="cl">#if USING_SENDTO
-</span></span><span class="line"><span class="cl">    if ((send_len = sendto(sock_raw, send_buf, total_len, 0, (const struct sockaddr *)&amp;saddr_ll, sizeof(struct sockaddr_ll))) &lt; 0) {
-</span></span><span class="line"><span class="cl">        perror(&#34;Sendto()&#34;);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">#else
-</span></span><span class="line"><span class="cl">    if ((send_len = send(sock_raw, send_buf, total_len, 0)) &lt; 0) {
-</span></span><span class="line"><span class="cl">        perror(&#34;Send()&#34;);
-</span></span><span class="line"><span class="cl">    }
-</span></span><span class="line"><span class="cl">#endif
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    printf(&#34;... done. send_len=%d\n&#34;, send_len);
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">quit:
-</span></span><span class="line"><span class="cl">    free(send_buf);
-</span></span><span class="line"><span class="cl">    close(sock_raw);
-</span></span><span class="line"><span class="cl">    return ret_value;
-</span></span><span class="line"><span class="cl">}
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<p>先看源程序，文件名为：<a href="/sourcecodes/180015/magic-packet.c">magic-packet.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
 <li>
 <p>报文是以广播的形式发出去的，发送广播时，以太网报头的目的MAC要全部填写0xff，(struct sockaddr_ll)中的sll_addr也要全部填写0xff；</p>
 </li>
@@ -764,10 +338,10 @@
 <p>源程序中有详细的注释，其它也没有什么更多解释的。</p>
 </li>
 <li>
-<p><strong>编译</strong>：<code>gcc -Wall magic_packet.c -o magic_packet</code></p>
+<p><strong>编译</strong>：<code>gcc -Wall magic-packet.c -o magic-packet</code></p>
 </li>
 <li>
-<p><strong>运行</strong>：<code>sudo ./magic_packet enp0s3 00:e0:2b:68:00:03</code></p>
+<p><strong>运行</strong>：<code>sudo ./magic-packet enp0s3 00:e0:2b:68:00:03</code></p>
 </li>
 <li>
 <p>由于使用了raw socket，所以必须以<strong>root</strong>权限运行；</p>
@@ -779,17 +353,17 @@
 <p>这个程序并不好调试，因为能够在数据链路层侦听的工具不多，加上使用的协议号为0x842，使得大多数工具都无法使用，<strong>wireshark应该是可以的</strong>，而且<a href="https://wiki.wireshark.org/WakeOnLAN">wireshark的wiki</a>上说，它有专门针对0x842号协议的侦听，不过我没有试过，有感兴趣的读者可以试一下；</p>
 </li>
 <li>
-<p>远程唤醒是需要硬件支持的，主板和网卡都要支持，但是目前绝大多数有线网卡都应该是支持的，但是可能要在BIOS和其它地方做一些设置，请自行搜索相关资料，并参考我的另一篇文章<a href="../embedded/0001-wake-on-lan/">《远程开机：一个简单的嵌入式项目开发》</a></p>
+<p>远程唤醒是需要硬件支持的，主板和网卡都要支持，但是目前绝大多数有线网卡都应该是支持的，但是可能要在BIOS和其它地方做一些设置，请自行搜索相关资料，并参考我的另一篇文章<a href="https://whowin.gitee.io/post/blog/network/embedded/0001-wake-on-lan/">《远程开机：一个简单的嵌入式项目开发》</a></p>
 </li>
 <li>
 <p>运行结果截图：</p>
-<p><img src="/images/180015/screenshot-magic-packet.png" alt="Screenshot magic_packet"></p>
+<p><img src="https://whowin.gitee.io/images/180015/screenshot-magic-packet.png" alt="Screenshot magic_packet"></p>
 </li>
 </ul>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">
