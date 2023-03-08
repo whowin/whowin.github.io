@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用tun虚拟网络接口建立IP隧道的实例">
 <meta itemprop="description" content="通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；本文假定读者已经拥有了在Linux下使用C语言进行IPv4下socket编程的基本能力。"><meta itemprop="datePublished" content="2023-03-07T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-03-07T16:43:29+08:00" />
-<meta itemprop="wordCount" content="3370">
+<meta itemprop="wordCount" content="6304">
 <meta itemprop="keywords" content="Linux,网络编程,IP tunnel,IP隧道," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用tun虚拟网络接口建立IP隧道的实例"/>
 <meta name="twitter:description" content="通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；本文假定读者已经拥有了在Linux下使用C语言进行IPv4下socket编程的基本能力。"/>
@@ -161,6 +161,7 @@
         <li><a href="#1-linux下的虚拟网卡tuntap">1. Linux下的虚拟网卡TUN/TAP</a></li>
         <li><a href="#2-构建一个tun设备">2. 构建一个TUN设备</a></li>
         <li><a href="#3-使用tun设备是基本数据流向">3. 使用tun设备是基本数据流向</a></li>
+        <li><a href="#4-使用tun设备搭建一个简单的ip隧道">4. 使用tun设备搭建一个简单的IP隧道</a></li>
       </ul>
     </li>
   </ul>
@@ -437,6 +438,230 @@
 <hr>
 <ul>
 <li>如果选定的路由没有src字段，Linux会搜寻选定路由的网络接口上所有绑定的IP，对IPv6将选择第一个搜寻到的地址，对IPv4则尽量选择与目标IP在同一网段的IP地址；</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-使用tun设备搭建一个简单的ip隧道">4. 使用tun设备搭建一个简单的IP隧道</h2>
+<ul>
+<li>
+<p>tun实际上是tunnel的前面三个字母，tun设备注定和隧道是有关系的，tun设备也的确常用来构建一个IP隧道；</p>
+</li>
+<li>
+<p>IP报文其实是指：IP报头 + TCP/UDP报头 + 数据</p>
+</li>
+<li>
+<p>所谓IP隧道是指把一个IP报文作为数据再封装一个TCP头和IP头，所以整个报文变成：IP报头 + TCP报头 + (IP报头 + TCP/UDP报头 + 数据)</p>
+</li>
+<li>
+<p>至于IP隧道的意义、应用场景之类的，本文不予讨论，可以自己去百个度或者谷个歌查一下，本文将致力于做一个简单的IP隧道；</p>
+</li>
+<li>
+<p>先看一张示意图</p>
+<p><img src="/images/180018/simple-ip-tunnel.png" alt="Diagram Simple IP tunnel"></p>
+<center><b>图6：简单的IP隧道示意图</b></center>
+</li>
+<li>
+<p>有两台电脑，Computer A和Computer B</p>
+<ul>
+<li>Computer A：
+<ol>
+<li>物理网卡为enp0s3，绑定IP：192.168.2.112</li>
+<li>虚拟网卡为tun0，绑定IP：10.0.0.2</li>
+</ol>
+</li>
+<li>Computer B：
+<ol>
+<li>物理网卡为enp0s3，绑定IP：192.168.2.114</li>
+<li>虚拟网卡为tun0，绑定IP：10.0.0.1</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>
+<p>Computer A和Computer B的路由表一样，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">内核 IP 路由表
+</span></span><span class="line"><span class="cl">目标            网关            子网掩码        标志  跃点   引用  使用 接口
+</span></span><span class="line"><span class="cl">0.0.0.0        192.168.2.3     0.0.0.0        UG   100    0     0  enp0s3
+</span></span><span class="line"><span class="cl">10.0.0.0       0.0.0.0         255.255.255.0  U    0      0     0  tun0
+</span></span><span class="line"><span class="cl">169.254.0.0    0.0.0.0         255.255.0.0    U    1000   0     0  enp0s3
+</span></span><span class="line"><span class="cl">192.168.2.0    0.0.0.0         255.255.255.0  U    100    0     0  enp0s3
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>Computer A的应用程序app A向10.0.0.1:1234发送报文，Computer B的应用程序app D侦听在10.0.0.1:1234上；</p>
+</li>
+<li>
+<p>目标很简单，computer A的app A直接向10.0.0.1:1234发送报文，computer B的app D能够正常收到收到，就像在一个局域网上一样；</p>
+</li>
+<li>
+<p>首先要明确的，物理局域网的网段是192.168.2.x，所以向10.0.0.1发送报文并不会被送到物理局域网上，按照路由，这条报文会被送到tun0的驱动程序上去，因为10.0.0.1并不是computer A的虚拟网卡tun0绑定的IP，所以驱动程序会把这个报文送到application-tun上，所以如果我们不做处理，这个报文根本无法到达目的地；</p>
+</li>
+<li>
+<p>如果处理这个报文使其发送到computer B的app D上去呢？通常的方法就是在computer A和computer B的物理网卡之间建立一条IP隧道；</p>
+</li>
+<li>
+<p>当computer A启动applition-tun时，主动发起向computer B的连接，端口号定为5678，computer B在启动applition-tun时，主动侦听在端口5678上，并等待computer A的连接请求，一旦连接建立，这个隧道就建好了；</p>
+</li>
+<li>
+<p>computer A的application-tun收到发往10.0.0.1的报文时，要在整个IP报文上再包装上一个IP报头+TCP报头，TCP报头中指定目的端口号为5678，IP报头中指定目的IP为192.168.2.114，源IP为192.168.2.112，然后把这个新报文从建立的隧道中发出；</p>
+</li>
+<li>
+<p>computer B上侦听在5678端口上的应用程序app C会收到这个报文，app C去掉IP报头和TCP报头，把数据部分作为一个完整的报文重新从socket发出，这个报文的内容正是computer A发出的原始报文，computer B的内核协议栈根据路由会将该报文发给tun0的驱动程序，驱动程序会将这个报文送到正在侦听1234端口的app D上；</p>
+</li>
+<li>
+<p>在客户端(computer A)需要编写一个程序，程序文件名：app-client.c，这个程序应遵循以下处理流程：</p>
+<ol>
+<li>打开 /dev/net/tun 文件，返回tun_fd，在内核注册虚拟设备 tun0；</li>
+<li>创建socket，sock_fd，在这个 sock_fd 上连接服务器端(computer B)的5678端口，建立IP隧道；</li>
+<li>使用select检查tun_fd和sock_fd，并分别处理在这两个 fd 上收到的数据；</li>
+<li>在tun_fd上收到数据的处理流程</li>
+</ol>
+<ul>
+<li>将收到的包括IP报头在内的报文作为数据从sock_fd上发出</li>
+</ul>
+<ol start="5">
+<li>在sock_fd上收到数据的处理流程</li>
+</ol>
+<ul>
+<li>把收到的数据作为一个IP报文显示报头及内容</li>
+</ul>
+</li>
+<li>
+<p>在服务器端(computer B)编写一个程序，文件名为：app-server.c，这个程序应遵循以下处理流程：</p>
+<ol>
+<li>打开 /dev/net/tun 文件，返回tun_fd，在内核注册虚拟设备 tun0；</li>
+<li>创建socket，fd为sock_fd，在这个 sock_fd 上侦听5678端口，等待客户端连接以建立IP隧道；</li>
+<li>接受客户端的连接请求，为新连接创建socket，fd为net_fd</li>
+<li>使用select检查tun_fd和net_fd，并分别处理在这两个 fd 上收到的数据；</li>
+<li>在tun_fd上收到数据的处理流程</li>
+</ol>
+<ul>
+<li>将收到的包括IP报头在内的报文作为数据从net_fd上发出</li>
+</ul>
+<ol start="5">
+<li>在net_fd上收到数据的处理流程</li>
+</ol>
+<ul>
+<li>把收到的数据作为带有IP报头的报文发到tun_fd上</li>
+</ul>
+</li>
+<li>
+<p>客户端程序：<a href="https://whowin.gitee.io/sourcecodes/180018/app-client.c">app-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
+<li>
+<p>客户端程序编译：<code>gcc -Wall app-client.c -o app-client</code></p>
+</li>
+<li>
+<p>服务器端程序：<a href="https://whowin.gitee.io/sourcecodes/180018/app-server.c">app-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
+<li>
+<p>服务器端程序编译：<code>gcc -Wall app-server.c -o app-server</code></p>
+</li>
+<li>
+<p>为了运行方便，也可以将这两个程序写成守护进程，将程序中注释掉的 <code>daemon(0, 0)</code> 放开即可；</p>
+</li>
+<li>
+<p>请根据实际情况调整程序中的宏定义，SERVER_IP和TUN_IP；</p>
+</li>
+<li>
+<p>在服务器端注意防火墙设置，打开5678端口或者关闭防火墙；</p>
+</li>
+<li>
+<p>这两个程序的运行均需要root权限。</p>
+</li>
+<li>
+<p>客户端程序测试</p>
+<ul>
+<li>
+<p>需要打开三个终端窗口；</p>
+</li>
+<li>
+<p>首先将程序中的SERVER_IP改为本机的IP地址，然后重新编译；</p>
+</li>
+<li>
+<p>打开第一个终端，运行 <code>nc -l 5678</code>，这个命令将监听本机的5678端口；</p>
+</li>
+<li>
+<p>打开第二个终端，运行客户端程序：<code>sudo ./app-client</code>，应该显示&quot;Connected to server &hellip;&quot;</p>
+</li>
+<li>
+<p>打开第三个终端，运行 <code>echo &quot;hello&quot; &gt; /dev/udp/10.0.0.1/1234</code>，这个命令将向10.0.0.1的1234端口发送一个UDP报文，报文的数据部分为&quot;hello&quot;</p>
+</li>
+<li>
+<p>此时在第二个终端上应该显示&quot;Received data from tun&quot;，在第一个终端上收到一些乱码，但其中有&quot;hello&quot;字符串，乱码是因为我们收到的数据包括IP报头和UDP报头，这两部分是二进制的数据；</p>
+</li>
+<li>
+<p>如果你看到的和上面的描述一致，那么你的客户端程序基本没有问题；</p>
+</li>
+<li>
+<p>下面是截屏</p>
+<p><img src="/images/180018/screenshot-of-1st-termianl-for-client.png" alt="screenshot of 1st terminal for client test"></p>
+<center><b>图7：测试客户端程序时的第一个终端</b></center>
+<p><img src="/images/180018/screenshot-of-2nd-terminal-for-client.png" alt="screenshot of 2nd terminal for client test"></p>
+<center><b>图8：测试客户端程序时的第二个终端</b></center>
+</li>
+</ul>
+</li>
+<li>
+<p>服务器端程序无需独立测试；</p>
+</li>
+<li>
+<p>IP隧道测试</p>
+<ul>
+<li>
+<p>需要两台机器，一台做客户端，另一台做服务器端</p>
+</li>
+<li>
+<p>再次强调，请根据实际情况调整程序中的宏定义，SERVER_IP和TUN_IP，并重新编译程序；</p>
+</li>
+<li>
+<p>在服务器端注意防火墙设置，打开5678端口或者关闭防火墙；</p>
+</li>
+<li>
+<p>在服务器端和客户端均需要打开两个终端，下面是测试方法示意图</p>
+<p><img src="/images/180018/diagram-for-testing.png" alt="diagram for testing"></p>
+<center><b>图9：测试示意图</b></center>
+</li>
+<li>
+<p>在服务器第一个终端上启动服务器端程序 <code>sudo ./app-server</code></p>
+</li>
+<li>
+<p>在服务器第二个终端上执行命令 <code>nc -luk 1234</code>，这个命令将一直监听在UDP的1234端口上；</p>
+</li>
+<li>
+<p>在客户端第一个终端上启动客户端程序 <code>sudo ./app-client</code></p>
+</li>
+<li>
+<p>在客户端第二个终端上执行命令 <code>echo &quot;hello&quot; &gt; /dev/udp/10.0.0.1/1234</code>，这个命令将向10.0.0.1(服务器端的tun0绑定的IP)的UDP端口1234发送一条消息</p>
+</li>
+<li>
+<p>客户端第二个终端上向10.0.0.1:1234发送了一个UDP消息，内容是：hello</p>
+</li>
+<li>
+<p>最终在服务器端的第二个终端上收到了这个信息</p>
+</li>
+<li>
+<p>下面是运行截图</p>
+<p><img src="/images/180018/screenshot-server-1st-terminal-for-testing.png" alt="screenshot server 1st terminal for testing"></p>
+<center><b>图10：服务器端第一个终端</b></center>
+<p><img src="/images/180018/screenshot-client-1st-terminal-for-testing.png" alt="screenshot client 1st terminal for testing"></p>
+<center><b>图11：客户端第一个终端</b></center>
+<p><img src="/images/180018/screenshot-server-2nd-terminal-for-testing.png" alt="screenshot server 2nd terminal for testing"></p>
+<center><b>图12：服务器端第二个终端</b></center>
+<p><img src="/images/180018/screenshot-client-2nd-terminal-for-testing.png" alt="screenshot client 2nd terminal for testing"></p>
+<center><b>图13：客户端第二个终端</b></center>
+</li>
 </ul>
 </li>
 </ul>
