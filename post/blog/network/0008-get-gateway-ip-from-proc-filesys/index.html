@@ -50,7 +50,7 @@
 <meta itemprop="name" content="从proc文件系统中获取gateway的IP地址">
 <meta itemprop="description" content="在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有ip route或者route -n，其实route -n也是通过读取proc文件系统下的文件来从内核获取路由表的，但ip route是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序。"><meta itemprop="datePublished" content="2023-02-05T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-05T16:43:29+08:00" />
-<meta itemprop="wordCount" content="3005">
+<meta itemprop="wordCount" content="2769">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,proc文件系统," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="从proc文件系统中获取gateway的IP地址"/>
 <meta name="twitter:description" content="在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有ip route或者route -n，其实route -n也是通过读取proc文件系统下的文件来从内核获取路由表的，但ip route是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序。"/>
@@ -328,138 +328,16 @@
 </ol>
 </li>
 <li>
-<p>下面是源代码，文件名：get_gateway_proc.c</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span><span class="lnt">54
-</span><span class="lnt">55
-</span><span class="lnt">56
-</span><span class="lnt">57
-</span><span class="lnt">58
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/route.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="cp">#define ROUTING_TABEL   &#34;/proc/net/route&#34;
-</span></span></span><span class="line"><span class="cl"><span class="cp">#define BUF_SIZE        128
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">get_gateway</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">gw</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">line</span><span class="p">[</span><span class="n">BUF_SIZE</span><span class="p">],</span> <span class="o">*</span><span class="n">ifname</span><span class="p">,</span> <span class="o">*</span><span class="n">dest_ip</span><span class="p">,</span> <span class="o">*</span><span class="n">gw_ip</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// open file /proc/net/route
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">((</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="n">ROUTING_TABEL</span><span class="p">,</span> <span class="s">&#34;r&#34;</span><span class="p">))</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Can&#39;t open file - %s.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ROUTING_TABEL</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// skip the header
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">fgets</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">BUF_SIZE</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Failed to read the header of routing table.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">// read the file line by line until the gateway is found or the end of file
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">while</span> <span class="p">(</span><span class="n">fgets</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">BUF_SIZE</span><span class="p">,</span> <span class="n">fp</span><span class="p">))</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">ifname</span>  <span class="o">=</span> <span class="n">strtok</span><span class="p">(</span><span class="n">line</span> <span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">&#34;</span><span class="p">);</span>      <span class="c1">// interface name
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">dest_ip</span> <span class="o">=</span> <span class="n">strtok</span><span class="p">(</span><span class="nb">NULL</span> <span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">&#34;</span><span class="p">);</span>      <span class="c1">// destination IP
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">gw_ip</span>   <span class="o">=</span> <span class="n">strtok</span><span class="p">(</span><span class="nb">NULL</span> <span class="p">,</span> <span class="s">&#34;</span><span class="se">\t</span><span class="s">&#34;</span><span class="p">);</span>      <span class="c1">// gateway IP
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">ifname</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">dest_ip</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">dest_ip</span><span class="p">,</span> <span class="s">&#34;00000000&#34;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Interface name: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ifname</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="p">(</span><span class="n">gw_ip</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">                    <span class="k">struct</span> <span class="n">in_addr</span> <span class="n">addr</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                    <span class="n">sscanf</span><span class="p">(</span><span class="n">gw_ip</span><span class="p">,</span> <span class="s">&#34;%x&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">addr</span><span class="p">.</span><span class="n">s_addr</span><span class="p">);</span>      <span class="c1">// Converter string to 32bits integer
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="n">strcpy</span><span class="p">(</span><span class="n">gw</span><span class="p">,</span> <span class="n">inet_ntoa</span><span class="p">(</span><span class="n">addr</span><span class="p">));</span>            <span class="c1">// Converter 32bits IP to string
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                    <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">                <span class="p">}</span>
-</span></span><span class="line"><span class="cl">                <span class="k">break</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">            <span class="p">}</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="n">fclose</span><span class="p">(</span><span class="n">fp</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">gw</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">get_gateway</span><span class="p">(</span><span class="n">gw</span><span class="p">))</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Failed to get gateway IP.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Gateway IP: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">gw</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>    
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
+<p>下面是源代码，文件名：<a href="/sourcecodes/180008/get-gateway-proc.c">get-gateway-proc.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
 <li>
 <p>这段程序也没什么好解释的，唯一要说明的地方是gateway路由的确定，这里是以目的地址为&quot;00000000&quot;作为判断，前面讨论过，目的地址为&quot;00000000&quot;的含义为任意目的地址；</p>
 </li>
 <li>
-<p>编译：<code>gcc -Wall get_gateway_proc.c -o get_gateway_proc</code></p>
+<p>编译：<code>gcc -Wall get-gateway-proc.c -o get-gateway-proc</code></p>
 </li>
 <li>
-<p>运行：<code>./get_gateway_proc</code></p>
+<p>运行：<code>./get-gateway-proc</code></p>
 </li>
 <li>
 <p>下面是运行截图</p>
