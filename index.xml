@@ -197,15 +197,6 @@
     </item>
     
     <item>
-      <title>apt update如何工作</title>
-      <link>https://whowin.gitee.io/post/blog/linux/0008-apt-update-ubuntu/</link>
-      <pubDate>Sun, 10 Jul 2022 16:43:29 +0800</pubDate>
-      
-      <guid>https://whowin.gitee.io/post/blog/linux/0008-apt-update-ubuntu/</guid>
-      <description>&lt;p&gt;本文简单介绍了在 &lt;em&gt;ubuntu&lt;/em&gt; 的命令行下运行 &lt;em&gt;apt update&lt;/em&gt; 时，软件包管理工具 &lt;em&gt;apt&lt;/em&gt; 所执行的实际动作，相信此文会让你对 &lt;em&gt;ubuntu&lt;/em&gt; 的包管理系统有更好的了解&lt;/p&gt;</description>
-    </item>
-    
-    <item>
       <title>安装一个好用的Ubuntu桌面</title>
       <link>https://whowin.gitee.io/post/blog/linux/0007-ubuntu-desktop/</link>
       <pubDate>Fri, 06 May 2022 16:43:29 +0800</pubDate>

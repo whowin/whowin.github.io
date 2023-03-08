@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>linux on whowin - 发表我个人原创作品的技术博客</title>
+    <title>Linux on whowin - 发表我个人原创作品的技术博客</title>
     <link>https://whowin.gitee.io/tags/linux/</link>
-    <description>Recent content in linux on whowin - 发表我个人原创作品的技术博客</description>
+    <description>Recent content in Linux on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Tue, 07 Mar 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
@@ -149,15 +149,6 @@
       
       <guid>https://whowin.gitee.io/post/blog/linux/0012-setuid/</guid>
       <description>&lt;p&gt;Linux 下的文件权限管理分为三组：拥有者、组、其它用户，文件权限分为读、写、执行，但其实并不仅仅如此，还有 setuid、setgid、sticky bit 这一组标志，本文通过一个可执行文件的权限 4755 展开介绍 setuid、setgid 和 sticky bit 的概念，希望本文对读者理解 Linux 文件权限管理能有所帮助。&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>apt update如何工作</title>
-      <link>https://whowin.gitee.io/post/blog/linux/0008-apt-update-ubuntu/</link>
-      <pubDate>Sun, 10 Jul 2022 16:43:29 +0800</pubDate>
-      
-      <guid>https://whowin.gitee.io/post/blog/linux/0008-apt-update-ubuntu/</guid>
-      <description>&lt;p&gt;本文简单介绍了在 &lt;em&gt;ubuntu&lt;/em&gt; 的命令行下运行 &lt;em&gt;apt update&lt;/em&gt; 时，软件包管理工具 &lt;em&gt;apt&lt;/em&gt; 所执行的实际动作，相信此文会让你对 &lt;em&gt;ubuntu&lt;/em&gt; 的包管理系统有更好的了解&lt;/p&gt;</description>
     </item>
     
   </channel>
