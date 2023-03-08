@@ -134,29 +134,6 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0018-tun-example-for-setting-up-ip-tunnel-copy/">使用tun虚拟网络接口建立IP隧道的实例</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-03-07 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；本文假定读者已经拥有了在Linux下使用C语言进行IPv4下socket编程的基本能力。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0018-tun-example-for-setting-up-ip-tunnel-copy/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/network/0018-tun-example-for-setting-up-ip-tunnel/">使用tun虚拟网络接口建立IP隧道的实例</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-03-07 </span>
@@ -243,6 +220,29 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/network/0015-send-magic-packet-via-raw-socket/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0008-get-gateway-ip-from-proc-filesys/">从proc文件系统中获取gateway的IP地址</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-02-05 </span>
+      <div class="post-category">
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有<code>ip route</code>或者<code>route -n</code>，其实<code>route -n</code>也是通过读取proc文件系统下的文件来从内核获取路由表的，但<code>ip route</code>是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0008-get-gateway-ip-from-proc-filesys/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
