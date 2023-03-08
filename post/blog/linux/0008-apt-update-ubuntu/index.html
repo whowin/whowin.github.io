@@ -50,7 +50,7 @@
 <meta itemprop="name" content="apt update如何工作">
 <meta itemprop="description" content="本文简单介绍了在ubuntu的命令行下运行 apt update 时，软件包管理工具 apt 所执行的实际动作，相信此文会让你对 ubuntu 的包管理系统有更好的了解。"><meta itemprop="datePublished" content="2022-07-10T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-07-10T16:43:29+08:00" />
-<meta itemprop="wordCount" content="1689">
+<meta itemprop="wordCount" content="1389">
 <meta itemprop="keywords" content="apt,ubuntu,linux," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="apt update如何工作"/>
 <meta name="twitter:description" content="本文简单介绍了在ubuntu的命令行下运行 apt update 时，软件包管理工具 apt 所执行的实际动作，相信此文会让你对 ubuntu 的包管理系统有更好的了解。"/>
@@ -161,7 +161,6 @@
         <li><a href="#3-软件仓库和软件源">3. 软件仓库和软件源</a></li>
         <li><a href="#4-apt-update-是什么">4. apt update 是什么</a></li>
         <li><a href="#5-ubuntu-下执行-apt-update-实际执行的操作">5. ubuntu 下执行 apt update 实际执行的操作</a></li>
-        <li><a href="#6-执行-apt-update-时-hitignerr和get分别代表什么">6. 执行 apt update 时 Hit、Ign、Err和Get分别代表什么</a></li>
       </ul>
     </li>
   </ul>
@@ -232,33 +231,6 @@
 <li><em>InRelease</em>、<em>Packages</em> 和一些其它文件(比如国际版本用的 <em>Translation</em> 文件)组成了本地软件仓库；</li>
 <li><code>apt update</code> 只会更新本地的软件包清单(本地软件仓库)，并不会升级任何软件，所以，运行 <code>apt update</code> 是绝对安全的，不会对你现有系统和应用软件做任何修改；即便是执行 <code>apt update</code> 时意外中断也不会出现问题，只需要再次执行即可</li>
 <li>在 ubuntu 系统中，本地软件清单(本地软件仓库)存放在 <code>/var/lib/apt/lists</code> 这个目录下，实际上，如果你删除这个目录下的所有文件(也就是清空了本地软件仓库)，运行 <code>apt update</code> 后会重建你的本地软件仓库</li>
-</ul>
-<h2 id="6-执行-apt-update-时-hitignerr和get分别代表什么">6. 执行 apt update 时 Hit、Ign、Err和Get分别代表什么</h2>
-<ul>
-<li>执行 <code>apt update</code> 更新本地软件仓库时，在终端上显示的信息中，每行的开头会有一个关键字(参见图1)，它们的含义如下：
-<ol>
-<li><strong>Hit(命中)：</strong>
-<blockquote>
-<p><em>apt</em> 发现某个 <em>Packages</em> 文件(软件清单索引文件)的 <em>Hash</em> 校验值与最新的 <em>InRelease</em> 文件中给出的 <em>Hash</em> 校验值一致，所以无需再下载</p>
-</blockquote>
-</li>
-<li><strong>Ign(忽略)：</strong>
-<blockquote>
-<p><em>apt</em> 在下载一个文件时出错，但是，这个文件并不重要，所以这个错误被忽略掉，<em>apt</em> 会继续下一个动作</p>
-</blockquote>
-</li>
-<li><strong>Err(错误)：</strong>
-<blockquote>
-<p><em>apt</em> 在下载一个文件时发现了一个严重错误，无法再继续执行命令，比如在验证 <em>InRelease</em> 文件的电子签名时找不到所需的公钥时就会出现这个错误</p>
-</blockquote>
-</li>
-<li><strong>Get(获取)：</strong>
-<blockquote>
-<p><em>apt</em> 已经从软件仓库下载了一个正确的软件包索引文件，并且更新了本地软件仓库</p>
-</blockquote>
-</li>
-</ol>
-</li>
 </ul>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
