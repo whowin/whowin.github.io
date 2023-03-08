@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用tun虚拟网络接口建立IP隧道的实例">
 <meta itemprop="description" content="通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；本文假定读者已经拥有了在Linux下使用C语言进行IPv4下socket编程的基本能力。"><meta itemprop="datePublished" content="2023-03-07T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-03-07T16:43:29+08:00" />
-<meta itemprop="wordCount" content="5951">
+<meta itemprop="wordCount" content="6149">
 <meta itemprop="keywords" content="Linux,网络编程,IP tunnel,IP隧道," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用tun虚拟网络接口建立IP隧道的实例"/>
 <meta name="twitter:description" content="通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；本文假定读者已经拥有了在Linux下使用C语言进行IPv4下socket编程的基本能力。"/>
@@ -154,132 +154,65 @@
     <div class="post-toc" id="post-toc">
   <h2 class="post-toc-title">文章目录</h2>
   <div class="post-toc-content always-active">
-    <nav id="TableOfContents">
-  <ul>
-    <li>
-      <ul>
-        <li><a href="#1-linux下的虚拟网卡tuntap">1. Linux下的虚拟网卡TUN/TAP</a></li>
-        <li><a href="#2-构建一个tun设备">2. 构建一个TUN设备</a></li>
-      </ul>
-    </li>
-  </ul>
-</nav>
+    <nav id="TableOfContents"></nav>
   </div>
 </div>
     <div class="post-content">
       <p>通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；本文假定读者已经拥有了在Linux下使用C语言进行IPv4下socket编程的基本能力。</p>
-<h2 id="1-linux下的虚拟网卡tuntap">1. Linux下的虚拟网卡TUN/TAP</h2>
-<ul>
-<li>TUN和TAP是Linuxn内核的虚拟网络设备，不同于普通靠硬件网络适配器实现的设备，这些虚拟的网络设备全部用软件实现，并可以向运行于Linux上的应用软件提供与硬件的网络设备完全相同的功能；</li>
-<li>TAP等同于一个以太网设备，它操作网络层第二层(数据链路层)数据包，通常我们所使用的网络就是以太网数据帧，所以要使用TAP设备，就需要自己构建以太网报头、IP报头、TCP/UDP报头；</li>
-<li>TUN模拟了网络层设备，操作第三层(网络层)数据包，通常我们使用的TCP/UDP报文在网络层使用的IP协议，所以使用TUN设备，需要自己构建IP报头和TCP/UDP报头，比TAP设备少构建一个以太网报头；</li>
-<li>Linux通过TUN/TAP设备向绑定该设备的用户空间的应用程序发送数据；同样，用户空间的应用程序也可以像操作硬件网络设备那样，通过TUN/TAP设备发送数据；在后面这种情况下，TUN/TAP设备向Linux的网络栈提交数据包，从而模拟从外部接受数据的过程；</li>
-</ul>
-<h2 id="2-构建一个tun设备">2. 构建一个TUN设备</h2>
-<ul>
-<li>
-<p>上一节的描述显然过于枯燥，可能会对初次接触虚拟网卡的读者感到困惑，不知所云，本节将实际建立一个tun设备，帮助你走出困惑；</p>
-</li>
-<li>
-<p>构建一个基本的tun设备，只需要两个步骤</p>
-<ol>
-<li><strong>编写一个程序，至少完成三个任务</strong></li>
-</ol>
-<ul>
-<li>打开设备文件/dev/net/tun
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">&#34;/dev/net/tun&#34;</span> <span class="p">,</span> <span class="n">O_RDWR</span><span class="p">));</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>向Linux内核注册一个tun设备名称，本例中为tun0
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ifreq</span> <span class="n">ifr</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ifr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ifr</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl"><span class="n">ifr</span><span class="p">.</span><span class="n">ifr_flags</span> <span class="o">=</span> <span class="n">IFF_TUN</span> <span class="o">|</span> <span class="n">IFF_NO_PI</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="n">strcpy</span><span class="p">(</span><span class="n">ifr</span><span class="p">.</span><span class="n">ifr_name</span><span class="p">,</span> <span class="s">&#34;tun0&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">ioctl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">TUNSETIFF</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">ifr</span><span class="p">);</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>编写处理tun0接收/发送数据的程序
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="n">BUFSIZE</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">BUFSIZE</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">  <span class="c1">// todo
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-</ul>
-<ol start="2">
-<li><strong>为设备分配IP地址</strong>(本例中为tun0分配的IP为10.0.0.1)</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo ifconfig tun0 10.0.0.1 netmask 255.255.255.0 up
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>把上面的代码片段组合在一起，就可以完成一个tun设备的建立，文件名：<a href="https://whowin.gitee.io/sourcecodes/180018/tun-01.c">tun_01.c</a>(<strong>点击文件名下载源文件</strong>)</p>
-</li>
-<li>
-<p>这段程序在进入循环前增加了 <code>system(&quot;ifconfig tun0 10.0.0.1/24 up&quot;)</code>，为tun0分配了IP地址10.0.0.1，所以运行完后就不需要再为这个设备分配IP了；</p>
-</li>
-<li>
-<p>编译：<code>gcc -Wall tun-01.c -o tun-01</code></p>
-</li>
-<li>
-<p>该程序需要root权限运行，主要是因为其中使用了ioctl，运行：<code>sudo ./tun-01</code></p>
-</li>
-<li>
-<p>运行该程序，会构建一个tun设备，打开一个新的终端，使用 <code>ifconfig</code> 将可以看到系统中多了一个虚拟网络接口tun0，使用 <code>route -n</code> 查看路由也会看到增加了一条关于tun0设备的路由</p>
-<p><img src="/images/180018/screenshot-of-setting-up-tun0.png" alt="screenshot of setting up tun0 device"></p>
-<center><b>图1：构建一个tun设备后</b></center>
-<hr>
-</li>
-<li>
-<p>尽管建立起了虚拟网卡tun0，但因为程序过于简单，所以这样建立的设备什么事情都做不了，必须完善程序，才能让这个设备真正地发回作用；</p>
-</li>
-<li>
-<p>tun设备是一个第三层(网络层)的设备，在这个设备上只能收到IP报头，收不到以太网报头，所以Linux索性没有为tun设备分配MAC地址；</p>
-</li>
-<li>
-<p>后面将以本节的程序为基础，不断改进，最终写出一个简单的IP隧道的程序。</p>
-</li>
-</ul>
 <!--
+## 1. Linux下的虚拟网卡TUN/TAP
+* TUN和TAP是Linuxn内核的虚拟网络设备，不同于普通靠硬件网络适配器实现的设备，这些虚拟的网络设备全部用软件实现，并可以向运行于Linux上的应用软件提供与硬件的网络设备完全相同的功能；
+* TAP等同于一个以太网设备，它操作网络层第二层(数据链路层)数据包，通常我们所使用的网络就是以太网数据帧，所以要使用TAP设备，就需要自己构建以太网报头、IP报头、TCP/UDP报头；
+* TUN模拟了网络层设备，操作第三层(网络层)数据包，通常我们使用的TCP/UDP报文在网络层使用的IP协议，所以使用TUN设备，需要自己构建IP报头和TCP/UDP报头，比TAP设备少构建一个以太网报头；
+* Linux通过TUN/TAP设备向绑定该设备的用户空间的应用程序发送数据；同样，用户空间的应用程序也可以像操作硬件网络设备那样，通过TUN/TAP设备发送数据；在后面这种情况下，TUN/TAP设备向Linux的网络栈提交数据包，从而模拟从外部接受数据的过程；
+
+## 2. 构建一个TUN设备
+* 上一节的描述显然过于枯燥，可能会对初次接触虚拟网卡的读者感到困惑，不知所云，本节将实际建立一个tun设备，帮助你走出困惑；
+* 构建一个基本的tun设备，只需要两个步骤
+  1. **编写一个程序，至少完成三个任务**
+    - 打开设备文件/dev/net/tun
+      ```C
+      int fd;
+      fd = open("/dev/net/tun" , O_RDWR));
+      ```
+    - 向Linux内核注册一个tun设备名称，本例中为tun0
+      ```C
+      struct ifreq ifr;
+      memset(&ifr, 0, sizeof(ifr));
+      ifr.ifr_flags = IFF_TUN | IFF_NO_PI;
+      strcpy(ifr.ifr_name, "tun0");
+
+      ioctl(fd, TUNSETIFF, (void *)&ifr);
+      ```
+    - 编写处理tun0接收/发送数据的程序
+      ```C
+      char buffer[BUFSIZE];
+
+      while (1) {
+        read(fd, buffer, BUFSIZE);
+        // todo
+      }
+      ```
+  2. **为设备分配IP地址**(本例中为tun0分配的IP为10.0.0.1)
+    ```bash
+    sudo ifconfig tun0 10.0.0.1 netmask 255.255.255.0 up
+    ```
+* 把上面的代码片段组合在一起，就可以完成一个tun设备的建立，文件名：[tun_01.c][src01](**点击文件名下载源文件**)
+* 这段程序在进入循环前增加了 ```system("ifconfig tun0 10.0.0.1/24 up")```，为tun0分配了IP地址10.0.0.1，所以运行完后就不需要再为这个设备分配IP了；
+* 编译：```gcc -Wall tun-01.c -o tun-01```
+* 该程序需要root权限运行，主要是因为其中使用了ioctl，运行：```sudo ./tun-01```
+* 运行该程序，会构建一个tun设备，打开一个新的终端，使用 ```ifconfig``` 将可以看到系统中多了一个虚拟网络接口tun0，使用 ```route -n``` 查看路由也会看到增加了一条关于tun0设备的路由
+
+  ![screenshot of setting up tun0 device][img01]
+
+  <center><b>图1：构建一个tun设备后</b></center>
+
+  ------------
+
+* 尽管建立起了虚拟网卡tun0，但因为程序过于简单，所以这样建立的设备什么事情都做不了，必须完善程序，才能让这个设备真正地发回作用；
+* tun设备是一个第三层(网络层)的设备，在这个设备上只能收到IP报头，收不到以太网报头，所以Linux索性没有为tun设备分配MAC地址；
+* 后面将以本节的程序为基础，不断改进，最终写出一个简单的IP隧道的程序。
+
 ## 3. 使用tun设备是基本数据流向
 * 设备建立起来以后，程序员关心的是我们如何从这个设备上收发报文，如何处理这些报文；
 * 对于一个物理网络接口而言，接口一端连接着网络协议栈，另一端连接着物理网络；而对于一个虚拟网络接口而言，接口的一端仍然连接这网络协议栈，但是另一端连接着一个应用程序，也就是我们前面下载的那个程序([tun-01.c][src01])，我们把这个程序称为 **application-tun**；
