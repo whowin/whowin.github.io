@@ -52,7 +52,7 @@ postid: 180002
   - 交给物理层传输
 
 * 当我们在应用层进行socket编程时，我们通常会这样发送数据(以UDP为例)：
-  ```
+  ```C
   ......
   struct sockaddr_in addr;
   int sock = socket(AF_INET, SOCK_DGRAM, 0);
@@ -72,10 +72,11 @@ postid: 180002
 
   ![使用socket从应用程序发送数据的过程][img01]
 
-  **图1：使用socket从应用程序发送数据的过程**
+  <center><b>图1：使用socket从应用程序发送数据的过程</b></center>
+
 ********************************  
 * 当我们在应用层进行socket编程时，我们通常会这样接收数据(以UDP为例)：
-  ```
+  ```C
   ......
   struct sockaddr_in addr;
   int addr_len = sizeof(struct sockaddr_in);
@@ -98,7 +99,8 @@ postid: 180002
   
   ![在应用程序中用socket接收数据的过程][img02]
 
-  **图2：在应用程序中用socket接收数据的过程**
+  <center><b>图2：在应用程序中用socket接收数据的过程</b></center>
+
 *********************************
 * 很显然，在应用层进行网络编程，我们不需要关心各协议层的报头，各层的协议栈会为我们处理好所有报头；
 * 但这样的编程显然也是受限的，除了TCP和UDP以外，你还知道有什么其它的网络通信形式吗？这种在应用层的编程仅能收到发给这台机器的数据，而且在你收到的数据中，并没有源和目的地址的任何信息。
@@ -110,14 +112,15 @@ postid: 180002
 
   ![在应用程序中使用raw socket接收数据][img03]
 
-  **图3：在应用程序中使用raw socket接收数据**
+  <center><b>图3：在应用程序中使用raw socket接收数据</b></center>
 
+****************
 * 打开raw socket
   - 和普通socket一样，打开一个raw socket，必须要知道三件事：socket family、socket type 和 protocol；
   - 对raw socket而言，socket family为AF_PACKET，socket type为SOCK_RAW；
   - 接收数据时，protocol请参考头文件if_ether.h；接收所有数据包，protocol使用宏ETH_P_ALL；接收IP数据包，protocol使用宏ETH_P_IP。
 
-    ```
+    ```C
     int sock_raw;
     sock_raw = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
     if (sock_raw < 0) {
@@ -126,7 +129,7 @@ postid: 180002
     }
     ```
   - 发送数据时，protocol要参考头文件in.h，通常protocol使用IPPROTO_RAW；
-    ```
+    ```C
     sock_raw = socket(AF_PACKET, SOCK_RAW, IPPROTO_RAW);
     if (sock_raw == -1)
         printf("error in socket");
@@ -141,13 +144,14 @@ postid: 180002
 
   ![网络报头的通用定义][img04]
 
-  **图4：网络报头的通用定义**
+  <center><b>图4：网络报头的通用定义</b></center>
+
   *****************************
   - 以下仅就本文范例中用到的报头结构做一个简单说明。
 
 * **数据链路层的以太网头**
   - 以太网报头定义在头文件linux/if_ether.h中：
-    ```
+    ```C
     struct ethhdr {
         unsigned char  h_dest[ETH_ALEN];    /* destination eth addr  */
         unsigned char  h_source[ETH_ALEN];  /* source ether addr  */
@@ -160,7 +164,7 @@ postid: 180002
 * **网络层的 IP 头**
   - IP(Internet Protocol)协议是网络层最常用的协议；
   - IP报头定义在头文件linux/ip.h中；
-    ```
+    ```C
     struct iphdr {
     #if defined(__LITTLE_ENDIAN_BITFIELD)
         __u8  ihl:4,
@@ -186,7 +190,8 @@ postid: 180002
     ```
     ![IP 报头][img05]
 
-    **图5：IP 报头**
+    <center><b>图5：IP 报头</b></center>
+
   ******************************
   - version - IPV4时，version=4
   - ihl(Internet Header Length) - 报头的长度，表示报头占用多少个32 bits字(4 字节)，IP报头最少要20 bytes，也就是ihl=5，最长可以是60 bytes，也就是ihl=15；ihl x 4就是IP报头占用的字节数；
@@ -195,7 +200,7 @@ postid: 180002
   - id - IP报文的唯一标识，同一个IP报文分片传输时，其id是一样的，便于分片重组；
   - frag_off(Fragment Offest) - 其中bit 0、bit 1 和 bit 2用于控制和识别分片，bit 3 - 15这13个bit表示每个分片相对于原始报文开头的偏移量，以8字节作单位；
   - ttl(Time To Live) - 这个字段是为了防止报文在互联网上永远存在(比如进入路由环路)，在发送报文时设置这个值，最大255，通常设置为64，每经过一个路由器，该值将减1，当为0时，该报文将被丢弃；
-  - protocol - 该字段定义了在传输层所用的协议，协议号列表文件在/etc/protocols文件中，UDP为17，TCP为6；
+  - protocol - 该字段定义了在传输层所用的协议，协议号列表文件在/etc/protocols文件中，UDP为17，TCP为6，其取值定义在头文件linux/in.h中；
   - check - IP头的检查和，不包括payload，关于IP头的检查和的计算方法有专门的文章介绍，开一参考[这里](https://www.thegeekstuff.com/2012/05/ip-header-checksum/)，也可以参考本文的范例源代码；
   - saddr - 源IP地址，此字段是一个4字节的IP地址转为二进制并拼在一起所得到的32位值；例如：10.9.8.7是00001010 00001001 00001000 00000111 
   - daddr - 目的IP地址，表示方法与saddr一样；
@@ -205,7 +210,7 @@ postid: 180002
 * **传输层的 UDP 头**
   - UDP(User Datagram Protocol)是传输层最常用的协议之一；
   - UDP头定义在头文件linux/udp.h中；
-    ```
+    ```C
     struct udphdr {
         __be16	source;
         __be16	dest;
@@ -229,7 +234,7 @@ postid: 180002
   6. 提取收到的数据
 
 * 下面是一个监听UDP数据包的范例程序，文件名receive_udp_packet.c
-  ```
+  ```C
   #include <stdio.h>
   #include <unistd.h>
   #include <string.h>
@@ -469,11 +474,11 @@ postid: 180002
 * 为了避免冗长的log文件，这个程序接收10个UDP数据包后会自动退出；
 * 该程序经过扩展后可以成为一个简单的数据包嗅探器；
 * **编译程序**
-  ```
+  ```bash
   gcc -Wall receive_udp_packet.c -o receive_udp_packet
   ```
 * **运行程序**
-  ```
+  ```bash
   sudo ./receive_udp_packet
   ```
   - 这个程序必须要使用root权限运行，因为使用了raw socket
@@ -482,7 +487,7 @@ postid: 180002
   - 最好使用局域网中的两台机器(虚拟机)进行测试，因为在下面的测试方法中，从本机发送时，以太网头中的源和目的MAC地址可能会被填0；
   - 假定A机的IP地址为 192.168.2.114，在A机运行程序receive_udp_packet程序；
   - 我们从B机(与A机的IP不同)，发送数据：
-    ```
+    ```bash
     echo -n "udp packet 01" > /dev/udp/192.168.2.114/8000
     echo -n "udp packet 02" > /dev/udp/192.168.2.114/8001
     ......
@@ -490,14 +495,14 @@ postid: 180002
   - 8000和8001是端口号，可以是任意的；
   - 连接在网络上的A机，有可能会从网络上收到其它的UDP包，所以A机启动receive_udp_packet程序后，要尽快在B机发出数据，否则可能你还没有发出数据，A机已经收到了10条UDP包并自动退出；
   - 查看log文件，看看有没有你发出来的数据
-    ```
+    ```bash
     cat udp_packets.log
     ```
   - 在我的电脑上看到的是这样的：
 
     ![收到的 udp 数据包][img06]
 
-    **图6：收到的 UDP 数据包**
+    <center><b>图6：收到的 UDP 数据包</b></center>
 
 
 -------------
@@ -507,14 +512,14 @@ postid: 180002
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[img01]:/images/180002/sending_data_from_app_with_socket.png
-[img02]:/images/180002/receiving_data_in_app_with_socket.png
-[img03]:/images/180002/app_receive_data_with_raw_socket.png
-[img04]:/images/180002/a_generic_representation_of_a_network_packet.png
-[img05]:/images/180002/ip_header.png
-[img06]:/images/180002/receive_udp_packet.png
+[img01]:https://whowin.gitee.io/images/180002/sending_data_from_app_with_socket.png
+[img02]:https://whowin.gitee.io/images/180002/receiving_data_in_app_with_socket.png
+[img03]:https://whowin.gitee.io/images/180002/app_receive_data_with_raw_socket.png
+[img04]:https://whowin.gitee.io/images/180002/a_generic_representation_of_a_network_packet.png
+[img05]:https://whowin.gitee.io/images/180002/ip_header.png
+[img06]:https://whowin.gitee.io/images/180002/receive_udp_packet.png
 
 

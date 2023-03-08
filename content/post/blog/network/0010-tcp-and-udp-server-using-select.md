@@ -60,7 +60,7 @@ postid: 180010
 * **select()函数**
   - select()函数用于监视文件描述符的变化情况——可读、可写或是异常。
   - 函数定义
-    ```
+    ```C
     int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
     ```
   - 参数说明
@@ -73,7 +73,7 @@ postid: 180010
 * **struct timeval结构**
   - 该结构用于指定select函数的超时时间
   - 定义
-    ```
+    ```C
     struct timeval {
         long    tv_sec;         /* seconds */
         long    tv_usec;        /* microseconds */
@@ -89,7 +89,7 @@ postid: 180010
 * **宏FD_ZERO**
   - 该宏定义在头文件sys/select.h中
   - 该宏可以将一个fd_set全部清空，下面的例子将fds清空
-    ```
+    ```C
     fd_set fds;
     FD_SET(fds);
     ```
@@ -97,7 +97,7 @@ postid: 180010
 * **宏FD_SET**
   - 该宏定义在头文件sys/select.h中
   - 将指定的文件描述符fd加入到某一个文件描述符集fd_set中，下面的例子将文件描述符fd加入到文件描述符集fds中
-    ```
+    ```C
     fd_set fds;
     FD_SET(FD, fds);
     ```
@@ -105,7 +105,7 @@ postid: 180010
 * **宏FD_ISSET**
   - 该宏定义在头文件sys/select.h中
   - 检查一个文件描述符集fds中是否有文件描述符fd，下面例子中检查文件描述符集fds中是否存在文件描述符fd
-    ```
+    ```C
     fd_set fds
     ......
     if (FD_ISSET(fd, &fds)) {
@@ -120,136 +120,27 @@ postid: 180010
 * 其它函数和数据结构的介绍，请参考另两篇文章[《使用C语言实现服务器/客户端的UDP通信》][article1]和[《使用C语言实现服务器/客户端的TCP通信》][article2]
 
 ## 3. 实例
-* 本示例一共有三个程序，tcp/udp服务器：tuserver.c，tcp客户端：tclient.c和udp客户端uclient.c
+* 本示例一共有三个程序，tcp/udp服务器：tcp-udp-server.c，tcp客户端：tcp-client.c和udp客户端udp-client.c
 * 本示例演示了如何使用select机制在一个服务器程序里既提供TCP服务，又提供UDP服务；有些服务(比如聊天)，可以既允许UDP接入，也允许TCP接入的，这种情况下，这样一种机制就显得比较实用；
-* 服务器端程序：tuserver.c
-  ```
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <unistd.h>
-  #include <string.h>
-
-  #include <sys/select.h>
-  #include <arpa/inet.h>
-  #include <netinet/in.h>
-  #include <sys/socket.h>
-
-  #define PORT            5000
-  #define BUF_SIZE        1024
-  #define MAXFD(x, y)     (x>y)?x:y
-
-  int main() {
-      int tcp_fd, conn_fd, udp_fd;
-      struct sockaddr_in server_addr, client_addr;
-
-      fd_set rset;
-      int nready, max_fd;
-
-      char buffer[BUF_SIZE];
-      ssize_t n;
-      socklen_t len;
-
-      char *tcp_msg = "Hello TCP Client";
-      char *udp_msg = "Hello UDP Client";
-      void sig_chld(int);
-
-      // Step 1: Create a TCP socket
-      //=============================
-      tcp_fd = socket(AF_INET, SOCK_STREAM, 0);
-      // Step 2: Create an UDP socket
-      //==============================
-      udp_fd = socket(AF_INET, SOCK_DGRAM, 0);
-      // Step 3: Bind both sockets to the server address.
-      //=================================================
-      bzero(&server_addr, sizeof(server_addr));
-      server_addr.sin_family = AF_INET;
-      server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-      server_addr.sin_port = htons(PORT);
-
-      // binding server addr structure to listenfd
-      bind(tcp_fd, (struct sockaddr *)&server_addr, sizeof(server_addr));
-      // binding server addr structure to udp sockfd
-      bind(udp_fd, (struct sockaddr*)&server_addr, sizeof(server_addr));
-      // Step 4: Listen on the TCP socket
-      //==================================
-      listen(tcp_fd, 5);
-
-      // get maxfd
-      max_fd = MAXFD(tcp_fd, udp_fd) + 1;
-      while (1) {
-          // Step 5: Put TCP socket and UDP socket descriptors into descriptor set
-          //=======================================================================
-          // clear the descriptor set
-          FD_ZERO(&rset);
-
-          // set listenfd and udpfd in readset
-          FD_SET(tcp_fd, &rset);
-          FD_SET(udp_fd, &rset);
-          // Step 6: Call select and get the ready descriptor(TCP or UDP)
-          //==============================================================
-          // select the ready descriptor
-          nready = select(max_fd, &rset, NULL, NULL, NULL);
-
-          if (nready < 0) {
-              printf("select() failed....\n");
-              close(tcp_fd);
-              close(udp_fd);
-              return -1;
-          } else if (nready > 0) {
-              if (FD_ISSET(tcp_fd, &rset)) {
-                  // Step 7: if tcp socket is readable then handle it by accepting the connection
-                  //==============================================================================
-                  len = sizeof(client_addr);
-                  conn_fd = accept(tcp_fd, (struct sockaddr*)&client_addr, &len);
-                  if (conn_fd > 0) {
-                      bzero(buffer, sizeof(buffer));
-                      n = 0;
-                      n = read(conn_fd, buffer, sizeof(buffer));
-                      if (n > 0) {
-                          buffer[n] = '\0';
-                          printf("Message From TCP client: %s\n", buffer);
-                          write(conn_fd, tcp_msg, strlen(tcp_msg));
-                          sleep(1);
-                      }
-                      close(conn_fd);
-                  }
-              } else if (FD_ISSET(udp_fd, &rset)) {
-                  // Step 8: if udp socket is readable receive the message.
-                  //=======================================================
-                  len = sizeof(client_addr);
-                  bzero(buffer, sizeof(buffer));
-                  n = 0;
-                  n = recvfrom(udp_fd, buffer, sizeof(buffer), 0, (struct sockaddr *)&client_addr, &len);
-                  if (n > 0) {
-                      buffer[n] = '\0';
-                      printf("\nMessage from UDP client: %s\n", buffer);
-                      sendto(udp_fd, udp_msg, strlen(udp_msg), 0, (struct sockaddr *)&client_addr, sizeof(client_addr));
-                  }
-              }
-          }
-          // Go back step 5
-      } // end of while
-      return 0;
-  }
-  ```
+* 服务器端程序：[tcp-udp-server.c][src01](**点击文件名下载源程序**)
 
 * 服务器端程序的编译
-  ```
-  gcc -Wall tuserver.c -o tuserver
+  ```bash
+  gcc -Wall tcp-udp-server.c -o tcp-udp-server
   ```
 
 * 服务器端程序的测试
   - 在一台机器上启动服务器端程序
-    ```
-    ./tuserver
+    ```bash
+    ./tcp-udp-server
     ```
   - 假定服务器IP为192.168.2.112，在另一台机器上启动nc模拟客户端，测试TCP
-    ```
+    ```bash
     nc -n 192.168.2.112 5000
     hello server
     ```
   - 退出TCP测试，重新启动nc，测试UDP
-    ```
+    ```bash
     nc -n -u 192.168.2.112 5000
     ```
   - 有关nc命令的使用方法，可以参考另一篇文章[《如何在Linux命令行下发送和接收UDP数据包》][article3]
@@ -268,141 +159,25 @@ postid: 180010
     ![screenshot of udp client test][img03]
 
 *************
-* TCP客户端程序：tclient.c
-  ```
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <string.h>
-  #include <unistd.h>
+* TCP客户端程序：[tcp-client.c][src02](**点击文件名下载源程序**)
 
-  #include <sys/socket.h>
-  #include <netinet/in.h>
-  #include <arpa/inet.h>
-
-  #define SERVER_IP   "192.168.2.112"
-  #define PORT        5000
-  #define BUF_SIZE    1024
-
-  int main() {
-      int sockfd;
-      char buffer[BUF_SIZE];
-      int n;
-      char *message = "Hello Server";
-      struct sockaddr_in server_addr;
-
-      // Step1: Creating socket file descriptor
-      //========================================
-      if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-          printf("socket creation failed");
-          exit(0);
-      }
-
-      // Step 2: Establish a connection with the server.
-      //=================================================
-      memset(&server_addr, 0, sizeof(server_addr));
-
-      // Filling server information
-      server_addr.sin_family      = AF_INET;
-      server_addr.sin_port        = htons(PORT);
-      server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
-
-      if (connect(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-          printf("\n Error : Connect Failed \n");
-          close(sockfd);
-          exit(0);
-      }
-
-      // Step 3: When the connection is accepted write a message to a server
-      //=====================================================================
-      write(sockfd, message, strlen(message));
-
-      // Step 4: Read the response of the Server
-      //==========================================
-      n = 0;
-      memset(buffer, 0, sizeof(buffer));
-      n = read(sockfd, buffer, sizeof(buffer));
-      buffer[n] = '\0';
-      printf("Message from server: %s\n", buffer);
-
-      // Step 5: Close socket descriptor and exit
-      //==========================================
-      close(sockfd);
-      return 0;
-  }
-  ```
-
-* UDP客户端程序：uclient.c
-  ```
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <string.h>
-  #include <unistd.h>
-
-  #include <arpa/inet.h>
-  #include <netinet/in.h>
-  #include <sys/socket.h>
-
-  #define SERVER_IP   "192.168.2.112"
-  #define PORT        5000
-  #define BUF_SIZE    1024
-
-  int main() {
-      int sockfd;
-      char buffer[BUF_SIZE];
-      char *message = "Hello Server";
-      struct sockaddr_in server_addr;
-      int n, len;
-
-      // Step 1: Creating socket file descriptor
-      //=========================================
-      if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-          printf("socket creation failed");
-          exit(0);
-      }
-
-      // Step 2: Send a message to the server
-      //======================================
-      memset(&server_addr, 0, sizeof(server_addr));
-
-      // Filling server information
-      server_addr.sin_family      = AF_INET;
-      server_addr.sin_port        = htons(PORT);
-      server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
-      // send hello message to server
-      sendto(sockfd, message, strlen(message), 0, (const struct sockaddr *)&server_addr, sizeof(server_addr));
-
-      // Step 3: Wait until a response from the server is received
-      //===========================================================
-      // receive server's response
-      len = sizeof(struct sockaddr_in);
-      n = 0;
-      memset(buffer, 0, BUF_SIZE);
-      n = recvfrom(sockfd, buffer, BUF_SIZE, 0, (struct sockaddr *)&server_addr, (socklen_t *)&len);
-      buffer[n] = '\0';
-      printf("Message from server: %s\n", buffer);
-
-      // Step 4: Close socket descriptor and exit
-      //==========================================
-      close(sockfd);
-      return 0;
-  }
-  ```
+* UDP客户端程序：[udp-client.c][src03](**点击文件名下载源程序**)
 
 * 客户端程序编译
-  ```
-  gcc -Wall tclient.c -o tclient
-  gcc -Wall uclient.c -o uclient
+  ```bash
+  gcc -Wall tcp-client.c -o tcp-client
+  gcc -Wall udp-client.c -o udp-client
   ```
 
 * 程序运行
   - 在服务器上(192.168.2.112)上运行服务器端程序
-    ```
-    ./tuserver
+    ```bash
+    ./tcp-udp-server
     ```
   - 在另一台机器上运行客户端程序
-    ```
-    ./tclient
-    ./uclient
+    ```bash
+    ./tcp-client
+    ./udp-client
     ```
   - 服务器端的运行截图
 
@@ -420,16 +195,20 @@ postid: 180010
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[img01]:/images/180010/server_test.png
-[img02]:/images/180010/tcpclient_test.png
-[img03]:/images/180010/udpclient_test.png
-[img04]:/images/180010/screenshot_of_server.png
-[img05]:/images/180010/screenshot_of_client.png
+[src01]:/sourcecodes/180010/tcp-udp-server.c
+[src02]:/sourcecodes/180010/tcp-client.c
+[src03]:/sourcecodes/180010/udp-client.c
+
+[img01]:https://whowin.gitee.io/images/180010/server_test.png
+[img02]:https://whowin.gitee.io/images/180010/tcpclient_test.png
+[img03]:https://whowin.gitee.io/images/180010/udpclient_test.png
+[img04]:https://whowin.gitee.io/images/180010/screenshot_of_server.png
+[img05]:https://whowin.gitee.io/images/180010/screenshot_of_client.png
 
 
-[article1]:../0013-udp-server-client-implementation-in-c/
-[article2]:../0012-tcp-server-client-implementation-in-c/
-[article3]:../0005-send-udp-via-linux-cli/
+[article1]:https://whowin.gitee.io/post/blog/network/0013-udp-server-client-implementation-in-c/
+[article2]:https://whowin.gitee.io/post/blog/network/0012-tcp-server-client-implementation-in-c/
+[article3]:https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/

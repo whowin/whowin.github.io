@@ -62,7 +62,7 @@ arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护
 
 ## 2. ioctl的调用方法
 * 对于arp cache的操作，其调用方法为：
-  ```
+  ```C
   #include <sys/sockio.h>
   #include <sys/socket.h>
 
@@ -78,7 +78,7 @@ arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护
 * ioctl的第一个参数s是socket，第二个参数是要进行的操作，第三个参数是一个arp请求的结构；
 * 第二个参数使用的三个宏定义，定义在头文件 bits/ioctls.h 中；
 * ARP ioctl请求结构，定义在net/if_arp.h或者linux/if_arp.h中；
-  ```
+  ```C
   /* ARP ioctl request.  */
   struct arpreq {
       struct sockaddr arp_pa;       /* Protocol address.  */
@@ -95,7 +95,7 @@ arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护
 * **获取arp cache中的记录(SIOCGARP)**
   - 需要填写(struct arpreq)中的arp_pa和arp_dev两个字段；
   - arp_pa实际对应(struct sockaddr_in)，其中sin_family字段必须为AF_INET，sin_addr字段填请求MAC地址对应的IP地址，sin_port不用填；
-    ```
+    ```C
     struct sockaddr {  
         sa_family_t sin_family;       /* Protocol family.  */
     　　 char sa_data[14];
@@ -119,7 +119,7 @@ arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护
   - arp_ha中，sa_family填AF_UNSPEC，sa_data中填入在arp_pa中的IP地址对应的MAC地址；
   - arp_flags填'ATF_PERM | ATF_COM'，表示这条记录为完整的、永久性记录，因为arp cache中的动态记录都是有时效的，过一段时间就会失效，只有设置为永久记录才使其成为一条静态记录，不会失效;
   - arp_flags中每一位代表一个标志，每一位的定义在linux/if_arp或者net/if_arp中：
-    ```
+    ```C
     /* ARP Flag values.  */
     #define ATF_COM         0x02      /* Completed entry (ha valid).  */
     #define ATF_PERM        0x04      /* Permanent entry.  */
@@ -138,122 +138,15 @@ arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护
 
 ## 3. 获取arp cache中记录的实例
 * ioctl获取arp cache的记录，只能一条一条的获取，不能一下获取一个完整的arp cache，要获取一个完整的arp cache，似乎唯一的办法就是读取文件：/proc/net/arp，至少我还没有找到其它方法；
-* 在这个实例中，我们仅仅获得arp cache中的一条记录，文件名为：arp_get.c
-  ```
-  #include <stdio.h>
-  #include <string.h>
-  #include <errno.h>
-  #include <stdlib.h>
-  #include <unistd.h>
-
-  #include <net/if.h>
-  #include <net/if_arp.h>
-
-  #include <sys/ioctl.h>
-  #include <sys/types.h>
-  #include <sys/socket.h>
-
-  #include <netinet/in.h>
-  #include <arpa/inet.h>
-
-  #define TRUE        1
-  #define FALSE       0
-
-  // Check if the IP address is valid
-  int valid_ip(char *p) {
-      int i, j = strlen(p);
-      char *p1;
-      int n = 0;
-
-      if (j > 15 || j < 7) return FALSE;
-
-      p1 = p;
-      for (i = 0; i < j; ++i) {
-          if ((p[i] < '0' || p[i] > '9') && p[i] != '.') return FALSE;
-          if (p[i] == '.') {
-              ++n;
-              if (atoi(p1) > 255 || *p1 == '.') return FALSE;
-              p1 = p + i + 1;
-          }
-      }
-      if (n != 3 || p1 == p + j) return FALSE;
-
-      return TRUE;
-      
-  }
-
-  int main(int argc, char *argv[]) {
-      // Check arguments
-      if (argc != 3) {
-          printf("Usage: %s [interface name] [dst IP]\n", argv[0]);
-          exit(EXIT_FAILURE);
-      }
-
-      // Interface name
-      char ifname[IF_NAMESIZE] = {'\0'};
-      strncpy(ifname, argv[1], IF_NAMESIZE - 1);
-
-      // IP address
-      char ipaddr[INET_ADDRSTRLEN] = {'\0'};
-      strncpy(ipaddr, argv[2], INET_ADDRSTRLEN);
-
-      // Check if the IP address is valid
-      if (!valid_ip(ipaddr)) {
-          printf("Invalid IP address: %s\n", ipaddr);
-          exit(EXIT_FAILURE);
-      }
-
-      int sockfd;
-      unsigned char *mac;
-      struct arpreq arp_req;
-      struct sockaddr_in *sin;
-
-      // initialize struct arpreq
-      memset(&arp_req, 0, sizeof(arp_req));
-
-      sin = (struct sockaddr_in *)&(arp_req.arp_pa);
-      sin->sin_family = AF_INET;
-      inet_pton(AF_INET, ipaddr, &(sin->sin_addr));
-      strncpy(arp_req.arp_dev, ifname, IF_NAMESIZE - 1);
-
-      // Create socket
-      if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-          perror("Socket creation failed...");
-          exit(EXIT_FAILURE);
-      }
-
-      // getting arp entry via ioctl
-      if (ioctl(sockfd, SIOCGARP, &arp_req) < 0) {
-          perror("Getting arp entry failed...");
-          close(sockfd);
-          exit(EXIT_FAILURE);
-      }
-
-      // ioctl successfully.
-      if (arp_req.arp_flags & ATF_COM) {
-          // the entry in arp cache is okay.
-          mac = (unsigned char *)arp_req.arp_ha.sa_data;
-          printf("Interface name: %s\tIP: %s\n", ifname, ipaddr);
-          printf("MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
-                  mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-      } else {
-          // the entry in arp cache is incomplete.
-          printf("The entry in arp cache is incomplete. IP: %s\tInterface name: %s\n", ipaddr, ifname);
-          printf("Sometimes just wait for a moment, will get complete MAC address.\n");
-      }
-
-      close(sockfd);
-      return 0;
-  }
-  ```
+* 在这个实例中，我们仅仅获得arp cache中的一条记录，文件名为：[arp-get.c][src01](**点击文件名下载源程序**)
 * 编译
-  ```
-  gcc -Wall arp_get.c -o arp_get
+  ```bash
+  gcc -Wall arp-get.c -o arp-get
   ```
 * 运行
-  ```
+  ```bash
   cat /proc/net/arp
-  ./arp_get enp0s3 192.168.2.112
+  ./arp-get enp0s3 192.168.2.112
   ```
 * 运行截屏
 
@@ -263,53 +156,15 @@ arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护
 ## 4. 从/proc/net/arp文件中获取完整arp cache
 * 如果想要看arp cache的完整记录，只能去读文件/proc/net/arp了，本例用读取文件的方式显示arp cache的全部记录；
 * 如果你对宏str(s)和xstr(s)的用法不熟悉，可以参考[《Stringizing Operator (#) in C》][article1]
-* 文件名：arp_get_all.c
-  ```
-  #include <stdio.h>
-
-  #define xstr(s) str(s)
-  #define str(s) #s
-
-  #define ARP_CACHE_FILE      "/proc/net/arp"
-  #define ARP_STRING_LEN      1023
-  #define ARP_BUFFER_LEN      (ARP_STRING_LEN + 1)
-
-  /* Format for fscanf() to read the 1st, 4th, and 6th space-delimited fields */
-  #define ARP_LINE_FORMAT     "%" xstr(ARP_STRING_LEN) "s %*s %*s " \
-                              "%" xstr(ARP_STRING_LEN) "s %*s " \
-                              "%" xstr(ARP_STRING_LEN) "s"
-
-  int main() {
-      FILE *arp_cache = fopen(ARP_CACHE_FILE, "r");
-      if (!arp_cache) {
-          perror("Arp Cache: Failed to open file \"" ARP_CACHE_FILE "\"");
-          return 1;
-      }
-
-      // Ignore the first line, which contains the header
-      char header[ARP_BUFFER_LEN];
-      if (!fgets(header, sizeof(header), arp_cache)) {
-          return 1;
-      }
-
-      char ip_addr[ARP_BUFFER_LEN], hw_addr[ARP_BUFFER_LEN], device[ARP_BUFFER_LEN];
-      int count = 0;
-      while (3 == fscanf(arp_cache, ARP_LINE_FORMAT, ip_addr, hw_addr, device)) {
-          printf("%03d: Mac Address of [%s] on [%s] is \"%s\"\n",
-                  ++count, ip_addr, device, hw_addr);
-      }
-      fclose(arp_cache);
-      return 0;
-  }
-  ```
+* 文件名：[arp-get-all.c][src02](**点击文件名下载源程序**)
 * 文件/proc/net/arp中有6个字段，本程序只读出了其中的3个：IP地址、设备名称和MAC地址，如果需要，可以修改程序读出全部字段；
 * 编译
-  ```
-  gcc -Wall arp_get_all.c -o arp_get_all
+  ```bash
+  gcc -Wall arp-get-all.c -o arp-get-all
   ```
 * 运行
-  ```
-  ./arp_get_all
+  ```bash
+  ./arp-get-all
   ```
 * 运行截图
 
@@ -318,153 +173,21 @@ arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护
 ************
 ## 5. 在arp cache中添加一条静态记录的实例
 * 在这个程序中要重点解释的是关于arp_flags的设置
-  ```
+  ```C
   arp_req.arp_flags = ATF_PERM | ATF_COM;
   ```
 * 关于arp_flags相关宏的定义在前面已经有介绍，其中ATF_COM表示记录是完整的，ATF_PERM表示记录是永久性的；
 * arp_flags是必须要设置ATF_COM的，否则这条记录将被认为是不完整的，用arp -ae显示arp记录时，该记录将被标记为(incomplete)；
 * 当需要添加一条动态记录时，arp_flags = ATF_COM即可，当需要添加一条静态记录时，要设置arp_flags = ATF_COM | ATF_PERM
-* 文件名：arp_set.c
-  ```
-  #include <stdio.h>
-  #include <string.h>
-  #include <errno.h>
-  #include <stdlib.h>
-  #include <unistd.h>
-
-  #include <net/if.h>
-  #include <netinet/if_ether.h>
-  #include <net/if_arp.h>
-
-  #include <sys/ioctl.h>
-  #include <sys/types.h>
-  #include <sys/socket.h>
-
-  #include <netinet/in.h>
-  #include <arpa/inet.h>
-
-  #define TRUE        1
-  #define FALSE       0
-
-  // Check if the IP address is valid
-  int valid_ip(char *p) {
-      int i, j = strlen(p);
-      char *p1;
-      int n = 0;
-
-      if (j > 15 || j < 7) return FALSE;
-
-      p1 = p;
-      for (i = 0; i < j; ++i) {
-          if ((p[i] < '0' || p[i] > '9') && p[i] != '.') return FALSE;
-          if (p[i] == '.') {
-              ++n;
-              if (atoi(p1) > 255 || *p1 == '.') return FALSE;
-              p1 = p + i + 1;
-          }
-      }
-      if (n != 3 || p1 == p + j) return FALSE;
-
-      return TRUE;
-      
-  }
-
-  int valid_mac(char *macaddr, unsigned char *mac) {
-      int i;
-      unsigned int hex_int;
-      char *s;
-
-      i = 0;
-      while ((s = strsep(&macaddr, ":")) != NULL) {
-          if (i >= ETH_ALEN) return FALSE;
-          if (sscanf(s, "%x", &hex_int) != 1 || hex_int > 0xff)
-              return FALSE;
-          *(mac + i) = (unsigned char)hex_int;
-          i++;
-      }
-
-      return TRUE;
-  }
-
-  int main(int argc, char *argv[]) {
-      int sockfd;
-      struct arpreq arp_req;
-      struct sockaddr_in *sin;
-
-      if (argc != 4) {
-          fprintf(stderr,
-          "Usage: %s [interface name] [dst IP] [dst MAC]\n", argv[0]);
-          exit(EXIT_FAILURE);
-      }
-
-      // Interface name
-      char ifname[IF_NAMESIZE] = {'\0'};
-      strncpy(ifname, argv[1], IF_NAMESIZE - 1);
-
-      // IP address
-      char ipaddr[INET_ADDRSTRLEN] = {'\0'};
-      strncpy(ipaddr, argv[2], INET_ADDRSTRLEN);
-
-      // Check if the IP address is valid
-      if (!valid_ip(ipaddr)) {
-          printf("Invalid IP address: %s\n", ipaddr);
-          exit(EXIT_FAILURE);
-      }
-
-      // MAC address
-      if (strlen(argv[3]) < 11) {
-          printf("Wrong MAC address: %s\n", argv[3]);
-          exit(EXIT_FAILURE);
-      }
-      char *macaddr = (char *)malloc(strlen(argv[3]) + 1);
-      memcpy(macaddr, argv[3], strlen(argv[3]));
-      macaddr[strlen(argv[3])] = '\0';
-
-      // clear struct arpreq
-      memset(&arp_req, 0, sizeof(arp_req));
-
-      // Check if MAC address is valid
-      if (!valid_mac(macaddr, (unsigned char *)arp_req.arp_ha.sa_data)) {
-          printf("Invalid MAC address: %s\n", macaddr);
-          free(macaddr);
-          exit(EXIT_FAILURE);
-      }
-      free(macaddr);
-
-      // Fill the fields in struct arpreq
-      sin = (struct sockaddr_in *)&(arp_req.arp_pa);
-      sin->sin_family = AF_INET;
-      inet_pton(AF_INET, ipaddr, &(sin->sin_addr));
-      strncpy(arp_req.arp_dev, ifname, IF_NAMESIZE - 1);
-
-      arp_req.arp_flags = ATF_PERM | ATF_COM;
-
-      // Create socket
-      if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-          perror("Socket creation failed...");
-          exit(EXIT_FAILURE);
-      }
-
-      // Set an entry in arp cache
-      if (ioctl(sockfd, SIOCSARP, &arp_req) < 0) {
-          perror("Set arp entry failed: ");
-          close(sockfd);
-          exit(EXIT_FAILURE);
-      }
-      printf("Setting an arp entry done.\n");
-
-      close(sockfd);
-      return 0;
-  }
-  ```
+* 文件名：[arp-set.c][src03](**点击文件名下载源程序**)
 * 编译
-  ```
-  gcc -Wall arp_set.c -o arp_set
+  ```bash
+  gcc -Wall arp-set.c -o arp-set
   ```
 * 因为要修改内核中的arp cache，所以运行这个程序，是需要root权限的
-  ```
+  ```bash
   arp -ae
-  sudo ./arp_set enp0s3 192.168.2.118 85:3b:4c:36:41:f5
+  sudo ./arp-set enp0s3 192.168.2.118 85:3b:4c:36:41:f5
   arp -ae
   ```
 * 运行截图
@@ -476,105 +199,15 @@ arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护
 
 ## 6. 在arp cache中删除一条记录的实例
 * arp cache实际上是以[IP address]为键值的，所以，删除时只需要知道设备名称和IP地址即可；
-* 文件名：arp_del.c
-  ```
-  #include <stdio.h>
-  #include <string.h>
-  #include <errno.h>
-  #include <stdlib.h>
-  #include <unistd.h>
-
-  #include <net/if.h>
-  #include <net/if_arp.h>
-
-  #include <sys/ioctl.h>
-  #include <sys/types.h>
-  #include <sys/socket.h>
-
-  #include <netinet/in.h>
-  #include <arpa/inet.h>
-
-  #define TRUE        1
-  #define FALSE       0
-
-  // Check if the IP address is valid
-  int valid_ip(char *p) {
-      int i, j = strlen(p);
-      char *p1;
-      int n = 0;
-
-      if (j > 15 || j < 7) return FALSE;
-
-      p1 = p;
-      for (i = 0; i < j; ++i) {
-          if ((p[i] < '0' || p[i] > '9') && p[i] != '.') return FALSE;
-          if (p[i] == '.') {
-              ++n;
-              if (atoi(p1) > 255 || *p1 == '.') return FALSE;
-              p1 = p + i + 1;
-          }
-      }
-      if (n != 3 || p1 == p + j) return FALSE;
-
-      return TRUE;
-      
-  }
-
-  int main(int argc, char *argv[]) {
-      // Check arguments
-      if (argc != 3) {
-          printf("Usage: %s [interface name] [dst IP]\n", argv[0]);
-          exit(EXIT_FAILURE);
-      }
-
-      // Interface name
-      char ifname[IF_NAMESIZE] = {'\0'};
-      strncpy(ifname, argv[1], IF_NAMESIZE - 1);
-
-      // IP address
-      char ipaddr[INET_ADDRSTRLEN] = {'\0'};
-      strncpy(ipaddr, argv[2], INET_ADDRSTRLEN);
-
-      // Check if the IP address is valid
-      if (!valid_ip(ipaddr)) {
-          printf("Invalid IP address: %s\n", ipaddr);
-          exit(EXIT_FAILURE);
-      }
-
-      int sockfd;
-      struct arpreq arp_req;
-      struct sockaddr_in *sin;
-
-      // initialize struct arpreq
-      memset(&arp_req, 0, sizeof(arp_req));
-      sin = (struct sockaddr_in *)&(arp_req.arp_pa);
-      sin->sin_family = AF_INET;
-      strncpy(arp_req.arp_dev, ifname, IF_NAMESIZE - 1);
-      inet_pton(AF_INET, ipaddr, &(sin->sin_addr));
-
-      // Create socket
-      sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-
-      // deleting an arp entry via ioctl
-      if (ioctl(sockfd, SIOCDARP, &arp_req) < 0) {
-          perror("Deleting arp entry failed: ");
-          close(sockfd);
-          exit(EXIT_FAILURE);
-      }
-      printf("Deleting an arp entry done.\n");
-
-      close(sockfd);
-      return 0;
-  }
-  ```
+* 文件名：[arp-del.c][src04](**点击文件名下载源程序**)
 * 编译
-  ```
-  gcc -Wall arp_del.c -o arp_del
+  ```bash
+  gcc -Wall arp-del.c -o arp-del
   ```
 * 这个程序也是要root权限才能运行的，我们将上一节添加的记录删除掉
-  ```
+  ```bash
   arp -ae
-  sudo ./arp_del enp0s3 192.168.2.118
+  sudo ./arp-del enp0s3 192.168.2.118
   arp -ae
   ```
 * 运行截屏
@@ -588,12 +221,17 @@ arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[img01]:/images/180014/screenshot_arp_get.png
-[img02]:/images/180014/screenshot_of_arp_get_all.png
-[img03]:/images/180014/screenshot_of_arp_set.png
-[img04]:/images/180014/screenshot_of_arp_del.png
+[src01]:/sourcecodes/180014/arp-get.c
+[src02]:/sourcecodes/180014/arp-get-all.c
+[src03]:/sourcecodes/180014/arp-set.c
+[src04]:/sourcecodes/180014/arp-del.c
+
+[img01]:https://whowin.gitee.io/images/180014/screenshot_arp_get.png
+[img02]:https://whowin.gitee.io/images/180014/screenshot_of_arp_get_all.png
+[img03]:https://whowin.gitee.io/images/180014/screenshot_of_arp_set.png
+[img04]:https://whowin.gitee.io/images/180014/screenshot_of_arp_del.png
 
 [article1]:https://www.includehelp.com/c/stringize-operator-in-c.aspx

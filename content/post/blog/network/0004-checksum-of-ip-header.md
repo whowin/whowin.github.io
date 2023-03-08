@@ -31,7 +31,8 @@ postid: 180004
 * 计算IP报头的checksum当然要了解IP协议的基本报头结构，下面是IP报头的基本格式：
 
   ![IP报头的基本格式][img01]
-  **<center>图1：IP报头的基本格式</center>**
+
+  <center><b>图1：IP报头的基本格式</b></center>
 
 *****************
 * 更好地理解IP报头各字段的含义，可以参考我的另一篇文章[《Linux下如何在数据链路层接收原始数据包》](/post/blog/linux/0011-link_layer_programming/)或者参考 [IP Protocol Header Fundamentals Explained with Diagrams](https://www.thegeekstuff.com/2012/03/ip-protocol-header/);
@@ -42,7 +43,7 @@ postid: 180004
 ## 3. IP报头checksum实例
 * 对于IP报头的checksum，我们现在已经有了足够的理论知识，下面我们用一个实例实际做一下计算；
 * 假定下面使我们收到的IP报头(按16进制)
-  ```
+  ```plaintext
   4500 003c 1c46 4000 4006 b1e6 ac10 0a63 ac10 0a0c
   ```
 * 我们先来看看这些数字与IP报头中各个字段的对应关系(请参考图1)
@@ -56,7 +57,7 @@ postid: 180004
   - 'ac10 0a63'对应IP报头中的Source IP Address，也就是源IP地址，相当于IP地址：172.16.10.99
   - 'ac10 0a0c'对应IP报头中的Destination IP Address，也就是目的IP地址，相当于IP地址：172.16.10.12
 * 现在我们已经搞清楚了这些数字与IP报头各个字段的对应关系，我们先把这些16进制的数字转换成二进制
-  ```
+  ```plaintext
   4500 -> 0100 0101 0000 0000
   003c -> 0000 0000 0011 1100
   1c46 -> 0001 1100 0100 0110
@@ -69,7 +70,7 @@ postid: 180004
   0a0c -> 0000 1010 0000 1100
   ```
 * 我们把这些二进制数注意相加
-  ```
+  ```plaintext
   4500  ->   0100 0101 0000 0000
   003c  ->   0000 0000 0011 1100
   453C  ->   0100 0101 0011 1100  // First result
@@ -130,10 +131,10 @@ postid: 180004
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
 
-[img01]:/images/180004/ip_header.png
+[img01]:https://whowin.gitee.io/images/180004/ip_header.png
 
 

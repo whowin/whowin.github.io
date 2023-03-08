@@ -24,13 +24,13 @@ draft: false
 postid: 180001
 ---
 
-使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。
+使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法：从proc文件从系统获取ipv6地址、使用getifaddrs()函数获取ipv6地址和使用netlink获取ipv6地址，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。
 <!--more-->
 
 ## 1. ipv4的IP地址的获取方法
 * 不论是获取 ipv4 的 IP 地址还是 ipv6 的地址，应用程序都需要与内核通讯才可以完成；
 * ioctl 是和内核通讯的一种常用方法，也是用来获取 ipv4 的 IP 地址的常用方法，下面代码演示了如何使用 ioctl 来获取本机所有接口的 IP 地址：
-    ```
+    ```C
     #include <stdio.h>
     #include <stdlib.h>
 
@@ -63,7 +63,7 @@ postid: 180001
     }
     ```
 * 但是使用 ioctl 无法获取 ipv6 地址，即便我们建立一个 AF_INET6 的 socket，ioctl 仍然只返回 ipv4 的信息，我们可以试试下面代码；
-    ```
+    ```C
     #include <stdio.h>
     #include <stdlib.h>
 
@@ -106,7 +106,9 @@ postid: 180001
 * 这段程序在我的机器上的运行结果是这样的：
 
     ![ioctl无法获取ipv6地址][img01]
-    - **图1：ioctl无法获取ipv6地址**
+
+    <center><b>图1：ioctl无法获取ipv6地址</b></center>
+
 -----------------------
 
 * 我们看到，不管怎么折腾，返回的仍然只有 ipv4 的地址，所以我们需要一些其他的方法获得 ipv6 地址，下面介绍三种使用 C 语言获得 ipv6 地址的方法。
@@ -115,7 +117,9 @@ postid: 180001
 * 我们先来看看文件/proc/net/if_inet6中有什么内容
 
     ![文件/proc/net/if_inet6内容][img02]
-    - **图2：文件/proc/net/if_inet6内容**
+
+    <center><b>图2：文件/proc/net/if_inet6内容</b></center>
+
 ----------------------
 
 * 这个文件中，每行为一个网络接口的数据，每行数据分成 6 个字段
@@ -130,7 +134,7 @@ postid: 180001
     |6|devname|接口设备名称|
 
 * 所以从这个文件中可以很容易地获得所有接口的 ipv6 地址
-    ```
+    ```C
     #include <stdio.h>
     #include <linux/if.h>
     #include <netinet/in.h>
@@ -166,18 +170,18 @@ postid: 180001
 * 关于 fscanf 中的 hh 和 h 的用法，可以查看在线手册 man fscanf 了解更多的内容；
 * ipv6 地址一共 128 位，16 位一组，一共 8 组，但是这里为什么不一次从文件中读入 4 个字符(16 位)，读 8 次，而要一次读入 2 个字符读 16 次呢？
     - 这个要去看 inet_ntop 的参数，我们先使用命令 man inet_ntop 看一下 inet_ntop 的在线手册
-        ```
+        ```C
         const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
         ```
     - 当第 1 个参数 af = AF_INET6 时，对于第 2 个参数，还有说明：
-        ```
+        ```plaintext
         AF_INET6
             src  points  to  a struct in6_addr (in network byte order) which is converted to a representation of
             this address in the most appropriate IPv6 network address format for this address.  The  buffer  dst
             must be at least INET6_ADDRSTRLEN bytes long.
         ```
     - 很显然，需要第 2 个参数指向一个 struct in6_addr，这个结构在 netinet/in.h 中定义：
-        ```
+        ```C
         /* IPv6 address */
         struct in6_addr
         {
@@ -196,7 +200,7 @@ postid: 180001
         ```
     - 这个结构在一般情况下使用的是 uint8_t  __u6_addr8[16]，也就是 16 个 unsigned char 的数组，只有在"混杂模式"时才使用 8 个 unsigned short int 或者 4 个 unsigned int 的数组；
     - 所以，实际上 struct in6_addr 的结构如下
-        ```
+        ```C
         struct in6_addr {
             unsigned char __u6_addr8[16];
         }
@@ -204,7 +208,7 @@ postid: 180001
     - 这就是我们在读文件时为什么要一次读入 2 个字符，读 16 次，要保证读出的内容符合 struct in6_addr 的定义；
 * 一次从文件中读入 4 个字符(16 位)，读 8 次，和一次读入 2 个字符读 16 次有什么不同呢？我们以 16 进制的 f8e9 为例
     - 当我们每次读入 2 个字符，读 2 次时，在内存中的排列是这样的
-        ```
+        ```C
         unsigned char _ipv6[16];
         fscanf(f, "%2hhx2hhx", &_ipv6[0], &_ipv6[1]);
         unsigned char *p = _ipv6
@@ -215,7 +219,7 @@ postid: 180001
          +----------- p
         ```
     - 当我们每次读入 4 个字符，读 1 次时，在内存中的排列是这样的
-        ```
+        ```C
         unsigned int _ipv6[8]
         fscanf(f, "%4x", &_ipv6[0])
         unsigned char *p = (unsigned char *)_ipv6
@@ -227,7 +231,7 @@ postid: 180001
         ```
     - 这是因为 X86 系列 CPU 的存储模式是小端模式，也就是高位字节要存放在高地址上，f8e9 这个数，f8 是高位字节，e9 是低位字节，所以当我们把 f8e9 作为一个整数读出的时候，e9 将存储在低地址，f8 存储在高地址，这和 struct in6_addr 的定义是不相符的；
     - 所以如果我们一次读 4 个字符， 读 8 次，我们就不能使用 inet_ntop() 去把 ipv6 地址转换成我们所需要的字符串，当然我们可以自己转换，但有些麻烦，参考下面代码
-        ```
+        ```C
         unsigned short int _ipv6[8];
         int zero_flag = 0;
         while (11 == fscanf(f,
@@ -254,7 +258,7 @@ postid: 180001
 * 可以通过在线手册 man getifaddrs 了解详细的关于 getifaddrs 函数的信息；
 * getifaddrs 函数会创建一个本地网络接口的结构链表，该结构链表定义在 struct ifaddrs 中；
 * 关于 ifaddrs 结构有很多文章介绍，本文仅简单介绍一下与本文密切相关的内容，下面是 struct ifaddrs 的定义
-    ```
+    ```C
     struct ifaddrs {
         struct ifaddrs  *ifa_next;    /* Next item in list */
         char            *ifa_name;    /* Name of interface */
@@ -274,7 +278,7 @@ postid: 180001
     ```
 * ifa_next 是结构链表的后向指针，指向链表的下一项，当前项为最后一项时，该指针为 NULL；
 * ifa_addr 是本文主要用到的项，这是一个 struct sockaddr， 看一下 struct sockaddr 的定义：
-    ```
+    ```C
     struct sockaddr {
         sa_family_t sa_family;
         char        sa_data[14];
@@ -283,7 +287,7 @@ postid: 180001
 * 实际上，当 ifa_addr->sa_family 为 AF_INET 时，ifa_addr 指向 struct sockaddr_in；当 ifa_addr->sa_family 为 AF_INET6 时，ifa_addr 指向一个 struct sockaddr_in6；
 * sockaddr_in 和 sockaddr_in6 这两个结构同样可以找到很多介绍文章，这里就不多说了，反正这里面是结构套着结构，要把思路捋顺了才不至于搞乱；
 * 下面是使用 getifaddrs() 获取 ipv6 地址的源程序，可以看到，打印 ipv6 地址的那几行，与上面的那个例子是一样的；
-    ```
+    ```C
     #include <arpa/inet.h>
     #include <ifaddrs.h>
     #include <stdio.h>
@@ -317,7 +321,7 @@ postid: 180001
 * 这个例子中，我们使用 inet_ntop() 将 sin6_addr 结构转换成了字符串形式的 ipv6 地址，还可以使用 getnameinfo() 来获取 ipv6 的字符串形式的地址；
 * 可以通过在线手册 man getnameinfo 了解 getnameinfo() 的详细信息
 * 下面是使用 getifaddrs() 获取 ipv6 地址并使用 getnameinfo() 将将 ipv6 地址转变为字符串的源程序
-    ```
+    ```C
     #include <arpa/inet.h>
     #include <ifaddrs.h>
     #include <stdio.h>
@@ -352,14 +356,16 @@ postid: 180001
 * 和上面的例子略有不同的是，使用 getnameinfo 获取的 ipv6 地址的最后会使用 ‘%’ 连接一个网络接口的名称，如下图所示：
 
     ![使用getnameinfo获取ipv6地址][img03]
-    - **图3：使用getnameinfo获取ipv6地址**
+
+    <center><b>图3：使用getnameinfo获取ipv6地址</b></center>
+
 ------------------
 
 ## 4. 使用 netlink 获取 ipv6 地址
 * netlink socket 是用户空间与内核空间通信的又一种方法，本文并不讨论 netlink 的编程方法，但给出了使用 netlink 获取 ipv6 地址的源程序；
 * 与上面两个方法比较，使用 netlink 获取 ipv6 地址的方法略显复杂，在实际应用中并不多见，所以本文也就不进行更多的讨论了；
 * 下面是使用 netlink 获取 ipv6 地址的源程序
-    ```
+    ```C
     #include <asm/types.h>
     #include <arpa/inet.h>
     #include <linux/netlink.h>
@@ -471,10 +477,10 @@ postid: 180001
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[img01]:/images/180001/ipv6_ioctl.png
-[img02]:/images/180001/file_if_inet6.png
-[img03]:/images/180001/ipv6_getnameinfo.png
+[img01]:https://whowin.gitee.io/images/180001/ipv6_ioctl.png
+[img02]:https://whowin.gitee.io/images/180001/file_if_inet6.png
+[img03]:https://whowin.gitee.io/images/180001/ipv6_getnameinfo.png
 

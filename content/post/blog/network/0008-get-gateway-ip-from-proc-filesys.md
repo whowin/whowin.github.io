@@ -45,7 +45,7 @@ postid: 180008
   - 第2列：Destination，为目标网段或者目标主机的IP，以字符串表达的一个16进制的32位(4字节)数字(比如0X0103A8C0将表示为字符串"0103A8C0")，把这个字符串按照16进制转换成一个32位数字，则表达着一个IP地址；
   - 第3列：Gateway，为gateway的IP，与第三列的表达形式一样；
   - 第4列：Flags，为一个标志，每一位代表一个标志，定义在linux/route.h中，如下：
-    ```
+    ```C
     #define RTF_UP          0x0001        /* route usable                 */
     #define RTF_GATEWAY     0x0002        /* destination is a gateway     */
     #define RTF_HOST        0x0004        /* host entry (net otherwise)   */
@@ -78,7 +78,7 @@ postid: 180008
 -------
 * ```ip route```是使用netlink获取路由表的，我们可以使用strace命令跟踪```ip route```的执行，然后在输出中查找/proc/net/route和RTM_GETROUTE，从而确定这个命令是如何获得路由表的
 * 如果不清楚宏RTM_GETROUTE的含义，请参考另一篇文章[《linux下使用netlink获取gateway的IP地址》][article02]
-  ```
+  ```C
   strace -o ip.txt ip route
   grep RTM_GET_ROUTE ip.txt
   grep /proc/net/route ip.txt
@@ -99,7 +99,7 @@ postid: 180008
 
 -----------
 * ```route -n``` 是通过读取proc文件系统中的文件 ```/proc/net/route``` 来获取路由表的，我们用同样的方法来跟踪一下 ```route -n``` 的运行情况：
-  ```
+  ```C
   strace -o route.txt route -n
   grep RTM_GET_ROUTE route.txt
   grep /proc/net/route route.txt
@@ -118,70 +118,11 @@ postid: 180008
   2. 读取一行不做任何处理，跳过路由表的表头行；
   3. 每次读取一行，检查其是否为gateway的记录，如果是，将gateway字段转换成32位的IP地址再转换成字符串；
   4. 关闭文件
-* 下面是源代码，文件名：get_gateway_proc.c
-  ```
-  #include <stdio.h>
-  #include <string.h>
+* 下面是源代码，文件名：[get-gateway-proc.c][src01](**点击文件名下载源程序**)
 
-  #include <arpa/inet.h>
-  #include <linux/route.h>
-
-  #define ROUTING_TABEL   "/proc/net/route"
-  #define BUF_SIZE        128
-
-  int get_gateway(char *gw) {
-      FILE *fp;
-      char line[BUF_SIZE], *ifname, *dest_ip, *gw_ip;
-      int ret = 1;
-
-      // open file /proc/net/route
-      if ((fp = fopen(ROUTING_TABEL, "r")) == NULL) {
-          printf("Can't open file - %s.\n", ROUTING_TABEL);
-          return ret;
-      }
-
-      // skip the header
-      if (fgets(line, BUF_SIZE, fp) == NULL) {
-          printf("Failed to read the header of routing table.\n");
-          return ret;
-      }
-
-      // read the file line by line until the gateway is found or the end of file
-      while (fgets(line, BUF_SIZE, fp)) {
-          ifname  = strtok(line , "\t");      // interface name
-          dest_ip = strtok(NULL , "\t");      // destination IP
-          gw_ip   = strtok(NULL , "\t");      // gateway IP
-
-          if (ifname != NULL && dest_ip != NULL) {
-              if (strcmp(dest_ip, "00000000") == 0) {
-                  printf("Interface name: %s\n", ifname);
-                  if (gw_ip) {
-                      struct in_addr addr;
-                      sscanf(gw_ip, "%x", &addr.s_addr);      // Converter string to 32bits integer
-                      strcpy(gw, inet_ntoa(addr));            // Converter 32bits IP to string
-                      ret = 0;
-                  }
-                  break;
-              }
-          }
-      }
-
-      fclose(fp);
-      return ret;
-  }
-
-  int main() {
-      char gw[16];
-
-      if (get_gateway(gw)) printf("Failed to get gateway IP.\n");
-      else printf("Gateway IP: %s\n", gw);
-
-      return 0;    
-  }
-  ```
 * 这段程序也没什么好解释的，唯一要说明的地方是gateway路由的确定，这里是以目的地址为"00000000"作为判断，前面讨论过，目的地址为"00000000"的含义为任意目的地址；
-* 编译：```gcc -Wall get_gateway_proc.c -o get_gateway_proc```
-* 运行：```./get_gateway_proc```
+* 编译：```gcc -Wall get-gateway-proc.c -o get-gateway-proc```
+* 运行：```./get-gateway-proc```
 * 下面是运行截图
 
   ![screenshot of executing get-gateway-proc][img06]
@@ -193,16 +134,18 @@ postid: 180008
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[article01]:../0014-handling-arp-cache/
-[article02]:../0009-get-gateway-ip-via-netlink/
+[src01]:/sourcecodes/180008/get-gateway-proc.c
 
-[img01]:/images/180008/cat-proc-net-route.png
-[img02]:/images/180008/screenshot-of-ip-route.png
-[img03]:/images/180008/screenshot-of-tracing-ip-route.png
-[img04]:/images/180008/screenshot-of-route-n.png
-[img05]:/images/180008/screenshot-of-tracing-route-n.png
-[img06]:/images/180008/screenshot-get-gateway-proc.png
+[article01]:https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/
+[article02]:https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/
+
+[img01]:https://whowin.gitee.io/images/180008/cat-proc-net-route.png
+[img02]:https://whowin.gitee.io/images/180008/screenshot-of-ip-route.png
+[img03]:https://whowin.gitee.io/images/180008/screenshot-of-tracing-ip-route.png
+[img04]:https://whowin.gitee.io/images/180008/screenshot-of-route-n.png
+[img05]:https://whowin.gitee.io/images/180008/screenshot-of-tracing-route-n.png
+[img06]:https://whowin.gitee.io/images/180008/screenshot-get-gateway-proc.png
 

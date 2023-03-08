@@ -39,13 +39,13 @@ postid: 180006
 ## 1. 前言
 * 阅读本文前可以考虑先阅读一下我的另外一篇文章[《Linux下如何在数据链路层接收原始数据包》][article01]，那篇文章中已经介绍过的一些概念，本文中将不再赘述；下面仅罗列一些曾经在[《Linux下如何在数据链路层接收原始数据包》][article01]介绍过的技术要点；
 * 发送数据时打开raw_socket
-    ```
+    ```C
     sock_raw = socket(AF_PACKET, SOCK_RAW, IPPROTO_RAW);
     if (sock_raw == -1)
         printf("error in socket");
     ```
 * 以太网报头结构(定义在头文件linux/if_ether.h中)
-    ```
+    ```C
     struct ethhdr {
         unsigned char  h_dest[ETH_ALEN];    /* destination eth addr  */
         unsigned char  h_source[ETH_ALEN];  /* source ether addr  */
@@ -53,7 +53,7 @@ postid: 180006
     } __attribute__((packed));
     ```
 * IP报头结构(定义在头文件linux/ip.h中)
-    ```
+    ```C
     struct iphdr {
         __u8    ihl:4,
                 version:4;
@@ -70,7 +70,7 @@ postid: 180006
     };
     ```
 * UDP报头结构(定义在头文件linux/udp.h中)
-    ```
+    ```C
     struct udphdr {
         __be16    source;
         __be16    dest;
@@ -85,7 +85,7 @@ postid: 180006
 
     > struct ifreq定义在头文件<linux/if.h>中
 
-    ```
+    ```C
     struct ifreq {
     #define IFHWADDRLEN    6
         union
@@ -117,14 +117,14 @@ postid: 180006
 * ioctl的调用
     - ioctl的定义在sys/ioctl.h中定义
     - ioctl调用中可以允许的request在bits/ioctl.h中定义
-    ```
+    ```C
     int ioctl(int fd, unsigned long request, ...);
     ```
 
 * 获取网络接口的索引号(ifr_ifindex)
     > 在发送数据之前，必须要确定从哪个网络接口发送数据，因为你的机器上可能有多个网络接口：有线网口、无线网口以及loopback，可以使用ifconfig命令查看所有接口的名称；
 
-    ```
+    ```C
     struct ifreq ifreq_index;
 
     memset(&ifreq_index, 0, sizeof(ifreq_index));
@@ -138,7 +138,7 @@ postid: 180006
     > 调用ioctl之前将设备名称(例中为eth0)，填写到ifreq结构中，使用SIOCGIFINDEX作为request，网络接口的设备索引号将返回在ifreq结构中
 
 * 获取网络接口的MAC地址(ifr_hwaddr)
-    ```
+    ```C
     struct ifreq if_req;
 
     memset(&if_req, 0, sizeof(struct ifreq));
@@ -158,7 +158,7 @@ postid: 180006
     > 与上面类似，使用SIOCGIFHWADDR作为request，网络接口的MAC地址将返回在ifreq结构中
 
 * 获取网络接口的IP地址(ifr_addr)
-    ```
+    ```C
     struct ifreq if_req;
     char ip[16] = {0};
 
@@ -180,7 +180,7 @@ postid: 180006
 
     > 首先要在内存中分配一块内存，用以存放以太网报头、IP报头、UDP报头和报文，以太网报头14个字节，IP报头20个字节，UDP报头8个字节，在加上报文的5个字节，所以在内存中分配一块64字节的空间已经足够
 
-    ```
+    ```C
     send_buf = (unsigned char*)malloc(64);
     memset(send_buf, 0, 64);
     ```
@@ -189,7 +189,7 @@ postid: 180006
 
     > 为了简单起见，我们假定我们已经知道了目的MAC地址，并将其定义在常数：DEST_MAC_0~~DEST_MAC_5中；
 
-    ```
+    ```C
     struct ethhdr *eth_hdr = (struct ethhdr *)(send_buf);
     
     int i = 0;
@@ -211,7 +211,7 @@ postid: 180006
 
     > id这个字段可以是任意一个唯一的数字，在IP包传输过程中要保持唯一，当一个IP包过长需要分片传输时，这个id对分片重组有着重要的意义；对于ipv4而言，version字段必须填4；ttl字段最大可以填255，每经过一个路由器时，该字段会被减1，当ttl=0时，该数据包将被丢弃，用于防止一个数据包在网络上永远不消失；protocol字段和以太网头中的h_proto的含义不同，为上一层协议号，各种协议的协议号定义在文件/etc/protocols中；
 
-    ```
+    ```C
     struct iphdr *ip_hdr = (struct iphdr *)(send_buf + sizeof(struct ethhdr));
     ip_hdr->ihl = 5;            // Internet Header Length - 20 bytes
     ip_hdr->version = 4;        // ipv4
@@ -228,7 +228,7 @@ postid: 180006
 * 构建UDP报头
     > 和构建IP报头类似，填充udphdr结构中的字段即可构建UDP报头；
 
-    ```
+    ```C
     struct udphdr *udp_hdr = (struct udphdr *)(send_buf + sizeof(struct iphdr) + sizeof(struct ethhdr));
     
     udp_hdr->source = htons(34561);
@@ -239,7 +239,7 @@ postid: 180006
     > UDP报头中的check字段不是强制的，可以不用，填0即可；和IP报头一样，UDP报头中有一个len字段，这个长度字段包含UDP报头的长度和UDP payload的长度，所以在填完payload之前还无法填写这个字段。
 
 * 构建要发送的数据
-    ```
+    ```C
     total_len = sizeof(struct ethhdr) + sizeof(struct iphdr) + sizeof(struct udphdr);
     send_buf[total_len++] = 'h';
     send_buf[total_len++] = 'e';
@@ -249,7 +249,7 @@ postid: 180006
     ```
 
 * 填充IP和UDP报头中的长度字段
-    ```
+    ```C
     // UDP length field
     udp_hdr->len = htons((total_len - sizeof(struct iphdr) - sizeof(struct ethhdr)));
     // IP length field
@@ -259,7 +259,7 @@ postid: 180006
 * IP报头中的checksum计算
     > 在IP报头中还有一个check字段没有填，关于这个字段的计算请参考我的另外两篇文章[《如何计算IP报头的checksum》][article02]和[《如何计算UDP头的checksum》][article03]；checksum字段是用于错误检测的，当报文经过一个路由器时，路由器会重新计算IP报文的checksum，并与IP报头中的checksum进行比较，如果不一致，该报文将被丢弃，否则，路由器会把IP报头中ttl字段减1，然后转发这个报文；
 
-    ```
+    ```C
     unsigned short checksum(unsigned short *buff, int _16bitword) {
         unsigned long sum;
         for (sum = 0; _16bitword > 0; _16bitword--)
@@ -275,7 +275,7 @@ postid: 180006
 ## 4. 发送数据
 * 我们已经将报文组织好了，我们在发送数据的外面包装上了UDP报头、IP报头和以太网报头，但在发送之前，我们还需要了解sockaddr_ll结构，并使用目的MAC地址填充其中的字段；
 * sendto的定义
-    ```
+    ```C
     ssize_t sendto(int sockfd, const void *buf, size_t len, int flags,
                    const struct sockaddr *dest_addr, socklen_t addrlen);
     ```
@@ -283,7 +283,7 @@ postid: 180006
 * sockaddr_ll结构
     > 这个结构在linux/if_packet.h中定义，有关该结构的详细说明请参考其它文章，本文仅就相关字段做出说明；
 
-    ```
+    ```C
     struct sockaddr_ll {
         unsigned short  sll_family;
         __be16          sll_protocol;
@@ -300,7 +300,7 @@ postid: 180006
     > 实际上，在发送数据时，由于sll_family和sll_protocol都是和socket中一样的，所以都可以不填，只要填sll_ifindex、sll_halen和sll_addr即可。
 
 * 构建sockaddr_ll结构
-    ```
+    ```C
     struct sockaddr_ll saddr_ll;
     saddr_ll.sll_ifindex = ifreq_index.ifr_ifindex;     // index of interface
     saddr_ll.sll_halen   = ETH_ALEN;      // length of destination mac address
@@ -313,7 +313,7 @@ postid: 180006
     ```
 
 * 发送数据
-    ```
+    ```C
     send_len = sendto(sock_raw, send_buf, 64, 0, (const struct sockaddr *)&saddr_ll, sizeof(struct sockaddr_ll));
     if (send_len < 0) {
         printf("error in sending....sendlen=%d....errno=%d\n", send_len, errno);
@@ -323,247 +323,19 @@ postid: 180006
 ## 5. 完整的源程序
 * 在这个实例中，目的IP地址为：192.168.2.112，目的MAC地址为：00:21:cc:d8:30:4b；源IP地址和MAC地址我们将从程序中得到；网络接口名称为：enp0s3；源端口号为：34561，目的端口号为：34562
 * 这个程序需要使用root权限运行，因为使用了raw socket
-* 下面是完整的源程序，文件名为：send_udp_packet.c
-    ```
-    #include <stdio.h>
-    #include <unistd.h>
-    #include <string.h>
-    #include <malloc.h>
-    #include <errno.h>
-
-    #include <sys/socket.h>
-    #include <sys/types.h>
-    #include <sys/ioctl.h>
-
-    #include <arpa/inet.h>
-
-    #include <linux/if.h>
-    #include <linux/in.h>
-    #include <linux/ip.h>
-    #include <linux/if_ether.h>
-    #include <linux/udp.h>
-    #include <linux/if_packet.h>
-
-    #define IF_NAME         "enp0s3"             // name of local eth interface
-    #define DEST_IP         "192.168.2.112"      // destination ip
-
-    #define DEST_MAC_0      0x84
-    #define DEST_MAC_1      0x3a
-    #define DEST_MAC_2      0x4b
-    #define DEST_MAC_3      0x35
-    #define DEST_MAC_4      0x40
-    #define DEST_MAC_5      0xf4
-
-    int get_eth_index(int sock_raw) {
-        struct ifreq if_req;
-        memset(&if_req, 0, sizeof(struct ifreq));
-        strncpy(if_req.ifr_name, IF_NAME, IFNAMSIZ - 1);
-
-        if ((ioctl(sock_raw, SIOCGIFINDEX, &if_req)) < 0) {
-            printf("error in SIOCGIFINDEX ioctl reading.\n");
-            return -1;
-        }
-        printf("Interface Name: %s\tInterface Index=%d\n", IF_NAME, if_req.ifr_ifindex);
-        return if_req.ifr_ifindex;
-    }
-
-    int get_mac(int sock_raw, unsigned char *mac) {
-        struct ifreq if_req;
-        memset(&if_req, 0, sizeof(struct ifreq));
-        strncpy(if_req.ifr_name, IF_NAME, IFNAMSIZ - 1);
-
-        if ((ioctl(sock_raw, SIOCGIFHWADDR, &if_req)) < 0) { 
-            printf("error in SIOCGIFHWADDR ioctl reading.\n");
-            return -1;
-        }
-        int i;
-        for (i = 0; i < 6; ++i) mac[i] = (unsigned char)(if_req.ifr_hwaddr.sa_data[i]);
-
-        printf("Mac = %.2X-%.2X-%.2X-%.2X-%.2X-%.2X\n", 
-            mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]); 
-        return 0;
-    }
-
-    int get_ip(int sock_raw, char *ip) {
-        struct ifreq if_req;
-        memset(&if_req, 0, sizeof(struct ifreq));
-        strncpy(if_req.ifr_name, IF_NAME, IFNAMSIZ - 1);
-        if (ioctl(sock_raw, SIOCGIFADDR, &if_req) < 0) {
-            printf("error in SIOCGIFADDR.\n");
-            return -1;
-        }
-
-        strcpy(ip, inet_ntoa((((struct sockaddr_in *)&(if_req.ifr_addr))->sin_addr)));
-        printf("IP address: %s\n", ip);
-        return 0;
-    }
-
-    void ethernet_header(unsigned char *send_buf, unsigned char *mac) {
-        printf("Packaging ethernet header ...");
-        
-        struct ethhdr *eth_hdr = (struct ethhdr *)(send_buf);
-        int i = 0;
-        for (i = 0; i < 6; ++i) eth_hdr->h_source[i] = mac[i];
-
-        eth_hdr->h_dest[0] =  DEST_MAC_0;
-        eth_hdr->h_dest[1] =  DEST_MAC_1;
-        eth_hdr->h_dest[2] =  DEST_MAC_2;
-        eth_hdr->h_dest[3] =  DEST_MAC_3;
-        eth_hdr->h_dest[4] =  DEST_MAC_4;
-        eth_hdr->h_dest[5] =  DEST_MAC_5;
-
-        eth_hdr->h_proto = htons(ETH_P_IP);     // 0x800
-
-        printf("... done.\n");
-    }
-
-    void ip_header(unsigned char *send_buf, char *ip) {
-        printf("Packaging IP header ...");
-        struct iphdr *ip_hdr = (struct iphdr*)(send_buf + sizeof(struct ethhdr));
-        ip_hdr->ihl      = 5;                   // Internet Header Length - 20 bytes
-        ip_hdr->version  = 4;                   // ipv4
-        ip_hdr->tos      = 0;                   // Type Of Service - fill 0
-        ip_hdr->id       = htons(32501);        // unique value
-        ip_hdr->ttl      = 64;                  // Time To Live
-        ip_hdr->protocol = 17;                  // protocol number - 17 represents UDP protocol
-        ip_hdr->saddr    = inet_addr(ip);       // source IP address
-        ip_hdr->daddr    = inet_addr(DEST_IP);  // destination IP address
-        printf("... done.\n");
-    }
-
-    void udp_header(unsigned char *send_buf) {
-        printf("Packaging UDP header ...");
-        struct udphdr *udp_hdr = (struct udphdr *)(send_buf + sizeof(struct iphdr) + sizeof(struct ethhdr));
-
-        udp_hdr->source = htons(34561);     // source port
-        udp_hdr->dest   = htons(34562);     // destination port
-        udp_hdr->check  = 0;
-
-        printf("... done.\n");
-    }
-
-    void data(unsigned char *send_buf, int *total_len) {
-        printf("Packaging data ...");
-        send_buf[(*total_len)++] = 'h';
-        send_buf[(*total_len)++] = 'e';
-        send_buf[(*total_len)++] = 'l';
-        send_buf[(*total_len)++] = 'l';
-        send_buf[(*total_len)++] = 'o';
-        printf("... done.\n");
-    }
-
-    void udp_header_len(unsigned char *send_buf, int total_len) {
-        printf("Packaging UDP header ...");
-        struct udphdr *udp_hdr = (struct udphdr *)(send_buf + sizeof(struct iphdr) + sizeof(struct ethhdr));
-        udp_hdr->len = htons((total_len - sizeof(struct iphdr) - sizeof(struct ethhdr)));
-        printf("... done.\n");
-    }
-
-    unsigned short checksum(unsigned short *buff, int _16bitword) {
-        unsigned long sum;
-        for (sum = 0; _16bitword > 0; _16bitword--)
-            sum += htons(*(buff)++);
-        do {
-            sum = ((sum >> 16) + (sum & 0xFFFF));
-        } while(sum & 0xFFFF0000);
-
-        return (~sum);
-    }
-
-    void ip_header_len_check(unsigned char *send_buf, int total_len){
-        printf("Packaging IP header ...");
-        struct iphdr *ip_hdr = (struct iphdr*)(send_buf + sizeof(struct ethhdr));
-        ip_hdr->tot_len  = htons(total_len - sizeof(struct ethhdr));
-        ip_hdr->check    = htons(checksum((unsigned short*)(send_buf + sizeof(struct ethhdr)), (sizeof(struct iphdr) / 2)));
-        printf("... done.\n");
-    }
-
-    /******************************************************************
-    * Main
-    ******************************************************************/
-    int main() {
-        int sock_raw;                   // raw socket
-        char ip[16] = {0};              // local IP address
-        unsigned char mac[6] = {0};     // local MAc address
-        int if_index;                   // interface index number
-        unsigned char *send_buf;        // buffer for packet
-        int total_len = 0;              // total length of packet
-        int send_len = 0;               // how many bytes sent
-
-        int ret_value = 0;              // return value
-
-        sock_raw = socket(AF_PACKET, SOCK_RAW, IPPROTO_RAW);
-        if (sock_raw == -1) {
-            printf("error in socket.\n");
-            return -1;
-        }
-
-        send_buf = (unsigned char*)malloc(64);
-        memset(send_buf, 0, 64);
-
-        if_index = get_eth_index(sock_raw);         // get interface index number
-        if (if_index < 0) {
-            ret_value = -1;
-            goto quit;
-        }
-        if (get_mac(sock_raw, mac) < 0) {           // get MAC address
-            ret_value = -1;
-            goto quit;
-        }
-        if (get_ip(sock_raw, ip) < 0) {             // get IP address
-            ret_value = -1;
-            goto quit;
-        }
-        ethernet_header(send_buf, mac);             // construct ethernet header
-        total_len += sizeof(struct ethhdr);
-        ip_header(send_buf, ip);                    // construct ip header
-        total_len += sizeof(struct iphdr);
-        udp_header(send_buf);                       // construct udp header
-        total_len += sizeof(struct udphdr);
-        data(send_buf, &total_len);                 // fill data
-        udp_header_len(send_buf, total_len);        // fill len field in udp header
-        ip_header_len_check(send_buf, total_len);   // fill len and check fields in ip header
-
-        struct sockaddr_ll saddr_ll;
-        memset(&saddr_ll, 0, sizeof(struct sockaddr_ll))
-        saddr_ll.sll_ifindex = if_index;
-        saddr_ll.sll_halen   = ETH_ALEN;
-        saddr_ll.sll_addr[0] = DEST_MAC_0;
-        saddr_ll.sll_addr[1] = DEST_MAC_1;
-        saddr_ll.sll_addr[2] = DEST_MAC_2;
-        saddr_ll.sll_addr[3] = DEST_MAC_3;
-        saddr_ll.sll_addr[4] = DEST_MAC_4;
-        saddr_ll.sll_addr[5] = DEST_MAC_5;
-
-        printf("Sending ...");
-        while (send_len == 0) {
-            send_len = sendto(sock_raw, send_buf, 64, 0, (const struct sockaddr *)&saddr_ll, sizeof(struct sockaddr_ll));
-            if (send_len < 0) {
-                printf("error in sending....sendlen=%d....errno=%d\n", send_len, errno);
-                ret_value = -1;
-                goto quit;
-            }
-        }
-        printf("... done.\n");
-
-    quit:
-        free(send_buf);
-        close(sock_raw);
-        return ret_value;
-    }
-    ```
+* 下面是完整的源程序，文件名为：[send-raw-udp-packet.c][src01](**点击文件名下载源程序**)
 * 运行程序
     1. 编译程序
-        ```
-        gcc -Wall send_udp_packet.c -o send_udp_packet
+        ```bash
+        gcc -Wall send-raw-udp-packet.c -o send-raw-udp-packet
         ```
     2. 在目的电脑(192.168.2.112)上启动一个监听程序，监听UDP的34562端口，因为我们的程序会向这个端口发送一个UDP报文，内容是：hello；这里我们使用netcat命令，关于这个命令的介绍，请参考我的另一篇文章[《如何在Linux命令行下发送和接收UDP数据包》][article04]
-        ```
+        ```bash
         nc -u -l 34562
         ```
     3. 在源电脑上使用root权限启动程序
-        ```
-        sudo ./send_udp_packet
+        ```bash
+        sudo ./send-raw-udp-packet
         ```
     4. 在目的电脑(192.168.2.112)上应该可以看到发过来的数据：hello
 
@@ -580,10 +352,11 @@ postid: 180006
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
+[src01]:/sourcecodes/180006/send-raw-udp-packet.c
 
-[article01]:../0002-link-layer-programming/
-[article02]:../0004-checksum-of-ip-header/
-[article03]:../0003-checksum-of-udp-header/
-[article04]:../0005-send-udp-via-linux-cli/
+[article01]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
+[article02]:https://whowin.gitee.io/post/blog/network/0004-checksum-of-ip-header/
+[article03]:https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/
+[article04]:https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/

@@ -38,11 +38,11 @@ postid: 180005
 
 ## 3. netcat 命令
 * nc 是 netcat 的简写，大多数的 Linux 发行版中默认是安装 netcat 的，打开一个终端窗口(ctrl+alt_t)，用下面命令检查一下是否已经安装了 netcat：
-  ```
+  ```bash
   nc
   ```
 * 在 ubuntu 20.04 下的输出：
-  ```
+  ```bash
   usage: nc [-46CDdFhklNnrStUuvZz] [-I length] [-i interval] [-M ttl]
             [-m minttl] [-O length] [-P proxy_username] [-p source_port]
             [-q seconds] [-s source] [-T keyword] [-V rtable] [-W recvlimit] [-w timeout]
@@ -58,7 +58,7 @@ postid: 180005
 * A 机的 IP: 192.168.2.112；B 机的 IP：192.168.2.114
 * **启动 server**
   - 在 B 机上用如下命令启动 Server
-    ```
+    ```bash
     nc –u –l 8888
     ```
   - 下面是屏幕截图
@@ -70,7 +70,7 @@ postid: 180005
 * **检查 server 是否启动**
   - 在 B 机上启动一个新的终端窗口；
   - 在 B 机上使用如下命令检查是否已经启动 server；
-    ```
+    ```bash
     netstat -a|grep 8888
     ```
   - 屏幕截图
@@ -79,7 +79,7 @@ postid: 180005
 
 * **发送 UDP 报文**
   - 在 A 机上启动 client
-    ```
+    ```bash
     nc -n 192.168.2.114 8888
     ```
   - client 启动后，和 server 端一样，并没有更多的提示，可以直接输入你要发出的信息
@@ -104,7 +104,7 @@ postid: 180005
 
 ## 5. 其它可以发送 UDP 数据包的命令
 * 还有一个可以简单地发送 UDP 报文的方法，我们在 A 机上退出 nc，然后使用下面命令发出信息
-  ```
+  ```bash
   echo -n "I am sending an UDP packet using echo command" > /dev/udp/192.168.2.114/8888
   ```
 * 下面是在 A 机上的截屏
@@ -129,19 +129,17 @@ postid: 180005
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-
-
-[img01]:/images/180005/server_client_connection.png
-[img02]:/images/180005/start_server_with_nc.png
-[img03]:/images/180005/screenshot_for_started_server.png
-[img04]:/images/180005/send_udp_packet_client.png
-[img05]:/images/180005/receive_udp_packet_server.png
-[img06]:/images/180005/send_udp_packet_server.png
-[img07]:/images/180005/receive_udp_packet_client.png
-[img08]:/images/180005/send_udp_packet_client_echo.png
-[img09]:/images/180005/receive_udp_packet_server_echo.png
-[img10]:/images/180005/send_udp_packet_client_cat.png
-[img11]:/images/180005/receive_udp_packet_server_cat.png
+[img01]:https://whowin.gitee.io/images/180005/server_client_connection.png
+[img02]:https://whowin.gitee.io/images/180005/start_server_with_nc.png
+[img03]:https://whowin.gitee.io/images/180005/screenshot_for_started_server.png
+[img04]:https://whowin.gitee.io/images/180005/send_udp_packet_client.png
+[img05]:https://whowin.gitee.io/images/180005/receive_udp_packet_server.png
+[img06]:https://whowin.gitee.io/images/180005/send_udp_packet_server.png
+[img07]:https://whowin.gitee.io/images/180005/receive_udp_packet_client.png
+[img08]:https://whowin.gitee.io/images/180005/send_udp_packet_client_echo.png
+[img09]:https://whowin.gitee.io/images/180005/receive_udp_packet_server_echo.png
+[img10]:https://whowin.gitee.io/images/180005/send_udp_packet_client_cat.png
+[img11]:https://whowin.gitee.io/images/180005/receive_udp_packet_server_cat.png

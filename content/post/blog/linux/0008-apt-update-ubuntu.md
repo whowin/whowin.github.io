@@ -1,5 +1,5 @@
 ---
-title: "apt update 如何工作"
+title: "apt update如何工作"
 date: 2022-07-10T16:43:29+08:00
 author: whowin
 sidebar: false
@@ -12,7 +12,7 @@ tags:
   - apt
   - ubuntu
   - linux
-draft: false
+draft: true
 #description: 该文章翻译自 [What does the apt update do on Ubuntu and Debian](https://linuxhint.com/apt-update-command/)
 #references: 
 
@@ -89,9 +89,7 @@ postid: 100008
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
-
-<!--实际使用-->
-[img01]:/images/100008/apt-update-screen.png
+[img01]:https://whowin.gitee.io/images/100008/apt-update-screen.png
 

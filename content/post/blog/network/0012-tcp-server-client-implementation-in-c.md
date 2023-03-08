@@ -109,7 +109,7 @@ postid: 180012
     1. fd：文件描述符(本文中是一个socket文件描述符)
 
 * 结构**struct sockaddr** - 定义在bits/socket.h
-  ```
+  ```C
   struct sockaddr {
       __SOCKADDR_COMMON (sa_);  /* Common data: address family and length.  */
       char sa_data[14];         /* Address data.  */
@@ -117,7 +117,7 @@ postid: 180012
   ```
   > 通常情况下，做socket编程时，我们只会include <sys/socket.h>，sys/socket.h中会include <bits/socket.h>；在(struct sockaddr)结构中的宏__SOCKADDR_COMMON展开后就是(sa_family_t sa_family)，sa_family_t是一个类型定义，实际为：unsigned short，所以(struct sockaddr)的结构为：
 
-  ```
+  ```C
   struct sockaddr {
       sa_family_t sa_family;  /* Common data: address family and length.  */
       char sa_data[14];       /* Address data.  */
@@ -129,7 +129,7 @@ postid: 180012
   > 在使用这个结构作为函数参数时，通常需要传递地址结构的指针，而且还需要传递这个地址结构的长度，比如sendto()函数的定义为：ssize_t sendto(int sockfd, (const void *)buf, size_t len, int flags, (const struct sockaddr *)dest_addr, socklen_t addrlen)；其中最后一个参数addrlen就是地址结构dest_addr的长度，这是因为对不同的协议族，使用的地址结构不同，这个地址结构的长度也是不同的，比如IPv4使用的地址结构(struct sockaddr_in)和IPv6使用的地址结构(struct sockaddr_in6)的长度就不同。
 
 * 结构**struct sockaddr_in** - 定义在netinet/in.h
-  ```
+  ```C
   struct sockaddr_in {
       __SOCKADDR_COMMON (sin_);
       in_port_t sin_port;           /* Port number.  */
@@ -153,7 +153,7 @@ postid: 180012
     2. sin_port: 端口号；存储为网络字节顺序，所以需要使用htons()转换一下，比如htons(8080)；
     3. sin_addr：这是一个结构(struct in_addr)，这个结构中只有一个字段s_addr，这是一个32位的IP地址，对于通常使用的字符串IP地址，需要用inet_addr()转换一下，见下面例子：
 
-    ```
+    ```C
     struct sockaddr_in addr;
     addr.sin_addr.s_addr = inet_addr("192.168.1.10");
     ```
@@ -170,106 +170,8 @@ postid: 180012
   8. 客户端在收到服务器端发来的"exit"后退出程序。
 * 这两个程序表达了编写一个服务器/客户端TCP通信程序的基本框架，实际使用还需要添加许多代码；
 * 这两个程序在ubuntu 20.04下编译运行成功；
-* 服务器端程序：tcpserver.c
-  ```
-  #include <stdio.h>
-  #include <netdb.h>
-  #include <stdlib.h>
-  #include <string.h>
-  #include <unistd.h>
+* 服务器端程序：[tcp-server.c][src02](**点击文件名下载源程序**)
 
-  #include <netinet/in.h>
-  #include <sys/socket.h>
-  #include <sys/types.h>
-
-  #define BUF_SIZE        80
-  #define PORT            8080
-
-  int main() {
-      int sockfd, connfd;
-      socklen_t len;
-      struct sockaddr_in server_addr, client_addr;
-
-      char buff[BUF_SIZE];
-      int n;
-
-      // Step 1: Create TCP socket
-      //===========================
-      sockfd = socket(AF_INET, SOCK_STREAM, 0);
-      if (sockfd == -1) {
-          printf("Socket creation failed...\n");
-          exit(0);
-      } else printf("Socket successfully created..\n");
-
-      // Step 2: Bind socket to server address
-      //=======================================
-      bzero(&server_addr, sizeof(server_addr));
-      // assign IP, PORT
-      server_addr.sin_family      = AF_INET;
-      server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-      server_addr.sin_port        = htons(PORT);
-
-      // Binding newly created socket to given IP and verification
-      if ((bind(sockfd, (const struct sockaddr *)&server_addr, sizeof(server_addr))) != 0) {
-          printf("Socket bind failed...\n");
-          exit(0);
-      } else printf("Socket successfully binded..\n");
-
-      while (1) {
-          // Step 3: Listen on the socket and wait for the client asking the server to make a connection
-          if ((listen(sockfd, 5)) != 0) {
-              printf("Listen failed...\n");
-              exit(0);
-          } else printf("Server listening..\n\n");
-          
-          // Step 4: Accept the connection request from the client and form a new socket
-          //=============================================================================
-          len = sizeof(client_addr);
-
-          // Accept the data packet from client and verification
-          connfd = accept(sockfd, (struct sockaddr *)&client_addr, &len);
-          if (connfd < 0) {
-              printf("Server accept failed...\n");
-              exit(0);
-          } else printf("Server accept the client...\n");
-
-          // infinite loop for chat
-          while (1) {
-              // Step 5: Wait for the message from the client on the new socket
-              //================================================================
-              bzero(buff, BUF_SIZE);
-              // read the message from client and copy it in buffer
-              read(connfd, buff, sizeof(buff));
-              // Step 6: Process the data and send a reply to the client
-              //=========================================================
-              // print buffer which contains the client contents
-              printf("Client: %s\nEnter the message: ", buff);
-              bzero(buff, BUF_SIZE);
-              n = 0;
-              // get repply from key board. end with return.
-              while ((buff[n++] = getchar()) != '\n' && n < BUF_SIZE)
-                  ;
-
-              // and send that buffer to client
-              write(connfd, buff, sizeof(buff));
-
-              // if msg contains "Exit" then server exit and chat ended.
-              if (strncmp("exit", buff, 4) == 0) {
-                  printf("Server Exit...\n");
-                  break;
-              }
-          }
-          // Step 7: Close the socket
-          //==========================
-          close(connfd);
-          // Step 8: Go back step 3
-          //========================
-      }
-
-      // After chatting close the socket
-      close(sockfd);
-  }
-  ```
   > 服务器端程序在绑定地址时绑定的是服务器的地址，端口号是程序侦听的端口，INADDR_ANY这个宏在netinet/in.h中定义，实际上就是一个32位的0，对应的IP地址就是0.0.0.0，和inet_addr("0.0.0.0")是一样的，inet_addr()函数会把一个字符串形式的IP地址转换成一个网络字符顺序的32位的IP地址，这里将IP绑定为0.0.0.0的含义是本机的所有IP地址，一台机器有可能有多个网卡，比如有线网卡和无线网卡，那么这台机器就可能有两个IP地址，加上loopback，就有三个IP地址，假定这三个地址分别是：192.168.2.112(有线网卡)、192.168.2.113(无线网卡)和127.0.0.1(loopback)，如果这里设置成inet_addr("192.168.2.112")，则表示只接收发往目的地址是192.168.2.112这个IP的信息，也就是只接收从有线网卡收到的数据，大家可以试一下；如果绑定的IP地址不是本机的一个合法IP，在执行bind()时会出错；
 
   > 这个服务器端程序同时只能处理一个客户端的连接，尽管在调用listen(sockfd, 5)时允许连接队列里有5个未处理的连接，但实际处理中并不能同时处理多个连接；
@@ -278,15 +180,15 @@ postid: 180012
 
 * 编译、运行和测试服务器端程序
   - 编译
-    ```
-    gcc -Wall tcpserver.c -o tcpserver
+    ```bash
+    gcc -Wall tcp-server.c -o tcp-server
     ```
   - 运行服务器端程序
+    ```bash
+    ./tcp-server
     ```
-    ./tcpserver
-    ```
-  - 在另一台机器上的终端上运行下面指令模拟客户端，可以进入聊天模式，这里192.168.2.112为运行了tcpserver程序的服务器IP地址
-    ```
+  - 在另一台机器上的终端上运行下面指令模拟客户端，可以进入聊天模式，这里192.168.2.112为运行了tcp-server程序的服务器IP地址
+    ```bash
     nc -n 192.168.2.112 8080
     ```
   - 有关nc命令的使用方法，可以参考另一篇文章[《如何在Linux命令行下发送和接收UDP数据包》][article1]
@@ -294,102 +196,31 @@ postid: 180012
   - 服务器运行截图
 
     ![test tcperver with nc][img01]
+  
   ------------
   - 模拟客户端运行截图
 
     ![test tcpserver with nc][img02]
+
 ****************
-* 客户端程序：tcpclient.c
-  ```
-  #include <stdio.h>
-  #include <unistd.h>
-  #include <stdlib.h>
-  #include <string.h>
-  #include <strings.h>
+* 客户端程序：[tcp-client.c][src01](**点击文件名下载源程序**)
 
-  #include <arpa/inet.h>
-  #include <netdb.h>
-  #include <sys/socket.h>
-
-  #define BUF_SIZE        80
-  #define PORT            8080
-  #define SERVER_IP       "192.168.2.112"
-
-  int main() {
-      int sockfd;
-      struct sockaddr_in server_addr;
-      char buff[BUF_SIZE];
-      int n;
-
-      // Step 1: Create a TCP socket
-      //=============================
-      sockfd = socket(AF_INET, SOCK_STREAM, 0);
-      if (sockfd == -1) {
-          printf("socket creation failed...\n");
-          exit(0);
-      } else printf("Socket successfully created..\n");
-
-      // Step 2: Send a connection request to the server
-      //=================================================
-      bzero(&server_addr, sizeof(server_addr));
-      // assign IP, PORT
-      server_addr.sin_family      = AF_INET;
-      server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
-      server_addr.sin_port        = htons(PORT);
-
-      // connect the client socket to server socket
-      if (connect(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) != 0) {
-          printf("connection with the server failed...\n");
-          exit(0);
-      } else printf("connected to the server..\n");
-
-      while (1) {
-          // Step 3: Send a message to the server
-          //======================================
-          bzero(buff, sizeof(buff));
-          printf("Enter the message: ");
-          n = 0;
-          // get the mesage from keyboard. end with return.
-          while ((buff[n++] = getchar()) != '\n' && n < BUF_SIZE)
-              ;
-          write(sockfd, buff, sizeof(buff));
-      
-          // Step 4: Wait for reply from server
-          //====================================
-          bzero(buff, sizeof(buff));
-          read(sockfd, buff, sizeof(buff));
-
-          // step 5: Process the reply
-          //===========================
-          printf("Server: %s", buff);
-          if ((strncmp(buff, "exit", 4)) == 0) {
-              printf("Client Exit...\n");
-              break;
-          }
-          // if necessary, go back to step 3
-      }
-      // Step 6: Close the socket and exit
-      //===================================
-      close(sockfd);
-      return 0;
-  }
-  ```
   > 客户端程序在发起连接时设置服务器地址，端口号是服务器端程序绑定的端口，192.168.2.112是服务器的IP地址，请根据自身的情况进行修改，IP和端口号必须和服务器一致，否则服务器无法收到信息；
 
   > 必须要首先运行服务器端程序，客户端程序才能运行起来；客户端程序只有收到服务器端发送过来的"exit"才能退出。
 
 * 客户端程序的编译
-  ```
-  gcc -Wall tcpclient.c -o tcpclient
+  ```bash
+  gcc -Wall tcp-client.c -o tcp-client
   ```
 * 程序运行
   - 一台机器上运行服务端程序：tcpserver
+    ```bash
+    ./tcp-server
     ```
-    ./tcpserver
-    ```
-  - 在另一台机器上运行客户端程序：tcpclient
-    ```
-    ./tcpclient
+  - 在另一台机器上运行客户端程序：tcp-client
+    ```bash
+    ./tcp-client
     ```
   - 进入聊天模式，直至服务器端向客户端发送"exit"
   - 客户端程序的运行截图
@@ -415,15 +246,16 @@ postid: 180012
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
+[src01]:/sourcecodes/180012/tcp-client.c
+[src02]:/sourcecodes/180012/tcp-server.c
 
-[img01]:/images/180012/tcp_server_testing.png
-[img02]:/images/180012/tcp_netcat_testing.png
-[img03]:/images/180012/screenshot_tcpclient.png
-[img04]:/images/180012/screenshot_tcpserver.png
+[img01]:https://whowin.gitee.io/images/180012/tcp_server_testing.png
+[img02]:https://whowin.gitee.io/images/180012/tcp_netcat_testing.png
+[img03]:https://whowin.gitee.io/images/180012/screenshot_tcpclient.png
+[img04]:https://whowin.gitee.io/images/180012/screenshot_tcpserver.png
 
 
-
-[article1]:../0005-send-udp-via-linux-cli/
+[article1]:https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/

@@ -89,7 +89,7 @@ postid: 180013
     6. addrlen：src_addr结构的大小，注意这里传递的是指针，而不是数字本身，和sendto()不同。
 
 * 结构**struct sockaddr** - 定义在bits/socket.h
-  ```
+  ```C
   struct sockaddr {
       __SOCKADDR_COMMON (sa_);	/* Common data: address family and length.  */
       char sa_data[14];		/* Address data.  */
@@ -100,7 +100,7 @@ postid: 180013
   > 在使用这个结构作为函数参数时，通常需要传递地址结构的指针，而且还需要传递这个地址结构的长度，比如sendto()函数的定义为：ssize_t sendto(int sockfd, (const void *)buf, size_t len, int flags, (const struct sockaddr *)dest_addr, socklen_t addrlen)；其中最后一个参数addrlen就是地址结构dest_addr的长度，这是因为对不同的协议族，使用的地址结构不同，这个地址结构的长度也是不同的，比如IPv4使用的地址结构(struct sockaddr_in)和IPv6使用的地址结构(struct sockaddr_in6)的长度就不同。
 
 * 结构**struct sockaddr_in** - 定义在netinet/in.h
-  ```
+  ```C
   struct sockaddr_in {
       __SOCKADDR_COMMON (sin_);
       in_port_t sin_port;           /* Port number.  */
@@ -125,7 +125,7 @@ postid: 180013
     2. sin_port: 端口号；存储为网络字节顺序，所以需要使用htons()转换一下，比如htons(8080)；
     3. sin_addr：这是一个结构(struct in_addr)，这个结构中只有一个字段s_addr，这是一个32位的IP地址，对于通常使用的字符串IP地址，需要用inet_addr()转换一下，见下面例子：
 
-    ```
+    ```C
     struct sockaddr_in addr;
     addr.sin_addr.s_addr = inet_addr("192.168.1.10");
     ```
@@ -134,85 +134,20 @@ postid: 180013
 * 至此我们已经有足够的知识来编写一个服务器/客户端UDP通信的简单程序了，程序分为两部分：服务器端程序udpserver.c和客户端程序udpclient.c
 * 这两个程序表达了编写一个服务器/客户端UDP通信程序的基本框架，实际使用还需要添加许多代码；
 * 这两个程序在ubuntu 20.04下编译运行成功；
-* 服务器端程序：udpserver.c
-  ```
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <unistd.h>
-  #include <string.h>
-
-  #include <sys/types.h>
-  #include <sys/socket.h>
-  #include <arpa/inet.h>
-  #include <netinet/in.h>
-
-  #define PORT        8080
-  #define BUF_SIZE    1024
-
-  int main() {
-      int sockfd;
-      char buffer[BUF_SIZE];
-      char *hello_str = "Hello from server";
-      struct sockaddr_in server_addr, client_addr;
-
-      // Step 1: Creating socket file descriptor
-      if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-          perror("socket creation failed");
-          return -1;
-      }
-
-      // Step 2: Bind the socket to the server address
-      memset(&server_addr, 0, sizeof(server_addr));
-
-      // Filling server information
-      server_addr.sin_family      = AF_INET;      // IPv4
-      server_addr.sin_addr.s_addr = INADDR_ANY;   // receive message from any IP address
-      server_addr.sin_port        = htons(PORT);
-
-      // call bind() function
-      if (bind(sockfd, (const struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-          perror("bind failed");
-          return -1;
-      }
-
-      while (1) {
-          // Step 3: Wait until the datagram packet arrives from the client
-          socklen_t len;
-          int n;
-          len = sizeof(client_addr);  // len is value/result
-          memset(&client_addr, 0, len);
-          memset(buffer, 0, BUF_SIZE);
-          // wait for udp datagram arrives
-          n = recvfrom(sockfd, (char *)buffer, BUF_SIZE, 0, (struct sockaddr *)&client_addr, &len); 
-          buffer[n] = '\0';
-
-          // Step 4: Process the datagram packet and send a reply to the client
-          printf("Client IP: %s\n", inet_ntoa(client_addr.sin_addr));
-          printf("Client port: %d\n", ntohs(client_addr.sin_port));
-          printf("Client message: %s\n", buffer);
-          // Send a reply to the client
-          sendto(sockfd, (const char *)hello_str, strlen(hello_str), MSG_CONFIRM, (const struct sockaddr *)&client_addr, len); 
-          printf("Hello message sent.\n");
-
-          // Step 5: Go back to Step 3.
-      }
-
-      return 0; 
-  }
-  ```
+* 服务器端程序：[udp-server.c][src02](**点击文件名下载源程序**)
   > 服务器端程序在绑定地址时绑定的是服务器的地址，端口号是程序接收数据的端口，INADDR_ANY这个宏在netinet/in.h中定义，实际上就是一个32位的0，对应的IP地址就是0.0.0.0，和inet_addr("0.0.0.0")是一样的，inet_addr()函数会把一个字符串形式的IP地址转换成一个网络字符顺序的32位的IP地址，这里将IP绑定为0.0.0.0的含义是本机的所有IP地址，一台机器有可能有多个网卡，比如有线网卡和无线网卡，那么这台机器就可能有两个IP地址，加上loopback，就有三个IP地址，假定这三个地址分别是：192.168.2.112(有线网卡)、192.168.2.113(无线网卡)和127.0.0.1(loopback)，如果这里设置成inet_addr("192.168.2.112")，则表示只接收发往目的地址是192.168.2.112这个IP的信息，也就是只接收从有线网卡收到的数据，大家可以试一下；如果绑定的IP地址不是本机的一个合法IP，在执行bind()时会出错。
 
 * 编译、运行和测试服务器端程序
   - 编译
-    ```
-    gcc -Wall udpserver.c -o udpserver
+    ```bash
+    gcc -Wall udp-server.c -o udp-server
     ```
   - 运行服务器端程序
-    ```
-    ./udpserver
+    ```bash
+    ./udp-server
     ```
   - 在另一台机器上的终端上运行下面指令，则在运行了udpserver的终端上可以看到收到的信息：hello from netcat
-    ```
+    ```bash
     echo "hello from netcat">/dev/udp/192.168.2.114/8080
     ```
   - 有关在命令行下发送udp数据的方法，可以参考另一篇文章[《如何在Linux命令行下发送和接收UDP数据包》][article1]
@@ -220,74 +155,24 @@ postid: 180013
   - 运行截图
 
     ![test udpserver with nc][img01]
+
 ****************
-* 客户端程序：udpclient.c
-  ```
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <unistd.h>
-  #include <string.h>
+* 客户端程序：[udp-client.c][src01](**点击文件名下载源程序**)
 
-  #include <sys/types.h>
-  #include <sys/socket.h>
-  #include <arpa/inet.h>
-  #include <netinet/in.h>
-      
-  #define SERVER_IP   "192.168.2.112"
-  #define SERVER_PORT 8080
-  #define BUF_SIZE    1024
-      
-  int main() {
-      int sockfd;
-      char buffer[BUF_SIZE];
-      char *hello = "Hello from client";
-      struct sockaddr_in     server_addr;
-      
-      // Step 1: Creating socket file descriptor
-      if ( (sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
-          perror("socket creation failed");
-          return -1;
-      }
-
-      // Step 2: Send a message to the server.
-      memset(&server_addr, 0, sizeof(server_addr));
-      // Filling server information
-      server_addr.sin_family = AF_INET;
-      server_addr.sin_port = htons(SERVER_PORT);
-      server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
-
-      int n;
-      socklen_t len;
-
-      sendto(sockfd, (const char *)hello, strlen(hello), 0, (const struct sockaddr *)&server_addr, sizeof(server_addr));
-      printf("Hello message sent.\n");
-
-      // Step 3: Wait until response from the server is received
-      n = recvfrom(sockfd, (char *)buffer, BUF_SIZE, MSG_WAITALL, (struct sockaddr *)&server_addr, &len);
-      buffer[n] = '\0';
-
-      // Step 4: Process reply
-      printf("Server : %s\n", buffer);
-
-      // Step 5: Close socket descriptor and exit
-      close(sockfd);
-      return 0;
-  }
-  ```
   > 客户端程序的socket不需要绑定地址，但在发送时需要设置目的地址，目的地址是服务器的地址，端口号是服务器端程序绑定的端口，192.168.2.112是服务器的IP地址，请根据自身的情况进行修改，IP和端口号必须和服务器一致，否则服务器无法收到信息。
 
 * 客户端程序的编译
-  ```
-  gcc -Wall udpclient.c -o udpclient
+  ```bash
+  gcc -Wall udp-client.c -o udp-client
   ```
 * 程序运行
-  - 一台机器上运行服务端程序：udpserver
+  - 一台机器上运行服务端程序：udp-server
+    ```bash
+    ./udp-server
     ```
-    ./udpserver
-    ```
-  - 在另一台机器上运行客户端程序：udpclient
-    ```
-    ./udpclient
+  - 在另一台机器上运行客户端程序：udp-client
+    ```bash
+    ./udp-client
     ```
   - 客户端程序的运行截图
 
@@ -313,11 +198,14 @@ postid: 180013
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
+
+[src01]:/sourcecodes/180013/udp-client.c
+[src02]:/sourcecodes/180013/udp-server.c
   
-[img01]:/images/180013/test_udpserver_with_nc.png
-[img02]:/images/180013//screenshot_of_udpclient.png
-[img03]:/images/180013/screenshot_of_udpserver.png
+[img01]:https://whowin.gitee.io/images/180013/test_udpserver_with_nc.png
+[img02]:https://whowin.gitee.io/images/180013//screenshot_of_udpclient.png
+[img03]:https://whowin.gitee.io/images/180013/screenshot_of_udpserver.png
 
-[article1]:../0005-send-udp-via-linux-cli/
+[article1]:https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/

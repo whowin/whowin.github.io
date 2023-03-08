@@ -50,7 +50,7 @@ postid: 180007
 *****************
 * **以太网报头(Ethernet Header)**
   - 数据链路层的以太网报头定义在头文件linux/if_ether.h中：
-    ```
+    ```C
     struct ethhdr {
         unsigned char  h_dest[ETH_ALEN];    /* destination eth addr  */
         unsigned char  h_source[ETH_ALEN];  /* source ether addr  */
@@ -72,7 +72,7 @@ postid: 180007
 
   ---------------
   - arp报头定义在头文件linux/if_arp.h中：
-    ```
+    ```C
     struct arphdr {
         __be16          ar_hrd;       /* format of hardware address   */
         __be16          ar_pro;       /* format of protocol address   */
@@ -94,7 +94,7 @@ postid: 180007
 
   -----------------
   - 对于以太网IPv4而言，ARP payload的定义如下
-    ```
+    ```C
     struct eth_arpmsg {
         unsigned char   arp_sha[ETH_ALEN];   /* Sender Hardware Address(MAC) */
         unsigned char   arp_spa[4];          /* Sender Protocol Address(IP) */
@@ -151,275 +151,14 @@ postid: 180007
   3. 发送arp reply时的发件人的MAC应该填本机的MAC；
 * 由于ARP工作在数据链路层，所以不能使用普通的socket进行接收和发送，需要使用raw socket，使用raw socket时需要使用一个结构(struct sockaddr_ll)，这个结构的作用类似于IPv4的socket编程中的(struct sockaddr_in)的作用，有关这个结构的简单介绍，可以参考文章[《如何使用raw socket发送UDP报文》][article2]
 * 由于这个程序是使用raw socket在数据链路层上接收数据，所以实际上程序可以收到在局域网上的所有数据包，程序过滤掉了不是ARP协议的数据包，然后又过滤掉了目的IP不是本机的数据包，在ctrl+c退出时，程序会显示收到了多少数据包，其中ARP协议数据包有多少，ARP请求包有多少，程序一共回应了多少个数据包，数据还是有点意思的；
-* 下面是源程序，文件名：arp_server.c
-  ```
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <string.h>
-  #include <unistd.h>
-  #include <signal.h>
-
-  #include <sys/socket.h>
-  #include <sys/ioctl.h>
-
-  #include <linux/if_ether.h>
-  #include <linux/if_arp.h>
-
-  #include <arpa/inet.h>
-
-  #define BUF_SIZE            42
-  #define DEVICE              "enp0s3"    // Please modify according to the actual device
-
-  int sock_raw = 0;               // Socket descriptor
-  void *buffer = NULL;            // Buffer for receiving and sending packet
-  long total_packets = 0;         // how many packets were received
-  long total_arp_packets = 0;     // how many arp packets were received
-  long total_arp_req_packets = 0; // how many arp request packets were received
-  long answered_packets = 0;      // how many arp reply packets were sent
-
-  void sigint(int signum);
-
-  struct __attribute__((packed)) arp_header {
-      struct arphdr arp_hdr;              // arp header
-      unsigned char arp_sha[ETH_ALEN];    // Sender Hardware Address
-      unsigned char arp_spa[4];           // Sender Protocol Address
-      unsigned char arp_dha[ETH_ALEN];    // Destination Hardware Address
-      unsigned char arp_dpa[4];           // Destination Protocol Address
-  };
-
-  int main(void) {
-      buffer = (void *)malloc(BUF_SIZE);                  // Buffer for Ethernet Frame
-      unsigned char *eth_header = buffer;                 // Pointer to Ethenet Header
-      struct ethhdr *eh = (struct ethhdr *)eth_header;    // Another pointer to ethernet header
-      unsigned char *arp_header = buffer + sizeof(struct ethhdr); // it is arp header after ethernet header
-      struct arp_header *ah = (struct arp_header *)arp_header;    // pointer to ARP header
-
-      struct ifreq ifr;               // use for getting MAC and IP via ioctl
-      unsigned char src_mac[ETH_ALEN];// local MAC address
-      uint32_t src_ip;                // local IP address
-
-      struct sockaddr_ll saddr_ll;    // structure for sending packet via raw socket
-      int ifindex = 0;                // Ethernet Interface index
-      int length;                     // length of received packet
-      int sent;                       // length of sent packet
-
-      printf("Server started, entering initialiation phase...\n");
-
-      // Step 1: create raw socket
-      //===========================
-      sock_raw = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
-      if (sock_raw == -1) {
-          perror("socket():");
-          exit(EXIT_FAILURE);
-      }
-      printf("Successfully created socket: %i\n", sock_raw);
-
-      // Step 2: retrieve ethernet interface index
-      //===========================================
-      memset(&ifr, 0, sizeof(struct ifreq));
-      strncpy(ifr.ifr_name, DEVICE, IFNAMSIZ - 1);
-      if (ioctl(sock_raw, SIOCGIFINDEX, &ifr) == -1) {
-          perror("SIOCGIFINDEX");
-          close(sock_raw);
-          exit(EXIT_FAILURE);
-      }
-      ifindex = ifr.ifr_ifindex;
-      printf("Successfully got interface index: %i\n", ifindex);
-
-      // Step 3: retrieve corresponding MAC
-      //====================================
-      if (ioctl(sock_raw, SIOCGIFHWADDR, &ifr) == -1) {
-          perror("SIOCGIFINDEX");
-          close(sock_raw);
-          exit(EXIT_FAILURE);
-      }
-      memcpy(src_mac, ifr.ifr_hwaddr.sa_data, ETH_ALEN);
-      printf("Successfully got local MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-              src_mac[0],src_mac[1],src_mac[2],src_mac[3],src_mac[4],src_mac[5]);
-
-      // Step 4: retrieve corresponding IP
-      //===================================
-      memset(&ifr, 0, sizeof(struct ifreq));
-      strncpy(ifr.ifr_name, DEVICE, IFNAMSIZ - 1);
-      if (ioctl(sock_raw, SIOCGIFADDR, &ifr) < 0) {
-          printf("SIOCGIFADDR.\n");
-          close(sock_raw);
-          exit(EXIT_FAILURE);
-      }
-      memcpy((void *)&src_ip, &(((struct sockaddr_in *)&(ifr.ifr_addr))->sin_addr), 4);
-      printf("successfully got local IP address: %s\n", inet_ntoa(((struct sockaddr_in *)&(ifr.ifr_addr))->sin_addr));
-
-      // step 5: prepare sockaddr_ll for sending packet
-      //================================================
-      memset((void *)&saddr_ll, 0, sizeof(struct sockaddr_ll));
-      saddr_ll.sll_family   = PF_PACKET;
-      saddr_ll.sll_protocol = htons(ETH_P_IP);
-      saddr_ll.sll_ifindex  = ifindex;
-      saddr_ll.sll_hatype   = ARPHRD_ETHER;         // hardware address type: ethernet
-      saddr_ll.sll_pkttype  = PACKET_OTHERHOST;     // packet type: To someone else
-      saddr_ll.sll_halen    = ETH_ALEN;
-
-      // Step 5: establish signal handler
-      //==================================
-      signal(SIGINT, sigint);
-      printf("Successfully established signal handler for SIGINT\n\n");
-
-      while (sock_raw > 0) {
-          // Step 6: Wait for incoming packet...
-          //======================================
-          memset(buffer, 0, BUF_SIZE);
-          length = recvfrom(sock_raw, buffer, BUF_SIZE, 0, NULL, NULL);
-          if (length == -1) {
-              perror("recvfrom():");
-              close(sock_raw);
-              exit(EXIT_FAILURE);
-          }
-          total_packets++;        // how many packets were received
-          // Step 7: ignore the packet if not arp protocol
-          //=============================================== 
-          if (htons(eh->h_proto) != ETH_P_ARP)           // 0x806
-              continue;
-          total_arp_packets++;        // how many arp packets were received
-
-          // Step 8: ignore the packet if not arp request(may reply)
-          //=========================================================
-          if (htons(ah->arp_hdr.ar_op) != ARPOP_REQUEST) {    // 0x0001
-              /*
-              printf("Received an arp reply. Source IP:%d.%d.%d.%d\tDest IP: %d.%d.%d.%d\n",
-                      ah->arp_spa[0], ah->arp_spa[1], ah->arp_spa[2], ah->arp_spa[3],
-                      ah->arp_dpa[0], ah->arp_dpa[1], ah->arp_dpa[2], ah->arp_dpa[3]);
-              */
-              continue;
-          }
-          total_arp_req_packets++;    // how many arp request packets were received
-
-          // Step 9: ignore the packet if the destination is not this machine
-          //==================================================================
-          if (src_ip != *((uint32_t *)ah->arp_dpa)) {
-              printf("Received an arp request. Source IP:%d.%d.%d.%d\tDest IP: %d.%d.%d.%d\n",
-                      ah->arp_spa[0], ah->arp_spa[1], ah->arp_spa[2], ah->arp_spa[3],
-                      ah->arp_dpa[0], ah->arp_dpa[1], ah->arp_dpa[2], ah->arp_dpa[3]);
-              continue;
-          } 
-          // receive an arp request packet and the destination IP is this machine
-          printf("\nReceived an arp request to this machine.\n");
-
-          // Step 10: display ethernet header
-          //==================================
-          printf("================== ETHERNET HEADER ========================\n");
-          printf("ETHER DST MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                  eh->h_dest[0], eh->h_dest[1], eh->h_dest[2],
-                  eh->h_dest[3], eh->h_dest[4], eh->h_dest[5]);
-          printf("ETHER SRC MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                  eh->h_source[0], eh->h_source[1], eh->h_source[2],
-                  eh->h_source[3], eh->h_source[4], eh->h_source[5]);
-
-          // Step 11: display arp packet 
-          //=============================
-          printf("================== ARP PACKET ========================\n");
-          printf("------------------ ARP Header ------------------------\n");
-          printf("  H/D TYPE: 0x%04x\t  PROTO TYPE: 0x%04x\n", 
-                  ntohs(ah->arp_hdr.ar_hrd), ntohs(ah->arp_hdr.ar_pro));
-          printf("H/D length: %d\t\tPROTO length: %d\n", 
-                  (unsigned short)ah->arp_hdr.ar_hln, (unsigned short)ah->arp_hdr.ar_pln);
-          printf(" OPERATION: %x\n", ntohs(ah->arp_hdr.ar_op));
-          printf("------------------ ARP Payload -----------------------\n");
-          printf("SENDER MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                  ah->arp_sha[0], ah->arp_sha[1], ah->arp_sha[2],
-                  ah->arp_sha[3], ah->arp_sha[4], ah->arp_sha[5]);
-          printf(" SENDER IP address: %d.%d.%d.%d\n",
-                  ah->arp_spa[0], ah->arp_spa[1], ah->arp_spa[2], ah->arp_spa[3]);
-          printf("TARGET MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                  ah->arp_dha[0], ah->arp_dha[1], ah->arp_dha[2],
-                  ah->arp_dha[3], ah->arp_dha[4], ah->arp_dha[5]);
-          printf(" TARGET IP address: %d.%d.%d.%d\n",
-                  ah->arp_dpa[0], ah->arp_dpa[1], ah->arp_dpa[2], ah->arp_dpa[3]);
-
-          // Step 12: construct ethernet header for sending arp reply
-          //==========================================================
-          // Destination MAC: should be received sender's MAC
-          memcpy((void *)eth_header, (const void *)(eth_header + ETH_ALEN), ETH_ALEN);
-          // Source MAC: should be local MAC
-          memcpy((void *)(eth_header + ETH_ALEN), (const void *)src_mac, ETH_ALEN);
-          eh->h_proto = ETH_P_ARP;        // protocol in network layer. defined in if_ether.h
-
-          // Step 13: construct arp packet for sending arp reply
-          //=====================================================
-          ah->arp_hdr.ar_op = ARPOP_REPLY;            // 0x0002;
-
-          memcpy(ah->arp_dha, ah->arp_sha, ETH_ALEN); // copy received source MAC to destination MAC
-          memcpy(ah->arp_dpa, ah->arp_spa, 4);        // copy received source IP to destination IP
-          memcpy(ah->arp_sha, src_mac, ETH_ALEN);     // change the sender MAC to local MAC
-          memcpy(ah->arp_spa, (unsigned char *)&src_ip, 4);   // copy local IP to source IP
-
-          // Step 14: change sll_addr to destination MAC
-          //=============================================
-          memcpy(saddr_ll.sll_addr, eh->h_dest, ETH_ALEN);    // copy h_dest field of ethernet header to sll_addr
-
-          // Step 15: diaplay ethernet header for sending arp reply
-          //========================================================
-          printf("\n=========== ETHERNET HEARDER FOR SENDING PACKET =========\n");
-          printf("ETHER DST MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                  eh->h_dest[0], eh->h_dest[1], eh->h_dest[2],
-                  eh->h_dest[3], eh->h_dest[4], eh->h_dest[5]);
-          printf("ETHER SRC MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                  eh->h_source[0], eh->h_source[1], eh->h_source[2],
-                  eh->h_source[3], eh->h_source[4], eh->h_source[5]);
-
-          // Step 16: display the content of arp reply
-          //===========================================
-          printf("================== ARP REPLY PACKET ========================\n");
-          printf("------------------ ARP header ------------------------------\n");
-          printf("  H/D TYPE: 0x%04x\t  PROTO TYPE: 0x%04x\n", 
-                  ntohs(ah->arp_hdr.ar_hrd), ntohs(ah->arp_hdr.ar_pro));
-          printf("H/D length: %d\t\tPROTO length: %d\n", 
-                  (unsigned short)ah->arp_hdr.ar_hln, (unsigned short)ah->arp_hdr.ar_pln);
-          printf(" OPERATION: %x\n", ah->arp_hdr.ar_op);
-          printf("------------------ ARP Payload -----------------------------\n");
-          printf("SENDER MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                  ah->arp_sha[0], ah->arp_sha[1], ah->arp_sha[2],
-                  ah->arp_sha[3], ah->arp_sha[4], ah->arp_sha[5]);
-          printf(" SENDER IP address: %d.%d.%d.%d\n",
-                  ah->arp_spa[0], ah->arp_spa[1], ah->arp_spa[2], ah->arp_spa[3]);
-          printf("TARGET MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                  ah->arp_dha[0], ah->arp_dha[1], ah->arp_dha[2],
-                  ah->arp_dha[3], ah->arp_dha[4], ah->arp_dha[5]);
-          printf(" TARGET IP address: %d.%d.%d.%d\n\n",
-                  ah->arp_dpa[0], ah->arp_dpa[1], ah->arp_dpa[2], ah->arp_dpa[3]);
-
-          // Step 17: Send the arp replay
-          //==============================
-          sent = sendto(sock_raw, buffer, BUF_SIZE, 0, (struct sockaddr *)&saddr_ll, sizeof(struct sockaddr_ll));
-          if (sent == -1) {
-              perror("sendto():");
-              close(sock_raw);
-              exit(EXIT_FAILURE);
-          }
-          answered_packets++;     // How many arp reply packets were sent
-      }
-  }
-
-  void sigint(int signum) {
-      // Clean up ......
-      if (sock_raw > 0) close(sock_raw);
-      if (buffer) free(buffer);
-
-      printf("Server terminating....\n");
-
-      printf("Totally received: %ld packets\n", total_packets);
-      printf("Totally received: %ld ARP packets\n", total_arp_packets);
-      printf("Totally received: %ld ARP request packets\n", total_arp_req_packets);
-      printf("Answered %ld packets\n", answered_packets);
-      exit(EXIT_SUCCESS);
-  }
-  ```
+* 下面是源程序，文件名：[arp-request-and-reply.c][src01](**点击文件名下载源程序**)
 * 编译，程序在ubuntu 20.04下编译通过，gcc版本为9.4.0
-  ```
-  gcc -Wall arp_server.c -o arp_server
+  ```bash
+  gcc -Wall arp-request-and-reply.c -o arp-request-and-reply
   ```
 * 运行，由于使用了raw socket，必须要要有root权限才可以运行
-  ```
-  sudo ./arp_server
+  ```bash
+  sudo ./arp-request-and-reply
   ```
 * 如果看不到有发给本机的arp请求，可以将你的手机连接到你得电脑所在的局域网上，然后，在你的电脑上开一个新的终端，在新的终端上ping一下你手机的IP，通常会激活手机向你的机器发送一个arp请求，当然你也可以ping另一台局域网中的电脑试试；
 * 运行截图
@@ -433,15 +172,16 @@ postid: 180007
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+
+[src01]:/sourcecodes/180007/arp-requst-and-reply.c
+
+[img01]:https://whowin.gitee.io/images/180007/arp_packet.png
+[img02]:https://whowin.gitee.io/images/180007/arp_header.png
+[img03]:https://whowin.gitee.io/images/180007/arp_payload.png
+[img04]:https://whowin.gitee.io/images/180007/screenshot_arp_server.png
 
 
-[img01]:/images/180007/arp_packet.png
-[img02]:/images/180007/arp_header.png
-[img03]:/images/180007/arp_payload.png
-[img04]:/images/180007/screenshot_arp_server.png
-
-
-[article1]:../0002-link-layer-programming/
-[article2]:../0006-send-udp-with-raw-socket/
-[article3]:../0014-handling-arp-cache/
+[article1]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
+[article2]:https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/
+[article3]:https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/

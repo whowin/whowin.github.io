@@ -55,13 +55,13 @@ postid: 180009
 ## 1. netlink socket及netlink消息结构
 * **netlink socket**
   - netlink是一个socket，所以它的编程与普通的socket编程类似，其socket的创建方法如下：
-    ```
+    ```C
     sock = socket(AF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE);
     ```
   - 第一个参数可以是AF_NETLINK或者PF_NETLINK，表示要创建一个NETLINK socket，其实AF_NETLINK和PF_NETLINK是一样的，可以到bits/socket.h中查看相应的定义；
   - 第二个参数可以是SOCK_RAW或者SOCK_DGRAM，linux内核的netlink子系统并不会区分SOCK_RAW和SOCK_DGRAM(内核5.15，也许更高的版本会区分)，所以使用SOCK_RAW和SOCK_DGRAM是一样的；
   - 第三个参数是NETLINK协议，这些协议定义在文件linux/netlink.h中，在linux 5.15中定义了23种协议，协议数量最多为32个
-    ```
+    ```C
     #define NETLINK_ROUTE       0    /* Routing/device hook                     */
     #define NETLINK_UNUSED      1    /* Unused number                           */
     #define NETLINK_USERSOCK    2    /* Reserved for user mode socket protocols */
@@ -101,7 +101,9 @@ postid: 180009
 
 * **netlink消息结构**
   - netlink消息是由一个或多个netlink消息头和与其相关的payload组成的一个字节流
+
     ![netlink信息][img01]
+
   ------------
   - netlink报头的结构为(struct nlmsghdr)，在头文件linux/netlink.h中定义，在下一节中会介绍了这个结构；
   - 这个字节流只能使用一组标准的以NLMSG_开头的宏进行存取(netlink的手册中是这样说的)，这组宏定义在头文件linux/netlink.h中，可以使用在线手册```man 3 netlink```了解更多的信息，本文在后面章节也会简要介绍这些宏
@@ -113,7 +115,7 @@ postid: 180009
 > netlink编程涉及的各种结构非常多，这里仅介绍几个与本文讨论的话题相关的结构，但仍然会占很大的篇幅，这几个结构在第、6节会大量用到，所以必须先介绍一下，**可以先大致看一下**，在阅读相应章节遇到具体结构时再回来仔细看。
 
 1. **struct sockaddr_nl** - 定义在头文件linux/netlink.h中
-  ```
+  ```C
   struct sockaddr_nl {
       __kernel_sa_family_t  nl_family;  /* AF_NETLINK  */
       unsigned short        nl_pad;     /* zero        */
@@ -129,7 +131,7 @@ postid: 180009
 
 2. **struct nlmsghdr** - 定义在头文件linux/netlink.h中
   - 这个结构是netlink报头的定义
-    ```
+    ```C
     struct nlmsghdr {
         __u32   nlmsg_len;    /* Length of message including header */
         __u16   nlmsg_type;   /* Message content */
@@ -140,7 +142,7 @@ postid: 180009
     ```
   - nlmsg_len: netlink报文的长度，按4字节对齐；包括(struct nlmsghdr)的长度和后面payload的长度；
   - nlmsg_type: netlink报文的类型，不同的类型对应的netlink报文的结构也会不同，这些类型定义在头文件linux/rtnetlink.h中，开头为"RTM_"的常数，本例中在发送netlink请求时类型为：RTM_GETROUTE，含义为从内核获取路由表，常用的常数有：
-    ```
+    ```C
     NLMSG_NOOP      1       无用，可忽略
     NLMSG_ERROR     2       出现错误
     NLMSG_DONE      3       数据输出结束
@@ -166,7 +168,7 @@ postid: 180009
 
 3. **struct rtmsg** - 定义在头文件linux/rtnetlink.h中
   - 这个结构通常是紧跟在(struct nlmsghdr)后面的，当(struct nlmsghdr)中的nlmsg_type为RTM_NEWROUTE、RTM_DELROUTE和RTM_GETROUTE时，(struct nlmsghdr)后面跟的数据才符合下面的结构，当nlmsg_type为其他值时，(struct nlmsghdr)后面跟的数据结构是不同的；
-    ```
+    ```C
     struct rtmsg {
         unsigned char rtm_family;   /* Address family of route */
         unsigned char rtm_dst_len;  /* Length of destination */
@@ -185,7 +187,7 @@ postid: 180009
   - 在发送netlink请求时，只需把rtm_family设为AF_INET，其它全部为0即可；
   - 内核发回的回应中，rtm_dst_len、rtm_src_len、rtm_tos均没有意义可以不用管；
   - rtm_table表示当前路由表的类型，在linux/rtnetlink.h中有定义：
-    ```
+    ```C
     enum rt_class_t {
         RT_TABLE_UNSPEC=0,
         /* User defined values */
@@ -198,7 +200,7 @@ postid: 180009
     ```
   - RT_TABLE_UNSPEC表示是一个不明路由表；RT_TABLE_DEFAULT表示是一个默认路由表；RT_TABLE_MAIN表示是一个主路由表；RT_TABLE_LOCAL表示是一个本地路由表；在本例中，我们要得到的就是一个主路由表(RT_TABLE_MAIN)
   - rtm_protocol是路由协议，在linux/rtnetlink.h中有定义：
-    ```
+    ```C
     #define RTPROT_UNSPEC     0     不明
     #define RTPROT_REDIRECT   1     当前的IPv4下没有使用
     #define RTPROT_KERNEL     2     路由由内核设置
@@ -207,7 +209,7 @@ postid: 180009
     ```
   - 在头文件linux/rtnetlink.h中专门有说明，当rtm_protocol>RTPROT_STATIC时，Linux内核将不予理会，只能作为用户信息；在本例中，我们得到的路由表应该是由内核或者管理员设置的，当然也可以是在启动中由某个启动例程设置，所以RTPROT_KERNEL、RTPROT_BOOT或者RTPROT_STATIC都是可能的；
   - rtm_scope的值也是定义在linux/rtnetlink.h中，在这个头文件中说rtm_scope更像是一个到达目的地址的距离，它有下面几个可能的值：
-    ```
+    ```C
     enum rt_scope_t {
         RT_SCOPE_UNIVERSE=0,      /* global route */
     /* User defined values */
@@ -219,7 +221,7 @@ postid: 180009
     ```
   - 其实这个值没有什么意义，本例中会返回RT_SCOPE_UNIVERSE，表示是一个全球路由；
   - rtm_type表示当前路由的类型(rtm_table表示路由表类型，和这个字段是不同的)，在linux/rtnetlink.h中定义：
-    ```
+    ```C
     enum {
         RTN_UNSPEC,
         RTN_UNICAST,      /* Gateway or direct route */
@@ -240,7 +242,7 @@ postid: 180009
     ```
   - 本例中，我们要获取的是gateway IP，所以内核返回的rtm_type为1(RTN_UNICAST)
   - rtm_flags在本例中没有作用，其可能的值在linux/rtnetlink.h中定义：
-    ```
+    ```C
     #define RTM_F_NOTIFY        0x100     /* Notify user of route change */
     #define RTM_F_CLONED        0x200     /* This route is cloned */
     #define RTM_F_EQUALIZE      0x400     /* Multipath equalizer: NI */
@@ -251,14 +253,14 @@ postid: 180009
 
 4. **struct rtattr** - 定义在头文件linux/rtnetlink.h中
   - 一个或多个(struct rtattr) + data将跟在(struct rtmsg)后面，data里表达着一个路由中的一项属性；
-    ```
+    ```C
     struct rtattr {
         unsigned short  rta_len;
         unsigned short  rta_type;
     };
     ```
   - rta_len字段表示(struct rtattr) + data的总长度，rta_type表示data中的数据类型，在linux/rtnetlink.h中定义：
-    ```
+    ```C
     enum rtattr_type_t {
         RTA_UNSPEC,
         RTA_DST,
@@ -382,7 +384,7 @@ postid: 180009
     ----------
   - 下面代码构建了一个请求报文
 
-    ```
+    ```C
     struct nlmsghdr *nl_msg_hdr;
     struct rtmsg *rt_msg;
     char *msg_buf;
@@ -412,7 +414,7 @@ postid: 180009
   - AF_INET表示只要IPv4的路由表。
 
 3. **发送netlink请求**
-  ```
+  ```C
   send(nl_sock, nl_msg_hdr, nl_msg_hdr->nlmsg_len, 0);
   ```
 
@@ -426,7 +428,7 @@ postid: 180009
 
   > 强调是两个报文是因为我们首先要使用recv()测试一下有多少字节需要接收，然后为接收缓冲区分配内存，但是这个测试只能测试第一个要接收的报文，所以获得的字节数实际还要加上(struct nlmsghdr) + (struct rtmsg)的长度，最后加上的这部分就是最后一个NLMSG_DONE的报文，请看下面的代码。
 
-    ```
+    ```C
     char *buf_ptr, *p;
     int buf_size, msg_len = 0, read_len;
     buf_size = recv(nl_sock, NULL, 0, MSG_PEEK|MSG_TRUNC));
@@ -471,13 +473,13 @@ postid: 180009
   - 在每个部分中，(struct nlmsghdr)中的nlmsg_len定义了这一部分的总长度；(struct rtattr)中rta_len定义了(struct rtattr) + data的长度，rta_type定义了data中是什么数据，具体可以参阅前面有关数据结构的介绍；
   - 在每个部分中，(struct rtmsg)用来说明这条记录的特征，比如协议族，是IPv4还是IPv6；路由表是主路由表还是本地路由表；这条路由是内核设置的还是启动过程中设置的；等等，因为这些特征不能在(struct nlmsghdr)中表示，在(struct rtattr)中表示也不合适；
   - 我们需要的数据其实在data中，我们来举一个实际的例子来说明(struct rtattr) + data；假定要表达一个gateway的IP地址为192.168.0.1，则收到的数据如下(按16进制显示)：
-    ```
+    ```plaintext
     08 05 c0 a8 00 01
     ```
   - 其中08是rta_len，表示(struct rtattr) + data的长度为8个字节，rta_type是05，05是RTA_GATEWAY，表示data中的数据为gateway的IP地址，后面的4个字节组成了一个32位的IP地址，其实就是192.168.0.1，0xc0就是十进制的192，0xa8就是十进制的168
   - 所以我们在解析报文时应该分成两步，第一步按照(struct nlmsghdr)分开，这样分开的每一部分是路由表的一条记录；第二步是在一个部分中解析出每个结构下每个字段的数据
   - 下面这段程序完成了第一步，并将每部分的数据交给函数parse_message去完成第二步
-    ```
+    ```C
     struct nlmsghdr *nlmsg_hdr;
     int msg_buf_len;
 
@@ -495,7 +497,7 @@ postid: 180009
   - 这段程序中的几个宏：NLMSG_OK()、NLMSG_NEXT()和NLMSG_DONE在前面都有介绍；
   - 下面这段程序，完成了上面这段程序中函数parse_message()的功能，将nlmsg_hdr指向多部分报文的其中一部分的(struct nlmsghdr)，便可以解析出所有(struct rtattr)下的数据，以本文讨论的话题而言，我们只需要主路由表中gateway的IP，所以其中增加了IPv4和主路由表的判断；
 
-    ```
+    ```C
     struct rtmsg *rt_msg;
     struct rtattr *rt_attr;
     int rt_len;
@@ -542,348 +544,11 @@ postid: 180009
   - 上面这段程序中获得的IP地址都是存放在一个(struct in_addr)中，熟悉IPv4下socket编程的程序员应该了解这是什么。
 
 ## 7. 完整源代码
-* 下面是完整的源代码，文件名：get_gateway.c，里面有详细的注释
-  ```
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <string.h>
-  #include <time.h>
-  #include <errno.h>
-  #include <unistd.h>
+* 源代码文件名：[get-gateway-netlink.c][src01](**点击文件名下载源程序**)，里面有详细的注释
 
-  #include <sys/socket.h>
-  #include <net/if.h>
-  #include <linux/netlink.h>
-  #include <linux/rtnetlink.h>
-
-  #include <arpa/inet.h>
-
-  //#define BUF_SIZE        8192
-  #define IP_SIZE         16
-
-  int debug = 0;
-  struct route_info {
-      struct in_addr dst_addr;            // destination IP address
-      struct in_addr src_addr;            // source IP address
-      struct in_addr gateway;             // gateway IP address
-      char ifname[IF_NAMESIZE];           // network interface name
-      uint32_t rt_table_id;               // route table id
-      uint32_t rt_priority;               // priority of route
-  };
-
-  void print_bytes(unsigned char *p, int len) {
-      if (!debug) return;
-
-      int i;
-
-      if (len > 0) printf("\t");
-      for (i = 0; i < len; ++i) 
-          printf("%02x ", (unsigned char)*(p + i));
-      printf("\n");
-
-  }
-
-  void print_rt_attr(struct rtattr *rt_attr) {
-      if (!debug) return;
-      printf("\t===== Route Attribute ======\n");
-      printf("\t rta_len = %d\n", rt_attr->rta_len);
-      printf("\trta_type = %d(1-DST,4-OIF,5-GATEWAY,6-PRIORITY,7-PREFSRC,15-TABLE)\n", rt_attr->rta_type);
-      printf("\t============================\n");
-  }
-
-  void print_rt_msg(struct rtmsg *rt_msg) {
-      if (!debug) return;
-      printf("\t==== Routing Message =========\n");
-      printf("\t  rtm_family: %d(1-AF_LOCAL,2-AF_INET,10-AF_INET6\n", rt_msg->rtm_family);
-      printf("\t rtm_dst_len: %d\n", rt_msg->rtm_dst_len);
-      printf("\t rtm_src_len: %d\n", rt_msg->rtm_src_len);
-      printf("\t     rtm_tos: 0x%02x\n", rt_msg->rtm_tos);
-      // 0-UNSPEC(unknown), 253-DEFAULT(the default table), 254-MAIN(the main table), 255-LOCAL(the local table)
-      printf("\t   rtm_table: %d(0-UNKNOWN,253-DEFAULT,254-MAIN,255-LOCAL)\n", rt_msg->rtm_table);
-      // 0-UNSPEC(unknown), 1-REDIRECT(not used), 2-KERNEL(by the kernel), 3-BOOT(during boot), 4-STATIC(by the administrator)
-      printf("\trtm_protocol: %d(0-unknown,1-not used,2-kernel,3-boot,4-administrtor)\n", rt_msg->rtm_protocol);
-      // 0-UNIVERSE(global route), 200-SITE(interior route in the local autonomous system)
-      // 253-LINK(route on this link), 254-HOST(route on the local host), 255-NOWHERE(destination doesn't exist)
-      printf("\t   rtm_scope: %d(0-universe,200-site,253-link,254-host,255-host)\n", rt_msg->rtm_scope);
-      // 0-UNSPEC(unknown), 1-UNICAST(a gateway or direct route), 2-LOCAL(a local interface route)
-      // 3-BROADCAST(a local broadcast route), ......
-      printf("\t    rtm_type: %d(0-UNSPEC,1-GATEWAY OR DIRECT,2-LOCAL,3-BROADCAST)\n", rt_msg->rtm_type);
-      printf("\t   rtm_flags: 0x%02x\n", rt_msg->rtm_flags);
-      printf("\t==============================\n");
-  }
-
-  void print_nl_msg_hdr(struct nlmsghdr *nl_msg_hdr) {
-      if (!debug) return;
-      printf("\t== Netlink Message Header ==\n");
-      printf("\t  nlmsg_len = %d\n", nl_msg_hdr->nlmsg_len);
-      // 1-Nothing,2-Error,3-NLMSG_DONE,24-RTM_NEWROUTE,26-RTM_GETROUTE
-      printf("\t nlmsg_type = %d(2-Error,3-NLMSG_DONE,24-RTM_NEWROUTE)\n", nl_msg_hdr->nlmsg_type);
-      // 0x02-NLM_F_MULTI,
-      printf("\tnlmsg_flags = 0X%04X(0X02-NLM_F_MULTI)\n", nl_msg_hdr->nlmsg_flags);
-      printf("\t  nlmsg_seq = %d\n", nl_msg_hdr->nlmsg_seq);
-      printf("\t  nlmsg_pid = %d\n", nl_msg_hdr->nlmsg_pid);
-      printf("\t============================\n");
-  }
-
-  /****************************************************************************
-  * Function: read_nl_sock(int nl_sock, char **buf_ptr, int seq_num, int pid)
-  * Description: Read data from netlink socket
-  * 
-  * Entry:   nl_sock     netlink socket
-  *          buf_ptr     receive buffer
-  *          seq_num     message sequence number
-  *          pid         process id
-  * return:  >0          length of received message
-  *          <0          error
-  ****************************************************************************/
-  int read_nl_sock(int nl_sock, char **buf_ptr, int seq_num, int pid) {
-      char *p;
-      int read_len = 0;       // how many bytes to read from the netlink socket
-      int msg_len  = 0;       // how many bytes have been read from the netlink socket
-      int buf_size = 0;       // the size of the receive buffer
-      //int count    = 0;       // how many times have read from the netlink socket
-
-      if (debug) printf("5-1. Check how many bytes can be read from the netlink socket.\n");
-      if ((buf_size = recv(nl_sock, NULL, 0, MSG_PEEK|MSG_TRUNC)) < 0) {
-          perror("Fail to receive from socket");
-          return -1;
-      }
-      // No data can be read
-      if (buf_size == 0) {
-          printf("EOF of socket.\n");
-          return 0;
-      }
-
-      if (debug) printf("5-2. Reallocate memory for receiving the response from the kernel.\n");
-      // caculate the size of the receive buffer. plus sizeof(struct nlmsghdr) & sizeof(struct rtmsg)
-      buf_size += NLMSG_SPACE(sizeof(struct rtmsg));
-      if (debug) printf("\tNew buffer size: %d.\n", buf_size);
-      // Reallocate memory for receive buffer
-      p = realloc(*buf_ptr, buf_size);
-      if (p == NULL) {
-          perror("Realloc(): ");
-          return -1;
-      }
-      *buf_ptr = p;
-      memset(p, 0, buf_size);
-
-      if (debug) printf("5-3. Receive response from kernel.\n");
-
-      do {
-          // Recieve response from the kernel
-          read_len = recv(nl_sock, p, buf_size - msg_len, MSG_DONTWAIT);
-          if (read_len < 0) {
-              if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                  if (debug) printf("\tBreak due to EAGAIN or EWOULDBLOCK.\n");
-                  break;
-              } else {
-                  printf("errno=%d\n", errno);
-                  perror("SOCK READ: ");
-                  return -1;
-              }
-          } else if (read_len == 0) {
-              if (debug) printf("\tBreak due to reading nothing.\n");
-              break;
-          }
-
-          p += read_len;
-          msg_len += read_len;
-      } while (msg_len < buf_size && read_len > 0);
-
-      return msg_len;
-  }
-
-  /*************************************************************************************
-  * Function: void parse_message(struct nlmsghdr *nl_hdr, struct route_info *rt_info)
-  * Description: parse the route info returned
-  * 
-  * Entry:   nl_hdr      pointer of struct nlmsghdr
-  *          rt_info     pointer of struct route_info
-  * return:  none
-  *          routes info will fill into rtinfo
-  *************************************************************************************/
-  void parse_message(struct nlmsghdr *nl_hdr, struct route_info *rt_info) {
-      struct rtmsg *rt_msg;
-      struct rtattr *rt_attr;
-      int rt_len;
-
-      if (debug) printf("6-1. Check if the route msg is IPv4 route table.\n");
-      rt_msg = (struct rtmsg *)NLMSG_DATA(nl_hdr);
-      print_rt_msg(rt_msg);
-
-      // If the route is not for AF_INET or does not belong to main routing table then return.
-      if ((rt_msg->rtm_family != AF_INET) || (rt_msg->rtm_table != RT_TABLE_MAIN)) {
-          if (debug) printf("\tIt is not the IPv4 route table. Just return.\n");
-          return;
-      }
-
-      // get the rtattr field
-      if (debug) printf("\tIt is the IPv4 route table.\n");
-      rt_attr = (struct rtattr *)RTM_RTA(rt_msg);
-      rt_len = RTM_PAYLOAD(nl_hdr);       // return length of all rtattr
-
-      if (debug) printf("6-2. Parse the route attribute.\n");
-      unsigned char *p;
-      for (; RTA_OK(rt_attr, rt_len); rt_attr = RTA_NEXT(rt_attr, rt_len)) {
-          print_rt_attr(rt_attr);
-          switch (rt_attr->rta_type) {
-              case RTA_OIF:
-                  // rta_data is index of network interface. converter it to ifterface name here.
-                  if_indextoname(*(int *)RTA_DATA(rt_attr), rt_info->ifname);
-                  if (debug) printf("\tInterface name: %s\n", rt_info->ifname);
-                  break;
-
-              case RTA_GATEWAY:
-                  // rta_date is gateway ip in 32bits(struct in_addr).
-                  memcpy(&rt_info->gateway, RTA_DATA(rt_attr), sizeof(rt_info->gateway));
-                  p = (unsigned char *)&rt_info->gateway;
-                  if (debug) printf("\tGateway IP: %d.%d.%d.%d\n", *p, *(p + 1), *(p + 2), *(p + 3));
-                  break;
-
-              case RTA_PREFSRC:
-                  // Preferred source IP address in 32bits(struct in_addr)
-                  memcpy(&rt_info->src_addr, RTA_DATA(rt_attr), sizeof(rt_info->src_addr));
-                  p = (unsigned char *)&rt_info->src_addr;
-                  if (debug) printf("\tSource IP: %d.%d.%d.%d\n", *p, *(p + 1), *(p + 2), *(p + 3));
-                  break;
-
-              case RTA_DST:
-                  // Destination IP address in 32 bits(struct in_addr)
-                  memcpy(&rt_info->dst_addr, RTA_DATA(rt_attr), sizeof(rt_info->dst_addr));
-                  p = (unsigned char *)&rt_info->dst_addr;
-                  if (debug) printf("\tDestination IP: %d.%d.%d.%d\n", *p, *(p + 1), *(p + 2), *(p + 3));
-                  break;
-
-              case RTA_TABLE:
-                  // Routing table ID. 
-                  memcpy(&rt_info->rt_table_id, RTA_DATA(rt_attr), sizeof(rt_info->rt_table_id));
-                  if (debug) printf("\tRouting Table ID: 0x%08x\n", rt_info->rt_table_id);
-                  break;
-
-              case RTA_PRIORITY:
-                  // Priority of route.
-                  memcpy(&rt_info->rt_priority, RTA_DATA(rt_attr), sizeof(rt_info->rt_priority));
-                  if (debug) printf("\tPriority of route: 0x%08x\n", rt_info->rt_priority);
-                  break;
-
-              default:
-                  printf("\t***It is an unknown route attribute***\n");
-                  printf("\trta_len = %d, rta_type = 0x%04x****\n\t", rt_attr->rta_len, rt_attr->rta_type);
-                  print_bytes((unsigned char *)(&rt_attr + sizeof(rt_attr)), (rt_attr->rta_len - sizeof(struct rtattr)));
-                  break;
-          }
-      }
-
-      return;
-  }
-
-  int get_gateway_ip(char *gateway_ip, int size) {
-      int found_gateway_ip = 0;
-
-      struct nlmsghdr *nl_msg_hdr;
-      struct rtmsg *rt_msg;
-      struct route_info *rt_info;
-      char *msg_buf;
-
-      int msg_buf_len;
-      int nl_sock;
-      int nlmsg_count = 0;
-      int msg_seq = 0;
-
-      if (debug) printf("1. Create a netlink socket.\n");
-      if ((nl_sock = socket(PF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE)) < 0) {
-          perror("Socket Creation: ");
-          return(-1);
-      }
-
-      if (debug) printf("2. Allocate memory for sending the nelink request.\n");
-      msg_buf_len = NLMSG_SPACE(sizeof(struct rtmsg));    // sizeof(struct nlmsghdr) + sizeof(struct rtmsg)
-      msg_buf = malloc(msg_buf_len);
-      memset(msg_buf, 0, msg_buf_len);
-
-      if (debug) printf("3. Fill netlink msg header and route msg structure for sending the netlink request.\n");
-      // point the netlink msg header(nl_msg_hdr) and the route msg(rt_msg) structure pointers into the buffer
-      nl_msg_hdr = (struct nlmsghdr *)msg_buf;
-      rt_msg = (struct rtmsg *)NLMSG_DATA(nl_msg_hdr);
-
-      // Fill in the nlmsg header
-      nl_msg_hdr->nlmsg_len   = msg_buf_len;                      // Length of message.
-      nl_msg_hdr->nlmsg_type  = RTM_GETROUTE;                     // Get the routes from kernel routing table .
-
-      nl_msg_hdr->nlmsg_flags = NLM_F_DUMP | NLM_F_REQUEST;       // The message is a request for dump.
-      msg_seq = time(NULL);
-      nl_msg_hdr->nlmsg_seq   = msg_seq;                          // Sequence of the message packet.
-      nl_msg_hdr->nlmsg_pid   = getpid();                         // PID of process sending the request.
-      rt_msg->rtm_family  = AF_INET;
-
-      if (debug) printf("4. Send the netlink request.\n");
-      // Send the netlink request
-      if (send(nl_sock, nl_msg_hdr, nl_msg_hdr->nlmsg_len, 0) < 0) {
-          fprintf(stderr, "Write To Socket Failed...\n");
-          free(msg_buf);
-          return -1;
-      }
-
-      if (debug) printf("5. Receive the response from the kernel.\n");
-      // Receive the response from the kernel
-      if ((msg_buf_len = read_nl_sock(nl_sock, &msg_buf, msg_seq, getpid())) < 0) {
-          fprintf(stderr, "Read From Socket Failed...\n");
-          free(msg_buf);
-          return -1;
-      }
-
-      if (debug) printf("\tData length read from socket: %d\n", msg_buf_len);
-
-      if (debug) printf("6. Parse the message received from the kernel.\n");
-      // msg_buf has been changed in function read_nl_sock(), so we have to set it again.
-      nl_msg_hdr = (struct nlmsghdr *)msg_buf;
-      // allocate memory for storing the item of routing table
-      rt_info = (struct route_info *)malloc(sizeof(struct route_info));
-
-      for (; NLMSG_OK(nl_msg_hdr, msg_buf_len); nl_msg_hdr = NLMSG_NEXT(nl_msg_hdr, msg_buf_len)) {
-          if (debug) printf("\tNetlink msg No.: %d\n", ++nlmsg_count);
-          memset(rt_info, 0, sizeof(struct route_info));
-          print_nl_msg_hdr(nl_msg_hdr);
-          if (nl_msg_hdr->nlmsg_type == NLMSG_DONE) {
-              printf("\tEnd of Netlink Routing Message.\n");
-              break;
-          }
-          parse_message(nl_msg_hdr, rt_info);             // parse a netlink message
-
-          // Check if default gateway
-          if (strstr((char *)inet_ntoa(rt_info->dst_addr), "0.0.0.0")) {
-              // copy it over
-              inet_ntop(AF_INET, &rt_info->gateway, gateway_ip, size);
-              found_gateway_ip = 1;
-              break;
-          }
-      }
-
-      if (debug) printf("7. Clean up and Return.\n");
-      free(msg_buf);
-      free(rt_info);
-      close(nl_sock);
-
-      return found_gateway_ip;
-  }
-
-  int main(int argc, char **argv) {
-      char gateway_ip[IP_SIZE] = {0};     // Store gateway IP
-
-      if (argc > 1) debug = 1;
-      if (get_gateway_ip(gateway_ip, IP_SIZE)) {
-          printf("\n==== Gateway IP: %s ====\n", gateway_ip);
-      } else {
-          printf("Failed to get gateway IP.\n");
-      }
-
-      return 0;
-  }
-  ```
-
-* 编译：```gcc -Wall get_gataway.c -o get_gateway```
-* 运行：```./get_gateway```
-* 带调试信息运行：```./get_gateway 1```，可以打印出大量的中间过程信息，对程序的理解将有很大帮助。
+* 编译：```gcc -Wall get-gataway-netlink.c -o get-gateway-netlink```
+* 运行：```./get-gateway-netlink```
+* 带调试信息运行：```./get-gateway-netlink 1```，可以打印出大量的中间过程信息，对程序的理解将有很大帮助。
 * 这个程序的主要部分在前面都已经讨论过了；
 * 这个程序其实是可以获取整个路由表的，但程序中做了过滤，一旦找到gateway的IP地址便不再解析下面的信息，所以这个程序稍加修改可以获取整个路由表；
 * 获取gateway IP地址的方法不止本文介绍的这一种方法，其实我认为netlink的方法尽管看上去比较"高级"，但也十分复杂和繁琐，最好的方法我认为是从proc文件系统中获取，想要了解这种方法的读者可以参考我的另一篇文章[《从proc文件系统中获取gateway的IP地址》][article1]。
@@ -895,12 +560,13 @@ postid: 180009
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
+[src01]:/sourcecodes/180009/get-gateway-netlink.c
 
-[img01]:/images/180009/netlink-message-format.png
-[img02]:/images/180009/rtnetlink-request_message.png
-[img03]:/images/180009/rtnetlink-routing-table.png
-[img04]:/images/180009/route-of-routing-table.png
+[img01]:https://whowin.gitee.io/images/180009/netlink-message-format.png
+[img02]:https://whowin.gitee.io/images/180009/rtnetlink-request_message.png
+[img03]:https://whowin.gitee.io/images/180009/rtnetlink-routing-table.png
+[img04]:https://whowin.gitee.io/images/180009/route-of-routing-table.png
 
-[article1]:../0008-get-gateway-ip-from-proc-filesys/
+[article1]:https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/

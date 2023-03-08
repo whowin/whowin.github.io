@@ -29,7 +29,7 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
 ## 1. UDP报文结构
 * UDP报文为两部分，报头+数据；
 * 在Linux下，UDP报头定义在头文件linux/udp.h中；
-    ```
+    ```C
     struct udphdr {
         __be16	source;
         __be16	dest;
@@ -43,7 +43,8 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
     - check - 报头的校验和，在IPv4中是可选的，IPv6中是强制的，如果不使用，应填充0；
 
     ![UDP数据报结构][img01]
-    **<center>图1：UDP数据报结构</center>**
+
+    <center><b>图1：UDP数据报结构</b></center>
 
 ***
 
@@ -52,7 +53,8 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
 * 在Linux下，IP报头定义在头文件linux/ip.h中，可以自行查看，我们这里仅给出图示；
 
     ![IP报头][img02]
-    **<center>图2：IP报头结构</center>**
+
+    <center><b>图2：IP报头结构</b></center>
 
 ***
 
@@ -63,7 +65,8 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
 * 加上伪报头的UDP报文格式如下：
 
     ![伪报头][img03]
-    **<center>图3：伪报头</center>**
+
+    <center><b>图3：伪报头</b></center>
 
 ***
 
@@ -80,7 +83,7 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
 * 以上两种运算方法在本文给出的范例中均有体现，可以用来验证其结果的一致性；
 * 按照RFC768的说明，当checksum的运算结果为0时，checksum应该作为全1来传输，因为在UDP协议中，checksum为0表示没有使用checksum，UDP的checksum在ipv4中并不是强制使用的。
 * 下面是计算udp报头checksum的完整源代码：
-    ```
+    ```C
     #include <stdio.h>
     #include <stdlib.h>
     #include <unistd.h>
@@ -219,7 +222,8 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
 * 下面是我的机器上的运行结果截屏
 
     ![程序运行截屏][img04]
-    **<center>图4：程序运行截屏</center>**
+
+    <center><b>图4：程序运行截屏</b></center>
 
 ***
 
@@ -238,12 +242,12 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
 
-[img01]:/images/180003/udp_packet_structure.png
-[img02]:/images/180003/ip_header.png
-[img03]:/images/180003/udp_packet_pseudo_header.png.png
-[img04]:/images/180003/udp_checksum_screenshot.png
+[img01]:https://whowin.gitee.io/images/180003/udp_packet_structure.png
+[img02]:https://whowin.gitee.io/images/180003/ip_header.png
+[img03]:https://whowin.gitee.io/images/180003/udp_packet_pseudo_header.png.png
+[img04]:https://whowin.gitee.io/images/180003/udp_checksum_screenshot.png
 

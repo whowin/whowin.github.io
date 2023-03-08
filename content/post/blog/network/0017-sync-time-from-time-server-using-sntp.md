@@ -58,39 +58,44 @@ postid: 180017
 * NTP的原理是通过一个时间消息包的传送计算出客户端和服务器端的时间偏差，从而校准客户端的时间；
 * NTP和SNTP客户端均使用UDP向时间服务器发送消息，IANA为NTP分配的端口号为123，也就是说，NTP/SNTP客户端需要向时间服务器的123端口发送一个符合格式(下一节介绍消息格式)的UDP消息，客户端的接收端口号没有规定；
 * 时间服务器是Server，客户端是Client，同步过程如下进行：
-  1. Client向Server发送一个消息包，记录发出消息包时的时间戳 **$T_1$**(以Client系统时间为准)
-  2. Server收到消息包立即记录时间戳 $T_2$(以Server系统时间为准)
-  3. Server向Client返回一个消息包，返回消息包时记录时间戳 $T_3$(以Server系统时间为准)
-  4. Client收到Server返回的消息包，此时记录时间戳 $T_4$(以Client系统时间为基准
+  1. Client向Server发送一个消息包，记录发出消息包时的时间戳 **T<sub>1</sub>**(以Client系统时间为准)
+  2. Server收到消息包立即记录时间戳 **T<sub>2</sub>**(以Server系统时间为准)
+  3. Server向Client返回一个消息包，返回消息包时记录时间戳 **T<sub>3</sub>**(以Server系统时间为准)
+  4. Client收到Server返回的消息包，此时记录时间戳 **T<sub>4</sub>**(以Client系统时间为基准
 * 过程如下图所示：
 
   ![Time Synchronization][img01]
 
 
-* $T_4$ 和 $T_1$ 是以Client的时间标准记录的时间戳，其差 $T_4 - T_1$ 表示整个消息传递过程所花费的总时间；
-* $T_3$ 和 $T_2$ 是以Server的时间标准记录的时间戳，其差 $T_3 - T_2$ 表明消息传递过程在Server停留的时间；
-* 那么 $(T_4 - T_1) - (T_3 - T_2)$ 应该就是信息包的往返时间(总时间-在Server停留的时间)；
+* T<sub>4</sub> 和 T<sub>1</sub> 是以Client的时间标准记录的时间戳，其差 T<sub>4</sub> - T<sub>1</sub> 表示整个消息传递过程所花费的总时间；
+* T<sub>3</sub> 和 T<sub>2</sub> 是以Server的时间标准记录的时间戳，其差 T<sub>3</sub> - T<sub>2</sub> 表明消息传递过程在Server停留的时间；
+* 那么 (T<sub>4</sub> - T<sub>1</sub>) - (T<sub>3</sub> - T<sub>2</sub>) 应该就是信息包的往返时间(总时间-在Server停留的时间)；
 * **如果假定信息包从Client到Server和从Server到Client所用的时间一样**，那么，从Client到Server或者从Server到Client信息包的传送时间d为：
-  $\large \\ \\ d = {(T_4 - T_1) - (T_3 - T_2) \over 2}$
+  $$
+  \large \\ \\ d = {(T_4 - T_1) - (T_3 - T_2) \over 2}
+  $$
 
 * 假定Client相对于Server机的时间误差是 **t**(t = 服务器时间戳 - 客户端时间戳)，则有下列等式：
-  $\\  T_2 = T_1 + t + d\\
-  T_4 = T_3 - t + d
-  $
-
-* 从以上三个等式组成一个方程式：
-  $\\
+  $$
   \begin{cases}
-  \large d = {(T_4 - T_1) - (T_3 - T_2) \over 2}\\
-  \normalsize T_2 = T_1 + t + d\\
+  T_2 = T_1 + t + d \newline
   T_4 = T_3 - t + d
   \end{cases}
-  $
+  $$
+
+* 从以上三个等式组成一个方程式：
+  $$
+  \begin{cases}
+  \large d = {(T_4 - T_1) - (T_3 - T_2) \over 2} \newline
+  \normalsize T_2 = T_1 + t + d \newline
+  T_4 = T_3 - t + d
+  \end{cases}
+  $$
 
 * 可以解出Client机的时间误差 **t** 为：
-  $\\
-  \LARGE t = {(T_2 - T_1) + (T_3 - T_4) \over 2}
-  $
+  $$
+  \large t = {(T_2 - T_1) + (T_3 - T_4) \over 2}
+  $$
 
 * 如果一时没有转过来，可以自己在纸上画个图，再细细地琢磨一下，应该没有问题。
 
@@ -106,7 +111,11 @@ postid: 180017
 ## 4. SNTP(NTP)协议的消息结构
 * 下面这张图取自SNTP协议，很直观地显示出NTP消息包的结构，要注意的是，所有字段应该都是网络字节序(big endian)
 * NTP时间同步过程中，客户端发送的消息包结构与时间服务器返回的消息包结构是完全一样的，时间服务器会将其中的一些字段改写，然后发回；
-  ```
+
+  <!--![NTP packet struct][img03]-->
+
+
+  ```plaintext
                        1                   2                   3
    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -143,6 +152,7 @@ postid: 180017
   |                                                               |
   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
   ```
+  
 * **LI(Leap Indicator)**
   - 闰秒指示，2 bits，bit 0和bit 1
   - 表示是否警告在当天的最后一分钟插入/删除一个闰秒；通常填0表示不需要警告。
@@ -154,7 +164,7 @@ postid: 180017
 
 * **Mode**
   - 工作模式，3 bits，其取值含义如下
-    ```
+    ```plaintext
     Mode  Meaning
     ------------------------------------
      0    reserved
@@ -177,11 +187,11 @@ postid: 180017
   - NTP协议不允许客户端接受来自Stratum-15设备的时间，因此Stratum-15是最低的NTP层；
 
 * **Poll Interval**
-  - 表示连续时间消息之间的最大间隔，以2的指数表示(比如4则间隔时间为 $ 2^4 $)，单位为秒，此值为一个8位无符号整数；
+  - 表示连续时间消息之间的最大间隔，以2的指数表示(比如4则间隔时间为 2<sup>4</sup>)，单位为秒，此值为一个8位无符号整数；
   - 该字段仅在SNTP服务器消息中有意义，其值范围为4(16秒)到17(131,072秒——大约36小时)；
 
 * **Precision**
-  - 时间服务器的系统时钟精度，以2的指数表示(比如-10则精度 $ 2^{-10} $)，单位为秒，此值为一个8位有符号整数；
+  - 时间服务器的系统时钟精度，以2的指数表示(比如-10则精度 2<sup>-10</sup>)，单位为秒，此值为一个8位有符号整数；
   - 此字段仅在服务器消息中有意义，其中的值范围从-6(主频时钟)到-20(某些工作站中的微秒时钟)；
 
 * **Root Delay**
@@ -201,13 +211,13 @@ postid: 180017
   - 本地时钟最后一次设置或修正时的时间，64位时间戳格式。
 
 * **Originate Timestamp**
-  - 前面原理部分说到的 $ T_1 $，也就是消息包从客户端发出时，客户端系统时间戳，由客户端程序填写，64位时间戳格式；
+  - 前面原理部分说到的 T<sub>1</sub>，也就是消息包从客户端发出时，客户端系统时间戳，由客户端程序填写，64位时间戳格式；
 
 * **Receive Timestamp**
-  - 前面原理部分说到的 $ T_2 $，也就是服务器收到客户端消息包时，服务器端系统时间戳，由服务器端程序填写，64位时间戳格式；
+  - 前面原理部分说到的 T<sub>2</sub>，也就是服务器收到客户端消息包时，服务器端系统时间戳，由服务器端程序填写，64位时间戳格式；
 
 * **Transmit Timestamp**
-  - 前面原理部分说到的 $ T_3 $，也就是服务器把数据包返回客户端时，服务器端系统时间戳，由服务器端程序填写，64位时间戳格式；
+  - 前面原理部分说到的 T<sub>3</sub>，也就是服务器把数据包返回客户端时，服务器端系统时间戳，由服务器端程序填写，64位时间戳格式；
 
 * **Authenticator**
   - 可选项，一般不填；
@@ -217,9 +227,12 @@ postid: 180017
   - 前面多次提到**64位时间戳**，在NTP/SNTP协议中，对此有专门的定义
   - NTP时间戳表示为 64 位无符号定点数，以秒为单位，相对于1900年1月1日的0时；
   - 整数部分在前32位，小数部分在后32位；在小数部分，没有意义的低位，通常要设置为0；
-  - 有关小数部分(Fraction Part)，其单位既不是毫秒(millisecond)，也不是微秒(microsecond)，**其单位为 $\large 1 \over {2^{32}} $ 秒**，这一点非常重要，但却鲜有文章说明，如果不知道这一点，UNIX时间戳和NTP时间戳之间的转换就搞不明白；
+  - 有关小数部分(Fraction Part)，其单位既不是毫秒(millisecond)，也不是微秒(microsecond)，**其单位为 1/2<sup>32</sup> 秒**，这一点非常重要，但却鲜有文章说明，如果不知道这一点，UNIX时间戳和NTP时间戳之间的转换就搞不明白；
   - 下图摘自SNTP协议
-    ```
+
+    <!--![NTP timestamp structure][img04]-->
+
+    ```plaintext
                          1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -233,29 +246,29 @@ postid: 180017
 * 有很多文章中都提到，NTP时间同步的精度可以达到50ms以内，本节将讨论这个精度是如何计算得出的；
 * 要注意我们讲网络时间同步的精度并不包括时间服务器本身的时间精度，只是客户端与服务器端同步时间后，客户端与服务器端相对时间误差；
 * 本文第2节介绍NTP时间同步的基本原理时，曾经列出过方程式，当时有一个重要的假设为：**假定信息包从Client到Server和从Server到Client所用的时间一样**，这次我们去掉这个假设，重新列出方程式；
-* 假定消息包从Client到Server的时长为 $ d_1 $，从Server到Client的时长为 $ d_2 $，$ d_2 $ 与 $ d_1 $ 的差为 $ \delta $，其它定义同前，则有下列等式：
-  $\\
+* 假定消息包从Client到Server的时长为 d<sub>1</sub>，从Server到Client的时长为 d<sub>2</sub>，d<sub>2</sub> 与 d<sub>1</sub> 的差为  &delta;，其它定义同前，则有下列等式：
+  $$
   \begin{cases}
-  \delta = d_2 - d_1\\
-  T_2 = T_1 + t + d_1\\
-  T_4 = T_3 - t + d_2\\
+  \delta = d_2 - d_1 \newline
+  T_2 = T_1 + t + d_1 \newline
+  T_4 = T_3 - t + d_2 \newline
   \end{cases}
-  $
+  $$
 * (将1式带入3式)
-  $\\
+  $$
   \begin{cases}
-  t = T_2 - T_1 - d_1\\
-  t = T_3 - T_4 + \delta + d_1\\
+  t = T_2 - T_1 - d_1 \newline
+  t = T_3 - T_4 + \delta + d_1 \newline
   \end{cases}
-  $
+  $$
 * 两式相加，得出
-  $\\
-  \LARGE t = {{(T_2 - T_1) + (T_3 - T_4)} \over 2} + {\delta \over 2}
-  $
+  $$
+  \large t = {{(T_2 - T_1) + (T_3 - T_4)} \over 2} + {\delta \over 2}
+  $$
 
 * 这个结果是精确的，没有任何假设，理论时间同步的精度为 0；
-* 当 $ \delta $ 为 **0** 时，相当于 **假定信息包从Client到Server和从Server到Client所用的时间一样**，得出的结果和第 2 节的结果是一样的；
-* 由此可见，误差由 $ \delta $ 产生，而 $ \delta $ 的最大值为 $ d_2 $ 或者最小值为 $ -d_1 $，假定Client到Server的最大时延为100ms，则 $ \delta $ 的最大值为 100ms，则根据上式，其时间精度的最大误差为 $ \large \delta \over 2$，即 50ms
+* 当 &delta; 为 **0** 时，相当于 **假定信息包从Client到Server和从Server到Client所用的时间一样**，得出的结果和第 2 节的结果是一样的；
+* 由此可见，误差由 &delta; 产生，而 &delta; 的最大值为 d<sub>2</sub> 或者最小值为 -d<sub>1</sub>，假定Client到Server的最大时延为100ms，则 &delta; 的最大值为 100ms，则根据上式，其时间精度的最大误差为 &delta;/2，即 50ms
 * 由上面的计算可以得知，NTP协议进行时间同步的精度误差主要来自数据包从Client到Server和从Server到Client的时间不一样，这个差异越大，其误差越大；
 * SNTP使用UDP协议发送时间信息包，UDP又是一种无连接的协议，从Client到Server和从Server到Client的路由很可能是不一样的，这无形中会使时间同步的精度变差；
 * 找到一个时延比较小的时间服务器可以有效地提高时间同步的精度。
@@ -263,340 +276,29 @@ postid: 180017
 ## 4、SNTP客户端实例
 * 说起来一大堆，但实现起来其实并不像说的那么复杂。
 * SNTP协议允许使用单播(unicast)、广播(broadcast)和多播(manycast)模式，通常我们只能使用单播模式，广播和多播模式的时间服务器只存在与一个子网中，为有限的用户服务；互联网上并不存在实际的广播或多播模式的时间服务器；
-* 根据[《SNTP 协议》][article01]第5节"**SNTP Client Operations**"的说明，使用单播模式进行时间同步时，向时间服务器发送的请求数据包中，除了第一个字节以外，其他字段都可以设为0，也可以将Originate Timestamp(T1)填在Transmit Timestamp(T4)这个字段上，时间服务器会将Transmit Timestamp字段的内容搬移到Originate Timestamp(T1)上，然后填上正确的Transmit Timestamp(T4)；
-* 下面的例子中就是按照SNTP协议的说法去做的，在发送的请求包中，填了LI、VN、MODE三个字段，并把T1(Originate Timestamp)填在了T4(Transmit Timestamp)上，从时间服务器返回的数据看，完全印证了SNTP协议中的说法；
+* 根据[《SNTP 协议》][article01]第5节"**SNTP Client Operations**"的说明，使用单播模式进行时间同步时，向时间服务器发送的请求数据包中，除了第一个字节以外，其他字段都可以设为0，也可以将Originate Timestamp(T<sub>1</sub>)填在Transmit Timestamp(T<sub>4</sub>)这个字段上，时间服务器会将Transmit Timestamp(T<sub>4</sub>)字段的内容搬移到Originate Timestamp(T<sub>1</sub>)上，然后填上正确的Transmit Timestamp(T<sub>4</sub>)；
+* 下面的例子中就是按照SNTP协议的说法去做的，在发送的请求包中，填了LI、VN、MODE三个字段，并把T<sub>1</sub>(Originate Timestamp)填在了T<sub>4</sub>(Transmit Timestamp)上，从时间服务器返回的数据看，完全印证了SNTP协议中的说法；
 * 要注意的是，ntp数据包中的各个字段都是网络字节序(big endian)，而我们使用的电脑都是主机字节序(little endian)，所以相互之间要做转换；
-* 再次强调一下，NTP时间戳的fraction字段的单位是 $\large 1 \over {2^{32}} $ 秒；
-* 下面是源程序，文件名：sntp_client.c
-  ```
-  /*
-  * (C) 2023 Songqing Hua.
-  * http://whowin.cn/
-  *
-  * SNTP client.
-  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
-  * Tested on Linux 5.4.0-139-generic #156-Ubuntu SMP Fri Jan 20 17:27:18 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux.
-  *
-  * To compile: $ gcc -Wall sntp_client.c -o sntp_client -lm
-  * Usage: $ ./sntp_client <time server ip/domain name>
-  *
-  * Time server reference:
-  *      ntp.tencent.com
-  *      ntp.aliyun.com
-  *      time.edu.cn
-  * 
-  */
-  #include <stdio.h>
-  #include <string.h>
-  #include <stdlib.h>
-  #include <unistd.h>
-  #include <time.h>
-  #include <stdbool.h>
-  #include <netdb.h>
-  #include <math.h>
+* 再次强调一下，NTP时间戳的fraction字段的单位是 **1/2<sup>32</sup> 秒**；
+* 源程序文件名：[sntp-client.c][src01](**点击文件名下载源文件**)
 
-  #include <sys/time.h>
-  #include <sys/socket.h>
-  #include <arpa/inet.h>
-
-  #define VERSION         "==== SNTP Client v1.00 02/19/2023 ====\n"
-  #define SNTP_PORT       123
-  #define SNTP_EPOCH      86400U * (365U * 70U + 17U)      // the seconds from Jan 1, 1900 to Jan 1, 1970
-  #define MAX_IP_SIZE     16
-
-  #pragma pack(1)
-  struct li_vn_mode {
-      unsigned int mode: 3;
-      unsigned int vn: 3;
-      unsigned int li: 2;
-  };
-  struct ntp_timestamp {
-      uint32_t seconds;
-      uint32_t fraction;
-  };
-  struct sntp_packet {
-      struct li_vn_mode lvm;
-      uint8_t stratum;
-      uint8_t poll;
-      int8_t precision;
-      int16_t root_delay_int;
-      uint16_t root_delay_fraction;
-      int16_t root_dispersion_int;
-      uint16_t root_dispersion_fraction;
-      uint8_t ref_id[4];
-      struct ntp_timestamp ref_time;
-      struct ntp_timestamp ori_time;
-      struct ntp_timestamp recv_time;
-      struct ntp_timestamp tran_time;
-  };
-  #pragma pack()
-
-  /********************************************************************
-  * Functin: bool is_vaild_ip(const char *ip)
-  * Description: check if the ip string is valid
-  ********************************************************************/
-  bool is_vaild_ip(const char *ip) {
-      int dots    = 0;                                    // how many dots
-      int setions = 0;                                    // the current section in digit(should be in 0-255)
-      int strnum  = 0;                                    // total length of the IP string
-
-      if (NULL == ip || *ip == '.') {                     // if IP string is NULL or the 1st char is dot, return false
-          return  false;                                  // wrong format
-      }
-
-      while (*ip) {                                       // loop when string is not empty
-          if (*ip == '.') {                               // check if the previous section is valid(0-255), if the current char is dot
-              dots++;                                     // the number of dots plus 1
-              if (setions >= 0 && setions <= 255) {       // check if the current section is valid
-                  setions = 0;                            // clear the previous section
-              } else {  
-                  return  false;                          // wrong format. the value is not whithin 0 -255
-              }
-          } else if (*ip >= '0' && *ip <= '9') {          // if the current char is a digit
-              setions = setions * 10 + (*ip - '0');       // 
-          } else {
-              return  false;                              // the current char is not a digit or dot. return false
-          }
-          ip++;                                           // point to net char
-          if (++strnum > 15) {                            // The max. length of IP string must be less than 16
-              return false;
-          }
-      }
-      // check if the last section is valid
-      if (setions >= 0 && setions <= 255) {                 
-          if (dots == 3) {                                // avoid：“192.168.123”
-              return true;                                // IP is valis
-          }
-      }
-      return  false;
-  }
-
-  /****************************************************************************************************
-  * Function: void convert_ntp_time_into_unix_time(struct ntp_timestamp *ntp_tm, struct timeval *unix_tm)
-  * Decription: convert the NTP timestamp into UNIX timeval
-  * 
-  * Entry:   ntp_tm      pointer of struct ntp_timestamp
-  *          unix_tm     pointer of struct timeval
-  * Return:  none
-  *          converted unix timeval is stored in unix_tm
-  ****************************************************************************************************/
-  void convert_ntp_time_into_unix_time(struct ntp_timestamp *ntp_tm, struct timeval *unix_tm) {
-      unix_tm->tv_sec = ntohl(ntp_tm->seconds) - SNTP_EPOCH;
-      unix_tm->tv_usec = (uint32_t)( (double)ntohl(ntp_tm->fraction) * 1.0e6 / (double)(1LL << 32) );
-  }
-  /****************************************************************************************************
-  * Function: void convert_unix_time_into_ntp_time(struct timeval *unix_tm, struct ntp_timestamp *ntp_tm)
-  * Decription: convert UNIX timeval into the NTP timestamp
-  * 
-  * Entry:   ntp_tm      pointer of struct ntp_timestamp
-  *          unix_tm     pointer of struct timeval
-  * Return:  none
-  *          converted ntp timestamp is stored in ntp_tm
-  ****************************************************************************************************/
-  void convert_unix_time_into_ntp_time(struct timeval *unix_tm, struct ntp_timestamp *ntp_tm) {
-      ntp_tm->seconds = htonl(unix_tm->tv_sec + SNTP_EPOCH);
-      ntp_tm->fraction = htonl( (uint32_t)((double)(unix_tm->tv_usec+1) * (double)(1LL << 32) * 1.0e-6) );
-  }
-  /********************************************************************************
-  * Function: void print_sntp_packet(struct sntp_packet *p)
-  * Description: print sntp packet
-  ********************************************************************************/
-  void print_sntp_packet(struct sntp_packet *p) {
-      printf("\n=========== SNTP packet ================\n");
-      
-      printf("li: %d\tvn: %d\tmode: %d\n", p->lvm.li, p->lvm.vn, p->lvm.mode);
-      printf("stratum: %d\tpoll interval: %d seconds\tprecision: %f microseconds\n", 
-              p->stratum, (int32_t)1 << p->poll, pow(2, p->precision) * 1000000);
-      printf("root delay: %d.%u seconds\troot dispersion: %d.%u seconds\n", 
-              ntohs(p->root_delay_int), ntohs(p->root_delay_fraction),
-              ntohs(p->root_dispersion_int), ntohs(p->root_dispersion_fraction));
-      if (p->stratum == 2) {
-          printf("reference identifier: %u.%u.%u.%u\n", p->ref_id[0], p->ref_id[1], p->ref_id[2], p->ref_id[3]);
-      } else {
-          printf("reference identifier: %02x %02x %02x %02x\n", p->ref_id[0], p->ref_id[1], p->ref_id[2], p->ref_id[3]);
-      }
-
-      struct timeval tv;
-      convert_ntp_time_into_unix_time(&p->ori_time, &tv);
-      printf("Reference Timestamp(%ld seconds and %ld microseconds)\n", tv.tv_sec, tv.tv_usec);
-      printf("\n");
-      convert_ntp_time_into_unix_time(&p->ori_time, &tv);
-      printf("Originate Timestamp(T1)\t\t(%ld seconds and %ld microseconds)\n", tv.tv_sec, tv.tv_usec);
-      convert_ntp_time_into_unix_time(&p->recv_time, &tv);
-      printf("Receive Timestamp(T2)\t\t(%ld seconds and %ld microseconds)\n", tv.tv_sec, tv.tv_usec);
-      convert_ntp_time_into_unix_time(&p->tran_time, &tv);
-      printf("Transmit Timestamp(T3)\t\t(%ld seconds and %ld microseconds)\n", tv.tv_sec, tv.tv_usec);
-  }
-
-  int main(int argc, char **argv) {
-      int ret_value;                      // return value
-
-      fd_set readfds;
-
-      struct sntp_packet sntp_request;    // sntp packet for sending
-      struct sntp_packet sntp_reply;      // sntp packet for receiving
-
-      int sock;
-      struct sockaddr_in to_addr;
-      socklen_t addr_len;
-
-      struct timeval tv;                  // unix timestamp for normal usgae
-      struct timeval tv1, tv2, tv3, tv4;  // T1, T2, T3, T3 in timeval format
-
-      char ip[MAX_IP_SIZE] = {0};
-
-      printf(VERSION);
-      if (argc > 1) {
-          if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "-V") == 0) {
-              exit(EXIT_SUCCESS);
-          }
-      }
-
-      // if invalid ip format, resolve the argument as a domain name
-      if (!is_vaild_ip(argv[1])) {
-          struct hostent *hptr;
-          char *p = argv[1];
-          if ((hptr = gethostbyname(p)) == NULL) {    // Resolve a domain name
-              perror("gethostbyname");
-              printf("Invalid IP address or domain name. %s\n", argv[1]);
-              exit(EXIT_FAILURE);
-          } else {
-              if (hptr->h_addrtype == AF_INET) {      // exit if it is not IPv4
-                  unsigned char *p = (unsigned char *)hptr->h_addr_list[0];
-                  sprintf(ip, "%d.%d.%d.%d", p[0], p[1], p[2], p[3]);
-              } else {
-                  printf("It is not IPv4 address type(%d).\n", hptr->h_addrtype);
-                  exit(EXIT_FAILURE);
-              }
-              
-          }
-      } else strncpy(ip, argv[1], MAX_IP_SIZE - 1);
-
-      printf("The time server's IP: %s\n", ip);
-      if (!is_vaild_ip(ip)) {
-          printf("Invalid IP address or domain name. %s\n", argv[1]);
-          exit(EXIT_FAILURE);
-      }
-
-      // Creat a socket
-      sock = socket(AF_INET, SOCK_DGRAM, 0);
-      if (sock < 0) {
-          printf("\nsocket creation Failed!\n");
-          exit(EXIT_FAILURE);
-      }
-
-      // Set the server address and port
-      to_addr.sin_family      = AF_INET;
-      to_addr.sin_port        = htons(SNTP_PORT);
-      to_addr.sin_addr.s_addr = inet_addr(ip);       // Time server's IP
-      bzero(&(to_addr.sin_zero), 8);
-      addr_len = sizeof(struct sockaddr);
-
-      // Fill the NTP packet for request
-      bzero(&sntp_request, sizeof(struct sntp_packet));
-      sntp_request.lvm.li = 0;
-      sntp_request.lvm.vn = 4;
-      sntp_request.lvm.mode = 3;
-
-      gettimeofday(&tv1, NULL);
-      convert_unix_time_into_ntp_time(&tv1, &sntp_request.tran_time);     // Originate timestamp(T1)
-      printf("Size of sntp_packet is %ld\n", sizeof(struct sntp_packet));
-
-      ret_value = sendto(sock, &sntp_request, sizeof(struct sntp_packet), 0,
-                        (struct sockaddr *)&to_addr, addr_len);
-      if (ret_value < 0) {
-          perror("sendto()");
-          ret_value = EXIT_FAILURE;
-          goto quit;
-      }
-
-      // Receive reply from time server
-      FD_ZERO(&readfds);
-      FD_SET(sock, &readfds);
-      tv.tv_sec = 10;
-      tv.tv_usec = 0;
-      select(sock + 1, &readfds, NULL, NULL, &tv);
-      if (FD_ISSET(sock, &readfds)) {  // someone connects to me
-          ret_value = recvfrom(sock,
-                              (char *)&sntp_reply,
-                              sizeof(struct sntp_packet),
-                              0,
-                              (struct sockaddr *)&to_addr,
-                              &addr_len);
-      } else {
-          printf("\nDid not Get information from time server in 10 seconds.\n");
-          ret_value = EXIT_FAILURE;
-          goto quit;
-      }
-
-      if (ret_value < 0 ) {
-          perror("recvfrom()");
-          ret_value = EXIT_FAILURE;
-          goto quit;
-      }
-      if (ret_value == 0) {
-          printf("Received zero byte from server.\n");
-          ret_value = EXIT_FAILURE;
-          goto quit;
-      }
-
-      gettimeofday(&tv4, NULL);       // Destination timestamp(T4)
-
-      // Show received data
-      /*
-      int i, j;
-      unsigned char *p1 = (unsigned char *)&sntp_request;
-      unsigned char *p2 = (unsigned char *)&sntp_reply;
-      printf("\n\tSent...\t\t\t\t\tReceiving...");
-      for (j = 0; j < 12; j++) {
-          printf("\n");
-          for (i = 0; i < 4; i++) {
-              printf("\t%02x", p1[i + j * 4]);
-          }
-          printf("\t");
-          for (i = 0; i < 4; i++) {
-              printf("\t%02x", p2[i + j * 4]);
-          }
-      }
-      */
-
-      convert_ntp_time_into_unix_time(&sntp_reply.ori_time, &tv2);        // Receive timestamp(T2)
-      convert_ntp_time_into_unix_time(&sntp_reply.tran_time, &tv3);       // Transmit timestamp(T3)
-
-      print_sntp_packet(&sntp_reply);         // print ntp packet received from time server
-      printf("Destination Timestamp(T4)\t(%ld seconds and %ld microseconds)\n", tv4.tv_sec, tv4.tv_usec);
-
-      // calculate the difference
-      double diff, t2_t1, t3_t4;
-      t2_t1 = ((double)tv2.tv_sec + (double)tv2.tv_usec / 1000000) - 
-              ((double)tv1.tv_sec + (double)tv1.tv_usec / 1000000);
-      t3_t4 = ((double)tv3.tv_sec + (double)tv3.tv_usec / 1000000) - 
-              ((double)tv4.tv_sec + (double)tv4.tv_usec / 1000000);
-
-      diff = (t2_t1 + t3_t4) / 2;
-      printf("\nThe difference is %lf seconds.\n", diff);
-
-      struct timeval tv_diff;
-      tv_diff.tv_sec = (int)diff;
-      tv_diff.tv_usec = (int)((diff - (double)tv_diff.tv_sec) * 1000000);
-      printf("The different in timeval format is %ld seconds & %ld microseconds.\n", tv_diff.tv_sec, tv_diff.tv_usec);
-
-      ret_value = 0;
-
-  quit:
-      close(sock);
-      return ret_value;
-  }
-
-  ```
-
-* 编译：```gcc -Wall sntp_client.c -o sntp_client -lm```，因为其中使用了数学函数，所以编译时要加上 "-lm"
-* 运行：```./sntp_client ntp.aliyun.com```
+* 编译：```gcc -Wall sntp-client.c -o sntp-client -lm```，因为其中使用了数学函数，所以编译时要加上 "-lm"
+* 运行：```./sntp-client ntp.aliyun.com```
 * 运行截图：
 
   ![screenshot of sntp_client][img02]
 
 
+-------------
+**欢迎访问我的博客：https://whowin.cn**
+
+**email: hengch@163.com**
+
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+
+[src01]:/sourcecodes/180017/sntp-client.c
 
 [article01]:https://www.rfc-editor.org/rfc/rfc5905
 [article02]:https://www.rfc-editor.org/rfc/rfc1305
@@ -604,8 +306,7 @@ postid: 180017
 [article04]:https://www.rfc-editor.org/rfc/rfc4330
 
 
-
-[img01]:/images/180017/process-of-time-synchronization.png
-[img02]:/images/180017/screenshot-of-sntp-client.png
-
-
+[img01]:https://whowin.gitee.io/images/180017/process-of-time-synchronization.png
+[img02]:https://whowin.gitee.io/images/180017/screenshot-of-sntp-client.png
+[img03]:https://whowin.gitee.io/images/180017/ntp-packet-structure.png
+[img04]:https://whowin.gitee.io/images/180017/ntp-timestamp-structure.png
