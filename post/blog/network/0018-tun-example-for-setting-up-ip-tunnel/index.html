@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用tun虚拟网络接口建立IP隧道的实例">
 <meta itemprop="description" content="通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；本文假定读者已经拥有了在Linux下使用C语言进行IPv4下socket编程的基本能力。"><meta itemprop="datePublished" content="2023-03-07T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-03-07T16:43:29+08:00" />
-<meta itemprop="wordCount" content="6476">
+<meta itemprop="wordCount" content="6810">
 <meta itemprop="keywords" content="Linux,网络编程,IP tunnel,IP隧道," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用tun虚拟网络接口建立IP隧道的实例"/>
 <meta name="twitter:description" content="通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；本文假定读者已经拥有了在Linux下使用C语言进行IPv4下socket编程的基本能力。"/>
@@ -670,6 +670,9 @@
 <ul>
 <li>我们实现了一个简单的IP隧道，在这个IP隧道，我们传送一个UDP报文，我们传了一个UDP报文而不是一个TCP报文是为了省去connect()的麻烦；</li>
 <li>这样一个IP隧道并不局限在局域网中，通过互联网一样可以建立一个IP隧道；</li>
+<li>我们的这个服务器端的程序仅处理了一个客户端的连接，如果我们允许多个客户端接入并建立多条IP隧道，如果连接的多个客户端的tun都绑定在同一个网段上，那么通过服务器显然是可以像局域网一样相互通信的，好像多个终端在一个局域网里一样；</li>
+<li>IP隧道还可以用于很多场合，如果你的防火墙不允许某些协议通过，那么你可以通过一个防火墙允许的端口与服务器建立一个IP隧道，然后在这个IP隧道里跑那个不被防火墙允许的协议，就像我们在IP隧道里跑UDP协议一样；</li>
+<li>建立隧道也不一定非得使用TCP/IP协议，比如可以使用ICMP协议建立一个ICMP隧道，当你的电脑只能ping通你的服务器，其它的所有协议都无法通过防火墙的情况下，使用ICMP协议建立一个ICMP隧道，然后可以在这个隧道里跑其它协议；</li>
 <li>虚拟网络接口的用途很多，现在的虚拟机、容器等大多使用了虚拟网络接口，希望这篇文章可以让你对虚拟网络接口有个初步的认识。</li>
 </ul>
 <hr>
