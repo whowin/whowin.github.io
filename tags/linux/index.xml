@@ -157,7 +157,7 @@
       <pubDate>Sun, 10 Jul 2022 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/linux/0008-apt-update-ubuntu/</guid>
-      <description>欢迎访问我的博客：https://whowin.cn email: hengch@163.com</description>
+      <description>1. 导言 众所周知，Linux 有很多的发行版，Ubuntu 是其中之一，Ubuntu 使用一个软件包管理系统 apt 对软件进行维护，这些软件包包括硬件驱动</description>
     </item>
     
   </channel>
