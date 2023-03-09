@@ -50,7 +50,7 @@
 <meta itemprop="name" content="apt update如何工作">
 <meta itemprop="description" content="本文简单介绍了在ubuntu的命令行下运行 apt update 时，软件包管理工具 apt 所执行的实际动作，相信此文会让你对 ubuntu 的包管理系统有更好的了解。"><meta itemprop="datePublished" content="2022-07-10T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-07-10T16:43:29+08:00" />
-<meta itemprop="wordCount" content="777">
+<meta itemprop="wordCount" content="386">
 <meta itemprop="keywords" content="apt,ubuntu,linux," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="apt update如何工作"/>
 <meta name="twitter:description" content="本文简单介绍了在ubuntu的命令行下运行 apt update 时，软件包管理工具 apt 所执行的实际动作，相信此文会让你对 ubuntu 的包管理系统有更好的了解。"/>
@@ -158,8 +158,6 @@
       <ul>
         <li><a href="#1-导言">1. 导言</a></li>
         <li><a href="#2-什么是-apt">2. 什么是 APT</a></li>
-        <li><a href="#3-软件仓库和软件源">3. 软件仓库和软件源</a></li>
-        <li><a href="#4-apt-update-是什么">4. apt update 是什么</a></li>
       </ul>
     </li>
   </ul>
@@ -182,42 +180,6 @@
 <li>更新软件包索引清单(本地软件仓库)</li>
 <li>甚至可以使用 apt 命令升级 Ubuntu 系统</li>
 </ul>
-</li>
-</ul>
-<h2 id="3-软件仓库和软件源">3. 软件仓库和软件源</h2>
-<ul>
-<li>
-<p>前面说过，存储 ubuntu 软件包的在线服务器就是软件仓库；Ubuntu 会在本地磁盘中存放一个软件仓库中的软件包清单，这个清单又称为<strong>本地软件仓库</strong>；下面是一些软件仓库的地址：</p>
-<ul>
-<li><a href="http://cn.archive.ubuntu.com/ubuntu/">http://cn.archive.ubuntu.com/ubuntu/</a></li>
-<li><a href="http://mirrors.aliyun.com/ubuntu/">http://mirrors.aliyun.com/ubuntu/</a></li>
-<li><a href="https://mirrors.163.com/ubuntu/">https://mirrors.163.com/ubuntu/</a></li>
-</ul>
-</li>
-<li>
-<p>在一个 ubuntu 软件仓库中实际存储着各种版本的 ubuntu 发行版的软件包，还包括软件包的源代码；但是，我们实际正在使用的 ubuntu 其实只是其中的一个版本而已，而且大多数情况下我们也并不需要这些软件包的源代码，所以实际我们只是需要软件仓库中一部分的资源；在文件 <code>/etc/apt/sources.list</code> 中定义了我们需要软件仓库中的哪些资源，其中的每一行定义了一种资源，我们把每一个定义又称为<strong>软件源</strong></p>
-</li>
-<li>
-<p>除了在 <code>/etc/apt/sources.list</code> 定义了软件源外，<code>/etc/apt/sources.list.d</code> 目录下的文件中也会定义一些第三方的软件源或者叫 <strong>PPA</strong>(Personal Package Archives)</p>
-</li>
-</ul>
-<h2 id="4-apt-update-是什么">4. apt update 是什么</h2>
-<ul>
-<li>
-<p><strong>apt update</strong> 命令从软件仓库获取最新版的所需的软件包清单信息，并以此更新本地软件仓库</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt update
-</span></span></code></pre></td></tr></table>
-</div>
-</div><p><img src="https://whowin.gitee.io/images/100008/apt-update-screen.png" alt="apt update"></p>
-<center><b>图1：执行 apt update</b></center>
-</li>
-<li>
-<p>运行 <code>apt update</code> 需要使用 root 用户登录，或者有 sudo 权限</p>
 </li>
 </ul>
 <hr>
