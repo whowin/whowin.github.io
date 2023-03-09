@@ -50,7 +50,7 @@
 <meta itemprop="name" content="apt update如何工作">
 <meta itemprop="description" content="本文简单介绍了在ubuntu的命令行下运行 apt update 时，软件包管理工具 apt 所执行的实际动作，相信此文会让你对 ubuntu 的包管理系统有更好的了解。"><meta itemprop="datePublished" content="2022-07-10T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-07-10T16:43:29+08:00" />
-<meta itemprop="wordCount" content="1389">
+<meta itemprop="wordCount" content="777">
 <meta itemprop="keywords" content="apt,ubuntu,linux," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="apt update如何工作"/>
 <meta name="twitter:description" content="本文简单介绍了在ubuntu的命令行下运行 apt update 时，软件包管理工具 apt 所执行的实际动作，相信此文会让你对 ubuntu 的包管理系统有更好的了解。"/>
@@ -160,7 +160,6 @@
         <li><a href="#2-什么是-apt">2. 什么是 APT</a></li>
         <li><a href="#3-软件仓库和软件源">3. 软件仓库和软件源</a></li>
         <li><a href="#4-apt-update-是什么">4. apt update 是什么</a></li>
-        <li><a href="#5-ubuntu-下执行-apt-update-实际执行的操作">5. ubuntu 下执行 apt update 实际执行的操作</a></li>
       </ul>
     </li>
   </ul>
@@ -220,17 +219,6 @@
 <li>
 <p>运行 <code>apt update</code> 需要使用 root 用户登录，或者有 sudo 权限</p>
 </li>
-</ul>
-<h2 id="5-ubuntu-下执行-apt-update-实际执行的操作">5. ubuntu 下执行 apt update 实际执行的操作</h2>
-<ul>
-<li><code>apt update</code> 命令会从所有软件源中下载最新的软件包信息，包括软件包的名称、版本信息和依赖关系等，并更新本地软件仓库；</li>
-<li><code>apt upgrade</code> 这类的命令只会从本地软件仓库中获取信息，并不会直接从软件仓库中下载软件包信息，所以在更新软件前如果不更新本地软件仓库，有可能 <code>apt upgrade</code> 命令并不会把软件升级到最新版本。</li>
-<li>在执行 <code>apt update</code> 时，针对每个软件源，会首先从软件仓库中下载一个 <em>InRelease</em> 文件，并通过电子签名验证其正确性，该文件中包含有所有软件包索引文件的 <em>hash</em> 校验值；</li>
-<li>然后 apt 会下载每一类软件包的软件包索引文件 Packages，下载前，apt 会首先检查本地软件仓库中是否存在准备下载的文件，如果有则检查其 <em>Hash</em> 校验值并和 <em>InRelease</em> 中给出的值做比较，如果一致则不再下载该文件，否则从软件仓库中下载该文件；</li>
-<li>计算从软件仓库中下载文件的 <em>hash</em> 校验值，并使用 <em>InRelease</em> 文件中给出的该文件的 <em>hash</em> 校验值验证其正确性，使用经验证正确的文件更新本地软件仓库；</li>
-<li><em>InRelease</em>、<em>Packages</em> 和一些其它文件(比如国际版本用的 <em>Translation</em> 文件)组成了本地软件仓库；</li>
-<li><code>apt update</code> 只会更新本地的软件包清单(本地软件仓库)，并不会升级任何软件，所以，运行 <code>apt update</code> 是绝对安全的，不会对你现有系统和应用软件做任何修改；即便是执行 <code>apt update</code> 时意外中断也不会出现问题，只需要再次执行即可</li>
-<li>在 ubuntu 系统中，本地软件清单(本地软件仓库)存放在 <code>/var/lib/apt/lists</code> 这个目录下，实际上，如果你删除这个目录下的所有文件(也就是清空了本地软件仓库)，运行 <code>apt update</code> 后会重建你的本地软件仓库</li>
 </ul>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
