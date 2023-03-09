@@ -175,7 +175,7 @@
       <pubDate>Sun, 10 Jul 2022 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/linux/0008-apt-update-ubuntu/</guid>
-      <description>1. 导言 众所周知，Linux 有很多的发行版，Ubuntu 是其中之一，Ubuntu 使用一个软件包管理系统 apt 对软件进行维护，这些软件包包括硬件驱动</description>
+      <description>&lt;p&gt;本文简单介绍了在ubuntu的命令行下运行 &lt;code&gt;apt update&lt;/code&gt; 时，软件包管理工具 apt 所执行的实际动作，相信此文会让你对 ubuntu 的包管理系统有更好的了解。&lt;/p&gt;</description>
     </item>
     
     <item>
