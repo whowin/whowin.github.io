@@ -236,7 +236,7 @@
   
   <div class="post-content">
     <div class="post-summary">
-      <p>UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序。</p>
+      <p>UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum。</p>
     </div>
     <div class="read-more">
       <a href="/post/blog/network/0003-checksum-of-udp-header/" class="read-more-link">阅读更多</a>

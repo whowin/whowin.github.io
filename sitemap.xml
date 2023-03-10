@@ -868,12 +868,6 @@
   </url>
   
   <url>
-    <loc>https://whowin.gitee.io/post/blog/network/0019-tap-example/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://whowin.gitee.io/article-categories/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>

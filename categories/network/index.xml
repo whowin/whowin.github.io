@@ -139,7 +139,7 @@
       <pubDate>Mon, 12 Dec 2022 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/</guid>
-      <description>&lt;p&gt;UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序。&lt;/p&gt;</description>
+      <description>&lt;p&gt;UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -157,7 +157,7 @@
       <pubDate>Wed, 07 Dec 2022 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/</guid>
-      <description>&lt;p&gt;大多数的网络编程都是在应用层接收数据和发送数据的，本文介绍在数据链路层的网络编程方法，介绍如何在数据链路层直接接收从物理层发过来的原始数据数据包，文章给出了一个完整的范例程序。&lt;/p&gt;</description>
+      <description>&lt;p&gt;大多数的网络编程都是在应用层接收数据和发送数据的，程序员无需关注报文的各种报头，网络协议栈会解决这些问题，本文介绍在数据链路层的网络编程方法，介绍如何在数据链路层直接接收从物理层发过来的原始数据包，要得到数据，必须自己解开数据链路层、网络层和传输层的报头，文章给出了一个完整的范例程序，希望本文能帮助读者对网络通信有更深刻的理解。&lt;/p&gt;</description>
     </item>
     
     <item>

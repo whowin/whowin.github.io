@@ -50,7 +50,7 @@
 <meta itemprop="name" content="C语言如何获取ipv6地址">
 <meta itemprop="description" content="使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法：从proc文件从系统获取ipv6地址、使用getifaddrs()函数获取ipv6地址和使用netlink获取ipv6地址，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。"><meta itemprop="datePublished" content="2022-10-16T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-10-16T16:43:29+08:00" />
-<meta itemprop="wordCount" content="3619">
+<meta itemprop="wordCount" content="3632">
 <meta itemprop="keywords" content="C语言,ipv6,Network Programming,网络编程," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="C语言如何获取ipv6地址"/>
 <meta name="twitter:description" content="使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法：从proc文件从系统获取ipv6地址、使用getifaddrs()函数获取ipv6地址和使用netlink获取ipv6地址，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。"/>
@@ -210,6 +210,7 @@
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
+</span><span class="lnt">31
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
@@ -238,7 +239,8 @@
 </span></span><span class="line"><span class="cl">    <span class="n">ifr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">ifreq</span><span class="o">*</span><span class="p">)</span><span class="n">buf</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">ifc</span><span class="p">.</span><span class="n">ifc_len</span> <span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ifreq</span><span class="p">));</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="n">ifr</span><span class="o">-&gt;</span><span class="n">ifr_name</span><span class="p">,</span> <span class="n">inet_ntoa</span><span class="p">(((</span><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">ifr</span><span class="o">-&gt;</span><span class="n">ifr_addr</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="n">ifr</span><span class="o">-&gt;</span><span class="n">ifr_name</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                <span class="n">inet_ntoa</span><span class="p">(((</span><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">ifr</span><span class="o">-&gt;</span><span class="n">ifr_addr</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">        <span class="n">ifr</span><span class="o">++</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
@@ -287,6 +289,7 @@
 </span><span class="lnt">36
 </span><span class="lnt">37
 </span><span class="lnt">38
+</span><span class="lnt">39
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
@@ -322,7 +325,8 @@
 </span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">sa</span><span class="o">-&gt;</span><span class="n">sin_family</span> <span class="o">==</span> <span class="n">AF_INET</span><span class="p">){</span>
 </span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: AF_INET</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ifr</span><span class="o">-&gt;</span><span class="n">ifr_name</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: %d.  It is an unknown address family.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ifr</span><span class="o">-&gt;</span><span class="n">ifr_name</span><span class="p">,</span> <span class="n">sa</span><span class="o">-&gt;</span><span class="n">sin_family</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: %d.  It is an unknown address family.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                    <span class="n">ifr</span><span class="o">-&gt;</span><span class="n">ifr_name</span><span class="p">,</span> <span class="n">sa</span><span class="o">-&gt;</span><span class="n">sin_family</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span>
 </span></span><span class="line"><span class="cl">        <span class="n">ifr</span><span class="o">++</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
@@ -428,6 +432,10 @@
 </span><span class="lnt">28
 </span><span class="lnt">29
 </span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
@@ -447,9 +455,13 @@
 </span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="mi">19</span> <span class="o">==</span> <span class="n">fscanf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">                        <span class="s">&#34; %2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx %*x %x %x %*x %s&#34;</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">                        <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span>
-</span></span><span class="line"><span class="cl">                        <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">12</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">14</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">15</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">                        <span class="s">&#34; %2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx\
+</span></span></span><span class="line"><span class="cl"><span class="s">                        %2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx \
+</span></span></span><span class="line"><span class="cl"><span class="s">                        %*x %x %x %*x %s&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> 
+</span></span><span class="line"><span class="cl">                        <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">                        <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span> 
+</span></span><span class="line"><span class="cl">                        <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">12</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">14</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">15</span><span class="p">],</span>
 </span></span><span class="line"><span class="cl">                        <span class="o">&amp;</span><span class="n">prefix</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">scope</span><span class="p">,</span> <span class="n">dname</span><span class="p">))</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">inet_ntop</span><span class="p">(</span><span class="n">AF_INET6</span><span class="p">,</span> <span class="n">_ipv6</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">address</span><span class="p">))</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">            <span class="k">continue</span><span class="p">;</span>
@@ -628,13 +640,15 @@
 </span><span class="lnt">17
 </span><span class="lnt">18
 </span><span class="lnt">19
+</span><span class="lnt">20
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">short</span> <span class="kt">int</span> <span class="n">_ipv6</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">zero_flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="mi">11</span> <span class="o">==</span> <span class="n">fscanf</span><span class="p">(</span><span class="n">f</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">                <span class="s">&#34; %4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx %*x %x %x %*x %s&#34;</span><span class="p">,</span>
-</span></span><span class="line"><span class="cl">                    <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">                    <span class="s">&#34; %4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx %*x %x %x %*x %s&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> 
+</span></span><span class="line"><span class="cl">                    <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">_ipv6</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span>
 </span></span><span class="line"><span class="cl">                    <span class="o">&amp;</span><span class="n">prefix</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">scope</span><span class="p">,</span> <span class="n">dname</span><span class="p">))</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: &#34;</span><span class="p">,</span> <span class="n">dname</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
@@ -837,6 +851,10 @@
 </span><span class="lnt">26
 </span><span class="lnt">27
 </span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
@@ -858,7 +876,11 @@
 </span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">ifa</span> <span class="o">=</span> <span class="n">ifap</span><span class="p">;</span> <span class="n">ifa</span><span class="p">;</span> <span class="n">ifa</span> <span class="o">=</span> <span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_next</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_addr</span> <span class="o">&amp;&amp;</span> <span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_addr</span><span class="o">-&gt;</span><span class="n">sa_family</span> <span class="o">==</span> <span class="n">AF_INET6</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">            <span class="c1">// 打印ipv6地址
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">getnameinfo</span><span class="p">(</span><span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_addr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in6</span><span class="p">),</span> <span class="n">addr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">addr</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">NI_NUMERICHOST</span><span class="p">))</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">getnameinfo</span><span class="p">(</span><span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_addr</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                            <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in6</span><span class="p">),</span> 
+</span></span><span class="line"><span class="cl">                            <span class="n">addr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">addr</span><span class="p">),</span> 
+</span></span><span class="line"><span class="cl">                            <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                            <span class="n">NI_NUMERICHOST</span><span class="p">))</span>
 </span></span><span class="line"><span class="cl">                <span class="k">continue</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%s: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ifa</span><span class="o">-&gt;</span><span class="n">ifa_name</span><span class="p">,</span> <span class="n">addr</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">        <span class="p">}</span>
