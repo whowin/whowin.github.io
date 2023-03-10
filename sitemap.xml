@@ -527,13 +527,6 @@
   </url>
   
   <url>
-    <loc>https://whowin.gitee.io/tags/apt-update/</loc>
-    <lastmod>2022-07-10T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://whowin.gitee.io/post/blog/linux/0008-apt-update-ubuntu/</loc>
     <lastmod>2022-07-10T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
