@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="whowin" /><meta name="description" content="前面写的一篇《Linux下如何在数据链路层接收原始数据包》举了一个实例，使用raw socket接收UDP数据报，但是发送一个数据包比接收要复杂一些，本文以一个实例说明如何使用raw socket发送一个UDP报文。
+<meta name="author" content="whowin" /><meta name="description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明如何使用raw socket发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。
 " /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
@@ -41,19 +41,19 @@
 
 
 <meta property="og:title" content="如何使用raw socket发送UDP报文" />
-<meta property="og:description" content="前面写的一篇《Linux下如何在数据链路层接收原始数据包》举了一个实例，使用raw socket接收UDP数据报，但是发送一个数据包比接收要复杂一些，本文以一个实例说明如何使用raw socket发送一个UDP报文。" />
+<meta property="og:description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明如何使用raw socket发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2022-12-27T16:43:29+08:00" />
 <meta property="article:modified_time" content="2022-12-27T16:43:29+08:00" />
 
 <meta itemprop="name" content="如何使用raw socket发送UDP报文">
-<meta itemprop="description" content="前面写的一篇《Linux下如何在数据链路层接收原始数据包》举了一个实例，使用raw socket接收UDP数据报，但是发送一个数据包比接收要复杂一些，本文以一个实例说明如何使用raw socket发送一个UDP报文。"><meta itemprop="datePublished" content="2022-12-27T16:43:29+08:00" />
+<meta itemprop="description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明如何使用raw socket发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。"><meta itemprop="datePublished" content="2022-12-27T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-12-27T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4927">
+<meta itemprop="wordCount" content="4952">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,数据链路层编程,raw socket," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="如何使用raw socket发送UDP报文"/>
-<meta name="twitter:description" content="前面写的一篇《Linux下如何在数据链路层接收原始数据包》举了一个实例，使用raw socket接收UDP数据报，但是发送一个数据包比接收要复杂一些，本文以一个实例说明如何使用raw socket发送一个UDP报文。"/>
+<meta name="twitter:description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明如何使用raw socket发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -171,7 +171,7 @@
   </div>
 </div>
     <div class="post-content">
-      <p>前面写的一篇《Linux下如何在数据链路层接收原始数据包》举了一个实例，使用raw socket接收UDP数据报，但是发送一个数据包比接收要复杂一些，本文以一个实例说明如何使用raw socket发送一个UDP报文。</p>
+      <p>使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明如何使用raw socket发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。</p>
 <h2 id="1-前言">1. 前言</h2>
 <ul>
 <li>阅读本文前可以考虑先阅读一下我的另外一篇文章<a href="https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>，那篇文章中已经介绍过的一些概念，本文中将不再赘述；下面仅罗列一些曾经在<a href="https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>介绍过的技术要点；</li>
@@ -305,23 +305,23 @@
 </span></span><span class="line"><span class="cl"><span class="cp">#define IFHWADDRLEN    6
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span>    <span class="k">union</span>
 </span></span><span class="line"><span class="cl">    <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">char</span>    <span class="n">ifrn_name</span><span class="p">[</span><span class="n">IFNAMSIZ</span><span class="p">];</span>        <span class="cm">/* if name, e.g. &#34;en0&#34; */</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">char</span>   <span class="n">ifrn_name</span><span class="p">[</span><span class="n">IFNAMSIZ</span><span class="p">];</span>     <span class="cm">/* if name, e.g. &#34;en0&#34; */</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">ifr_ifrn</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="k">union</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">struct</span>    <span class="n">sockaddr</span> <span class="n">ifru_addr</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">struct</span>    <span class="n">sockaddr</span> <span class="n">ifru_dstaddr</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">struct</span>    <span class="n">sockaddr</span> <span class="n">ifru_broadaddr</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">struct</span>    <span class="n">sockaddr</span> <span class="n">ifru_netmask</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">struct</span>  <span class="n">sockaddr</span> <span class="n">ifru_hwaddr</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">short</span>    <span class="n">ifru_flags</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">ifru_addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">ifru_dstaddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">ifru_broadaddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">ifru_netmask</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">ifru_hwaddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">short</span>  <span class="n">ifru_flags</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">        <span class="kt">int</span>    <span class="n">ifru_ivalue</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">        <span class="kt">int</span>    <span class="n">ifru_mtu</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">struct</span>  <span class="n">ifmap</span> <span class="n">ifru_map</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">char</span>    <span class="n">ifru_slave</span><span class="p">[</span><span class="n">IFNAMSIZ</span><span class="p">];</span>    <span class="cm">/* Just fits the size */</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">char</span>    <span class="n">ifru_newname</span><span class="p">[</span><span class="n">IFNAMSIZ</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">void</span> <span class="o">*</span>    <span class="n">ifru_data</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="k">struct</span>    <span class="n">if_settings</span> <span class="n">ifru_settings</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">ifmap</span> <span class="n">ifru_map</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">char</span>   <span class="n">ifru_slave</span><span class="p">[</span><span class="n">IFNAMSIZ</span><span class="p">];</span>    <span class="cm">/* Just fits the size */</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">char</span>   <span class="n">ifru_newname</span><span class="p">[</span><span class="n">IFNAMSIZ</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">void</span> <span class="o">*</span> <span class="n">ifru_data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">if_settings</span> <span class="n">ifru_settings</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">ifr_ifru</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
@@ -397,6 +397,7 @@
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
+</span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ifreq</span> <span class="n">if_req</span><span class="p">;</span>
@@ -409,7 +410,8 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">mac</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span>
-</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="n">mac</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="p">)(</span><span class="n">if_req</span><span class="p">.</span><span class="n">ifr_hwaddr</span><span class="p">.</span><span class="n">sa_data</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">mac</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="p">)(</span><span class="n">if_req</span><span class="p">.</span><span class="n">ifr_hwaddr</span><span class="p">.</span><span class="n">sa_data</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="n">printf</span><span class="p">(</span><span class="s">&#34;Mac = %.2X-%.2X-%.2X-%.2X-%.2X-%.2X</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> 
 </span></span><span class="line"><span class="cl">       <span class="n">mac</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mac</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mac</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">mac</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">mac</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">mac</span><span class="p">[</span><span class="mi">5</span><span class="p">]);</span> 
@@ -434,6 +436,7 @@
 </span><span class="lnt"> 9
 </span><span class="lnt">10
 </span><span class="lnt">11
+</span><span class="lnt">12
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ifreq</span> <span class="n">if_req</span><span class="p">;</span>
@@ -444,7 +447,8 @@
 </span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">SIOCGIFADDR</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">if_req</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;error in SIOCGIFADDR </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">strcpy</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">inet_ntoa</span><span class="p">((((</span><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">if_req</span><span class="p">.</span><span class="n">ifr_addr</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">strcpy</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">           <span class="n">inet_ntoa</span><span class="p">((((</span><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">if_req</span><span class="p">.</span><span class="n">ifr_addr</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">)));</span>
 </span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;IP address: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ip</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -496,6 +500,7 @@
 </span><span class="lnt">12
 </span><span class="lnt">13
 </span><span class="lnt">14
+</span><span class="lnt">15
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ethhdr</span> <span class="o">*</span><span class="n">eth_hdr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span> <span class="o">*</span><span class="p">)(</span><span class="n">send_buf</span><span class="p">);</span>
@@ -503,7 +508,8 @@
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_source</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mac</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="cm">/* filling destination mac. DEST_MAC_0 to DEST_MAC_5 are macro having octets of mac address. */</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* filling destination mac. 
+</span></span></span><span class="line"><span class="cl"><span class="cm">   DEST_MAC_0 to DEST_MAC_5 are macro having octets of mac address. */</span>
 </span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_2</span><span class="p">;</span>
@@ -511,7 +517,7 @@
 </span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_4</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_5</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_proto</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">ETH_P_IP</span><span class="p">);</span> <span class="c1">// means next header will be IP header
+</span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_proto</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">ETH_P_IP</span><span class="p">);</span> <span class="c1">// means next header is IP header
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -563,9 +569,13 @@
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">udphdr</span> <span class="o">*</span><span class="n">udp_hdr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">udphdr</span> <span class="o">*</span><span class="p">)(</span><span class="n">send_buf</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span><span class="p">)</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">));</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">udphdr</span> <span class="o">*</span><span class="n">udp_hdr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">udphdr</span> <span class="o">*</span><span class="p">)(</span><span class="n">send_buf</span> <span class="o">+</span> 
+</span></span><span class="line"><span class="cl">                                           <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span><span class="p">)</span> <span class="o">+</span> 
+</span></span><span class="line"><span class="cl">                                           <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="n">udp_hdr</span><span class="o">-&gt;</span><span class="n">source</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">34561</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="n">udp_hdr</span><span class="o">-&gt;</span><span class="n">dest</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">34562</span><span class="p">);</span>
@@ -586,9 +596,13 @@
 </span><span class="lnt">4
 </span><span class="lnt">5
 </span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">total_len</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">)</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span><span class="p">)</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">udphdr</span><span class="p">);</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">total_len</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">)</span> <span class="o">+</span> 
+</span></span><span class="line"><span class="cl">            <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span><span class="p">)</span> <span class="o">+</span> 
+</span></span><span class="line"><span class="cl">            <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">udphdr</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="n">send_buf</span><span class="p">[</span><span class="n">total_len</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;h&#39;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="n">send_buf</span><span class="p">[</span><span class="n">total_len</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;e&#39;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="n">send_buf</span><span class="p">[</span><span class="n">total_len</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;l&#39;</span><span class="p">;</span>
@@ -605,10 +619,14 @@
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="c1">// UDP length field
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">udp_hdr</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">=</span> <span class="n">htons</span><span class="p">((</span><span class="n">total_len</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span><span class="p">)</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">)));</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">udp_hdr</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">total_len</span> <span class="o">-</span> 
+</span></span><span class="line"><span class="cl">                     <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span><span class="p">)</span> <span class="o">-</span> 
+</span></span><span class="line"><span class="cl">                     <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl"><span class="c1">// IP length field
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">tot_len</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">total_len</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">));</span>
 </span></span></code></pre></td></tr></table>
@@ -631,6 +649,7 @@
 </span><span class="lnt"> 8
 </span><span class="lnt"> 9
 </span><span class="lnt">10
+</span><span class="lnt">11
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">short</span> <span class="nf">checksum</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span> <span class="o">*</span><span class="n">buff</span><span class="p">,</span> <span class="kt">int</span> <span class="n">_16bitword</span><span class="p">)</span> <span class="p">{</span>
@@ -642,7 +661,8 @@
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">)(</span><span class="o">~</span><span class="n">sum</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">check</span> <span class="o">=</span> <span class="n">checksum</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">short</span> <span class="o">*</span><span class="p">)(</span><span class="n">send_buf</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">)),</span> <span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">check</span> <span class="o">=</span> <span class="n">checksum</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">short</span> <span class="o">*</span><span class="p">)(</span><span class="n">send_buf</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">)),</span> 
+</span></span><span class="line"><span class="cl">                         <span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">));</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -740,11 +760,15 @@
 </span><span class="lnt">3
 </span><span class="lnt">4
 </span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">send_len</span> <span class="o">=</span> <span class="n">sendto</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">send_buf</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">saddr_ll</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_ll</span><span class="p">));</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">send_len</span> <span class="o">=</span> <span class="n">sendto</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">send_buf</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                  <span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">saddr_ll</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                  <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_ll</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">send_len</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;error in sending....sendlen=%d....errno=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">send_len</span><span class="p">,</span> <span class="n">errno</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">perror</span><span class="p">(</span><span class="s">&#34;sendto()&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
@@ -755,7 +779,7 @@
 <ul>
 <li>在这个实例中，目的IP地址为：192.168.2.112，目的MAC地址为：00:21:cc:d8:30:4b；源IP地址和MAC地址我们将从程序中得到；网络接口名称为：enp0s3；源端口号为：34561，目的端口号为：34562</li>
 <li>这个程序需要使用root权限运行，因为使用了raw socket</li>
-<li>下面是完整的源程序，文件名为：<a href="/sourcecodes/180006/send-raw-udp-packet.c">send-raw-udp-packet.c</a>(<strong>点击文件名下载源程序</strong>)</li>
+<li>下面是完整的源程序，文件名为：<a href="https://whowin.gitee.io/sourcecodes/180006/send-raw-udp-packet.c">send-raw-udp-packet.c</a>(<strong>点击文件名下载源程序</strong>)</li>
 <li>运行程序
 <ol>
 <li>编译程序
