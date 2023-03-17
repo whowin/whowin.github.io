@@ -362,7 +362,6 @@
 </span><span class="lnt">5
 </span><span class="lnt">6
 </span><span class="lnt">7
-</span><span class="lnt">8
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ifreq</span> <span class="n">ifreq_index</span><span class="p">;</span>
@@ -370,9 +369,8 @@
 </span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ifreq_index</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ifreq_index</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl"><span class="n">strncpy</span><span class="p">(</span><span class="n">ifreq_index</span><span class="p">.</span><span class="n">ifr_name</span><span class="p">,</span> <span class="s">&#34;eth0&#34;</span><span class="p">,</span> <span class="n">IFNAMSIZ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">SIOCGIFINDEX</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ifreq_index</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;error in index ioctl reading&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">printf</span><span class="p">(</span><span class="s">&#34;index=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ifreq_index</span><span class="p">.</span><span class="n">ifr_ifindex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">perror</span><span class="p">(</span><span class="s">&#34;ioctl() with SIOCGIFINDEX&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">else</span> <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;index=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ifreq_index</span><span class="p">.</span><span class="n">ifr_ifindex</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><blockquote>
@@ -398,6 +396,8 @@
 </span><span class="lnt">13
 </span><span class="lnt">14
 </span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ifreq</span> <span class="n">if_req</span><span class="p">;</span>
@@ -405,8 +405,10 @@
 </span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">if_req</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ifreq</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl"><span class="n">strncpy</span><span class="p">(</span><span class="n">if_req</span><span class="p">.</span><span class="n">ifr_name</span><span class="p">,</span> <span class="s">&#34;eth0&#34;</span><span class="p">,</span> <span class="n">IFNAMSIZ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">((</span><span class="n">ioctl</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">SIOCGIFHWADDR</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">if_req</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> 
-</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;error in SIOCGIFHWADDR ioctl reading&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">((</span><span class="n">ioctl</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">SIOCGIFHWADDR</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">if_req</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">perror</span><span class="p">(</span><span class="s">&#34;ioctl() with SIOCGIFHWADDR&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">mac</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span>
@@ -445,7 +447,7 @@
 </span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">if_req</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ifreq</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl"><span class="n">strncpy</span><span class="p">(</span><span class="n">if_req</span><span class="p">.</span><span class="n">ifr_name</span><span class="p">,</span> <span class="s">&#34;eth0&#34;</span><span class="p">,</span> <span class="n">IFNAMSIZ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">SIOCGIFADDR</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">if_req</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;error in SIOCGIFADDR </span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">perror</span><span class="p">(</span><span class="s">&#34;ioctl() with SIOCGIFADDR&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="n">strcpy</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> 
 </span></span><span class="line"><span class="cl">           <span class="n">inet_ntoa</span><span class="p">((((</span><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">if_req</span><span class="p">.</span><span class="n">ifr_addr</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">)));</span>
