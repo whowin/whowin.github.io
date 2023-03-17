@@ -96,7 +96,6 @@ postid: 180018
 * tun设备是一个第三层(网络层)的设备，在这个设备上只能收到IP报头，收不到以太网报头，所以Linux索性没有为tun设备分配MAC地址；
 * 后面将以本节的程序为基础，不断改进，最终写出一个简单的IP隧道的程序。
 
-<!--
 ## 3. 使用tun设备是基本数据流向
 * 设备建立起来以后，程序员关心的是我们如何从这个设备上收发报文，如何处理这些报文；
 * 对于一个物理网络接口而言，接口一端连接着网络协议栈，另一端连接着物理网络；而对于一个虚拟网络接口而言，接口的一端仍然连接这网络协议栈，但是另一端连接着一个应用程序，也就是我们前面下载的那个程序([tun-01.c][src01])，我们把这个程序称为 **application-tun**；
@@ -303,11 +302,10 @@ postid: 180018
 ## 5. 后记
 * 我们实现了一个简单的IP隧道，在这个IP隧道，我们传送一个UDP报文，我们传了一个UDP报文而不是一个TCP报文是为了省去connect()的麻烦；
 * 这样一个IP隧道并不局限在局域网中，通过互联网一样可以建立一个IP隧道；
-* 我们的这个服务器端的程序仅处理了一个客户端的连接，如果我们允许多个客户端接入并建立多条IP隧道，如果连接的多个客户端的tun都绑定在同一个网段上，那么通过服务器显然是可以像局域网一样相互通信的，好像多个终端在一个局域网里一样，是不是有点像VPN(Virtual Private Network)，实际上很多VPN就是使用IP隧道实现的；
-* IP隧道还可以用于绕过防火墙，如果你的防火墙不允许某些协议通过，那么你可以通过一个防火墙允许的端口与服务器建立一个IP隧道，然后在这个IP隧道里跑那个不被防火墙允许的协议，就像我们在IP隧道里跑UDP协议一样，成功地绕过防火墙；
-* 建立隧道也不一定非得使用TCP/IP协议，比如可以使用ICMP协议建立一个ICMP隧道，当你的电脑只能ping通你的服务器，其它的所有协议都被防火墙封锁的情况下，使用ICMP协议建立一个ICMP隧道，同样可以成功越狱。
+* 我们的这个服务器端的程序仅处理了一个客户端的连接，如果我们允许多个客户端接入并建立多条IP隧道，如果连接的多个客户端的tun都绑定在同一个网段上，那么通过服务器显然是可以像局域网一样相互通信的，好像多个终端在一个局域网里一样，是不是有点像![][img14]，实际上很多![][img14]就是使用IP隧道实现的；
+* IP隧道还可以用于很多场合，如果你的防火墙不允许某些协议通过，那么你可以通过一个防火墙允许的端口与服务器建立一个IP隧道，然后在这个IP隧道里跑那个不被防火墙允许的协议，就像我们在IP隧道里跑UDP协议一样；
+* 建立隧道也不一定非得使用TCP/IP协议，比如可以使用ICMP协议建立一个ICMP隧道，当你的电脑只能ping通你的服务器，其它的所有协议都无法通过防火墙的情况下，使用ICMP协议建立一个ICMP隧道，然后可以在这个隧道里跑其它协议；
 * 虚拟网络接口的用途很多，现在的虚拟机、容器等大多使用了虚拟网络接口，希望这篇文章可以让你对虚拟网络接口有个初步的认识。
--->
 
 
 
@@ -327,17 +325,17 @@ postid: 180018
 [src03]:https://whowin.gitee.io/sourcecodes/180018/app-client.c
 [src04]:https://whowin.gitee.io/sourcecodes/180018/app-server.c
 
-[img01]:/images/180018/screenshot-of-setting-up-tun0.png
-[img02]:/images/180018/send-data-tun-local.png
-[img03]:/images/180018/send-data-tun-remote.png
-[img04]:/images/180018/screenshot-for-source-ip.png
-[img05]:/images/180018/screenshot-of-ip-route.png
-[img06]:/images/180018/simple-ip-tunnel.png
-[img07]:/images/180018/screenshot-of-1st-termianl-for-client.png
-[img08]:/images/180018/screenshot-of-2nd-terminal-for-client.png
-[img09]:/images/180018/diagram-for-testing.png
-[img10]:/images/180018/screenshot-server-1st-terminal-for-testing.png
-[img11]:/images/180018/screenshot-client-1st-terminal-for-testing.png
-[img12]:/images/180018/screenshot-server-2nd-terminal-for-testing.png
-[img13]:/images/180018/screenshot-client-2nd-terminal-for-testing.png
-
+[img01]:https://whowin.gitee.io/images/180018/screenshot-of-setting-up-tun0.png
+[img02]:https://whowin.gitee.io/images/180018/send-data-tun-local.png
+[img03]:https://whowin.gitee.io/images/180018/send-data-tun-remote.png
+[img04]:https://whowin.gitee.io/images/180018/screenshot-for-source-ip.png
+[img05]:https://whowin.gitee.io/images/180018/screenshot-of-ip-route.png
+[img06]:https://whowin.gitee.io/images/180018/simple-ip-tunnel.png
+[img07]:https://whowin.gitee.io/images/180018/screenshot-of-1st-termianl-for-client.png
+[img08]:https://whowin.gitee.io/images/180018/screenshot-of-2nd-terminal-for-client.png
+[img09]:https://whowin.gitee.io/images/180018/diagram-for-testing.png
+[img10]:https://whowin.gitee.io/images/180018/screenshot-server-1st-terminal-for-testing.png
+[img11]:https://whowin.gitee.io/images/180018/screenshot-client-1st-terminal-for-testing.png
+[img12]:https://whowin.gitee.io/images/180018/screenshot-server-2nd-terminal-for-testing.png
+[img13]:https://whowin.gitee.io/images/180018/screenshot-client-2nd-terminal-for-testing.png
+[img14]:https://whowin.gitee.io/images/180018/vpn.png

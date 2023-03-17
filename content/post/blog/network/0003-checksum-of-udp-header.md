@@ -23,7 +23,7 @@ draft: false
 postid: 180003
 ---
 
-UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序。
+UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum。
 <!--more-->
 
 ## 1. UDP报文结构
@@ -72,6 +72,7 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
 
 * 伪报头中源IP地址(Source IP address)、目的IP地址(Destination IP address)和协议(Protocol)这三个字段都是从IP报头中取过来的；
 * 源IP地址和目的IP地址是32-bit的IP地址，Protocol字段是网络协议号，UDP协议号为17(0X11)；
+* 伪报头中 UDP length 这个字段指的是 **UDP报头+数据** 的长度，并不包括伪报头的长度，其值和UDP报头中的len字段应该是一样的；
 * 如果checksum中没有加入伪报头，UDP报文也是可以安全送达的，但是，如果IP报头有损坏或者被认为修改，报文有可能被送到错误的地址；
 * 伪报头中加入protocol字段是为了保证报文为UDP报文，正常情况下protocol为17(0x11)，如果传输中这个字段变化了，那么在接收端计算出的checksum就会不正确，接收端会丢弃这个出现错误的报文；
 * checksum 计算规则：
@@ -82,143 +83,13 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
 * 在RFC768中定义的UDP的checksum为：(伪报头+UDP报头+DATA)按16-bit字进行反码求和的结果就是checksum；但实际上原码求和再取反和反码求和是一样的结果，因为求反码再求和的方法对每一组16-bit字都要做一次求反运算，因此其运算量更大一些，在实际中没有人使用；
 * 以上两种运算方法在本文给出的范例中均有体现，可以用来验证其结果的一致性；
 * 按照RFC768的说明，当checksum的运算结果为0时，checksum应该作为全1来传输，因为在UDP协议中，checksum为0表示没有使用checksum，UDP的checksum在ipv4中并不是强制使用的。
-* 下面是计算udp报头checksum的完整源代码：
-    ```C
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <unistd.h>
-    #include <stdint.h>
+* 下面是计算udp报头checksum的完整源代码，源代码文件名：[udp-checksum.c][src01](**点击文件名下载源程序**)
 
-    #include <arpa/inet.h>
-    #include <linux/udp.h>
-
-    // udp pseudo header structure
-    struct pseudohdr {
-        uint32_t source_ip;
-        uint32_t destination_ip;
-        uint8_t zero;
-        uint8_t protocol;
-        uint16_t udp_len;
-    };
-    // udp packet structure for calculating checksum
-    struct udpcheckhdr {
-        struct pseudohdr pseudo_hdr;
-        struct udphdr udp_hdr;
-        unsigned char data[16];
-    };
-    // initial pseudo header
-    void init_pseudohdr(struct udpcheckhdr *p) {
-        p->pseudo_hdr.source_ip = inet_addr("152.1.51.27");         // 0X0198 0X1B33
-        p->pseudo_hdr.destination_ip = inet_addr("152.14.94.75");   // 0X0E98 0X4B5E
-        p->pseudo_hdr.zero = 0;                     // 0X00 - 0X1100
-        p->pseudo_hdr.protocol = 17;                // 0X11
-        p->pseudo_hdr.udp_len = 13;                 // 0X000D
-    }
-    // initial udp header
-    void init_udphdr(struct udpcheckhdr *p) {
-        p->udp_hdr.source = 56020;                  // 0xDAD4
-        p->udp_hdr.dest = 8000;                     // 0X1F40
-        p->udp_hdr.len = 13;                        // 0X000D
-        p->udp_hdr.check = 0;                       // 0X0000
-    }
-    // initial udp data
-    void init_udpdata(struct udpcheckhdr *p) {
-        p->data[0] = 'h';                           // 0X68 - 0X6568
-        p->data[1] = 'e';                           // 0X65
-        p->data[2] = 'l';                           // 0X6C - 0X6C6C
-        p->data[3] = 'l';                           // 0X6C
-        p->data[4] = 'o';                           // 0X6F - 0X006F
-        p->data[5] = 0;
-    }
-
-    uint16_t checksum1(uint16_t *p, int count) {
-        register long sum = 0;
-        unsigned short checksum;
-
-        uint16_t temp;
-        uint16_t i = 0;
-        while (count > 1) {
-            /*  This is the inner loop */
-            temp = (unsigned short)*(unsigned short *)p++;
-            printf("Step %02d: 0X%08lX + 0X%04X\n", ++i, sum, temp);
-            sum += temp;
-            count -= 2;
-        }
-
-        /*  Add left-over byte, if any */
-        if (count > 0) {
-            temp = (unsigned short)*(unsigned short *)p;
-            printf("Step %02d: 0X%08lX + 0X%04X\n", ++i, sum, temp);
-            sum += *(unsigned char *)p;
-        }
-
-        printf("Result before folding: 0X%08lX\n", sum);
-        /*  Fold 32-bit sum to 16 bits */
-        while (sum >> 16)
-            sum = (sum & 0xffff) + (sum >> 16);
-
-        printf("Result after folding: 0X%08lX\n", sum);
-
-        checksum = ~(unsigned short)sum;
-        printf("\nChecksum = 0x%04X\n", checksum);
-
-        return checksum;
-    }
-
-    uint16_t checksum2(uint16_t *p, int count) {
-        register long sum = 0;
-        unsigned short checksum;
-
-        uint16_t temp;
-        uint16_t i = 0;
-        while (count > 1) {
-            /*  This is the inner loop */
-            temp = (unsigned short)*(unsigned short *)p++;
-            printf("Step %02d: 0X%08lX + 0X%04X(0X%04X)\n", ++i, sum, (uint16_t)~temp, temp);
-            sum += (uint16_t)~temp;
-            count -= 2;
-        }
-
-        /*  Add left-over byte, if any */
-        if (count > 0) {
-            temp = (unsigned short)*(unsigned short *)p;
-            printf("Step %02d: 0X%08lX + 0X%04X(0X%04X)\n", ++i, sum, (uint16_t)~temp, temp);
-            sum += (uint16_t)~temp;
-        }
-
-        printf("Result before folding: 0X%08lX\n", sum);
-        /*  Fold 32-bit sum to 16 bits */
-        while (sum >> 16)
-            sum = (sum & 0xffff) + (sum >> 16);
-
-        printf("Result after folding: 0X%08lX\n", sum);
-
-        checksum = (unsigned short)sum;
-        printf("\nChecksum = 0x%04X\n", checksum);
-        return checksum;
-    }
-
-    int main(int argc, char **argv) {
-        struct udpcheckhdr udp_packet;
-
-        init_pseudohdr(&udp_packet);
-        init_udphdr(&udp_packet);
-        init_udpdata(&udp_packet);
-
-        unsigned short *p = (unsigned short *)&udp_packet;
-        int count = sizeof(struct pseudohdr) + udp_packet.udp_hdr.len;
-
-        printf("\nThe one's complement code of 16-bit true code sum\n");
-        checksum1(p, count);
-        printf("\nThe one's complement sum\n");
-        checksum2(p, count);
-
-        return 0;
-    }
-    ```
 * 其中在计算checksum的程序中参考了RFC1071中给出的源代码；
-* checksum1()使用的常规的算法，checksum2()使用的把每个16-bit字求反在相加的算法进行的运算，两种算法的结果是一样的。
-* 读者可以根据需要适当第调整数据，以使其计算出不同的结果；
+* checksum1()使用的常规的算法，checksum2()使用的把每个16-bit字求反再相加的算法进行的运算，两种算法的结果是一样的。
+* 读者可以根据需要适当地调整数据，以使其计算出不同的结果；
+* 编译：```gcc -Wall udp-checksum.c -o udp-checksum```
+* 运行：```./udp-checksum```
 * 下面是我的机器上的运行结果截屏
 
     ![程序运行截屏][img04]
@@ -245,6 +116,7 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
+[src01]:/sourcecodes/180003/udp-checksum.c
 
 [img01]:https://whowin.gitee.io/images/180003/udp_packet_structure.png
 [img02]:https://whowin.gitee.io/images/180003/ip_header.png

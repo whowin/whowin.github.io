@@ -57,7 +57,8 @@ postid: 180001
         ifr = (struct ifreq*)buf;
 
         for (i = (ifc.ifc_len /sizeof(struct ifreq)); i > 0; i--) {
-            printf("%s: %s\n",ifr->ifr_name, inet_ntoa(((struct sockaddr_in *)&(ifr->ifr_addr))->sin_addr));
+            printf("%s: %s\n",ifr->ifr_name, 
+                    inet_ntoa(((struct sockaddr_in *)&(ifr->ifr_addr))->sin_addr));
             ifr++;
         }
     }
@@ -97,7 +98,8 @@ postid: 180001
             } else if (sa->sin_family == AF_INET){
                 printf("%s: AF_INET\n", ifr->ifr_name);
             } else {
-                printf("%s: %d.  It is an unknown address family.\n", ifr->ifr_name, sa->sin_family);
+                printf("%s: %d.  It is an unknown address family.\n", 
+                        ifr->ifr_name, sa->sin_family);
             }
             ifr++;
         }
@@ -152,9 +154,13 @@ postid: 180001
             return -1;
         }
         while (19 == fscanf(f,
-                            " %2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx %*x %x %x %*x %s",
-                            &_ipv6[0], &_ipv6[1], &_ipv6[2], &_ipv6[3], &_ipv6[4], &_ipv6[5], &_ipv6[6], &_ipv6[7],
-                            &_ipv6[8], &_ipv6[9], &_ipv6[10], &_ipv6[11], &_ipv6[12], &_ipv6[13], &_ipv6[14], &_ipv6[15],
+                            " %2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx\
+                            %2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx \
+                            %*x %x %x %*x %s",
+                            &_ipv6[0], &_ipv6[1], &_ipv6[2], &_ipv6[3], 
+                            &_ipv6[4], &_ipv6[5], &_ipv6[6], &_ipv6[7],
+                            &_ipv6[8], &_ipv6[9], &_ipv6[10], &_ipv6[11], 
+                            &_ipv6[12], &_ipv6[13], &_ipv6[14], &_ipv6[15],
                             &prefix, &scope, dname)) {
             if (inet_ntop(AF_INET6, _ipv6, address, sizeof(address)) == NULL) {
                 continue;
@@ -198,7 +204,7 @@ postid: 180001
         #endif
         };
         ```
-    - 这个结构在一般情况下使用的是 uint8_t  __u6_addr8[16]，也就是 16 个 unsigned char 的数组，只有在"混杂模式"时才使用 8 个 unsigned short int 或者 4 个 unsigned int 的数组；
+    - 这个结构在一般情况下使用的是 uint8_t  __u6_addr8[16]，也就是 16 个 unsigned char 的数组；
     - 所以，实际上 struct in6_addr 的结构如下
         ```C
         struct in6_addr {
@@ -235,8 +241,9 @@ postid: 180001
         unsigned short int _ipv6[8];
         int zero_flag = 0;
         while (11 == fscanf(f,
-                        " %4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx %*x %x %x %*x %s",
-                            &_ipv6[0], &_ipv6[1], &_ipv6[2], &_ipv6[3], &_ipv6[4], &_ipv6[5], &_ipv6[6], &_ipv6[7],
+                            " %4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx %*x %x %x %*x %s",
+                            &_ipv6[0], &_ipv6[1], &_ipv6[2], &_ipv6[3], 
+                            &_ipv6[4], &_ipv6[5], &_ipv6[6], &_ipv6[7],
                             &prefix, &scope, dname)) {
             printf("%s: ", dname);
             for (int i = 0; i < 8; ++i) {
@@ -341,7 +348,11 @@ postid: 180001
         for (ifa = ifap; ifa; ifa = ifa->ifa_next) {
             if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET6) {
                 // 打印ipv6地址
-                if (getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in6), addr, sizeof(addr), NULL, 0, NI_NUMERICHOST))
+                if (getnameinfo(ifa->ifa_addr, 
+                                sizeof(struct sockaddr_in6), 
+                                addr, sizeof(addr), 
+                                NULL, 0, 
+                                NI_NUMERICHOST))
                     continue;
                 printf("%s: %s\n", ifa->ifa_name, addr);
             }

@@ -33,7 +33,7 @@ draft: false
 postid: 180006
 ---
 
-前面写的一篇《Linux下如何在数据链路层接收原始数据包》举了一个实例，使用raw socket接收UDP数据报，但是发送一个数据包比接收要复杂一些，本文以一个实例说明如何使用raw socket发送一个UDP报文。
+使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明如何使用raw socket发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。
 <!--more-->
 
 ## 1. 前言
@@ -90,23 +90,23 @@ postid: 180006
     #define IFHWADDRLEN    6
         union
         {
-            char    ifrn_name[IFNAMSIZ];        /* if name, e.g. "en0" */
+            char   ifrn_name[IFNAMSIZ];     /* if name, e.g. "en0" */
         } ifr_ifrn;
         
         union {
-            struct    sockaddr ifru_addr;
-            struct    sockaddr ifru_dstaddr;
-            struct    sockaddr ifru_broadaddr;
-            struct    sockaddr ifru_netmask;
-            struct  sockaddr ifru_hwaddr;
-            short    ifru_flags;
+            struct sockaddr ifru_addr;
+            struct sockaddr ifru_dstaddr;
+            struct sockaddr ifru_broadaddr;
+            struct sockaddr ifru_netmask;
+            struct sockaddr ifru_hwaddr;
+            short  ifru_flags;
             int    ifru_ivalue;
             int    ifru_mtu;
-            struct  ifmap ifru_map;
-            char    ifru_slave[IFNAMSIZ];    /* Just fits the size */
-            char    ifru_newname[IFNAMSIZ];
-            void *    ifru_data;
-            struct    if_settings ifru_settings;
+            struct ifmap ifru_map;
+            char   ifru_slave[IFNAMSIZ];    /* Just fits the size */
+            char   ifru_newname[IFNAMSIZ];
+            void * ifru_data;
+            struct if_settings ifru_settings;
         } ifr_ifru;
     };
     ```
@@ -130,9 +130,8 @@ postid: 180006
     memset(&ifreq_index, 0, sizeof(ifreq_index));
     strncpy(ifreq_index.ifr_name, "eth0", IFNAMSIZ - 1);
     if (ioctl(sock_raw, SIOCGIFINDEX, &ifreq_index) < 0)
-        printf("error in index ioctl reading");
-    
-    printf("index=%d\n", ifreq_index.ifr_ifindex);
+        perror("ioctl() with SIOCGIFINDEX");
+    else printf("index=%d\n", ifreq_index.ifr_ifindex);
     ```
 
     > 调用ioctl之前将设备名称(例中为eth0)，填写到ifreq结构中，使用SIOCGIFINDEX作为request，网络接口的设备索引号将返回在ifreq结构中
@@ -144,12 +143,15 @@ postid: 180006
     memset(&if_req, 0, sizeof(struct ifreq));
     strncpy(if_req.ifr_name, "eth0", IFNAMSIZ - 1);
 
-    if ((ioctl(sock_raw, SIOCGIFHWADDR, &if_req)) < 0) 
-        printf("error in SIOCGIFHWADDR ioctl reading");
+    if ((ioctl(sock_raw, SIOCGIFHWADDR, &if_req)) < 0) {
+        perror("ioctl() with SIOCGIFHWADDR");
+        exit;
+    }
 
     int i;
     unsigned char mac[6];
-    for (i = 0; i < 6; ++i) mac[i] = (unsigned char)(if_req.ifr_hwaddr.sa_data[i]);
+    for (i = 0; i < 6; ++i) 
+        mac[i] = (unsigned char)(if_req.ifr_hwaddr.sa_data[i]);
 
     printf("Mac = %.2X-%.2X-%.2X-%.2X-%.2X-%.2X\n", 
            mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]); 
@@ -165,9 +167,10 @@ postid: 180006
     memset(&if_req, 0, sizeof(struct ifreq));
     strncpy(if_req.ifr_name, "eth0", IFNAMSIZ - 1);
     if (ioctl(sock_raw, SIOCGIFADDR, &if_req) < 0) {
-        printf("error in SIOCGIFADDR \n");
+        perror("ioctl() with SIOCGIFADDR");
     } else {
-        strcpy(ip, inet_ntoa((((struct sockaddr_in *)&(if_req.ifr_addr))->sin_addr)));
+        strcpy(ip, 
+               inet_ntoa((((struct sockaddr_in *)&(if_req.ifr_addr))->sin_addr)));
         printf("IP address: %s\n", ip);
     }
     ```
@@ -195,7 +198,8 @@ postid: 180006
     int i = 0;
     for (i = 0; i < 6; ++i) eth_hdr->h_source[i] = mac[i];
     
-    /* filling destination mac. DEST_MAC_0 to DEST_MAC_5 are macro having octets of mac address. */
+    /* filling destination mac. 
+       DEST_MAC_0 to DEST_MAC_5 are macro having octets of mac address. */
     eth_hdr->h_dest[0] = DEST_MAC_0;
     eth_hdr->h_dest[1] = DEST_MAC_1;
     eth_hdr->h_dest[2] = DEST_MAC_2;
@@ -203,7 +207,7 @@ postid: 180006
     eth_hdr->h_dest[4] = DEST_MAC_4;
     eth_hdr->h_dest[5] = DEST_MAC_5;
     
-    eth_hdr->h_proto = htons(ETH_P_IP); // means next header will be IP header
+    eth_hdr->h_proto = htons(ETH_P_IP); // means next header is IP header
     ```
 
 * 构建IP报头
@@ -229,7 +233,9 @@ postid: 180006
     > 和构建IP报头类似，填充udphdr结构中的字段即可构建UDP报头；
 
     ```C
-    struct udphdr *udp_hdr = (struct udphdr *)(send_buf + sizeof(struct iphdr) + sizeof(struct ethhdr));
+    struct udphdr *udp_hdr = (struct udphdr *)(send_buf + 
+                                               sizeof(struct iphdr) + 
+                                               sizeof(struct ethhdr));
     
     udp_hdr->source = htons(34561);
     udp_hdr->dest = htons(34562);
@@ -240,7 +246,9 @@ postid: 180006
 
 * 构建要发送的数据
     ```C
-    total_len = sizeof(struct ethhdr) + sizeof(struct iphdr) + sizeof(struct udphdr);
+    total_len = sizeof(struct ethhdr) + 
+                sizeof(struct iphdr) + 
+                sizeof(struct udphdr);
     send_buf[total_len++] = 'h';
     send_buf[total_len++] = 'e';
     send_buf[total_len++] = 'l';
@@ -251,7 +259,9 @@ postid: 180006
 * 填充IP和UDP报头中的长度字段
     ```C
     // UDP length field
-    udp_hdr->len = htons((total_len - sizeof(struct iphdr) - sizeof(struct ethhdr)));
+    udp_hdr->len = htons(total_len - 
+                         sizeof(struct iphdr) - 
+                         sizeof(struct ethhdr));
     // IP length field
     ip_hdr->tot_len = htons(total_len - sizeof(struct ethhdr));
     ```
@@ -269,7 +279,8 @@ postid: 180006
         return (unsigned short)(~sum);
     }
     
-    ip_hdr->check = checksum((unsigned short *)(send_buf + sizeof(struct ethhdr)), (sizeof(struct iphdr) / 2));
+    ip_hdr->check = checksum((unsigned short *)(send_buf + sizeof(struct ethhdr)), 
+                             (sizeof(struct iphdr) / 2));
     ```
 
 ## 4. 发送数据
@@ -314,9 +325,11 @@ postid: 180006
 
 * 发送数据
     ```C
-    send_len = sendto(sock_raw, send_buf, 64, 0, (const struct sockaddr *)&saddr_ll, sizeof(struct sockaddr_ll));
+    send_len = sendto(sock_raw, send_buf, 64, 0, 
+                      (const struct sockaddr *)&saddr_ll, 
+                      sizeof(struct sockaddr_ll));
     if (send_len < 0) {
-        printf("error in sending....sendlen=%d....errno=%d\n", send_len, errno);
+        perror("sendto()");
         return -1;
     }
     ```
@@ -345,6 +358,7 @@ postid: 180006
 * 可以修改一下程序，尝试使用你的默认网关的MAC地址代替目的MAC地址，正常情况下报文也是可以送达的；
 * 如果你可以在互联网上找到一台服务器，可以尝试向局域网外发送数据，同样，建议你将目的MAC地址填上默认网关的MAC地址，特别要注意的是要确认服务器上的防火墙放开了你在程序中设置的目的端口号，在服务器上启动netcat命令监听目的端口，在你自己的机器上运行程序，正常情况下，报文是可以送达的。
 
+
 -------------
 **欢迎访问我的博客：https://whowin.cn**
 
@@ -354,7 +368,7 @@ postid: 180006
 
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
-[src01]:/sourcecodes/180006/send-raw-udp-packet.c
+[src01]:https://whowin.gitee.io/sourcecodes/180006/send-raw-udp-packet.c
 
 [article01]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
 [article02]:https://whowin.gitee.io/post/blog/network/0004-checksum-of-ip-header/
