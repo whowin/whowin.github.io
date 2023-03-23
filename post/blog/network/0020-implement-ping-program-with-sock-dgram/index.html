@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="whowin" /><meta name="description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文假定读者具备IPv4下使用socket进行网络编程的基本能力，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0
+<meta name="author" content="whowin" /><meta name="description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文假定读者具备IPv4下使用socket进行网络编程的基本能力，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0
 " /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
@@ -41,19 +41,19 @@
 
 
 <meta property="og:title" content="使用SOCK_DGRAM类型的socket实现的ping程序" />
-<meta property="og:description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文假定读者具备IPv4下使用socket进行网络编程的基本能力，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0" />
+<meta property="og:description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文假定读者具备IPv4下使用socket进行网络编程的基本能力，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0020-implement-ping-program-with-sock-dgram/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2023-03-16T16:43:29+08:00" />
 <meta property="article:modified_time" content="2023-03-16T16:43:29+08:00" />
 
 <meta itemprop="name" content="使用SOCK_DGRAM类型的socket实现的ping程序">
-<meta itemprop="description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文假定读者具备IPv4下使用socket进行网络编程的基本能力，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0"><meta itemprop="datePublished" content="2023-03-16T16:43:29+08:00" />
+<meta itemprop="description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文假定读者具备IPv4下使用socket进行网络编程的基本能力，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0"><meta itemprop="datePublished" content="2023-03-16T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-03-16T16:43:29+08:00" />
-<meta itemprop="wordCount" content="7919">
+<meta itemprop="wordCount" content="7914">
 <meta itemprop="keywords" content="Linux,ICMP,网络编程,SOCK_DGRAM,ping,internet checksum," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用SOCK_DGRAM类型的socket实现的ping程序"/>
-<meta name="twitter:description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文假定读者具备IPv4下使用socket进行网络编程的基本能力，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0"/>
+<meta name="twitter:description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文假定读者具备IPv4下使用socket进行网络编程的基本能力，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -170,7 +170,7 @@
   </div>
 </div>
     <div class="post-content">
-      <p>SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文假定读者具备IPv4下使用socket进行网络编程的基本能力，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0</p>
+      <p>SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文假定读者具备IPv4下使用socket进行网络编程的基本能力，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0</p>
 <h2 id="1-前言">1. 前言</h2>
 <ul>
 <li>
@@ -204,7 +204,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span>
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">sock_fd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span> <span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_RDM</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">sock_fd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_RDM</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
 </span></span><span class="line"><span class="cl">  <span class="n">perror</span><span class="p">(</span><span class="s">&#34;socket: &#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">  <span class="n">printf</span><span class="p">(</span><span class="s">&#34;sock_fd: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">sock_fd</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
@@ -214,7 +214,7 @@
 </div></li>
 <li>
 <p>运行结果截图</p>
-<p><img src="/images/180020/screenshot-for-testing-sock-rdm.png" alt="Screenshot for testing SOCK_RDM"></p>
+<p><img src="https://whowin.gitee.io/images/180020/screenshot-for-testing-sock-rdm.png" alt="Screenshot for testing SOCK_RDM"></p>
 </li>
 <li>
 <p>SOCK_STREAM这种socket类型显然不适合用在ping程序上，因为这种socket是面向连接的，使用之前要先建立连接，但是如果可以建立了连接就完全没有必要使用ping去测试目的主机是否可用了，SOCK_RAW过于复杂而且必须要有root权限才能运行，我们放弃不用，所以最终我们使用SOCK_DGRAM来尝试发送ICMP数据包以实现一个ping程序；</p>
@@ -231,17 +231,19 @@
 <li>
 <p>通常认为ICMP有两个主要作用：</p>
 <ol>
-<li>报告错误</li>
-</ol>
+<li>
+<p>报告错误</p>
 <blockquote>
-<p>当两个设备通过互联网连接时，ICMP会生成错误信息将将该信息发回到发送设备上，以防发送数据未到达其预期目的地；例如：一个数据包的长度大于某个路由器所能接收的最大长度，路由器将丢弃该数据包并将 ICMP 消息发送回数据的发送设备。</p>
+<p>当两个设备通过互联网连接时，ICMP会生成错误信息并将该信息发回到发送设备上，以防发送数据未到达其预期目的地；例如：一个数据包的长度大于某个路由器所能接收的最大长度，路由器将丢弃该数据包并将 ICMP 消息发送回数据的发送设备。</p>
 </blockquote>
-<ol start="2">
-<li>执行网络诊断</li>
-</ol>
+</li>
+<li>
+<p>执行网络诊断</p>
 <blockquote>
 <p>常用的终端实用程序 <code>traceroute</code> 和 <code>ping</code> 都是使用<strong>ICMP</strong>协议运行；<code>traceroute</code> 实用程序用于显示两个互联网设备之间的路由路径；路由路径是请求数据到达目的地之前必须经过的路由器的实际物理路径；一个路由器与另一个路由器之间的路径称为&quot;跃点&quot;，路由跟踪还会报告经过每个跃点所需的时间；这对于确定网络延迟来源是非常有用的。</p>
 </blockquote>
+</li>
+</ol>
 </li>
 <li>
 <p>ICMP协议常被归为网络层协议，但是ICMP报文是被包装在一个IP报文中的，把ICMP、IP同归为网络层似乎也不是那么合适；</p>
@@ -257,7 +259,7 @@
 </li>
 <li>
 <p>ICMP报文的结构：</p>
-<p><img src="/images/180019/structure-of-icmp-packet.png" alt="Structure of ICMP packet"></p>
+<p><img src="https://whowin.gitee.io/images/180019/structure-of-icmp-packet.png" alt="Structure of ICMP packet"></p>
 </li>
 <li>
 <p>ICMP报头，定义在头文件&lt;netinet/ip_icmp.h&gt;中</p>
@@ -344,7 +346,7 @@
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>本文只关心ICMP_ECHO和ICMP_ECHOREPLY两种报文类型，ping的实现实际上就是发送ICMP_ECHO报文，然后等待目的主机响应ICMP_ECHOREPLY报文，当然如果出现错误时可能会收到其他类型的报文，但本文的实例中将不予处理；</li>
+<li>本文只关心ICMP_ECHO和ICMP_ECHOREPLY两种报文类型，ping的实现实际上就是发送ICMP_ECHO报文，然后等待目的主机响应ICMP_ECHOREPLY报文，当然出现错误时可能会收到其他类型的报文，但本文的实例中将不予处理；</li>
 <li>code：子类型编码，在我们要用到的这两种类型的ICMP报文中，code都是为0的，也就是用不上这个字段，但有些报文类型是要用到code的，比如ICMP_DEST_UNREACH类型的报文，表示目标不可达，这个报文中的code字段的值将说明目标不可达的原因；</li>
 <li>checksum：ICMP报文的检查和，计算这个检查和时要包括ICMP报头和ICMP数据，其计算方法与internet checksum的计算方法一致，可以参考文章<a href="https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/">《如何计算UDP头的checksum》</a>和<a href="https://whowin.gitee.io/post/blog/network/0004-checksum-of-ip-header/">《如何计算IP报头的checksum》</a></li>
 <li>由于我们仅关心ICMP_ECHO和ICMP_ECHOREPLY这两类报文，所以在ICMP报头的union中，我们使用echo这个结构：
@@ -421,8 +423,8 @@
 <li>
 <p>实现步骤</p>
 <ol>
-<li><strong>检查命令行输入的参数</strong></li>
-</ol>
+<li>
+<p><strong>检查命令行输入的参数</strong></p>
 <blockquote>
 <p>判断命令行的输入是IP地址还是主机名，如果是主机名，要对主机名执行DNS lookup将其转换为IP地址</p>
 </blockquote>
@@ -447,12 +449,12 @@
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">herror</span><span class="p">(</span><span class="s">&#34;gethostbyname()&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="n">ipaddr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="n">in_addr_t</span> <span class="o">*</span><span class="p">)</span><span class="n">host</span><span class="o">-&gt;</span><span class="n">h_addr_list</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="n">ipaddr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="n">in_addr_t</span> <span class="o">*</span><span class="p">)</span><span class="n">host</span><span class="o">-&gt;</span><span class="n">h_addr_list</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="2">
-<li><strong>获取ICMP协议的编号</strong></li>
-</ol>
+</div></li>
+<li>
+<p><strong>获取ICMP协议的编号</strong></p>
 <blockquote>
 <p>执行getprotobyname()获取ICMP的协议号是为了下面建立socket时有一个正确的协议号，其实不用这么麻烦，直接用宏IPPROTO_ICMP也是完全可以的；</p>
 </blockquote>
@@ -466,9 +468,9 @@
 </span></span><span class="line"><span class="cl"><span class="n">protocol</span> <span class="o">=</span> <span class="n">getprotobyname</span><span class="p">(</span><span class="s">&#34;icmp&#34;</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="3">
-<li><strong>建立socket</strong></li>
-</ol>
+</div></li>
+<li>
+<p><strong>建立socket</strong></p>
 <blockquote>
 <p>如果上面没有执行getprotobyname()获取协议号，这里的协议号直接用IPPROTO_ICMP没有问题；</p>
 </blockquote>
@@ -480,9 +482,9 @@
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sockfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="n">protocol</span><span class="o">-&gt;</span><span class="n">p_proto</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="4">
-<li><strong>设置接收超时，以避免接收时阻塞</strong></li>
-</ol>
+</div></li>
+<li>
+<p><strong>设置接收超时，以避免接收时阻塞</strong></p>
 <blockquote>
 <p>设置接收超时是为了防止接收ICMP_ECHOREPLY时出现阻塞导致程序无法继续运行；</p>
 </blockquote>
@@ -504,9 +506,9 @@
 </span></span><span class="line"><span class="cl"><span class="n">setsockopt</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">SO_RCVTIMEO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">timeout</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">timeout</span><span class="p">));</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="5">
-<li><strong>设置IP层的TTL(Time To Live)</strong></li>
-</ol>
+</div></li>
+<li>
+<p><strong>设置IP层的TTL(Time To Live)</strong></p>
 <blockquote>
 <p>TTL其实就是报文最多经过多少路由器；TTL是个非常重要的参数，如果没有TTL，数据包有可能在互联网上无限循环，数据包每经过一个路由器时，TTL都会减1，当TTL为0时，路由器将丢弃该数据包；系统中会有一个默认的TTL值，一般这个默认值为64，查看默认的TTL值可以用命令 <code>cat /proc/sys/net/ipv4/ip_default_ttl</code> 或者 <code>sudo sysctl -a|grep ip_default_ttl</code>，TTL最大可以为255，所以实际上不设置TTL也不会有什么问题；</p>
 </blockquote>
@@ -522,9 +524,9 @@
 </span></span><span class="line"><span class="cl"><span class="n">setsockopt</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">SOL_IP</span><span class="p">,</span> <span class="n">IP_TTL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ttl_val</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ttl_val</span><span class="p">));</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="6">
-<li><strong>接管信号量SIGINT的处理程序</strong></li>
-</ol>
+</div></li>
+<li>
+<p><strong>接管信号量SIGINT的处理程序</strong></p>
 <blockquote>
 <p>当按下ctrl+c时，将产生信号SIGINT，接管该信号意味着接管ctrl+c的处理程序；ping程序只能使用ctrl+c退出，所以接管该信号是必要的</p>
 </blockquote>
@@ -536,9 +538,9 @@
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">signal</span><span class="p">(</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">sigint</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="7">
-<li><strong>记录开始时间</strong></li>
-</ol>
+</div></li>
+<li>
+<p><strong>记录开始时间</strong></p>
 <blockquote>
 <p>记录开始时间是为了退出时打印统计数据，统计数据中有一项是总的耗时时间，需要用到这个开始时间；所有时间均以时间戳的形式记录，计时的精度要达到0.00ms以上；</p>
 </blockquote>
@@ -552,21 +554,21 @@
 </span></span><span class="line"><span class="cl"><span class="n">gettimeofday</span><span class="p">(</span><span class="o">&amp;</span><span class="n">start_time</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="8">
-<li><strong>构建一个ICMP报文</strong></li>
-</ol>
-<blockquote>
+</div></li>
+<li>
+<p><strong>构建一个ICMP报文</strong></p>
+<ul>
+<li>
 <p>一个ICMP报文就是一个ICMP报头+数据，通常一个ping数据包的数据部分为56个字节，ICMP报头为8个字节，一起为64个字节，加上IP报头20个字节，一共为84个字节，但是，IPv4报文的最大长度可以达到65535字节，所以理论上ICMP报文可以很长，不一定非要64个字节，按照ICMP协议规定，ICMP_ECHOREPLY报文会把ICMP_ECHO请求报文中的数据全部返回回来；</p>
-</blockquote>
-<blockquote>
+</li>
+<li>
 <p>一个ICMP报文最小长度是多少呢？IEEE 802.3标准中定义了一个以太网帧最小为64字节，这里面包含了以太网报头的14字节和帧结尾的4字节的CRC，这些占了18个字节，IP报头占用20字节，剩下留给ICMP报文的为：64 - 18 -20 = 26字节，ICMP报头占8字节，所以ICMP报文数据为18字节，其实ICMP报文长度还可以小，但没有任何意义，因为数据帧还是要填充到64字节发出去；</p>
-</blockquote>
-<blockquote>
+</li>
+<li>
 <p>关于ICMP报头也没什么好说的，type=ICMP_ECHO，返回来的ICMP数据包中type=ICMP_ECHOREPLY；code=0；checksum在计算前一定要先填0，这是计算checksum要求的；sequence一般是一个序号，从0或者1开始都没有关系，每发出一个数据包，sequence+1就好了；id可以填任意唯一标识，通常使用当前进程ID；</p>
-</blockquote>
-<blockquote>
+</li>
+<li>
 <p>ICMP报文的数据部分，我们首先填了一个发送时的时间戳，ICMP_ECHO报文的数据部分会在ICMP_ECHOREPLY报文中完全返回来，所以这个时间戳会出现在收到的ICMP_ECHOREPLY报文中，我们会在收到ICMP_ECHOREPLY报文时利用这个时间戳计算icmp报文的往返时间；后面的数据我们填充上了字符'0&rsquo;，完全可以什么都不填，让后面的数据为随机数据；</p>
-</blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -611,9 +613,11 @@
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">icmp_hdr</span><span class="o">-&gt;</span><span class="n">checksum</span> <span class="o">=</span> <span class="n">checksum</span><span class="p">((</span><span class="kt">uint16_t</span> <span class="o">*</span><span class="p">)</span><span class="n">ping_p</span><span class="p">,</span> <span class="n">pack_size</span><span class="p">);</span> 
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="9">
-<li><strong>计算ICMP报文的checksum</strong></li>
-</ol>
+</div></li>
+</ul>
+</li>
+<li>
+<p><strong>计算ICMP报文的checksum</strong></p>
 <blockquote>
 <p>构建ICMP报文的最后一步就是计算checksum，这里仅给出程序，需要了解计算方法的可以参考文章<a href="https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/">《如何计算UDP头的checksum》</a>和<a href="https://whowin.gitee.io/post/blog/network/0004-checksum-of-ip-header/">《如何计算IP报头的checksum》</a></p>
 </blockquote>
@@ -667,9 +671,9 @@
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="10">
-<li><strong>发送ICMP_ECHO报文</strong></li>
-</ol>
+</div></li>
+<li>
+<p><strong>发送ICMP_ECHO报文</strong></p>
 <blockquote>
 <p>像发送一个UDP报文那样，我们使用sendto()发送ICMP报文，ipaddr是在一开始执行DNS lookup时得到的目标IP地址，端口号port在这里设置为0，但实际上填上多少都没关系，比如1025，接收端会完全忽略掉这个值；</p>
 </blockquote>
@@ -691,9 +695,9 @@
 </span></span><span class="line"><span class="cl"><span class="n">sendto</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">send_buf</span><span class="p">,</span> <span class="n">packet_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dest_addr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in</span><span class="p">));</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="11">
-<li><strong>接收返回的ICMP_ECHOREPLY报文</strong></li>
-</ol>
+</div></li>
+<li>
+<p><strong>接收返回的ICMP_ECHOREPLY报文</strong></p>
 <blockquote>
 <p>像接收一个UDP报文一样，我们使用recvfrom()接收报文，在第4步时已经设置了接收超时，所以这里的recvfrom()不会阻塞很久，如果产生超时，我们就认为数据包丢失；我们这里设置的接收缓冲区大小是固定的，如果你要用这个程序发送很大的ICMP_ECHO包时，小心返回的ICMP_ECHOREPLY可能无法完整接收；</p>
 </blockquote>
@@ -715,18 +719,18 @@
 </span></span><span class="line"><span class="cl"><span class="n">recvfrom</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">recv_buf</span><span class="p">,</span> <span class="n">RECV_BUF_SIZE</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">from</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">from_len</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="12">
-<li><strong>检查收到的报文的checksum</strong></li>
-</ol>
+</div></li>
+<li>
+<p><strong>检查收到的报文的checksum</strong></p>
 <blockquote>
 <p>在计算收到的报文的checksum之前，要先检查这个报文是不是一个ICMP_ECHOREPLY报文，本例不处理其它ICMP报文；其次要检查ICMP报头中的ID是否为当前进程的ID(在发送ICMP_ECHO报文时设置的)，第三要通过ICMP报头中的sequence判断该报文是否为重复报文(就是已经收到过相同sequence的报文)；</p>
 </blockquote>
 <blockquote>
 <p>用前面的checksum()运算一个带有checksum字段的ICMP报文，其结果应该为0，否则就是报文有问题。</p>
 </blockquote>
-<ol start="13">
-<li><strong>计算报文的往返时间，填写统计数据</strong></li>
-</ol>
+</li>
+<li>
+<p><strong>计算报文的往返时间，填写统计数据</strong></p>
 <blockquote>
 <p>在发送ICMP_ECHO报文时，我们在数据包的数据部分填写了一个发送时的时间戳，为了统计数据需要，我们需要记录下面几个数据，每组icmp报文的往返时间之和<strong>sum_time</strong>、每组往返时间平方之和<strong>qsum_time</strong>、最小往返时间<strong>min_time</strong>和最大往返时间<strong>max_time</strong>，当然还要记录发出的icmp报文的数量<strong>nsend</strong>和收到的icmp报文的数量<strong>nreceived</strong>，至于这些数据的应用，我们在后面会提到；</p>
 </blockquote>
@@ -756,15 +760,15 @@
 </span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">interval</span> <span class="o">&gt;</span> <span class="n">max_time</span><span class="p">)</span> <span class="n">max_time</span> <span class="o">=</span> <span class="n">interval</span><span class="p">;</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="14">
-<li><strong>返回步骤8，发送下一个报文</strong></li>
-</ol>
+</div></li>
+<li>
+<p><strong>返回步骤8，发送下一个报文</strong></p>
 <blockquote>
 <p>当然要先打印出当前icmp报文的状况后再返回步骤8，开始发送下一个报文；</p>
 </blockquote>
-<ol start="15">
-<li><strong>ctrl+c处理程序</strong></li>
-</ol>
+</li>
+<li>
+<p><strong>ctrl+c处理程序</strong></p>
 <blockquote>
 <p>前面我们拦截了ctrl+c的信号，这个信号的处理非常简单，只要使发送-接收icmp报文的循环结束即可，实际上就是在步骤14时不要再返回步骤8，而是直接打印统计结果然后退出程序；本例我们使用了一个公共变量ping_loop来控制循环，ping_loop=true时循环继续，否则循环停止；</p>
 </blockquote>
@@ -780,13 +784,15 @@
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><ol start="16">
-<li><strong>打印统计数据</strong></li>
+</div></li>
+<li>
+<p><strong>打印统计数据</strong></p>
+</li>
 </ol>
 <ul>
 <li>
 <p>我们先看一下Linux(Ubuntu)提供的ping程序的统计结果输出的截屏</p>
-<p><img src="/images/180020/screenshot-of-ping-statistics.png" alt="screetshot of ping statistics"></p>
+<p><img src="https://whowin.gitee.io/images/180020/screenshot-of-ping-statistics.png" alt="screetshot of ping statistics"></p>
 </li>
 <li>
 <p>其统计数据有</p>
@@ -833,7 +839,7 @@ $$</p>
 </ul>
 </li>
 <li>
-<p>完整源代码，文件名：<a href="/sourcecodes/180020/ping-dgram.c">ping-dgram.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>完整源代码，文件名：<a href="https://whowin.gitee.io/sourcecodes/180020/ping-dgram.c">ping-dgram.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>编译，因为在统计部分使用了数学函数，所以编译时要加上 <code>-lm</code> 选项，意即连接数学函数库</p>
@@ -851,7 +857,7 @@ $$</p>
 </li>
 <li>
 <p>运行截图</p>
-<p><img src="/images/180020/screenshot-of-ping-dgram.png" alt="screenshot of ping-dgram"></p>
+<p><img src="https://whowin.gitee.io/images/180020/screenshot-of-ping-dgram.png" alt="screenshot of ping-dgram"></p>
 </li>
 </ul>
 <h2 id="4-后记">4. 后记</h2>

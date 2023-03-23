@@ -101,12 +101,13 @@ uint16_t checksum1(uint16_t *p, int count) {
 
 uint16_t checksum2(uint16_t *p, int count) {
     register long sum = 0;
-    unsigned short checksum;
+    uint16_t checksum;
 
     uint16_t temp;
     uint16_t i = 0;
+
     while (count > 1) {
-        //  This is the inner loop */
+        //  This is the inner loop
         temp = *p++;
         printf("Step %02d: 0X%08lX + 0X%04X(0X%04X)\n", ++i, sum, (uint16_t)~temp, temp);
         sum += (uint16_t)~temp;

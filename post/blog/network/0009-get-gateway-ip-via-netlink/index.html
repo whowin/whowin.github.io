@@ -50,7 +50,7 @@
 <meta itemprop="name" content="linux下使用netlink获取gateway的IP地址">
 <meta itemprop="description" content="要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，假定阅读本文的读者对linux下编程有一定了解，具备一定的C语言能力，熟悉IPv4的socket编程。"><meta itemprop="datePublished" content="2023-02-04T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-04T16:43:29+08:00" />
-<meta itemprop="wordCount" content="11235">
+<meta itemprop="wordCount" content="11104">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,netlink,rtnetlink," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="linux下使用netlink获取gateway的IP地址"/>
 <meta name="twitter:description" content="要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，假定阅读本文的读者对linux下编程有一定了解，具备一定的C语言能力，熟悉IPv4的socket编程。"/>
@@ -173,6 +173,7 @@
 </div>
     <div class="post-content">
       <p>要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，假定阅读本文的读者对linux下编程有一定了解，具备一定的C语言能力，熟悉IPv4的socket编程。</p>
+<hr>
 <blockquote>
 <p>在linux编程的资料中，netlink编程的资料并不多，但netlink编程显然是本文无法越过的一道坎，所以下面需要用一定篇幅对netlink编程做个介绍；本文的最终目标是使用netlink这种与linux内核通信的机制，从内核获得路由表并从中找到gateway的IP地址。在具体实践中，获取路由表或者获取gateway的IP地址通常并不需要使用netlink编程实现，这种方法对应用层编程来说显得有些繁琐，本文主要还是作为netlink编程的一个范例，并以此为题介绍一些netlink的编程方法；有关其它获取gateway的IP地址的方法，请参见另一篇文章<a href="https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/">《从proc文件系统中获取gateway的IP地址》</a>。</p>
 </blockquote>
@@ -191,9 +192,9 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>第一个参数可以是AF_NETLINK或者PF_NETLINK，表示要创建一个NETLINK socket，其实AF_NETLINK和PF_NETLINK是一样的，可以到bits/socket.h中查看相应的定义；</li>
+<li>第一个参数可以是AF_NETLINK或者PF_NETLINK，表示要创建一个NETLINK socket，其实AF_NETLINK和PF_NETLINK是一样的，可以到 <code>bits/socket.h</code> 中查看相应的定义；</li>
 <li>第二个参数可以是SOCK_RAW或者SOCK_DGRAM，linux内核的netlink子系统并不会区分SOCK_RAW和SOCK_DGRAM(内核5.15，也许更高的版本会区分)，所以使用SOCK_RAW和SOCK_DGRAM是一样的；</li>
-<li>第三个参数是NETLINK协议，这些协议定义在文件linux/netlink.h中，在linux 5.15中定义了23种协议，协议数量最多为32个
+<li>第三个参数是NETLINK协议，这些协议定义在文件 <code>linux/netlink.h</code> 中，在linux 5.15中定义了23种协议，协议数量最多为32个
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -247,7 +248,7 @@
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>尽管定义的协议很多，但常用的协议并不多，本例中仅使用NETLINK_ROUTE；</li>
+<li>尽管定义的协议很多，但常用的协议并不多，本例中仅使用<strong>NETLINK_ROUTE</strong>；</li>
 <li>创建netlink socket，netlink协议使用<strong>NETLINK_ROUTE</strong>时，创建的socket又被称为<strong>rtnetlink</strong>，可以使用在线手册 <code>man 7 rtnetlink</code> 了解更详细的信息，本文仅讨论rtnetlink，以下将尽可能使用rtnetlink代替netlink socket。</li>
 </ul>
 <blockquote>
@@ -276,9 +277,9 @@
 </ul>
 <hr>
 <ul>
-<li>netlink报头的结构为(struct nlmsghdr)，在头文件linux/netlink.h中定义，在下一节中会介绍了这个结构；</li>
-<li>这个字节流只能使用一组标准的以NLMSG_开头的宏进行存取(netlink的手册中是这样说的)，这组宏定义在头文件linux/netlink.h中，可以使用在线手册<code>man 3 netlink</code>了解更多的信息，本文在后面章节也会简要介绍这些宏</li>
-<li>payload对不同的netlink协议和信息类型而言，其信息结构和长度都是不一样的，本文仅讨论NETLINK_ROUTE协议下的信息类型为RTM_GETROUTE下的消息结构，这个类型的payload结构为(struct rtmsg)，定义在头文件linux/rtnetlink.h中，这个结构也会在下一节介绍；详细信息可以查阅 <code>man 7 rtnetlink</code> ；</li>
+<li>netlink报头的结构为(struct nlmsghdr)，在头文件 &lt;linux/netlink.h&gt; 中定义，在下一节中会介绍了这个结构；</li>
+<li>这个字节流只能使用一组标准的以NLMSG_开头的宏进行存取(netlink的手册中是这样说的)，这组宏定义在头文件linux/netlink.h中，可以使用在线手册<code>man 3 netlink</code>了解更多的信息，本文在后面章节也会简要介绍这些宏；</li>
+<li>payload对不同的netlink协议和信息类型而言，其信息结构和长度都是不一样的，本文仅讨论NETLINK_ROUTE协议下的信息类型为RTM_GETROUTE下的消息结构，这个类型的payload结构为(struct rtmsg)，定义在头文件 &lt;linux/rtnetlink.h&gt; 中，这个结构也会在下一节介绍；详细信息可以查阅 <code>man 7 rtnetlink</code> ；</li>
 <li>使用rtnetlink与内核通信时，需要首先建立一个rtnetlink，然后向这个rtnetlink发送一个请求消息，请求中说明想要的操作，然后从这个rtnetlink上接收内核的回应，解析回应信息获得结果；</li>
 <li>在多部分消息中(一个字节流中包含多个netlink报头和相关payload)，第一个报头和后面所有的报头都会设置NLM_F_MULTI标志，最后一个报头的类型为NLMSG_DONE，表示多部分消息结束；有关NLM_F_MULTI和NLMSG_DONE的含义，下一节会做介绍。</li>
 </ul>
@@ -286,10 +287,10 @@
 </ul>
 <h2 id="2-rtnetlink常用数据结构">2. rtnetlink常用数据结构</h2>
 <blockquote>
-<p>netlink编程涉及的各种结构非常多，这里仅介绍几个与本文讨论的话题相关的结构，但仍然会占很大的篇幅，这几个结构在第、6节会大量用到，所以必须先介绍一下，<strong>可以先大致看一下</strong>，在阅读相应章节遇到具体结构时再回来仔细看。</p>
+<p>netlink编程涉及的各种结构非常多，这里仅介绍几个与本文讨论的话题相关的结构，但仍然会占很大的篇幅，这几个结构在第5、6节会大量用到，所以必须先介绍一下，<strong>可以先大致看一下</strong>，在阅读相应章节遇到具体结构时再回来仔细看。</p>
 </blockquote>
 <ol>
-<li><strong>struct sockaddr_nl</strong> - 定义在头文件linux/netlink.h中</li>
+<li><strong>struct sockaddr_nl</strong> - 定义在头文件 &lt;linux/netlink.h&gt; 中</li>
 </ol>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -317,7 +318,7 @@
 <li>nl_groups表示加入到那个多播组中，前面说过netlink最多允许32个多播组，这个字段每个bit代表一个多播组，为1表示加入这个多播组。</li>
 </ul>
 <ol start="2">
-<li><strong>struct nlmsghdr</strong> - 定义在头文件linux/netlink.h中</li>
+<li><strong>struct nlmsghdr</strong> - 定义在头文件 &lt;linux/netlink.h&gt; 中</li>
 </ol>
 <ul>
 <li>这个结构是netlink报头的定义
@@ -343,7 +344,7 @@
 </div>
 </div></li>
 <li>nlmsg_len: netlink报文的长度，按4字节对齐；包括(struct nlmsghdr)的长度和后面payload的长度；</li>
-<li>nlmsg_type: netlink报文的类型，不同的类型对应的netlink报文的结构也会不同，这些类型定义在头文件linux/rtnetlink.h中，开头为&quot;RTM_&ldquo;的常数，本例中在发送netlink请求时类型为：RTM_GETROUTE，含义为从内核获取路由表，常用的常数有：
+<li>nlmsg_type: netlink报文的类型，不同的类型对应的netlink报文的结构也会不同，这些类型定义在头文件 &lt;linux/rtnetlink.h&gt; 中开头为&quot;RTM_&ldquo;的常数，本例中在发送netlink请求时类型为：RTM_GETROUTE，含义为从内核获取路由表，常用的常数有：
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -365,7 +366,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>nl_flags: 附加标志，在linux/netlink.h中定义，每一位代表一个标志，与本文相关的定义如下：
+<li>nl_flags: 附加标志，在 &lt;linux/netlink.h&gt; 中定义，每一位代表一个标志，与本文相关的定义如下：
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -395,7 +396,7 @@
 <li><strong>struct rtmsg</strong> - 定义在头文件linux/rtnetlink.h中</li>
 </ol>
 <ul>
-<li>这个结构通常是紧跟在(struct nlmsghdr)后面的，当(struct nlmsghdr)中的nlmsg_type为RTM_NEWROUTE、RTM_DELROUTE和RTM_GETROUTE时，(struct nlmsghdr)后面跟的数据才符合下面的结构，当nlmsg_type为其他值时，(struct nlmsghdr)后面跟的数据结构是不同的；
+<li>这个结构通常是紧跟在(struct nlmsghdr)后面的，当(struct nlmsghdr)中的nlmsg_type为 <strong>RTM_NEWROUTE</strong>、<strong>RTM_DELROUTE</strong>和<strong>RTM_GETROUTE</strong>时，(struct nlmsghdr)后面跟的数据才符合下面的结构，当nlmsg_type为其他值时，(struct nlmsghdr)后面跟的数据结构是不同的；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -427,7 +428,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>以下仅讨论当(struct nlmsghdr)中的nlmsg_type为RTM_GETROUTE时(与本文例子相符)，该结构的情况</li>
+<li>以下仅讨论当(struct nlmsghdr)中的nlmsg_type为<strong>RTM_GETROUTE</strong>时(与本文例子相符)，该结构的情况</li>
 <li>将rtm_dst_len和rtm_src_len设置为0表示想要获取指定路由表(routing table)中的所有项；</li>
 <li>在发送netlink请求时，只需把rtm_family设为AF_INET，其它全部为0即可；</li>
 <li>内核发回的回应中，rtm_dst_len、rtm_src_len、rtm_tos均没有意义可以不用管；</li>
@@ -458,7 +459,7 @@
 </div>
 </div></li>
 <li>RT_TABLE_UNSPEC表示是一个不明路由表；RT_TABLE_DEFAULT表示是一个默认路由表；RT_TABLE_MAIN表示是一个主路由表；RT_TABLE_LOCAL表示是一个本地路由表；在本例中，我们要得到的就是一个主路由表(RT_TABLE_MAIN)</li>
-<li>rtm_protocol是路由协议，在linux/rtnetlink.h中有定义：
+<li>rtm_protocol是路由协议，在&lt;linux/rtnetlink.h&gt;中有定义：
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -476,8 +477,8 @@
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>在头文件linux/rtnetlink.h中专门有说明，当rtm_protocol&gt;RTPROT_STATIC时，Linux内核将不予理会，只能作为用户信息；在本例中，我们得到的路由表应该是由内核或者管理员设置的，当然也可以是在启动中由某个启动例程设置，所以RTPROT_KERNEL、RTPROT_BOOT或者RTPROT_STATIC都是可能的；</li>
-<li>rtm_scope的值也是定义在linux/rtnetlink.h中，在这个头文件中说rtm_scope更像是一个到达目的地址的距离，它有下面几个可能的值：
+<li>在头文件&lt;linux/rtnetlink.h&gt;中专门有说明，当 rtm_protocol&gt;RTPROT_STATIC 时，Linux内核将不予理会，只能作为用户信息；在本例中，我们得到的路由表应该是由内核或者管理员设置的，当然也可以是在启动中由某个启动例程设置，所以 <strong>RTPROT_KERNEL</strong>、<strong>RTPROT_BOOT</strong>或者<strong>RTPROT_STATIC</strong> 都是可能的；</li>
+<li>rtm_scope的值也是定义在&lt;linux/rtnetlink.h&gt;中，在这个头文件中说rtm_scope更像是一个到达目的地址的距离，它有下面几个可能的值：
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -502,7 +503,7 @@
 </div>
 </div></li>
 <li>其实这个值没有什么意义，本例中会返回RT_SCOPE_UNIVERSE，表示是一个全球路由；</li>
-<li>rtm_type表示当前路由的类型(rtm_table表示路由表类型，和这个字段是不同的)，在linux/rtnetlink.h中定义：
+<li>rtm_type表示当前路由的类型(rtm_table表示路由表类型，和这个字段是不同的)，在&lt;linux/rtnetlink.h&gt;中定义：
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -545,7 +546,7 @@
 </div>
 </div></li>
 <li>本例中，我们要获取的是gateway IP，所以内核返回的rtm_type为1(RTN_UNICAST)</li>
-<li>rtm_flags在本例中没有作用，其可能的值在linux/rtnetlink.h中定义：
+<li>rtm_flags在本例中没有作用，其可能的值在&lt;linux/rtnetlink.h&gt;中定义：
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -567,7 +568,7 @@
 </div></li>
 </ul>
 <ol start="4">
-<li><strong>struct rtattr</strong> - 定义在头文件linux/rtnetlink.h中</li>
+<li><strong>struct rtattr</strong> - 定义在头文件&lt;linux/rtnetlink.h&gt;中</li>
 </ol>
 <ul>
 <li>一个或多个(struct rtattr) + data将跟在(struct rtmsg)后面，data里表达着一个路由中的一项属性；
@@ -586,7 +587,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>rta_len字段表示(struct rtattr) + data的总长度，rta_type表示data中的数据类型，在linux/rtnetlink.h中定义：
+<li>rta_len字段表示(struct rtattr) + data的总长度，rta_type表示data中的数据类型，在&lt;linux/rtnetlink.h&gt;中定义：
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -622,22 +623,22 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>本例中只会用到前面几个定义，如果需要查看全部的rta_type的值，可以去linux/rtnetlink.h中去查找，以下仅就本文中用到的值做一下解释；</li>
-<li>RTA_UNSPEC表示data数据可以忽略；</li>
-<li>RTA_DST表示data中的数据为一个目的地址IP，data中数据结构为(struct in_addr)，一个32位16进制数字表示的IP地址；</li>
-<li>RTA_SRC表示data中的数据为一个源地址IP，data中数据结构为(struct in_addr)，一个32位16进制数字表示的IP地址；</li>
-<li>RTA_IIF表示data中的数据为输入接口索引(Input Interface Index)，data中数据为一个int；</li>
-<li>RTA_OIF表示data中的数据为输出接口索引(Onput Interface Index)，data中数据为一个int；</li>
-<li>RTA_GATEWAY表示data中的数据为gateway的IP地址，data中数据结构为(struct in_addr)，一个32位16进制数字表示的IP地址；</li>
-<li>RTA_PRIORITY表示data中的数据为路由优先级，data中数据为一个int；</li>
-<li>RTA_PREFSRC表示data中的数据为一个优先的源地址IP，data中数据结构为(struct in_addr)，一个32位16进制数字表示的IP地址；</li>
-<li>RTA_TABLE表示data中的数据为路由表的ID，data中数据为一个int；</li>
-<li>其实RTA_SRC和RTA_PREFSRC到底区别在哪里我也不知道，我以为会返回RTA_SRC，但在我的机器上实际返回的是RTA_PREFSRC；</li>
+<li>本例中只会用到前面几个定义，如果需要查看全部的rta_type的值，可以去&lt;linux/rtnetlink.h&gt;中去查找，以下仅就本文中用到的值做一下解释；</li>
+<li><strong>RTA_UNSPEC</strong> 表示data数据可以忽略；</li>
+<li><strong>RTA_DST</strong> 表示data中的数据为一个目的地址IP，data中数据结构为(struct in_addr)，一个32位16进制数字表示的IP地址；</li>
+<li><strong>RTA_SRC</strong> 表示data中的数据为一个源地址IP，data中数据结构为(struct in_addr)，一个32位16进制数字表示的IP地址；</li>
+<li><strong>RTA_IIF</strong> 表示data中的数据为输入接口索引(Input Interface Index)，data中数据为一个int；</li>
+<li><strong>RTA_OIF</strong> 表示data中的数据为输出接口索引(Onput Interface Index)，data中数据为一个int；</li>
+<li><strong>RTA_GATEWAY</strong> 表示data中的数据为gateway的IP地址，data中数据结构为(struct in_addr)，一个32位16进制数字表示的IP地址；</li>
+<li><strong>RTA_PRIORITY</strong> 表示data中的数据为路由优先级，data中数据为一个int；</li>
+<li><strong>RTA_PREFSRC</strong> 表示data中的数据为一个优先的源地址IP，data中数据结构为(struct in_addr)，一个32位16进制数字表示的IP地址；</li>
+<li><strong>RTA_TABLE</strong> 表示data中的数据为路由表的ID，data中数据为一个int；</li>
+<li>其实<strong>RTA_SRC</strong>和<strong>RTA_PREFSRC</strong>到底区别在哪里我也不知道，我以为会返回RTA_SRC，但在我的机器上实际返回的是RTA_PREFSRC；</li>
 <li>本例中我们会遇到的rta_type有：RTA_DST、RTA_OIF、RTA_GATEWAY、RTA_PRIORITY、RTA_PREFSRC和RTA_TABLE。</li>
 </ul>
 <h2 id="3-netlink编程中常用的宏定义">3. netlink编程中常用的宏定义</h2>
 <blockquote>
-<p>按照netlink手册中的要求，对(struct nlmsghdr)的访问要使用一组标准的宏来完成，本节将简单介绍这组宏，也可以使用在线手册<code>man 3 netlink</code>来更多地了解这组宏；这些宏定义在头文件linux/netlink.h中，必要时可以查看代码理解其意义。</p>
+<p>按照netlink手册中的要求，对(struct nlmsghdr)的访问要使用一组标准的宏来完成，本节将简单介绍这组宏，也可以使用在线手册 <code>man 3 netlink</code> 来更多地了解这组宏；这些宏定义在头文件&lt;linux/netlink.h&gt;中，必要时可以查看代码理解其意义。</p>
 </blockquote>
 <blockquote>
 <p>这些宏这样看上去会很枯燥，但在第5、6节和源代码中均会大量出现，可以先大致看一下，等看到相关章节遇到具体的宏时在回来仔细阅读。</p>
@@ -654,7 +655,7 @@
 <p><strong>NLMSG_LENGTH(len)</strong></p>
 <ul>
 <li>返回(struct nlmsghdr)按4字节对齐的长度 + len的值；</li>
-<li>如果len是payload的长度，该宏返回的值应该和存放在struct nlmsghdr中的nlmsg_len字段的值一样</li>
+<li>如果len是payload的长度，该宏返回的值应该和存放在(struct nlmsghdr)中的nlmsg_len字段的值一样</li>
 </ul>
 </li>
 <li>
@@ -667,13 +668,13 @@
 <li>
 <p><strong>NLMSG_DATA(nlh)</strong></p>
 <ul>
-<li>假定nhl为一个指向(struct nlmsghdr)的指针，该宏将返回(struct nlmsghdr)后面payload的指针。</li>
+<li>假定nlh为一个指向(struct nlmsghdr)的指针，该宏将返回(struct nlmsghdr)后面payload的指针。</li>
 </ul>
 </li>
 <li>
 <p><strong>NLMSG_NEXT(nlh, len)</strong></p>
 <ul>
-<li>在多部分消息中，收到的报文中会有多个(struct nlmsghdr) + payload，nhl是指向当前(struct nlmsghdr)的指针，len是从nhl开始到报文结束的总字节数，该宏返回指向下一个(struct nlmsghdr)的指针，同时修改len为返回的(struct nlmsghdr)指针到报文结束的总字符数。</li>
+<li>在多部分消息中，收到的报文中会有多个(struct nlmsghdr) + payload，nlh是指向当前(struct nlmsghdr)的指针，len是从nlh开始到报文结束的总字节数，该宏返回指向下一个(struct nlmsghdr)的指针，同时修改len为返回的(struct nlmsghdr)指针到报文结束的总字符数。</li>
 <li>应用程序在调用前需要自行检查当前的(struct nlmsghdr)是否设置了NLMSG_DONE，该宏不会检查该标志并返回NULL。</li>
 </ul>
 </li>
@@ -681,7 +682,7 @@
 <p><strong>NLMSG_OK(nlh, len)</strong></p>
 <ul>
 <li>当nlh指向的(struct nlmsghdr)完好时会返回true，否则返回false；</li>
-<li>nhl指向当前的(struct nlmsghdr)，len是从nhl开始到报文结束的总字节数；</li>
+<li>nlh指向当前的(struct nlmsghdr)，len是从nlh开始到报文结束的总字节数；</li>
 <li>(struct nlmsghdr)中有一个字段为nlmsg_len，该字段表示(struct nlmsghdr)和后面数据的总长度，</li>
 <li>该宏要求符合下面三个逻辑：
 <ol>
@@ -696,7 +697,7 @@
 <p><strong>NLMSG_PAYLOAD(nlh, len)</strong></p>
 <ul>
 <li>返回data的长度；</li>
-<li>假定nhl指向一个(struct nlmsghdr)的指针，len为data在payload部分的偏移；</li>
+<li>假定nlh指向一个(struct nlmsghdr)的指针，len为data在payload部分的偏移；</li>
 <li>(struct nlmsghdr)中有一个字段为nlmsg_len，该字段表示(struct nlmsghdr)和后面数据的总长度；</li>
 <li>该宏返回nlmsg_len - (struct nlmsghdr)长度 - len的值；</li>
 <li>举例来说，当len=0时，该宏将返回payload的长度，这也是这个宏的一种常用的方式。</li>
@@ -705,7 +706,7 @@
 </ul>
 <h2 id="4-rtnetlink编程中常用的宏">4. rtnetlink编程中常用的宏</h2>
 <blockquote>
-<p>在头文件linux/rtnetlink.h中定义了一组操作(struct rtmsg)的宏，以RTM_开头，只有两个；还定义了一组操作(struct rtattr)的宏，以RTA_开头，在这里简单介绍一下；使用在线手册<code>man rtnetlink</code>可以了解关于操作(struct rtattr)的宏的更详细的信息。</p>
+<p>在头文件&lt;linux/rtnetlink.h&gt;中定义了一组操作(struct rtmsg)的宏，以RTM_开头，只有两个；还定义了一组操作(struct rtattr)的宏，以RTA_开头，在这里简单介绍一下；使用在线手册 <code>man rtnetlink</code> 可以了解关于操作(struct rtattr)的宏的更详细的信息。</p>
 </blockquote>
 <blockquote>
 <p>这些宏这样看上去会很枯燥，但在第5、6节和源代码中均会大量出现，可以先大致看一下，等看到相关章节遇到具体的宏时在回来仔细阅读。</p>
@@ -785,9 +786,11 @@
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">nl_sock = socket(AF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE);
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">nl_sock</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">nl_sock</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_NETLINK</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="n">NETLINK_ROUTE</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ol start="2">
@@ -890,10 +893,10 @@
 <p>接收数据之前并不知道有多少字节的数据需要接收，所以很难确定接收缓冲区的大小，所以最好是先检查一下socket上可以接收到多少字节的数据，然后给接收缓冲区分配内存，再去接收数据；</p>
 </blockquote>
 <blockquote>
-<p>netlink返回的路由表的报文有点意思，路由表不会只有一条记录，所以这个返回的报文一定是个多部分消息，应该是由多个(struct nlmsghde) + payload组成，最后一个(struct nlmsghdr)中的nlmsg_type=NLMSG_DONE，表示整个路由表传送完毕，实际接收时发现是两个报文，最后一个NLMSG_DONE的的消息是单独的一个报文。</p>
+<p>netlink返回的路由表的报文有点意思，路由表不会只有一条记录，所以这个返回的报文一定是个多部分消息，应该是由多个(struct nlmsghde) + payload组成，最后一个(struct nlmsghdr)中的nlmsg_type=NLMSG_DONE，表示整个路由表传送完毕，实际接收时发现要接收两次，第一次接收到的报文中，没有NLMSG_DONE消息，再接收一次，接收到的一个单独的NLMSG_DONE消息。</p>
 </blockquote>
 <blockquote>
-<p>强调是两个报文是因为我们首先要使用recv()测试一下有多少字节需要接收，然后为接收缓冲区分配内存，但是这个测试只能测试第一个要接收的报文，所以获得的字节数实际还要加上(struct nlmsghdr) + (struct rtmsg)的长度，最后加上的这部分就是最后一个NLMSG_DONE的报文，请看下面的代码。</p>
+<p>强调接收两次是因为我们首先要使用recv()测试一下有多少字节需要接收，然后为接收缓冲区分配内存，但是这个测试只能测试第一次要接收的报文长度，这个长度并不包括第二次接收时的NLMSG_DONE消息的长度，所以获得的字节数实际还要加上(struct nlmsghdr) + (struct rtmsg)的长度，最后加上的这部分就是NLMSG_DONE的消息长度，请看下面的代码。</p>
 </blockquote>
 <pre><code>```C
 char *buf_ptr, *p;
@@ -922,9 +925,9 @@ do {
 ```
 </code></pre>
 <ul>
-<li>NLMSG_SPACE(struct rtmsg)这个宏计算了NLMSG_DONE这个报文所需要的空间；</li>
-<li>recv()函数中的MSG_PEEK|MSG_TRUNC是一种固定用法，可以预知下一个报文有多少字节可以读取，但是并不会把这个报文标志为已读</li>
-<li>MSG_DONTWAIT使recv()执行时为无阻塞，按照<code>man recv</code>的说明，使用MSG_DONTWAIT时，如果recv()必须阻塞(意即无数据可读，需要等待在socket上)，则会返回错误，errno为EAGAIN或者EWOULDBLOCK，所以对这两个错误码一定要做判断；</li>
+<li><code>NLMSG_SPACE(struct rtmsg)</code> 这个宏计算了NLMSG_DONE这个报文所需要的空间；</li>
+<li>recv()函数中的 <strong>MSG_PEEK|MSG_TRUNC</strong> 是一种固定用法，可以预知下一个报文有多少字节可以读取，但是并不会把这个报文标志为已读；</li>
+<li>MSG_DONTWAIT使recv()执行时为无阻塞，按照 <code>man recv</code> 的说明，使用MSG_DONTWAIT时，如果recv()必须阻塞(意即无数据可读，需要等待在socket上)，则会返回错误，errno为EAGAIN或者EWOULDBLOCK，所以对这两个错误码一定要做判断；</li>
 <li>实际读取数据时发现NLMSG_DONE报文中的(struct nlmsghdr)是完整的，但后面并没有完整的(struct rtmsg)，而且其中并没有找到有效的信息，可以忽略。</li>
 </ul>
 <ol start="2">
@@ -946,7 +949,7 @@ do {
 <hr>
 <ul>
 <li>
-<p>多部分报文的每一部分表示一条记录，具体到路由表就是路由表中的每条记录将构成多部分报文的一部分；我们可以用命令<code>cat /proc/net/route</code>查看实际的路由表，这个路由表中有几条记录，那么linux内核就会返回几个部分，最后在加上一个NLMSG_DONE报文；</p>
+<p>多部分报文的每一部分表示一条记录，具体到路由表就是路由表中的每条记录将构成多部分报文的一部分；我们可以用命令 <code>cat /proc/net/route</code> 查看实际的路由表，这个路由表中有几条记录，那么linux内核就会返回几个部分，最后在加上一个NLMSG_DONE消息；</p>
 </li>
 <li>
 <p>在每个部分中，(struct nlmsghdr)中的nlmsg_len定义了这一部分的总长度；(struct rtattr)中rta_len定义了(struct rtattr) + data的长度，rta_type定义了data中是什么数据，具体可以参阅前面有关数据结构的介绍；</p>

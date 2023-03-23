@@ -13,7 +13,7 @@
       <pubDate>Sat, 07 Jan 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0010-tcp-and-udp-server-using-select/</guid>
-      <description>&lt;p&gt;在以前的文章中，我们给出过UDP服务器和TCP服务器的例子，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码。&lt;/p&gt;</description>
+      <description>&lt;p&gt;独立的TCP服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上及提供TCP服务，也提供UDP服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码。&lt;/p&gt;</description>
     </item>
     
     <item>

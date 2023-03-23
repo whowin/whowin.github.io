@@ -13,7 +13,7 @@
       <pubDate>Sun, 05 Feb 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/</guid>
-      <description>&lt;p&gt;在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有&lt;code&gt;ip route&lt;/code&gt;或者&lt;code&gt;route -n&lt;/code&gt;，其实&lt;code&gt;route -n&lt;/code&gt;也是通过读取proc文件系统下的文件来从内核获取路由表的，但&lt;code&gt;ip route&lt;/code&gt;是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序。&lt;/p&gt;</description>
+      <description>&lt;p&gt;在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有&lt;code&gt;ip route&lt;/code&gt;或者&lt;code&gt;route -n&lt;/code&gt;，&lt;code&gt;route -n&lt;/code&gt;是通过读取proc文件系统下的文件来从内核获取路由表的，但&lt;code&gt;ip route&lt;/code&gt;是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序。&lt;/p&gt;</description>
     </item>
     
   </channel>

@@ -147,7 +147,7 @@
   
   <div class="post-content">
     <div class="post-summary">
-      <p>在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有<code>ip route</code>或者<code>route -n</code>，其实<code>route -n</code>也是通过读取proc文件系统下的文件来从内核获取路由表的，但<code>ip route</code>是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序。</p>
+      <p>在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有<code>ip route</code>或者<code>route -n</code>，<code>route -n</code>是通过读取proc文件系统下的文件来从内核获取路由表的，但<code>ip route</code>是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序。</p>
     </div>
     <div class="read-more">
       <a href="/post/blog/network/0008-get-gateway-ip-from-proc-filesys/" class="read-more-link">阅读更多</a>
@@ -216,7 +216,7 @@
   
   <div class="post-content">
     <div class="post-summary">
-      <p>arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0</p>
+      <p>arp cache中存放着局域网内IP地址和MAC地址的对应关系，对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0</p>
     </div>
     <div class="read-more">
       <a href="/post/blog/network/0014-handling-arp-cache/" class="read-more-link">阅读更多</a>
@@ -239,7 +239,7 @@
   
   <div class="post-content">
     <div class="post-summary">
-      <p>本文用一个简化的实例说明如何在一个TCP服务器程序中，使用select处理同时出现的多个客户连接，文章给出了程序源代码，本文假定读者已经具备了基本的socket编程知识，熟悉基本的服务器/客户端模型架构。</p>
+      <p>TCP是一种面向连接的通信方式，一个TCP服务器难免会遇到同时处理多个用户的连接请求的问题，本文用一个简化的实例说明如何在一个TCP服务器程序中，使用select处理同时出现的多个客户连接，文章给出了程序源代码，本文假定读者已经具备了基本的socket编程知识，熟悉基本的服务器/客户端模型架构。</p>
     </div>
     <div class="read-more">
       <a href="/post/blog/network/0011-handling-multiple-clients-on-server-with-select/" class="read-more-link">阅读更多</a>

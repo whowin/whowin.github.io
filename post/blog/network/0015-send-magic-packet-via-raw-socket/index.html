@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用raw socket发送magic packet">
 <meta itemprop="description" content="Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。"><meta itemprop="datePublished" content="2023-02-09T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-09T16:43:29+08:00" />
-<meta itemprop="wordCount" content="3236">
+<meta itemprop="wordCount" content="3282">
 <meta itemprop="keywords" content="Linux,raw Socket,网络编程," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用raw socket发送magic packet"/>
 <meta name="twitter:description" content="Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。"/>
@@ -227,7 +227,7 @@
 <li>
 <p><strong>以太网报头</strong></p>
 <ul>
-<li>以太网报头定义在头文件linux/if_ether.h中：
+<li>以太网报头定义在头文件&lt;linux/if_ether.h&gt;中：
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -246,8 +246,8 @@
 </div>
 </div></li>
 <li>h_dest字段为目的MAC地址，h_source字段为源MAC地址；</li>
-<li>h_proto表示当前数据包在网络层使用的协议，Linux支持的协议在头文件linux/if_ether.h中定义；通常在网络层使用的IP协议，这个字段的值是0x0800(ETH_P_IP)；</li>
-<li>但是本文中的 h_proto 字段要填写 <strong>0x842</strong>，很遗憾这个协议在头文件中没有定义，也基本找不到相关资料；</li>
+<li>h_proto表示当前数据包在网络层使用的协议，Linux支持的协议在头文件&lt;linux/if_ether.h&gt;中定义；通常在网络层使用的IP协议，这个字段的值是0x0800(ETH_P_IP)；</li>
+<li>但是本文中的 <strong>h_proto</strong> 字段要填写 <strong>0x842</strong>，很遗憾这个协议在头文件中没有定义，也基本找不到相关资料；</li>
 </ul>
 </li>
 <li>
@@ -272,8 +272,8 @@
 <li>
 <p><strong>struct sockaddr_ll</strong></p>
 <ul>
-<li>这个结构在linux/if_packet.h中定义，有关该结构的详细说明请参考其它文章，本文仅就相关字段做出说明；</li>
-<li>这个结构与IPv4 socket编程中的结构(struct sockaddr_in)的作用类似，是用在raw socket上的一个地址结构，烦请自行理解，其中&rsquo;ll&rsquo;表示Low Level
+<li>这个结构在&lt;linux/if_packet.h&gt;中定义，有关该结构的详细说明请参考其它文章，本文仅就相关字段做出说明；</li>
+<li>这个结构与 IPv4 socket 编程中的结构(struct sockaddr_in)的作用类似，是用在raw socket上的一个地址结构，烦请自行理解，其中&rsquo;ll&rsquo;表示Low Level
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -300,11 +300,11 @@
 </div>
 </div></li>
 <li>sll_family为协议族，和建立raw socket是使用的协议族要一致，所以肯定是AF_PACKET；</li>
-<li>sll_protocol是标准的以太网协议类型，定义在头文件linux/if_ether.h中，通常情况下应该 ETH_P_IP(0x800) 表示IP协议，本文要填 0x842；</li>
+<li>sll_protocol是标准的以太网协议类型，定义在头文件&lt;linux/if_ether.h&gt;中，通常情况下应该 ETH_P_IP(0x800) 表示IP协议，本文要填 <strong>0x842</strong>；</li>
 <li>sll_ifindex是网络接口的索引号，我们可以根据接口名称使用ioctl获得；</li>
-<li>sll_halen是硬件地址(MAC)的长度，ha是Hardware Address的意思，填常数 ETH_ALEN(定义在头文件linux/if_ether.h中)；</li>
+<li>sll_halen是硬件地址(MAC)的长度，ha是Hardware Address的意思，填常数 ETH_ALEN(定义在头文件&lt;linux/if_ether.h&gt;中)；</li>
 <li>sll_addr是目的MAC地址</li>
-<li>实际上，在发送数据时，由于sll_family和sll_protocol都是和socket中一样的，所以大多数情况下都可以不填，只要填sll_ifindex、sll_halen和sll_addr即可，但是本文的例子中，如果使用bind()绑定地址，应该尽量完整第填写，否则执行bind()是会出错。</li>
+<li>实际上，在发送数据时，由于sll_family和sll_protocol都是和socket中一样的，所以大多数情况下都可以不填，只要填sll_ifindex、sll_halen和sll_addr即可，但是本文的例子中，如果使用bind()绑定地址，应该尽量完整地填写，否则执行bind()是会出错。</li>
 </ul>
 </li>
 </ul>
@@ -314,7 +314,7 @@
 <p>先说一下目标，通常使用UDP发送Magic Packet的报文结构为：以太网报头 + IP报头 + UDP报头 + Magic Packet，我们的目标是：<strong>以太网报头 + Magic Packet</strong></p>
 </li>
 <li>
-<p>先看源程序，文件名为：<a href="/sourcecodes/180015/magic-packet.c">magic-packet.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>先看源程序，文件名为：<a href="https://whowin.gitee.io/sourcecodes/180015/magic-packet.c">magic-packet.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>报文是以广播的形式发出去的，发送广播时，以太网报头的目的MAC要全部填写0xff，(struct sockaddr_ll)中的sll_addr也要全部填写0xff；</p>
@@ -323,7 +323,7 @@
 <p>尽管我们知道目的MAC，但是这个报文必须以广播报文发出，因为此时被唤醒的机器并没有开机，所以无法通过arp获知填写的MAC地址是否在局域网内，所以如果在以太网报头的h_dest中填上了要被唤醒的机器的MAC地址，报文是无法送达的；</p>
 </li>
 <li>
-<p>关于使用ioctl获取接口索引号(Interface Index)和接口MAC的问题，请自行查找资料，这些是IPv4 socket编程中基础的东西，本文认为读者已经掌握；</p>
+<p>关于使用ioctl获取接口索引号(Interface Index)和接口MAC的问题，请自行查找资料，或者参考文章<a href="https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a>，这篇文章中有部分内容涉及到这个问题；</p>
 </li>
 <li>
 <p>程序中写好了用send()或者用sendto()发送报文的代码，使用一个常量USING_SENDTO来控制，当USING_SENDTO为1时，将使用sendto()发送报文，否则使用send()发送报文；</p>

@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="whowin" /><meta name="description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明如何使用raw socket发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。
+<meta name="author" content="whowin" /><meta name="description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。
 " /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
@@ -41,19 +41,19 @@
 
 
 <meta property="og:title" content="如何使用raw socket发送UDP报文" />
-<meta property="og:description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明如何使用raw socket发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。" />
+<meta property="og:description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2022-12-27T16:43:29+08:00" />
 <meta property="article:modified_time" content="2022-12-27T16:43:29+08:00" />
 
 <meta itemprop="name" content="如何使用raw socket发送UDP报文">
-<meta itemprop="description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明如何使用raw socket发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。"><meta itemprop="datePublished" content="2022-12-27T16:43:29+08:00" />
+<meta itemprop="description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。"><meta itemprop="datePublished" content="2022-12-27T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-12-27T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4952">
+<meta itemprop="wordCount" content="4973">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,数据链路层编程,raw socket," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="如何使用raw socket发送UDP报文"/>
-<meta name="twitter:description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明如何使用raw socket发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。"/>
+<meta name="twitter:description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -171,7 +171,7 @@
   </div>
 </div>
     <div class="post-content">
-      <p>使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明如何使用raw socket发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。</p>
+      <p>使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。</p>
 <h2 id="1-前言">1. 前言</h2>
 <ul>
 <li>阅读本文前可以考虑先阅读一下我的另外一篇文章<a href="https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>，那篇文章中已经介绍过的一些概念，本文中将不再赘述；下面仅罗列一些曾经在<a href="https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>介绍过的技术要点；</li>

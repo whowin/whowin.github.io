@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用SNTP协议从时间服务器同步时间">
 <meta itemprop="description" content="在互联网上校准时间，是几乎连接在互联网上的每台计算机都要去做的事情，而且很多是在后台完成的，并不需要人工干预；互联网上有很多时间服务器可以发布精确的时间，计算机客户端使用NTP(Network Time Protocol)协议与这些时间服务器进行时间同步，使本机得到精确时间，本文简要描述了NTP协议的原理，对NTP协议的时间同步精度做了简要分析，并具体实现了SNTP(Simple Network Time Protocol)下的客户端，本文附有完整的C语言SNTP客户端的源程序。"><meta itemprop="datePublished" content="2023-02-13T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-13T16:43:29+08:00" />
-<meta itemprop="wordCount" content="5945">
+<meta itemprop="wordCount" content="6030">
 <meta itemprop="keywords" content="Linux,网络编程,NTP,SNTP," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用SNTP协议从时间服务器同步时间"/>
 <meta name="twitter:description" content="在互联网上校准时间，是几乎连接在互联网上的每台计算机都要去做的事情，而且很多是在后台完成的，并不需要人工干预；互联网上有很多时间服务器可以发布精确的时间，计算机客户端使用NTP(Network Time Protocol)协议与这些时间服务器进行时间同步，使本机得到精确时间，本文简要描述了NTP协议的原理，对NTP协议的时间同步精度做了简要分析，并具体实现了SNTP(Simple Network Time Protocol)下的客户端，本文附有完整的C语言SNTP客户端的源程序。"/>
@@ -184,7 +184,7 @@
 </ol>
 </li>
 <li>与NTP客户端不同，SNTP客户端通常只使用一个时间服务器来计算时间，然后将系统时间跳转到计算的时间；为了防止时间服务器出现不可用的情况，SNTP客户端可以有一个或多个备份时间服务器，但不会同时使用多个时间服务器来计算时间；</li>
-<li>SNTP客户端通常按照一个固定的间隔时间去访问时间服务器，在间隔期间则不对系统时间做任何调整；</li>
+<li>SNTP客户端通常按照一个固定的间隔时间去访问时间服务器，在间隔期间则不对系统时间做任何调整，所以，当SNTP访问时间服务器校准时间时，往往会产生时间跳跃；</li>
 <li>我们可以用一个更形象的例子来说明SNTP客户端，我们把墙上的挂钟当做时间服务器，把我们戴的手表当做客户端
 <ul>
 <li>当我们的手表为SNTP客户端时，我们每隔一小时看一下挂钟，并使用挂钟来校准手表；</li>
@@ -414,7 +414,7 @@ $$</p>
 <li>Stratum-1层设备是可以通过网络授时的最准确的ntp时间源，1层设备通常通过0层参考时钟同步时间；</li>
 <li>Stratum-2层设备通过网络连接从一级设备同步时间；由于网络抖动和延迟，二级服务器的时间准确度不如一级服务器；从第二层时间源同步的NTP客户端将是Stratum-3设备；</li>
 <li>以此类推，层级越高，其时间的精确度和可靠度越低；</li>
-<li>NTP协议不允许客户端接受来自Stratum-15设备的时间，因此Stratum-15是最低的NTP层；</li>
+<li>NTP协议不允许客户端接受来自Stratum-15以上设备的时间，因此Stratum-15是最低的NTP层；</li>
 </ul>
 </li>
 <li>
@@ -578,7 +578,7 @@ $$</p>
 <p>SNTP使用UDP协议发送时间信息包，UDP又是一种无连接的协议，从Client到Server和从Server到Client的路由很可能是不一样的，这无形中会使时间同步的精度变差；</p>
 </li>
 <li>
-<p>找到一个时延比较小的时间服务器可以有效地提高时间同步的精度。</p>
+<p>由上面的分析可以看出：<strong>找到一个时延比较小的时间服务器可以有效地提高时间同步的精度</strong>。</p>
 </li>
 </ul>
 <h2 id="4sntp客户端实例">4、SNTP客户端实例</h2>
@@ -587,7 +587,7 @@ $$</p>
 <p>说起来一大堆，但实现起来其实并不像说的那么复杂。</p>
 </li>
 <li>
-<p>SNTP协议允许使用单播(unicast)、广播(broadcast)和多播(manycast)模式，通常我们只能使用单播模式，广播和多播模式的时间服务器只存在与一个子网中，为有限的用户服务；互联网上并不存在实际的广播或多播模式的时间服务器；</p>
+<p>SNTP协议允许使用单播(unicast)、广播(broadcast)和多播(manycast)模式，通常我们只能使用单播模式，广播和多播模式的时间服务器只存在于某个子网中，为有限的用户服务；互联网上并不存在实际的广播或多播模式的时间服务器；</p>
 </li>
 <li>
 <p>根据<a href="https://www.rfc-editor.org/rfc/rfc5905">《SNTP 协议》</a>第5节&rdquo;<strong>SNTP Client Operations</strong>&ldquo;的说明，使用单播模式进行时间同步时，向时间服务器发送的请求数据包中，除了第一个字节以外，其他字段都可以设为0，也可以将Originate Timestamp(T<sub>1</sub>)填在Transmit Timestamp(T<sub>4</sub>)这个字段上，时间服务器会将Transmit Timestamp(T<sub>4</sub>)字段的内容搬移到Originate Timestamp(T<sub>1</sub>)上，然后填上正确的Transmit Timestamp(T<sub>4</sub>)；</p>
@@ -602,7 +602,7 @@ $$</p>
 <p>再次强调一下，NTP时间戳的fraction字段的单位是 <strong>1/2<sup>32</sup> 秒</strong>；</p>
 </li>
 <li>
-<p>源程序文件名：<a href="/sourcecodes/180017/sntp-client.c">sntp-client.c</a>(<strong>点击文件名下载源文件</strong>)</p>
+<p>源程序文件名：<a href="https://whowin.gitee.io/sourcecodes/180017/sntp-client.c">sntp-client.c</a>(<strong>点击文件名下载源文件</strong>)</p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall sntp-client.c -o sntp-client -lm</code>，因为其中使用了数学函数，所以编译时要加上 &ldquo;-lm&rdquo;</p>
@@ -613,6 +613,9 @@ $$</p>
 <li>
 <p>运行截图：</p>
 <p><img src="https://whowin.gitee.io/images/180017/screenshot-of-sntp-client.png" alt="screenshot of sntp_client"></p>
+</li>
+<li>
+<p>在源程序中，列出了几个时间服务器，可以通过百度或者谷歌找更多的时间服务器进行尝试。</p>
 </li>
 </ul>
 <hr>

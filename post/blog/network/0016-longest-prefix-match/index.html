@@ -50,7 +50,7 @@
 <meta itemprop="name" content="简单的路由表查找程序">
 <meta itemprop="description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。"><meta itemprop="datePublished" content="2023-02-10T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-10T16:43:29+08:00" />
-<meta itemprop="wordCount" content="3410">
+<meta itemprop="wordCount" content="3711">
 <meta itemprop="keywords" content="Linux,routing table,网络编程,最长前缀匹配,longest prefix match," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="简单的路由表查找程序"/>
 <meta name="twitter:description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。"/>
@@ -175,7 +175,7 @@
 </blockquote>
 <h2 id="1-路由表">1. 路由表</h2>
 <ol>
-<li>Linux系统的路由表</li>
+<li><strong>Linux系统的路由表</strong></li>
 </ol>
 <ul>
 <li>
@@ -210,10 +210,10 @@
 </ul>
 <hr>
 <ul>
-<li>我的另一篇文章<a href="https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/">《linux下使用netlink获取gateway的IP地址》</a>中，程序中使用netlink获取了内核路由表，在程序中解析内核发回的信息时，使用了宏 <strong>RT_TABLE_MAIN</strong> 就是路由表的ID号，RT_TABLE_MAIN 显然指的是主路由表(main)，所以他的实际值是 254；</li>
+<li>我的另一篇文章<a href="https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/">《linux下使用netlink获取gateway的IP地址》</a>中，程序中使用netlink获取了内核路由表，在程序中解析内核发回的信息时，使用了宏 <strong>RT_TABLE_MAIN</strong> 就是路由表的ID号，RT_TABLE_MAIN 显然指的是主路由表(main)，所以它的实际值是 254；</li>
 </ul>
 <ol start="2">
-<li>Linux系统的路由策略</li>
+<li><strong>Linux系统的路由策略</strong></li>
 </ol>
 <ul>
 <li>
@@ -242,7 +242,7 @@
 <ul>
 <li>基于前面对 RPDB 和多路由表的简单介绍，可以简单了解内核查找路由的过程；</li>
 <li>在需要确定一个目的IP地址的路由时，Linux内核首先在路由缓存(routing cache)中查找，路由缓存是一个哈希表，用于快速查询最近使用过的路由，如果在路由缓存中找到路由，则使用该路由转发报文；</li>
-<li>如果在路由缓存中没有找到路由，Linux内核将开始按照优先级遍历RPDB中的策略，对于RPDB中的每个匹配项，内核将使用最长前缀匹配算法在指定的路由表中查找目的IP地址的匹配路由，如果找不到匹配的路由，内核将转到RPDB中的下一个规则，直到找到匹配项，或者查找失败；</li>
+<li>如果在路由缓存中没有找到路由，Linux内核将开始按照优先级遍历RPDB中的策略，对于RPDB中的每个匹配项，内核将使用<strong>最长前缀匹配算法</strong>在指定的路由表中查找目的IP地址的匹配路由，如果找不到匹配的路由，内核将转到RPDB中的下一个规则，直到找到匹配项，或者查找失败；</li>
 </ul>
 <h2 id="4-最长前缀匹配longest-prefix-match算法">4. 最长前缀匹配(Longest Prefix Match)算法</h2>
 <ul>
@@ -257,7 +257,7 @@
 <p>可以看到一个路由项有：子网IP、网关、子网掩码、网络接口等，当给定一个目的IP，比如为：192.168.2.114，与路由表中第3和第4条都匹配，那么如何确定匹配路由呢？</p>
 </li>
 <li>
-<p>这个最长前缀匹配的算法就是解决这个匹配问题的，这个算法说的是，当遇到上面这种问题(即目的IP匹配多条路由)时，选择子网掩码最长的那个匹配项，上面这个问题，第3条路由的子网掩码为：255.255.0.0，长度为16，第4条路由的子网掩码为255.255.255.0，长度为24，所以应该匹配路由表中的第4项；</p>
+<p>这个<strong>最长前缀匹配</strong>的算法就是解决这个匹配问题的，这个算法说的是，当遇到上面这种问题(即目的IP匹配多条路由)时，选择子网掩码最长的那个匹配项，上面这个问题，第3条路由的子网掩码为：255.255.0.0，长度为16位(255位8个二进制的1)，第4条路由的子网掩码为255.255.255.0，长度为24位，所以应该匹配路由表中的第4项；</p>
 </li>
 <li>
 <p>我们把上面的例子说的再仔细一点</p>
@@ -266,7 +266,8 @@
 </ul>
 <hr>
 <ul>
-<li>尽管目的地址192.168.2.114也与第1条路由192.168.0.0匹配，但只匹配了16位(图示蓝色部分)，而与第2条路由匹配了24位(图示红色部分)，按照最长前缀匹配规则，应与第2条路由匹配</li>
+<li>尽管目的地址192.168.2.114也与第1条路由192.168.0.0匹配，但只匹配了16位(图示蓝色部分)，而与第2条路由匹配了24位(图示红色部分)，按照<strong>最长前缀匹配</strong>规则，应与第2条路由匹配；</li>
+<li>所谓匹配指的是IP地址与路由的子网掩码做&quot;与&quot;操作后，与原来IP仍然相同的位数，192.168.2.114与255.255.0.0做&quot;与&quot;操作后成为192.168.0.0，只有前面的192.168与原IP地址相同，我们称之为匹配了16位。</li>
 </ul>
 <h2 id="5-最长前缀匹配的具体实现">5. 最长前缀匹配的具体实现</h2>
 <ul>
@@ -303,7 +304,11 @@
 </span></span><span class="line"><span class="cl">eth5,    192.168.0.0,  0.0.0.0,       255.255.255.0
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p><img src="https://whowin.gitee.io/images/180016/content-of-routing-txt.png" alt="routing.txt"></p>
+</div><ul>
+<li>在路由表中，gateway为0.0.0.0表示不需要经过网关；destination为0.0.0.0表示任意IP地址；</li>
+<li>当netmask为0.0.0.0而destination也为0.0.0.0时，任何IP地址与netmask做&quot;与&quot;操作后都将与destination匹配。</li>
+</ul>
+<p><img src="https://whowin.gitee.io/images/180016/content-of-routing-txt.png" alt="routing.txt"></p>
 </li>
 </ul>
 <hr>
@@ -328,14 +333,14 @@
 <p>程序中对链表做了逆排序，可以大大提高查找速度；</p>
 <ol>
 <li>通常情况下，在Linux的主路由表中都有一条默认网关的路由，一般子网和掩码都是0.0.0.0，加上网关IP，这个路由是和所有IP地址匹配的，进行逆排序后，这条路由将排在链表的最后，当所有路由均无法匹配时，将很自然地匹配最后一条路由，不需要在遍历路由链表时因为会遇到这条路由而进行更多的判断；</li>
-<li>最长前缀匹配指出，当有多条路由匹配时，应匹配子网掩码最长的路由，所以我们在进行排序时，如果遇到两条路由的子网IP相同，将把子网掩码大的(按主机字节序比较，little-endian)排在前面，这样做的好处在于，程序匹配到的第一条路由一定是子网掩码最长的路由，无需再做判断；</li>
+<li><strong>最长前缀匹配</strong>指出，当有多条路由匹配时，应匹配子网掩码最长的路由，所以我们在进行排序时，如果遇到两条路由的子网IP相同，将把子网掩码大的(按主机字节序比较，little-endian)排在前面，这样做的好处在于，程序匹配到的第一条路由一定是子网掩码最长的路由，无需再做判断；</li>
 </ol>
 <blockquote>
 <p>试想这样两条路由，<code>192.168.0.0/255.255.0.0</code> 和 <code>192.168.0.0/255.255.255.0</code>，这两条路由只有子网掩码不同，第1条路由表示 <code>192.168.*.*</code> 的走这条路由，第2条路由表示 <code>192.168.0.*</code> 的走这条路由，当目的IP为 <code>192.168.0.10</code> 时，应该是要走第2条路由的，经过我们的排序后，遍历链表时最先匹配的路由一定是第2条路由，这个例子大致说明了链表排序的意义。</p>
 </blockquote>
 </li>
 <li>
-<p>源代码，文件名：<a href="/sourcecodes/180016/rt-lookup.c">rt-lookup.c</a>(<strong>点击文件名下载源文件</strong>)</p>
+<p>源代码，文件名：<a href="https://whowin.gitee.io/sourcecodes/180016/rt-lookup.c">rt-lookup.c</a>(<strong>点击文件名下载源文件</strong>)</p>
 </li>
 <li>
 <p>实际的路由表要比我们这个复杂的多，路由决策的因素也不仅仅是所谓的&rsquo;最长前缀匹配&rsquo;。</p>

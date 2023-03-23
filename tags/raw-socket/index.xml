@@ -31,7 +31,7 @@
       <pubDate>Tue, 27 Dec 2022 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/</guid>
-      <description>&lt;p&gt;使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明如何使用raw socket发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。&lt;/p&gt;</description>
+      <description>&lt;p&gt;使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。&lt;/p&gt;</description>
     </item>
     
     <item>

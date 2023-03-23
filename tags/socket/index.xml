@@ -13,7 +13,7 @@
       <pubDate>Sun, 05 Feb 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/</guid>
-      <description>&lt;p&gt;在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有&lt;code&gt;ip route&lt;/code&gt;或者&lt;code&gt;route -n&lt;/code&gt;，其实&lt;code&gt;route -n&lt;/code&gt;也是通过读取proc文件系统下的文件来从内核获取路由表的，但&lt;code&gt;ip route&lt;/code&gt;是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序。&lt;/p&gt;</description>
+      <description>&lt;p&gt;在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有&lt;code&gt;ip route&lt;/code&gt;或者&lt;code&gt;route -n&lt;/code&gt;，&lt;code&gt;route -n&lt;/code&gt;是通过读取proc文件系统下的文件来从内核获取路由表的，但&lt;code&gt;ip route&lt;/code&gt;是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -40,7 +40,7 @@
       <pubDate>Thu, 12 Jan 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/</guid>
-      <description>&lt;p&gt;arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0&lt;/p&gt;</description>
+      <description>&lt;p&gt;arp cache中存放着局域网内IP地址和MAC地址的对应关系，对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -49,7 +49,7 @@
       <pubDate>Mon, 09 Jan 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0011-handling-multiple-clients-on-server-with-select/</guid>
-      <description>&lt;p&gt;本文用一个简化的实例说明如何在一个TCP服务器程序中，使用select处理同时出现的多个客户连接，文章给出了程序源代码，本文假定读者已经具备了基本的socket编程知识，熟悉基本的服务器/客户端模型架构。&lt;/p&gt;</description>
+      <description>&lt;p&gt;TCP是一种面向连接的通信方式，一个TCP服务器难免会遇到同时处理多个用户的连接请求的问题，本文用一个简化的实例说明如何在一个TCP服务器程序中，使用select处理同时出现的多个客户连接，文章给出了程序源代码，本文假定读者已经具备了基本的socket编程知识，熟悉基本的服务器/客户端模型架构。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -58,7 +58,7 @@
       <pubDate>Sat, 07 Jan 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0010-tcp-and-udp-server-using-select/</guid>
-      <description>&lt;p&gt;在以前的文章中，我们给出过UDP服务器和TCP服务器的例子，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码。&lt;/p&gt;</description>
+      <description>&lt;p&gt;独立的TCP服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上及提供TCP服务，也提供UDP服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -85,7 +85,7 @@
       <pubDate>Tue, 27 Dec 2022 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/</guid>
-      <description>&lt;p&gt;使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明如何使用raw socket发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。&lt;/p&gt;</description>
+      <description>&lt;p&gt;使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；本文假定读者掌握了基本的IPv4下的socket编程。&lt;/p&gt;</description>
     </item>
     
     <item>

@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用tun虚拟网络接口建立IP隧道的实例">
 <meta itemprop="description" content="通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；本文假定读者已经拥有了在Linux下使用C语言进行IPv4下socket编程的基本能力。"><meta itemprop="datePublished" content="2023-03-07T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-03-07T16:43:29+08:00" />
-<meta itemprop="wordCount" content="6834">
+<meta itemprop="wordCount" content="6933">
 <meta itemprop="keywords" content="Linux,网络编程,IP tunnel,IP隧道," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用tun虚拟网络接口建立IP隧道的实例"/>
 <meta name="twitter:description" content="通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；本文假定读者已经拥有了在Linux下使用C语言进行IPv4下socket编程的基本能力。"/>
@@ -160,7 +160,7 @@
       <ul>
         <li><a href="#1-linux下的虚拟网卡tuntap">1. Linux下的虚拟网卡TUN/TAP</a></li>
         <li><a href="#2-构建一个tun设备">2. 构建一个TUN设备</a></li>
-        <li><a href="#3-使用tun设备是基本数据流向">3. 使用tun设备是基本数据流向</a></li>
+        <li><a href="#3-使用tun设备的基本数据流向">3. 使用tun设备的基本数据流向</a></li>
         <li><a href="#4-使用tun设备搭建一个简单的ip隧道">4. 使用tun设备搭建一个简单的IP隧道</a></li>
         <li><a href="#5-后记">5. 后记</a></li>
       </ul>
@@ -174,9 +174,9 @@
 <h2 id="1-linux下的虚拟网卡tuntap">1. Linux下的虚拟网卡TUN/TAP</h2>
 <ul>
 <li>TUN和TAP是Linuxn内核的虚拟网络设备，不同于普通靠硬件网络适配器实现的设备，这些虚拟的网络设备全部用软件实现，并可以向运行于Linux上的应用软件提供与硬件的网络设备完全相同的功能；</li>
-<li>TAP等同于一个以太网设备，它操作网络层第二层(数据链路层)数据包，通常我们所使用的网络就是以太网数据帧，所以要使用TAP设备，就需要自己构建以太网报头、IP报头、TCP/UDP报头；</li>
+<li>TAP等同于一个以太网设备，它操作OSI模型的第二层(数据链路层)数据包，通常我们所使用的网络就是以太网数据帧，所以要使用TAP设备，就需要自己构建以太网报头、IP报头、TCP/UDP报头；</li>
 <li>TUN模拟了网络层设备，操作第三层(网络层)数据包，通常我们使用的TCP/UDP报文在网络层使用的IP协议，所以使用TUN设备，需要自己构建IP报头和TCP/UDP报头，比TAP设备少构建一个以太网报头；</li>
-<li>Linux通过TUN/TAP设备向绑定该设备的用户空间的应用程序发送数据；同样，用户空间的应用程序也可以像操作硬件网络设备那样，通过TUN/TAP设备发送数据；在后面这种情况下，TUN/TAP设备向Linux的网络栈提交数据包，从而模拟从外部接受数据的过程；</li>
+<li>Linux通过TUN/TAP设备向绑定该设备的用户空间的应用程序发送数据；同样，用户空间的应用程序也可以像操作硬件网络设备那样，通过TUN/TAP设备发送数据；在后面这种情况下，TUN/TAP设备向Linux的网络协议栈提交数据包，从而模拟从外部接收数据的过程；</li>
 </ul>
 <h2 id="2-构建一个tun设备">2. 构建一个TUN设备</h2>
 <ul>
@@ -186,10 +186,10 @@
 <li>
 <p>构建一个基本的tun设备，只需要两个步骤</p>
 <ol>
-<li><strong>编写一个程序，至少完成三个任务</strong></li>
-</ol>
+<li><strong>编写一个程序，至少完成三个任务</strong>
 <ul>
-<li>打开设备文件/dev/net/tun
+<li>
+<p>以可读写模式打开设备文件 <code>/dev/net/tun</code></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -197,11 +197,15 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">&#34;/dev/net/tun&#34;</span> <span class="p">,</span> <span class="n">O_RDWR</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">&#34;/dev/net/tun&#34;</span><span class="p">,</span> <span class="n">O_RDWR</span><span class="p">));</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>向Linux内核注册一个tun设备名称，本例中为tun0
+<li>
+<p>向Linux内核注册一个tun设备名称，本例中为tun0</p>
+<blockquote>
+<p>(struct ifreq)定义在头文件&lt;linux/if.h&gt;中，在我的很多文章中都有介绍，比如文章<a href="https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a>，如果需要，可以参考；</p>
+</blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -221,7 +225,8 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>编写处理tun0接收/发送数据的程序
+<li>
+<p>编写处理tun0接收/发送数据的程序</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -242,9 +247,8 @@
 </div>
 </div></li>
 </ul>
-<ol start="2">
-<li><strong>为设备分配IP地址</strong>(本例中为tun0分配的IP为10.0.0.1)</li>
-</ol>
+</li>
+<li><strong>为设备分配IP地址</strong>(本例中为tun0分配的IP为10.0.0.1)
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -254,6 +258,8 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
+</ol>
+</li>
 <li>
 <p>把上面的代码片段组合在一起，就可以完成一个tun设备的建立，文件名：<a href="https://whowin.gitee.io/sourcecodes/180018/tun-01.c">tun_01.c</a>(<strong>点击文件名下载源文件</strong>)</p>
 </li>
@@ -273,7 +279,7 @@
 <hr>
 </li>
 <li>
-<p>尽管建立起了虚拟网卡tun0，但因为程序过于简单，所以这样建立的设备什么事情都做不了，必须完善程序，才能让这个设备真正地发回作用；</p>
+<p>尽管建立起了虚拟网卡tun0，但因为程序过于简单，所以这样建立的设备什么事情都做不了，必须完善程序，才能让这个设备真正地发挥作用；</p>
 </li>
 <li>
 <p>tun设备是一个第三层(网络层)的设备，在这个设备上只能收到IP报头，收不到以太网报头，所以Linux索性没有为tun设备分配MAC地址；</p>
@@ -282,13 +288,13 @@
 <p>后面将以本节的程序为基础，不断改进，最终写出一个简单的IP隧道的程序。</p>
 </li>
 </ul>
-<h2 id="3-使用tun设备是基本数据流向">3. 使用tun设备是基本数据流向</h2>
+<h2 id="3-使用tun设备的基本数据流向">3. 使用tun设备的基本数据流向</h2>
 <ul>
 <li>
 <p>设备建立起来以后，程序员关心的是我们如何从这个设备上收发报文，如何处理这些报文；</p>
 </li>
 <li>
-<p>对于一个物理网络接口而言，接口一端连接着网络协议栈，另一端连接着物理网络；而对于一个虚拟网络接口而言，接口的一端仍然连接这网络协议栈，但是另一端连接着一个应用程序，也就是我们前面下载的那个程序(<a href="https://whowin.gitee.io/sourcecodes/180018/tun-01.c">tun-01.c</a>)，我们把这个程序称为 <strong>application-tun</strong>；</p>
+<p>对于一个物理网络接口而言，接口一端连接着网络协议栈，另一端连接着物理网络；而对于一个虚拟网络接口而言，接口的一端仍然连接着网络协议栈，但是另一端连接着一个应用程序，也就是我们前面下载的那个程序(<a href="https://whowin.gitee.io/sourcecodes/180018/tun-01.c">tun-01.c</a>)，我们把这个程序称为 <strong>application-tun</strong>；</p>
 </li>
 <li>
 <p>可以和一个物理网络接口比较来说明虚拟网络接口的数据流向，在物理接口上要发送到物理网络上去的报文，相对于虚拟接口将被发送到应用程序 <strong>application-tun</strong> 上；</p>
@@ -363,7 +369,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>打开另一个终端，使用下面命令分别向 <strong>10.0.0.1:5678</strong> 发送数据，在运行 tun-only 的终端上并不会显示收到数据；
+<li>打开另一个终端，使用下面命令分别向 <strong>10.0.0.1:5678</strong> 发送数据，在运行 tun-01 的终端上并不会显示收到数据；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -373,7 +379,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>使用下面命令分别向 <strong>10.0.0.2:5678</strong> 发送数据，在运行 tun-only 的终端上会显示收到数据；
+<li>使用下面命令分别向 <strong>10.0.0.2:5678</strong> 发送数据，在运行 tun-01 的终端上会显示收到数据；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -428,7 +434,7 @@
 <hr>
 <ul>
 <li>
-<p>当使用sendmsg发送数据时，是可以显式地指定源IP地址的；</p>
+<p>当使用sendmsg()发送数据时，是可以显式地指定源IP地址的；</p>
 </li>
 <li>
 <p>路由表中有一个src字段，当没有指定源IP地址时，将使用选定路由的src字段作为源IP地址，使用 <code>ip route</code> 可以看到src字段</p>
@@ -509,7 +515,7 @@
 <p>首先要明确的，物理局域网的网段是192.168.2.x，所以向10.0.0.1发送报文并不会被送到物理局域网上，按照路由，这条报文会被送到tun0的驱动程序上去，因为10.0.0.1并不是computer A的虚拟网卡tun0绑定的IP，所以驱动程序会把这个报文送到application-tun上，所以如果我们不做处理，这个报文根本无法到达目的地；</p>
 </li>
 <li>
-<p>如果处理这个报文使其发送到computer B的app D上去呢？通常的方法就是在computer A和computer B的物理网卡之间建立一条IP隧道；</p>
+<p>如何处理这个报文使其发送到computer B的app D上去呢？通常的方法就是在computer A和computer B的物理网卡之间建立一条IP隧道；</p>
 </li>
 <li>
 <p>当computer A启动applition-tun时，主动发起向computer B的连接，端口号定为5678，computer B在启动applition-tun时，主动侦听在端口5678上，并等待computer A的连接请求，一旦连接建立，这个隧道就建好了；</p>
@@ -526,17 +532,17 @@
 <li>打开 /dev/net/tun 文件，返回tun_fd，在内核注册虚拟设备 tun0；</li>
 <li>创建socket，sock_fd，在这个 sock_fd 上连接服务器端(computer B)的5678端口，建立IP隧道；</li>
 <li>使用select检查tun_fd和sock_fd，并分别处理在这两个 fd 上收到的数据；</li>
-<li>在tun_fd上收到数据的处理流程</li>
-</ol>
+<li>在tun_fd上收到数据的处理流程
 <ul>
 <li>将收到的包括IP报头在内的报文作为数据从sock_fd上发出</li>
 </ul>
-<ol start="5">
-<li>在sock_fd上收到数据的处理流程</li>
-</ol>
+</li>
+<li>在sock_fd上收到数据的处理流程
 <ul>
 <li>把收到的数据作为一个IP报文显示报头及内容</li>
 </ul>
+</li>
+</ol>
 </li>
 <li>
 <p>在服务器端(computer B)编写一个程序，文件名为：app-server.c，这个程序应遵循以下处理流程：</p>
@@ -545,17 +551,17 @@
 <li>创建socket，fd为sock_fd，在这个 sock_fd 上侦听5678端口，等待客户端连接以建立IP隧道；</li>
 <li>接受客户端的连接请求，为新连接创建socket，fd为net_fd</li>
 <li>使用select检查tun_fd和net_fd，并分别处理在这两个 fd 上收到的数据；</li>
-<li>在tun_fd上收到数据的处理流程</li>
-</ol>
+<li>在tun_fd上收到数据的处理流程
 <ul>
 <li>将收到的包括IP报头在内的报文作为数据从net_fd上发出</li>
 </ul>
-<ol start="5">
-<li>在net_fd上收到数据的处理流程</li>
-</ol>
+</li>
+<li>在net_fd上收到数据的处理流程
 <ul>
-<li>把收到的数据作为带有IP报头的报文发到tun_fd上</li>
+<li>把收到的数据(不包括IP报头和TCP报头)作为带有IP报头的报文发到tun_fd上</li>
 </ul>
+</li>
+</ol>
 </li>
 <li>
 <p>客户端程序：<a href="https://whowin.gitee.io/sourcecodes/180018/app-client.c">app-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>

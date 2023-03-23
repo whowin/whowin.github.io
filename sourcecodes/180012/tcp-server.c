@@ -21,16 +21,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 
-#define BUF_SIZE        80
+#define BUF_SIZE        128
 #define PORT            8080
 
+int sockfd = -1, connfd = -1;
+
+// Signal handler for catching ctrl+c
+void sigint(int signum) {
+    printf("\nServer terminated by user.\n");
+    if (connfd > 0) close(connfd);
+    if (sockfd > 0) close(sockfd);
+    exit(EXIT_FAILURE);
+}
+
 int main() {
-    int sockfd, connfd;
     socklen_t len;
     struct sockaddr_in server_addr, client_addr;
 
@@ -45,7 +55,15 @@ int main() {
         exit(EXIT_FAILURE);
     } else printf("Socket successfully created..\n");
 
-    // Step 2: Bind socket to server address
+    // Step 2: Set the socket can be reused
+    //======================================
+    const int reuseaddr_flag = 1;
+    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (const char *)&reuseaddr_flag, sizeof(reuseaddr_flag)) < 0) {
+        perror("setsockopt() with SOL_SOCKET:SO_REUSEADDR");
+        exit(EXIT_FAILURE);
+    }
+
+    // Step 3: Bind socket to server address
     //=======================================
     bzero(&server_addr, sizeof(server_addr));
     // assign IP, PORT
@@ -60,15 +78,21 @@ int main() {
         exit(EXIT_FAILURE);
     } else printf("Socket successfully binded..\n");
 
+    // Step 4: Listen on the socket and wait for the client asking the server to make a connection
+    //=============================================================================================
+    if ((listen(sockfd, 5)) != 0) {
+        printf("Listen failed...\n");
+        close(sockfd);
+        exit(EXIT_FAILURE);
+    }
+
+    // Step 5: Catch INT handler for ctrl+c
+    //=======================================
+    signal(SIGINT, sigint);             // catching interrupt
+
     while (1) {
-        // Step 3: Listen on the socket and wait for the client asking the server to make a connection
-        if ((listen(sockfd, 5)) != 0) {
-            printf("Listen failed...\n");
-            close(sockfd);
-            exit(EXIT_FAILURE);
-        } else printf("Server listening..\n\n");
-        
-        // Step 4: Accept the connection request from the client and form a new socket
+        printf("Server listening..\n\n");
+        // Step 6: Accept the connection request from the client and form a new socket
         //=============================================================================
         len = sizeof(client_addr);
 
@@ -83,12 +107,12 @@ int main() {
 
         // infinite loop for chat
         while (1) {
-            // Step 5: Wait for the message from the client on the new socket
+            // Step 7: Wait for the message from the client on the new socket
             //================================================================
             bzero(buff, BUF_SIZE);
             // read the message from client and copy it in buffer
             read(connfd, buff, sizeof(buff));
-            // Step 6: Process the data and send a reply to the client
+            // Step 8: Process the data and send a reply to the client
             //=========================================================
             // print buffer which contains the client contents
             printf("Client: %s\nEnter the message: ", buff);
@@ -107,10 +131,11 @@ int main() {
                 break;
             }
         }
-        // Step 7: Close the socket
+        // Step 9: Close the socket
         //==========================
         close(connfd);
-        // Step 8: Go back step 3
+        connfd = -1;
+        // Step 10: Go back step 3
         //========================
     }
 

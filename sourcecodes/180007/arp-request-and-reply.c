@@ -30,7 +30,6 @@
 
 #include <arpa/inet.h>
 
-#define BUF_SIZE            42
 #define DEVICE              "enp0s3"    // Please modify according to the actual device
 
 int sock_raw = 0;               // Socket descriptor
@@ -42,7 +41,7 @@ long answered_packets = 0;      // how many arp reply packets were sent
 
 void sigint(int signum);
 
-struct __attribute__((packed)) arp_header {
+struct __attribute__((packed)) arp_packet {
     struct arphdr arp_hdr;              // arp header
     unsigned char arp_sha[ETH_ALEN];    // Sender Hardware Address
     unsigned char arp_spa[4];           // Sender Protocol Address
@@ -51,11 +50,12 @@ struct __attribute__((packed)) arp_header {
 };
 
 int main(void) {
-    buffer = (void *)malloc(BUF_SIZE);                  // Buffer for Ethernet Frame
+    int buf_size = sizeof(struct ethhdr) + sizeof(struct arp_packet);
+    buffer = (void *)malloc(buf_size);                  // Buffer for Ethernet Frame
     unsigned char *eth_header = buffer;                 // Pointer to Ethenet Header
     struct ethhdr *eh = (struct ethhdr *)eth_header;    // Another pointer to ethernet header
     unsigned char *arp_header = buffer + sizeof(struct ethhdr); // it is arp header after ethernet header
-    struct arp_header *ah = (struct arp_header *)arp_header;    // pointer to ARP header
+    struct arp_packet *ah = (struct arp_packet *)arp_header;    // pointer to ARP header
 
     struct ifreq ifr;               // use for getting MAC and IP via ioctl
     unsigned char src_mac[ETH_ALEN];// local MAC address
@@ -109,7 +109,7 @@ int main(void) {
         close(sock_raw);
         exit(EXIT_FAILURE);
     }
-    memcpy((void *)&src_ip, &(((struct sockaddr_in *)&(ifr.ifr_addr))->sin_addr), 4);
+    memcpy((void *)&src_ip, &(((struct sockaddr_in *)&(ifr.ifr_addr))->sin_addr), sizeof(uint32_t));
     printf("successfully got local IP address: %s\n", inet_ntoa(((struct sockaddr_in *)&(ifr.ifr_addr))->sin_addr));
 
     // step 5: prepare sockaddr_ll for sending packet
@@ -130,8 +130,8 @@ int main(void) {
     while (sock_raw > 0) {
         // Step 6: Wait for incoming packet...
         //======================================
-        memset(buffer, 0, BUF_SIZE);
-        length = recvfrom(sock_raw, buffer, BUF_SIZE, 0, NULL, NULL);
+        memset(buffer, 0, buf_size);
+        length = recvfrom(sock_raw, buffer, buf_size, 0, NULL, NULL);
         if (length == -1) {
             perror("recvfrom():");
             close(sock_raw);
@@ -248,7 +248,7 @@ int main(void) {
 
         // Step 17: Send the arp replay
         //==============================
-        sent = sendto(sock_raw, buffer, BUF_SIZE, 0, (struct sockaddr *)&saddr_ll, sizeof(struct sockaddr_ll));
+        sent = sendto(sock_raw, buffer, buf_size, 0, (struct sockaddr *)&saddr_ll, sizeof(struct sockaddr_ll));
         if (sent == -1) {
             perror("sendto():");
             close(sock_raw);

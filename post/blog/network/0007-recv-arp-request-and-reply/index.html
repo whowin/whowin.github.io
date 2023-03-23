@@ -50,7 +50,7 @@
 <meta itemprop="name" content="接收arp请求并发送回应的实例">
 <meta itemprop="description" content="本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。"><meta itemprop="datePublished" content="2023-01-12T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-01-12T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4695">
+<meta itemprop="wordCount" content="5098">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,arp,raw socket," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="接收arp请求并发送回应的实例"/>
 <meta name="twitter:description" content="本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。"/>
@@ -179,13 +179,13 @@
 <ul>
 <li>以TCP/IP协议为例，应用程序在应用层发出信息后，在传输层(TCP层)加上一个TCP报头，TCP报头中需要填写源端口和目的端口，端口号标识着一台机器上的某个确定的应用程序，在网络层(IP层)加上一个IP报头，IP报头需要填写源IP地址和目的IP地址，IP地址标识着互联网上一台唯一的机器，所以，TCP报头和IP报头可以确定下来互联网上的某台机器上的某个应用程序；</li>
 <li>在数据链路层需要给数据包加上以太网报头，在以太网报头中，需要填的是机器的物理地址(MAC地址)，源地址和目的地址均要填MAC地址；</li>
-<li>我们可以使用ioctl获取本机的MAC地址，但是却无法获取目的地址的MAC地址，这时就需要使用ARP协议了；</li>
+<li>在局域网中传输数据，是要依靠数据链层中的MAC地址的，我们可以使用ioctl获取本机的MAC地址，但是却无法获取目的地址的MAC地址，这时就需要使用ARP协议了；</li>
 </ul>
 </li>
 <li>
 <p>ARP的工作原理</p>
 <ul>
-<li>在以太网络中，每台机器均有一个ARP cache，里面存着一些IP地址和MAC地址的对应关系，在ubuntu下，内核把ARP cache映射为文件：/proc/net/arp</li>
+<li>在以太网络中，每台机器均有一个ARP cache，里面存着一些IP地址和MAC地址的对应关系，在ubuntu下，内核把ARP cache映射为文件：<code>/proc/net/arp</code>，所以使用 <code>cat /proc/net/arp</code> 是可以看到本机的 ARP cache 的</li>
 <li>在数据链路层需要填MAC地址时，首先查询ARP cache中是否有相应的记录，如果有则直接使用；</li>
 <li>如果在ARP cache中没有记录，则向局域网广播一个ARP请求，里面有需要获取MAC地址的机器所对应的IP地址，当这个IP地址收到这个ARP请求时，则会回应一个ARP回应，将自己的MAC地址告知发送请求的机器，发出请求的机器收到该回应后，应该在ARP cache中添加上这条记录；</li>
 <li>有关ARP cache的操作，请参考文章<a href="https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/">《如何用C语言操作arp cache》</a>。</li>
@@ -226,7 +226,7 @@
 <li>h_dest字段为目的MAC地址，h_source字段为源MAC地址；</li>
 <li>h_proto表示当前数据包在网络层使用的协议，Linux支持的协议在头文件linux/if_ether.h中定义；通常在网络层使用的IP协议，这个字段的值是0x0800(宏ETH_P_IP)，<strong>对于ARP报文，这个字段的值为0x0806(ETH_P_ARP)</strong>，表示网络层使用的是ARP协议；</li>
 <li>对于一个ARP请求数据包来说，h_dest通常为6个0xff，这是因为发送者并不知道目的机器的MAC地址，发送者的意图就是通过一个ARP请求包获得目的机器的MAC地址，所以发送者需要把这个数据包广播出去，使每台机器都可以收到，6个0xff表示一个广播地址；</li>
-<li>对于ARP请求的数据包来说，h_source是发送者自己的MAC地址，发送者在发送ARP请求时，自己的MAC地址是显然已知的；</li>
+<li>对于ARP请求的数据包来说，h_source是发送者自己的MAC地址，发送者在发送ARP请求时，自己的MAC地址是显然已知的，如果不知道，可以通过ioctl()获取(请参考文章<a href="https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a>)；</li>
 <li>对于ARP回应的数据包来说，目的地址就是发送ARP请求包的机器，h_dest应该就是收到的ARP请求包中的h_source；</li>
 <li>对于ARP回应的数据包来说，h_source就是自己的MAC地址，这个当然是已知的；</li>
 <li>不管是ARP请求还是回应数据包，h_proto都是0x0806(宏ETH_P_ARP)，表示网络层使用的协议是ARP协议</li>
@@ -301,8 +301,8 @@
 </ul>
 <h2 id="2-arp请求回应的发送和接收">2. ARP请求/回应的发送和接收</h2>
 <ul>
-<li>对于习惯于使用socket基于TCP/IP协议的编程来说，arp的请求既无法使用TCP socket发送，也无法使用UDP socket发送；接收也是一样，TCP/UDP socket是无法收到ARP的回应信息的；</li>
-<li>前面说过，ARP协议是工作在数据链路层的，而TCP/UDP socket是用在应用层的，应用层发送的数据在传输层要被加上一个TCP/UDP头，在网络层要被加上一个IP头，在数据链路层要被加上一个以太网头，然后才交给物理层发送；</li>
+<li>对于习惯于使用socket基于TCP/IP协议的编程来说，arp的请求既无法使用TCP socket(SOCK_STREAM)发送，也无法使用UDP socket(SOCK_DGRAM)发送；接收也是一样，TCP/UDP socket是无法收到ARP的回应信息的；</li>
+<li>前面说过，ARP协议是工作在数据链路层的，而TCP/UDP socket是用在应用层的，应用层发送的数据在传输层要被加上一个TCP/UDP头，在网络层要被加上一个IP头，在数据链路层要被加上一个以太网头，然后才交给物理层(网卡的驱动程序)发送；</li>
 <li>相关概念请参考<a href="https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>和<a href="https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a></li>
 <li>发送ARP请求、接收ARP回应只能在数据链路层完成，要在数据链路层上编程，需要用到raw socket，相关的知识也请参考上面两篇文章；</li>
 <li>在发送ARP请求时，封装过程与文章<a href="https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a>中类似；</li>
@@ -319,22 +319,224 @@
 <p>程序的运行步骤如下：</p>
 <ol>
 <li>创建一个raw socket</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sock_raw</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_PACKET</span><span class="p">,</span> <span class="n">SOCK_RAW</span><span class="p">,</span> <span class="n">htons</span><span class="p">(</span><span class="n">ETH_P_ALL</span><span class="p">));</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="2">
 <li>查询网络接口的索引号(interface index)</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#define DEVICE    &#34;enp0s3&#34;
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">struct</span> <span class="n">ifreq</span> <span class="n">ifr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ifr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ifreq</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">strncpy</span><span class="p">(</span><span class="n">ifr</span><span class="p">.</span><span class="n">ifr_name</span><span class="p">,</span> <span class="n">DEVICE</span><span class="p">,</span> <span class="n">IFNAMSIZ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">ioctl</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">SIOCGIFINDEX</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ifr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">ifindex</span> <span class="o">=</span> <span class="n">ifr</span><span class="p">.</span><span class="n">ifr_ifindex</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="3">
 <li>查询本机的MAC地址</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">src_mac</span><span class="p">[</span><span class="n">ETH_ALEN</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="n">ioctl</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">SIOCGIFHWADDR</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ifr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">memcpy</span><span class="p">(</span><span class="n">src_mac</span><span class="p">,</span> <span class="n">ifr</span><span class="p">.</span><span class="n">ifr_hwaddr</span><span class="p">.</span><span class="n">sa_data</span><span class="p">,</span> <span class="n">ETH_ALEN</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="4">
 <li>查询本机的IP地址</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#define DEVICE    &#34;enp0s3&#34;
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="k">struct</span> <span class="n">ifreq</span> <span class="n">ifr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ifr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ifreq</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">strncpy</span><span class="p">(</span><span class="n">ifr</span><span class="p">.</span><span class="n">ifr_name</span><span class="p">,</span> <span class="n">DEVICE</span><span class="p">,</span> <span class="n">IFNAMSIZ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">SIOCGIFADDR</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ifr</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;SIOCGIFADDR.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">close</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint32_t</span> <span class="n">src_ip</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">memcpy</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">src_ip</span><span class="p">,</span> <span class="o">&amp;</span><span class="p">(((</span><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">ifr</span><span class="p">.</span><span class="n">ifr_addr</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">),</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">uint32_t</span><span class="p">));</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="5">
 <li>为发送arp报文设置sockaddr_ll</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr_ll</span> <span class="n">saddr_ll</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">saddr_ll</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_ll</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_family</span>   <span class="o">=</span> <span class="n">PF_PACKET</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_protocol</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">ETH_P_IP</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_ifindex</span>  <span class="o">=</span> <span class="n">ifindex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_hatype</span>   <span class="o">=</span> <span class="n">ARPHRD_ETHER</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_pkttype</span>  <span class="o">=</span> <span class="n">PACKET_OTHERHOST</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_halen</span>    <span class="o">=</span> <span class="n">ETH_ALEN</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="6">
 <li>等待接收来自网络的数据包</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">))</span> <span class="n">arp_packet</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">arphdr</span> <span class="n">arp_hdr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">arp_sha</span><span class="p">[</span><span class="n">ETH_ALEN</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">arp_spa</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">arp_dha</span><span class="p">[</span><span class="n">ETH_ALEN</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">arp_dpa</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">buf_size</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">)</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">arp_packet</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="n">buffer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">buf_size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">buf_size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">recvfrom</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">buf_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="7">
 <li>如果数据包不是arp数据包，则忽略，回到步骤6</li>
 <li>如果数据包不是arp请求包，则忽略，回到步骤6</li>
 <li>如果arp请求包不是发给本机的，则忽略，回到步骤6</li>
 <li>显示以太网报头</li>
 <li>显示arp数据包(arp header + arp payload)</li>
 <li>构建用于发送arp reply的以太网报头</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">eth_header</span> <span class="o">=</span> <span class="n">buffer</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">memcpy</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">eth_header</span><span class="p">,</span> <span class="p">(</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">)(</span><span class="n">eth_header</span> <span class="o">+</span> <span class="n">ETH_ALEN</span><span class="p">),</span> <span class="n">ETH_ALEN</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">memcpy</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)(</span><span class="n">eth_header</span> <span class="o">+</span> <span class="n">ETH_ALEN</span><span class="p">),</span> <span class="p">(</span><span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">src_mac</span><span class="p">,</span> <span class="n">ETH_ALEN</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ethhdr</span> <span class="o">*</span><span class="n">eh</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span> <span class="o">*</span><span class="p">)</span><span class="n">buffer</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">eh</span><span class="o">-&gt;</span><span class="n">h_proto</span> <span class="o">=</span> <span class="n">ETH_P_ARP</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="13">
 <li>构建用于发送arp reply的arp数据包</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">arp_header</span> <span class="o">=</span> <span class="n">buffer</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">arp_packet</span> <span class="o">*</span><span class="n">ah</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">arp_packet</span> <span class="o">*</span><span class="p">)</span><span class="n">arp_header</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">ah</span><span class="o">-&gt;</span><span class="n">arp_hdr</span><span class="p">.</span><span class="n">ar_op</span> <span class="o">=</span> <span class="n">ARPOP_REPLY</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">memcpy</span><span class="p">(</span><span class="n">ah</span><span class="o">-&gt;</span><span class="n">arp_dha</span><span class="p">,</span> <span class="n">ah</span><span class="o">-&gt;</span><span class="n">arp_sha</span><span class="p">,</span> <span class="n">ETH_ALEN</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">memcpy</span><span class="p">(</span><span class="n">ah</span><span class="o">-&gt;</span><span class="n">arp_dpa</span><span class="p">,</span> <span class="n">ah</span><span class="o">-&gt;</span><span class="n">arp_spa</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">memcpy</span><span class="p">(</span><span class="n">ah</span><span class="o">-&gt;</span><span class="n">arp_sha</span><span class="p">,</span> <span class="n">src_mac</span><span class="p">,</span> <span class="n">ETH_ALEN</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">memcpy</span><span class="p">(</span><span class="n">ah</span><span class="o">-&gt;</span><span class="n">arp_spa</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">src_ip</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="14">
 <li>将sockaddr_ll中的sll_addr字段填为目的MAC地址</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">memcpy</span><span class="p">(</span><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_addr</span><span class="p">,</span> <span class="n">eh</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">,</span> <span class="n">ETH_ALEN</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="15">
 <li>显示用于发送arp reply的以太网报头</li>
 <li>显示用于发送arp reply的arp数据包内容</li>
 <li>发送arp reply</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">sendto</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">buf_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">saddr_ll</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_ll</span><span class="p">));</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="18">
 <li>回到步骤6</li>
 </ol>
 </li>
@@ -366,7 +568,7 @@
 <p>由于这个程序是使用raw socket在数据链路层上接收数据，所以实际上程序可以收到在局域网上的所有数据包，程序过滤掉了不是ARP协议的数据包，然后又过滤掉了目的IP不是本机的数据包，在ctrl+c退出时，程序会显示收到了多少数据包，其中ARP协议数据包有多少，ARP请求包有多少，程序一共回应了多少个数据包，数据还是有点意思的；</p>
 </li>
 <li>
-<p>下面是源程序，文件名：<a href="/sourcecodes/180007/arp-requst-and-reply.c">arp-request-and-reply.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>下面是源程序，文件名：<a href="https://whowin.gitee.io/sourcecodes/180007/arp-request-and-reply.c">arp-request-and-reply.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>编译，程序在ubuntu 20.04下编译通过，gcc版本为9.4.0</p>
