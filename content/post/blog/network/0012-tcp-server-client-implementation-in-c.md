@@ -36,22 +36,110 @@ postid: 180012
 > 基于TCP协议的一次通信需要三个socket，服务器端建立一个server_sock监听一个特定端口，客户端建立一个client_sock向服务器发起连接请求，服务器端接受连接并生成一个新的connect_sock与该客户端进行通信。
 
 ## 2. 服务器/客户端TCP通信的基本流程
-* 服务端流程
+* **服务端流程**
   1. 使用socket()，创建一个TCP Socket；
-  2. 使用bind()，将socket绑定到服务器地址上；
-  3. 使用listen()，在绑定的服务器地址上监听，等待从客户端发送的连接请求；
-  4. 使用accept()，接受从客户端发来的连接请求，建立连接，并生成一个面向该连接的socket；
-  5. 使用read()；在新socket上接收从客户端发来的信息；
-  6. 处理收到的信息并向客户端发送(write)回复，如有必要，回到步骤5；
-  7. 关闭与客户端的连接；
-  8. 返回步骤3。
-* 客户端流程
+    ```C
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    ```
+  2. 将socket设置为可重用的状态
+    > 这个server只能通过ctrl+c退出，尽管程序中拦截了ctrl+c的信号，在退出之前关闭了打开的socket，以防万一，仍然将socket设置为可重用比较好，这样保证ctrl+c退出后可以马上再进入；
+
+    ```C
+    const int reuseaddr_flag = 1;
+    setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (const char *)&reuseaddr_flag, sizeof(reuseaddr_flag));
+    ```
+  3. 使用bind()，将socket绑定到服务器地址上；
+    ```C
+    #define PORT            8080
+    struct sockaddr server_addr;
+
+    bzero(&server_addr, sizeof(server_addr));
+    server_addr.sin_family      = AF_INET;
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    server_addr.sin_port        = htons(PORT);
+
+    bind(sockfd, (const struct sockaddr *)&server_addr, sizeof(server_addr));
+    ```
+  4. 使用listen()，在绑定的服务器地址上监听，等待从客户端发送的连接请求；
+    ```C
+    listen(sockfd, 5);
+    ```
+  5. 拦截ctrl+c的信号，保证程序可以干净地退出
+    ```C
+    void sigint(int signum) {
+        if (connfd > 0) close(connfd);
+        if (sockfd > 0) close(sockfd);
+        exit(EXIT_FAILURE);
+    }
+    ......
+    signal(SIGINT, sigint);
+    ```
+  6. 使用accept()，接受从客户端发来的连接请求，建立连接，并生成一个面向该连接的socket；
+    ```C
+    int connfd = accept(sockfd, NULL, NULL);
+    ```
+  7. 使用read()；在新socket上接收从客户端发来的信息；
+    ```C
+    #define BUF_SIZE    128
+    char buff[BUF_SIZE];
+
+    bzero(buff, BUF_SIZE);
+    read(connfd, buff, sizeof(buff));
+    ```
+  8. 向客户端发送(write)从键盘输入的信息，如有必要，回到步骤7；
+    ```C
+    bzero(buff, BUF_SIZE);
+    int n = 0;
+    while ((buff[n++] = getchar()) != '\n' && n < BUF_SIZE)
+        ;
+    write(connfd, buff, sizeof(buff));
+    ```
+  9. 关闭与客户端的连接；
+    ```C
+    close(connfd);
+    ```
+  10. 返回步骤6。
+**********
+* **客户端流程**
   1. 使用socket()，创建一个TCP Socket；
+    ```C
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    ```
   2. 使用connect()，向服务器发起连接请求；
-  3. 使用write()，向服务器发送消息；
+    ```C
+    #define SERVER_IP     192.168.2.112
+    #define PORT          8080
+
+    struct sockaddr_in server_addr;
+    bzero(&server_addr, sizeof(server_addr));
+    server_addr.sin_family      = AF_INET;
+    server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
+    server_addr.sin_port        = htons(PORT);
+
+    connect(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr));
+    ```
+  3. 使用write()，向服务器发送从键盘输入的消息；
+    ```C
+    #define BUF_SIZE    128
+    char buff[BUF_SIZE];
+
+    bzero(buff, sizeof(buff));
+    int n = 0;
+    // get the mesage from keyboard. end with return.
+    while ((buff[n++] = getchar()) != '\n' && n < BUF_SIZE)
+        ;
+    write(sockfd, buff, sizeof(buff));
+    ```
   4. 使用read()，等待接收服务器的回复；
+    ```C
+    bzero(buff, sizeof(buff));
+    read(sockfd, buff, sizeof(buff));
+    ```
   5. 处理收到的服务器端回复，如有必要，返回第3步。
   6. 关闭Socket并退出。
+    ```C
+    close(sockfd);
+    ```
 
 ## 3. TCP编程常用的函数和数据结构
 * **int socket(int domain, int type, int protocol)**

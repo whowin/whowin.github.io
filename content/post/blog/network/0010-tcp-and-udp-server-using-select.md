@@ -26,35 +26,181 @@ draft: false
 postid: 180010
 ---
 
-在以前的文章中，我们给出过UDP服务器和TCP服务器的例子，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码。
+独立的TCP服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上及提供TCP服务，也提供UDP服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码。
 <!--more-->
 
 ## 1. 基本流程
-* 本示例一共有三个程序，tcp/udp服务器：tuserver.c，tcp客户端：tclient.c和udp客户端uclient.c
+* 本示例一共有三个程序，tcp/udp服务器：tu-server.c，tcp客户端：t-client.c和udp客户端u-client.c
 * 服务器端程序的基本思路是：在程序中为tcp服务和udp服务各建立一个socket，将这两个socket放入readfds中，并将参数传递给select()，当readfds中(也就是tcp或者udp socket)的某一个有数据发过来(udp)或者有客户端连接请求(时)，select()将返回，程序判断是哪个socket需要处理然后根据需要进入TCP处理程序或者UDP处理程序处理socket事件；
 * 本例中，服务器端做了简单化处理，收到客户端信息后，并不作处理，对TCP客户端，回应"Hello TCP Client"，对UDP客户端，则回应"Hello UDP Client"；
 * 服务器端程序流程
-  1. 建立一个用于侦听TCP连接请求的TCP socket
-  2. 建立一个用于接收UDP数据的UDP socket
-  3. 将这两个socket均绑定到服务器的地址上
-  4. 在TCP socket上侦听
-  5. 将TCP socket和UDP socket均加入到一个空的描述符集中
-  6. 调用select()直至其中一个socket有可读数据
-  7. 如果是TCP客户端发出请求，则接受客户端的连接请求，接收客户端发来的信息，然后回应"Hello TCP Client"，然后退出，回到步骤5；
-  8. 如果是UDP客户端发来消息，则接收客户端发来的信息，然后回应"Hello UDP Client"，回到步骤5
+  1. **建立一个用于侦听TCP连接请求的TCP socket**
+    ```C
+    int tcp_fd = socket(AF_INET, SOCK_STREAM, 0);
+    ```
+  2. **建立一个用于接收UDP数据的UDP socket**
+    ```C
+    int udp_fd = socket(AF_INET, SOCK_DGRAM, 0);
+    ```
+  3. **将这两个socket均绑定到服务器的地址上**
+    ```C
+    #define PORT            5000
+
+    struct sockaddr_in server_addr;
+
+    bzero(&server_addr, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    server_addr.sin_port = htons(PORT);
+
+    bind(tcp_fd, (struct sockaddr *)&server_addr, sizeof(server_addr));
+    bind(udp_fd, (struct sockaddr*)&server_addr, sizeof(server_addr));
+    ```
+  4. **在TCP socket上侦听**
+    ```C
+    listen(tcp_fd, 5);
+    ```
+  5. **将TCP socket和UDP socket均加入到一个空的描述符集中**
+    ```C
+    fd_set rset;
+
+    FD_ZERO(&rset);
+    FD_SET(tcp_fd, &rset);
+    FD_SET(udp_fd, &rset);
+    ```
+  6. **调用select()直至其中一个socket有可读数据**
+    ```C
+    int max_fd = (tcp_fd > udp_fd) ? tcp_fd : udp_fd + 1;
+    select(max_fd, &rset, NULL, NULL, NULL);
+    ```
+    
+  7. **处理TCP客户端发出的请求**
+    > 如果是TCP客户端发出请求，则接受客户端的连接请求，接收客户端发来的信息，然后回应"Hello TCP Client"，然后退出，回到步骤5；
+
+    ```C
+    #define BUF_SIZE        1024
+
+    struct sockaddr_in client_addr;
+    char buffer[BUF_SIZE];
+    socklen_t len;
+    ssize_t n;
+    char *tcp_msg = "Hello TCP Client";
+
+    socklen_t len = sizeof(client_addr);
+    int conn_fd = accept(tcp_fd, (struct sockaddr*)&client_addr, &len);
+    if (conn_fd > 0) {
+        bzero(buffer, sizeof(buffer));
+        n = 0;
+        n = read(conn_fd, buffer, sizeof(buffer));
+        if (n > 0) {
+            buffer[n] = '\0';
+            write(conn_fd, tcp_msg, strlen(tcp_msg));
+        }
+        close(conn_fd);
+    }
+    ```
+  8. **处理UDP客户端发来的消息**
+    > 如果是UDP客户端发来消息，则接收客户端发来的信息，然后回应"Hello UDP Client"，回到步骤5
+
+    ```C
+    #define BUF_SIZE        1024
+
+    struct sockaddr_in client_addr;
+    char buffer[BUF_SIZE];
+    socklen_t len;
+    ssize_t n;
+    char *udp_msg = "Hello UDP Client";
+
+    socklen_t len = sizeof(client_addr);
+    bzero(buffer, sizeof(buffer));
+    n = 0;
+    n = recvfrom(udp_fd, buffer, sizeof(buffer), 0, (struct sockaddr *)&client_addr, &len);
+    if (n > 0) {
+        buffer[n] = '\0';
+        sendto(udp_fd, udp_msg, strlen(udp_msg), 0, (struct sockaddr *)&client_addr, sizeof(client_addr));
+    }
+    ```
 
 * tcp客户端程序流程
-  1. 建立一个TCP socket
-  2. 向服务器发出连接请求，等待服务器接受
-  3. 向服务器发送信息，并等待服务器的回应
-  4. 接收到服务器回应
+  1. **建立一个TCP socket**
+    ```C
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    ```
+  2. **向服务器发出连接请求，等待服务器接受**
+    ```C
+    #define SERVER_IP   "192.168.2.112"
+    #define PORT        5000
+
+    struct sockaddr_in server_addr;
+    memset(&server_addr, 0, sizeof(server_addr));
+
+    server_addr.sin_family      = AF_INET;
+    server_addr.sin_port        = htons(PORT);
+    server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
+
+    connect(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr));
+    ```
+  3. **向服务器发送信息，并等待服务器的回应**
+    ```C
+    char *message = "Hello Server";
+    write(sockfd, message, strlen(message));
+    ```
+
+  4. **接收到服务器回应**
+    ```C
+    #define BUF_SIZE    1024
+
+    char buffer[BUF_SIZE];
+    int n = 0
+    memset(buffer, 0, sizeof(buffer));
+    n = read(sockfd, buffer, sizeof(buffer));
+    buffer[n] = '\0';
+    printf("Message from server: %s\n", buffer);
+    ```
   5. 关闭socket，退出
+    ```C
+    close(sockfd);
+    ```
 
 * udp客户端程序流程
-  1. 建立一个UDP socket
-  2. 向服务器发送信息，并等待服务器回应
-  3. 收到服务器回应
-  4. 关闭socket，退出
+  1. **建立一个UDP socket**
+    ```C
+    int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+    ```
+  2. **向服务器发送信息，并等待服务器回应**
+    ```C
+    #define SERVER_IP   "192.168.2.112"
+    #define PORT        5000
+
+    char *message = "Hello Server";
+    struct sockaddr_in server_addr;
+
+    memset(&server_addr, 0, sizeof(server_addr));
+
+    // Filling server information
+    server_addr.sin_family      = AF_INET;
+    server_addr.sin_port        = htons(PORT);
+    server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
+    // send hello message to server
+    sendto(sockfd, message, strlen(message), 0, (const struct sockaddr *)&server_addr, sizeof(server_addr));
+    ```
+
+  3. **收到服务器回应**
+    ```C
+    #define BUF_SIZE    1024
+
+    char buffer[BUF_SIZE];
+    int len = sizeof(struct sockaddr_in);
+    int n = 0;
+    memset(buffer, 0, BUF_SIZE);
+    n = recvfrom(sockfd, buffer, BUF_SIZE, 0, (struct sockaddr *)&server_addr, (socklen_t *)&len);
+    buffer[n] = '\0';
+    printf("Message from server: %s\n", buffer);
+    ```
+  4. **关闭socket，退出**
+    ```C
+    close(sockfd);
+    ```
 
 ## 主要函数、宏和数据结构
 * **select()函数**
@@ -120,19 +266,19 @@ postid: 180010
 * 其它函数和数据结构的介绍，请参考另两篇文章[《使用C语言实现服务器/客户端的UDP通信》][article1]和[《使用C语言实现服务器/客户端的TCP通信》][article2]
 
 ## 3. 实例
-* 本示例一共有三个程序，tcp/udp服务器：tcp-udp-server.c，tcp客户端：tcp-client.c和udp客户端udp-client.c
+* 本示例一共有三个程序，tcp/udp服务器：tu-server.c，tcp客户端：t-client.c和udp客户端u-client.c
 * 本示例演示了如何使用select机制在一个服务器程序里既提供TCP服务，又提供UDP服务；有些服务(比如聊天)，可以既允许UDP接入，也允许TCP接入的，这种情况下，这样一种机制就显得比较实用；
-* 服务器端程序：[tcp-udp-server.c][src01](**点击文件名下载源程序**)
+* 服务器端程序：[tu-server.c][src01](**点击文件名下载源程序**)
 
 * 服务器端程序的编译
   ```bash
-  gcc -Wall tcp-udp-server.c -o tcp-udp-server
+  gcc -Wall tu-server.c -o tu-server
   ```
 
 * 服务器端程序的测试
   - 在一台机器上启动服务器端程序
     ```bash
-    ./tcp-udp-server
+    ./tu-server
     ```
   - 假定服务器IP为192.168.2.112，在另一台机器上启动nc模拟客户端，测试TCP
     ```bash
@@ -159,25 +305,25 @@ postid: 180010
     ![screenshot of udp client test][img03]
 
 *************
-* TCP客户端程序：[tcp-client.c][src02](**点击文件名下载源程序**)
+* TCP客户端程序：[t-client.c][src02](**点击文件名下载源程序**)
 
-* UDP客户端程序：[udp-client.c][src03](**点击文件名下载源程序**)
+* UDP客户端程序：[u-client.c][src03](**点击文件名下载源程序**)
 
 * 客户端程序编译
   ```bash
-  gcc -Wall tcp-client.c -o tcp-client
-  gcc -Wall udp-client.c -o udp-client
+  gcc -Wall t-client.c -o t-client
+  gcc -Wall u-client.c -o u-client
   ```
 
 * 程序运行
   - 在服务器上(192.168.2.112)上运行服务器端程序
     ```bash
-    ./tcp-udp-server
+    ./tu-server
     ```
   - 在另一台机器上运行客户端程序
     ```bash
-    ./tcp-client
-    ./udp-client
+    ./t-client
+    ./u-client
     ```
   - 服务器端的运行截图
 
@@ -187,6 +333,10 @@ postid: 180010
   - 客户端的运行截图
   
     ![Screenshot of client][img05]
+
+## 4. 后记
+* 服务器端对TCP连接的处理是在是太简陋了，因为TCP连接建立后，产生一个新的socket，本例中为conn_fd，通常的做法应该是把conn_fd也加入到rset中，这样就可以处理多个TCP连接了，同时在处理TCP连接时也不会让程序阻塞；
+* 服务器端对TCP连接的处理，也可以使用多线程的方式，即accept一个连接请求后，生成新的conn_fd，建立一个线程，专门处理这个connection，也不失为一个办法，但相对要复杂一些。
 
 -------------
 **欢迎访问我的博客：https://whowin.cn**
@@ -198,9 +348,9 @@ postid: 180010
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:/sourcecodes/180010/tcp-udp-server.c
-[src02]:/sourcecodes/180010/tcp-client.c
-[src03]:/sourcecodes/180010/udp-client.c
+[src01]:https://whowin.gitee.io/sourcecodes/180010/tu-server.c
+[src02]:https://whowin.gitee.io/sourcecodes/180010/t-client.c
+[src03]:https://whowin.gitee.io/sourcecodes/180010/u-client.c
 
 [img01]:https://whowin.gitee.io/images/180010/server_test.png
 [img02]:https://whowin.gitee.io/images/180010/tcpclient_test.png

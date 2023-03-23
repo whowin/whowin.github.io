@@ -21,7 +21,7 @@ draft: false
 postid: 180011
 ---
 
-本文用一个简化的实例说明如何在一个TCP服务器程序中，使用select处理同时出现的多个客户连接，文章给出了程序源代码，本文假定读者已经具备了基本的socket编程知识，熟悉基本的服务器/客户端模型架构。
+TCP是一种面向连接的通信方式，一个TCP服务器难免会遇到同时处理多个用户的连接请求的问题，本文用一个简化的实例说明如何在一个TCP服务器程序中，使用select处理同时出现的多个客户连接，文章给出了程序源代码，本文假定读者已经具备了基本的socket编程知识，熟悉基本的服务器/客户端模型架构。
 <!--more-->
 
 ## 1. 基本思路
@@ -32,14 +32,103 @@ postid: 180011
   4. 可能发生死锁。
 * 使用select处理多连接的基本思路
   1. 建立一个用于侦听的socket，叫做master_socket；
+    ```C
+    int master_socket = socket(AF_INET , SOCK_STREAM , 0);
+    ```
   2. 建立一个sockets数组，用于存储已经与master_socket建立连接的socket，叫做client_socket，初始化时全部清0，数组的长度即为程序允许的最大连接数；
+    ```C
+    #define MAX_CLIENTS     30
+
+    int client_socket[MAX_CLIENTS];
+    int i;
+    for (i = 0; i < MAX_CLIENTS; i++) {
+        client_socket[i] = 0;
+    }
+    ```
   3. 绑定服务器地址并在master_socket上启动侦听；
-  4. 将master_socket、client_socket中不为0的项加入到readfds中，启动select；
-  5. 有活动socket返回时，如果是master_socket则调用accept接受连接，生成新的socket并加入到client_socket中，发送欢迎信息后回到步骤4；
-  6. 如果不是master_socket，为client_socket中的一员，则调用read从socket中读出数据，处理并做出回应，回到步骤4；
-  7. 如果从client_socket读出数据长度为0，表示socket已经关闭，关闭socket，并从client_socket中清除该socket，回到步骤4；
-  8. 如果从client_socket读出数据长度小于0，如果errno=EINTR，则直接返回步骤4；
-  9. 如果从client_socket读出数据长度小于0，如果errno不是EINTR，则关闭socket，并从client_socket中清除该socket，回到步骤4；
+    ```C
+    #define PORT          8888
+    struct sockaddr_in address;
+
+    address.sin_family      = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port        = htons(PORT);
+    bind(master_socket, (struct sockaddr *)&address, sizeof(address));
+    ```
+  4. 在master_socket上侦听
+    ```C
+    listen(master_socket, 3);
+    ```
+  5. 将master_socket、client_socket中不为0的项加入到readfds中，启动select；
+    ```C
+    fd_set readfds;
+    int max_fd, client_count;
+
+    FD_ZERO(&readfds);
+    FD_SET(master_socket, &readfds);
+    max_fd = master_socket;
+
+    client_count = 0;
+    for (i = 0 ; i < MAX_CLIENTS; i++) {
+        if (client_socket[i] > 0) {
+            FD_SET(client_socket[i], &readfds);
+            client_count++;
+        }
+        if (client_socket[i] > max_fd) max_fd = client_socket[i];
+    }
+    activity = select(max_fd + 1, &readfds, NULL, NULL, NULL);
+    ```
+  6. 有活动socket返回时，如果是master_socket则调用accept接受连接，生成新的socket并加入到client_socket中，发送欢迎信息后回到步骤4；
+    ```C
+    int new_socket;
+    char *message = "ECHO Daemon v1.0 \n\n";
+
+    addrlen = sizeof(address);
+    if (FD_ISSET(master_socket, &readfds)) {
+        new_socket = accept(master_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
+        send(new_socket, message, strlen(message), 0);
+        if (client_count < MAX_CLIENTS) {
+            for (i = 0; i < MAX_CLIENTS; i++) {
+                if (client_socket[i] == 0) {
+                    client_socket[i] = new_socket;
+                    client_count++;
+                    break;
+                }
+            }
+        } else {
+            close(new_socket);
+        }
+    }
+    ```
+  7. 如果不是master_socket，为client_socket中的一员，则调用read从socket中读出数据，处理并做出回应，回到步骤4；
+    ```C
+    for (i = 0; i < MAX_CLIENTS; i++) {
+        if (client_socket[i] == 0) continue;
+
+        if (FD_ISSET(client_socket[i], &readfds)) {
+            if ((nread = read(client_socket[i], buffer, 1024)) > 0) {
+                buffer[nread] = '\0';
+                send(client_socket[i], buffer, strlen(buffer), 0 );
+            }
+        }
+    }
+
+    ```
+  8. 如果从client_socket读出数据长度为0，表示socket已经关闭，关闭socket，并从client_socket中清除该socket，回到步骤4；
+    ```C
+    if (nread == 0) {
+        close(client_socket[i]);
+        client_socket[i] = 0;
+    }
+    ```
+  9. 如果从client_socket读出数据长度小于0，如果errno=EINTR，则直接返回步骤4；
+  10. 如果从client_socket读出数据长度小于0，如果errno不是EINTR，则关闭socket，并从client_socket中清除该socket，回到步骤4；
+    ```C
+    if (errno != EINTR) {
+        close(client_socket[i]);
+        client_socket[i] = 0;
+    }
+    ```
 
 ## 2. 主要函数、宏和数据结构
 * 请参考[《使用select实现的UDP/TCP组合服务器》][article1]、[《使用C语言实现服务器/客户端的UDP通信》][article2]和[《使用C语言实现服务器/客户端的TCP通信》][article3]
@@ -94,7 +183,7 @@ postid: 180011
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:/sourcecodes/180011/select-server.c
+[src01]:https://whowin.gitee.io/sourcecodes/180011/select-server.c
 
 [img01]:https://whowin.gitee.io/images/180011/screenshot_of_server.png
 [img02]:https://whowin.gitee.io/images/180011/screenshot_of_client_1.png

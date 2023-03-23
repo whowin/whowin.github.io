@@ -35,7 +35,7 @@
 int main(int argc, char *argv[]) {
     int master_socket, new_socket, client_socket[MAX_SOCKETS];
     int activity, i, nread, client_count;
-    int max_sd;
+    int max_fd;
     struct sockaddr_in address;
     int addrlen;
 
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
 
         // add master socket to set
         FD_SET(master_socket, &readfds);
-        max_sd = master_socket;
+        max_fd = master_socket;
 
         client_count = 0;
         // add client sockets to set
@@ -101,11 +101,11 @@ int main(int argc, char *argv[]) {
             }
 
             //highest file descriptor number, need it for the select function
-            if (client_socket[i] > max_sd) max_sd = client_socket[i];
+            if (client_socket[i] > max_fd) max_fd = client_socket[i];
         }
 
         // wait for an activity on one of the sockets, timeout is NULL, so wait indefinitely
-        activity = select(max_sd + 1, &readfds, NULL, NULL, NULL);
+        activity = select(max_fd + 1, &readfds, NULL, NULL, NULL);
 
         if ((activity < 0) && (errno != EINTR)) {
             printf("select error");

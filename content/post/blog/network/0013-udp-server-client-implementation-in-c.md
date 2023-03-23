@@ -40,16 +40,71 @@ postid: 180013
 > 基于TCP协议的一次通信需要三个socket，服务器端建立一个server_sock监听一个特定端口，客户端建立一个client_sock向服务器发起连接请求，服务器端接受连接并生成一个新的connect_sock与该客户端进行通信；基于UDP协议的通信省去了客户端向服务器端发起连接请求和服务器端接受连接的步骤，收到UDP报文后直接从UDP报头中获取发送端的IP地址和端口号，并将回应直接发送给发送端。
 
 ## 2. 服务器/客户端UDP通信的基本流程
-* 服务端流程
+* **服务端流程**
   1. 创建一个UDP Socket；
+    ```C
+    int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+    ```
   2. 将socket绑定到服务器地址上；
+    ```C
+    #define PORT        8080
+    struct sockaddr_in server_addr;
+
+    memset(&server_addr, 0, sizeof(server_addr));
+    server_addr.sin_family      = AF_INET;
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+    server_addr.sin_port        = htons(PORT);
+
+    bind(sockfd, (const struct sockaddr *)&server_addr, sizeof(server_addr));
+    ```
   3. 等待从客户端发送的数据到达；
+    ```C
+    #define BUF_SIZE    1024
+
+    struct sockaddr_in client_addr;
+    char buffer[BUF_SIZE];
+
+    socklen_t len = sizeof(client_addr);  // len is value/result
+    memset(&client_addr, 0, len);
+    memset(buffer, 0, BUF_SIZE);
+    recvfrom(sockfd, (char *)buffer, BUF_SIZE, MSG_WAITALL, (struct sockaddr *)&client_addr, &len); 
+    ```
   4. 处理收到的数据并向客户端发送回复；
+    ```c
+    char *hello_str = "Hello from server";
+    sendto(sockfd, (const char *)hello_str, strlen(hello_str), MSG_CONFIRM, (const struct sockaddr *)&client_addr, len); 
+    ```
   5. 返回步骤3。
-* 客户端流程
+
+* **客户端流程**
   1. 创建一个UDP Socket；
+    ```c
+    int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+    ```
   2. 向服务器发送消息；
+    ```C
+    #define SERVER_IP   "192.168.2.112"
+    #define SERVER_PORT 8080
+
+    struct sockaddr_in server_addr;
+    char *hello = "Hello from client";
+
+    memset(&server_addr, 0, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(SERVER_PORT);
+    server_addr.sin_addr.s_addr = inet_addr(SERVER_IP);
+
+    int n;
+    socklen_t len;
+    sendto(sockfd, (const char *)hello, strlen(hello), 0, (const struct sockaddr *)&server_addr, sizeof(server_addr));
+    ```
   3. 等待接收服务器的响应；
+    ```C
+    #define BUF_SIZE    1024
+
+    char buffer[BUF_SIZE];
+    recvfrom(sockfd, (char *)buffer, BUF_SIZE, MSG_WAITALL, (struct sockaddr *)&server_addr, &len);
+    ```
   4. 处理收到的服务器端响应，如有必要，返回第2步。
   5. 关闭Socket并退出。
 
@@ -201,8 +256,8 @@ postid: 180013
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:/sourcecodes/180013/udp-client.c
-[src02]:/sourcecodes/180013/udp-server.c
+[src01]:https://whowin.gitee.io/sourcecodes/180013/udp-client.c
+[src02]:https://whowin.gitee.io/sourcecodes/180013/udp-server.c
   
 [img01]:https://whowin.gitee.io/images/180013/test_udpserver_with_nc.png
 [img02]:https://whowin.gitee.io/images/180013//screenshot_of_udpclient.png

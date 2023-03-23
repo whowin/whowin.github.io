@@ -17,6 +17,7 @@
  *
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <malloc.h>
@@ -39,6 +40,7 @@
 
 #define IF_NAME         "enp0s3"             // name of local eth interface
 #define DEST_IP         "192.168.2.112"      // destination ip
+//#define DEST_IP         "193.233.207.175"    // destination ip
 
 #if GATEWAY
     #define DEST_MAC_0      0xdc
@@ -62,7 +64,7 @@ int get_eth_index(int sock_raw) {
     strncpy(if_req.ifr_name, IF_NAME, IFNAMSIZ - 1);
 
     if ((ioctl(sock_raw, SIOCGIFINDEX, &if_req)) < 0) {
-        printf("error in SIOCGIFINDEX ioctl reading.\n");
+        perror("ioctl() with SIOCGIFINDEX");
         return -1;
     }
     printf("Interface Name: %s\tInterface Index=%d\n", IF_NAME, if_req.ifr_ifindex);
@@ -75,7 +77,7 @@ int get_mac(int sock_raw, unsigned char *mac) {
     strncpy(if_req.ifr_name, IF_NAME, IFNAMSIZ - 1);
 
     if ((ioctl(sock_raw, SIOCGIFHWADDR, &if_req)) < 0) { 
-        printf("error in SIOCGIFHWADDR ioctl reading.\n");
+        perror("ioctl() with SIOCGIFHWADDR");
         return -1;
     }
     int i;
@@ -91,7 +93,7 @@ int get_ip(int sock_raw, char *ip) {
     memset(&if_req, 0, sizeof(struct ifreq));
     strncpy(if_req.ifr_name, IF_NAME, IFNAMSIZ - 1);
     if (ioctl(sock_raw, SIOCGIFADDR, &if_req) < 0) {
-        printf("error in SIOCGIFADDR.\n");
+        perror("ioctl() with SIOCGIFADDR");
         return -1;
     }
 
@@ -193,12 +195,12 @@ int main() {
     int total_len = 0;              // total length of packet
     int send_len = 0;               // how many bytes sent
 
-    int ret_value = 0;              // return value
+    int ret_value = EXIT_SUCCESS;   // return value
 
     sock_raw = socket(AF_PACKET, SOCK_RAW, IPPROTO_RAW);
     if (sock_raw == -1) {
-        printf("error in socket.\n");
-        return -1;
+        perror("socket()");
+        return EXIT_FAILURE;
     }
 
     send_buf = (unsigned char*)malloc(64);
@@ -206,15 +208,15 @@ int main() {
 
     if_index = get_eth_index(sock_raw);         // get interface index number
     if (if_index < 0) {
-        ret_value = -1;
+        ret_value = EXIT_FAILURE;
         goto quit;
     }
     if (get_mac(sock_raw, mac) < 0) {           // get MAC address
-        ret_value = -1;
+        ret_value = EXIT_FAILURE;
         goto quit;
     }
     if (get_ip(sock_raw, ip) < 0) {             // get IP address
-        ret_value = -1;
+        ret_value = EXIT_FAILURE;
         goto quit;
     }
     ethernet_header(send_buf, mac);             // construct ethernet header
@@ -242,8 +244,8 @@ int main() {
     while (send_len == 0) {
         send_len = sendto(sock_raw, send_buf, 64, 0, (const struct sockaddr *)&saddr_ll, sizeof(struct sockaddr_ll));
         if (send_len < 0) {
-            printf("error in sending....sendlen=%d....errno=%d\n", send_len, errno);
-            ret_value = -1;
+            perror("sendto()");
+            ret_value = EXIT_FAILURE;
             goto quit;
         }
     }

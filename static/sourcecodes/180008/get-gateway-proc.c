@@ -22,7 +22,7 @@
 #include <arpa/inet.h>
 #include <linux/route.h>
 
-#define ROUTING_TABEL   "/proc/net/route"
+#define ROUTING_TABLE   "/proc/net/route"
 #define BUF_SIZE        128
 
 int get_gateway(char *gw) {
@@ -31,8 +31,8 @@ int get_gateway(char *gw) {
     int ret = 1;
 
     // open file /proc/net/route
-    if ((fp = fopen(ROUTING_TABEL, "r")) == NULL) {
-        printf("Can't open file - %s.\n", ROUTING_TABEL);
+    if ((fp = fopen(ROUTING_TABLE, "r")) == NULL) {
+        printf("Can't open file - %s.\n", ROUTING_TABLE);
         return ret;
     }
 

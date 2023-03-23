@@ -61,7 +61,7 @@ Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的�
   -------------
 
 * **以太网报头**
-  - 以太网报头定义在头文件linux/if_ether.h中：
+  - 以太网报头定义在头文件<linux/if_ether.h>中：
     ```C
     struct ethhdr {
         unsigned char  h_dest[ETH_ALEN];    /* destination eth addr  */
@@ -70,8 +70,8 @@ Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的�
     } __attribute__((packed));
     ```
   - h_dest字段为目的MAC地址，h_source字段为源MAC地址；
-  - h_proto表示当前数据包在网络层使用的协议，Linux支持的协议在头文件linux/if_ether.h中定义；通常在网络层使用的IP协议，这个字段的值是0x0800(ETH_P_IP)；
-  - 但是本文中的 h_proto 字段要填写 **0x842**，很遗憾这个协议在头文件中没有定义，也基本找不到相关资料；
+  - h_proto表示当前数据包在网络层使用的协议，Linux支持的协议在头文件<linux/if_ether.h>中定义；通常在网络层使用的IP协议，这个字段的值是0x0800(ETH_P_IP)；
+  - 但是本文中的 **h_proto** 字段要填写 **0x842**，很遗憾这个协议在头文件中没有定义，也基本找不到相关资料；
 
 * **raw socket**
   - 可以参考我的另两篇文章[《Linux下如何在数据链路层接收原始数据包》][article02]和[《如何使用raw socket发送UDP报文》][article03]，这里仅做一个简单回顾；
@@ -83,8 +83,8 @@ Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的�
   - 第三个参数还可以有其它选择，这个参数往往会对socket的接收产生影响，本文并不接收任何信息，所以对本文来说无关紧要。
 
 * **struct sockaddr_ll**
-  - 这个结构在linux/if_packet.h中定义，有关该结构的详细说明请参考其它文章，本文仅就相关字段做出说明；
-  - 这个结构与IPv4 socket编程中的结构(struct sockaddr_in)的作用类似，是用在raw socket上的一个地址结构，烦请自行理解，其中'll'表示Low Level
+  - 这个结构在<linux/if_packet.h>中定义，有关该结构的详细说明请参考其它文章，本文仅就相关字段做出说明；
+  - 这个结构与 IPv4 socket 编程中的结构(struct sockaddr_in)的作用类似，是用在raw socket上的一个地址结构，烦请自行理解，其中'll'表示Low Level
     ```C
     struct sockaddr_ll {
         unsigned short  sll_family;
@@ -97,11 +97,11 @@ Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的�
     };
     ```
   - sll_family为协议族，和建立raw socket是使用的协议族要一致，所以肯定是AF_PACKET；
-  - sll_protocol是标准的以太网协议类型，定义在头文件linux/if_ether.h中，通常情况下应该 ETH_P_IP(0x800) 表示IP协议，本文要填 0x842；
+  - sll_protocol是标准的以太网协议类型，定义在头文件<linux/if_ether.h>中，通常情况下应该 ETH_P_IP(0x800) 表示IP协议，本文要填 **0x842**；
   - sll_ifindex是网络接口的索引号，我们可以根据接口名称使用ioctl获得；
-  - sll_halen是硬件地址(MAC)的长度，ha是Hardware Address的意思，填常数 ETH_ALEN(定义在头文件linux/if_ether.h中)；
+  - sll_halen是硬件地址(MAC)的长度，ha是Hardware Address的意思，填常数 ETH_ALEN(定义在头文件<linux/if_ether.h>中)；
   - sll_addr是目的MAC地址
-  - 实际上，在发送数据时，由于sll_family和sll_protocol都是和socket中一样的，所以大多数情况下都可以不填，只要填sll_ifindex、sll_halen和sll_addr即可，但是本文的例子中，如果使用bind()绑定地址，应该尽量完整第填写，否则执行bind()是会出错。
+  - 实际上，在发送数据时，由于sll_family和sll_protocol都是和socket中一样的，所以大多数情况下都可以不填，只要填sll_ifindex、sll_halen和sll_addr即可，但是本文的例子中，如果使用bind()绑定地址，应该尽量完整地填写，否则执行bind()是会出错。
 
 ## 3. 在数据链路层发送Magic Packet
 * 先说一下目标，通常使用UDP发送Magic Packet的报文结构为：以太网报头 + IP报头 + UDP报头 + Magic Packet，我们的目标是：**以太网报头 + Magic Packet**
@@ -109,7 +109,7 @@ Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的�
 
 * 报文是以广播的形式发出去的，发送广播时，以太网报头的目的MAC要全部填写0xff，(struct sockaddr_ll)中的sll_addr也要全部填写0xff；
 * 尽管我们知道目的MAC，但是这个报文必须以广播报文发出，因为此时被唤醒的机器并没有开机，所以无法通过arp获知填写的MAC地址是否在局域网内，所以如果在以太网报头的h_dest中填上了要被唤醒的机器的MAC地址，报文是无法送达的；
-* 关于使用ioctl获取接口索引号(Interface Index)和接口MAC的问题，请自行查找资料，这些是IPv4 socket编程中基础的东西，本文认为读者已经掌握；
+* 关于使用ioctl获取接口索引号(Interface Index)和接口MAC的问题，请自行查找资料，或者参考文章[《如何使用raw socket发送UDP报文》][article03]，这篇文章中有部分内容涉及到这个问题；
 * 程序中写好了用send()或者用sendto()发送报文的代码，使用一个常量USING_SENDTO来控制，当USING_SENDTO为1时，将使用sendto()发送报文，否则使用send()发送报文；
 * 如果使用send()发送报文，需要使用bind()绑定目的地址；
 * 具体实践中，如果使用sendto()发送报文，(struct sockaddr_ll)中只需填写sll_ifindex即可，这个也许和运行环境有关，请自行测试；理论上说，只要编译通过，运行没有出错，就表示这个Magic Packet发送了出去，应该就可以起作用；
@@ -134,7 +134,7 @@ Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的�
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:/sourcecodes/180015/magic-packet.c
+[src01]:https://whowin.gitee.io/sourcecodes/180015/magic-packet.c
 
 [article01]:https://whowin.gitee.io/post/blog/network/embedded/0001-wake-on-lan/
 [article02]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/

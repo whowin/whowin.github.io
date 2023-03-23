@@ -34,10 +34,10 @@ postid: 180007
 * 为什么需要ARP协议
   - 以TCP/IP协议为例，应用程序在应用层发出信息后，在传输层(TCP层)加上一个TCP报头，TCP报头中需要填写源端口和目的端口，端口号标识着一台机器上的某个确定的应用程序，在网络层(IP层)加上一个IP报头，IP报头需要填写源IP地址和目的IP地址，IP地址标识着互联网上一台唯一的机器，所以，TCP报头和IP报头可以确定下来互联网上的某台机器上的某个应用程序；
   - 在数据链路层需要给数据包加上以太网报头，在以太网报头中，需要填的是机器的物理地址(MAC地址)，源地址和目的地址均要填MAC地址；
-  - 我们可以使用ioctl获取本机的MAC地址，但是却无法获取目的地址的MAC地址，这时就需要使用ARP协议了；
+  - 在局域网中传输数据，是要依靠数据链层中的MAC地址的，我们可以使用ioctl获取本机的MAC地址，但是却无法获取目的地址的MAC地址，这时就需要使用ARP协议了；
 
 * ARP的工作原理
-  - 在以太网络中，每台机器均有一个ARP cache，里面存着一些IP地址和MAC地址的对应关系，在ubuntu下，内核把ARP cache映射为文件：/proc/net/arp
+  - 在以太网络中，每台机器均有一个ARP cache，里面存着一些IP地址和MAC地址的对应关系，在ubuntu下，内核把ARP cache映射为文件：```/proc/net/arp```，所以使用 ```cat /proc/net/arp``` 是可以看到本机的 ARP cache 的
   - 在数据链路层需要填MAC地址时，首先查询ARP cache中是否有相应的记录，如果有则直接使用；
   - 如果在ARP cache中没有记录，则向局域网广播一个ARP请求，里面有需要获取MAC地址的机器所对应的IP地址，当这个IP地址收到这个ARP请求时，则会回应一个ARP回应，将自己的MAC地址告知发送请求的机器，发出请求的机器收到该回应后，应该在ARP cache中添加上这条记录；
   - 有关ARP cache的操作，请参考文章[《如何用C语言操作arp cache》][article3]。
@@ -61,7 +61,7 @@ postid: 180007
   - h_dest字段为目的MAC地址，h_source字段为源MAC地址；
   - h_proto表示当前数据包在网络层使用的协议，Linux支持的协议在头文件linux/if_ether.h中定义；通常在网络层使用的IP协议，这个字段的值是0x0800(宏ETH_P_IP)，**对于ARP报文，这个字段的值为0x0806(ETH_P_ARP)**，表示网络层使用的是ARP协议；
   - 对于一个ARP请求数据包来说，h_dest通常为6个0xff，这是因为发送者并不知道目的机器的MAC地址，发送者的意图就是通过一个ARP请求包获得目的机器的MAC地址，所以发送者需要把这个数据包广播出去，使每台机器都可以收到，6个0xff表示一个广播地址；
-  - 对于ARP请求的数据包来说，h_source是发送者自己的MAC地址，发送者在发送ARP请求时，自己的MAC地址是显然已知的；
+  - 对于ARP请求的数据包来说，h_source是发送者自己的MAC地址，发送者在发送ARP请求时，自己的MAC地址是显然已知的，如果不知道，可以通过ioctl()获取(请参考文章[《如何使用raw socket发送UDP报文》][article2])；
   - 对于ARP回应的数据包来说，目的地址就是发送ARP请求包的机器，h_dest应该就是收到的ARP请求包中的h_source；
   - 对于ARP回应的数据包来说，h_source就是自己的MAC地址，这个当然是已知的；
   - 不管是ARP请求还是回应数据包，h_proto都是0x0806(宏ETH_P_ARP)，表示网络层使用的协议是ARP协议
@@ -108,8 +108,8 @@ postid: 180007
   - 在ARP回应数据包中，arp_sha和arp_spa就是本机的MAC地址和IP地址，这些信息都是已知的。
 
 ## 2. ARP请求/回应的发送和接收
-* 对于习惯于使用socket基于TCP/IP协议的编程来说，arp的请求既无法使用TCP socket发送，也无法使用UDP socket发送；接收也是一样，TCP/UDP socket是无法收到ARP的回应信息的；
-* 前面说过，ARP协议是工作在数据链路层的，而TCP/UDP socket是用在应用层的，应用层发送的数据在传输层要被加上一个TCP/UDP头，在网络层要被加上一个IP头，在数据链路层要被加上一个以太网头，然后才交给物理层发送；
+* 对于习惯于使用socket基于TCP/IP协议的编程来说，arp的请求既无法使用TCP socket(SOCK_STREAM)发送，也无法使用UDP socket(SOCK_DGRAM)发送；接收也是一样，TCP/UDP socket是无法收到ARP的回应信息的；
+* 前面说过，ARP协议是工作在数据链路层的，而TCP/UDP socket是用在应用层的，应用层发送的数据在传输层要被加上一个TCP/UDP头，在网络层要被加上一个IP头，在数据链路层要被加上一个以太网头，然后才交给物理层(网卡的驱动程序)发送；
 * 相关概念请参考[《Linux下如何在数据链路层接收原始数据包》][article1]和[《如何使用raw socket发送UDP报文》][article2]
 * 发送ARP请求、接收ARP回应只能在数据链路层完成，要在数据链路层上编程，需要用到raw socket，相关的知识也请参考上面两篇文章；
 * 在发送ARP请求时，封装过程与文章[《如何使用raw socket发送UDP报文》][article2]中类似；
@@ -121,22 +121,103 @@ postid: 180007
 * 在这个例子中，程序接收局域网上所有机器发出的arp请求包，如果这个请求包是发给本机的，即arp请求包中的目的IP为本机IP，则显示收到的以太网报头和arp报文，并向发送者发送一个arp回应；
 * 程序的运行步骤如下：
   1. 创建一个raw socket
+    ```C
+    int sock_raw = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
+    ```
   2. 查询网络接口的索引号(interface index)
+    ```C
+    #define DEVICE    "enp0s3"
+    struct ifreq ifr;
+
+    memset(&ifr, 0, sizeof(struct ifreq));
+    strncpy(ifr.ifr_name, DEVICE, IFNAMSIZ - 1);
+    ioctl(sock_raw, SIOCGIFINDEX, &ifr);
+
+    int ifindex = ifr.ifr_ifindex;
+    ```
   3. 查询本机的MAC地址
+    ```C
+    unsigned char src_mac[ETH_ALEN];
+    ioctl(sock_raw, SIOCGIFHWADDR, &ifr);
+    memcpy(src_mac, ifr.ifr_hwaddr.sa_data, ETH_ALEN);
+    ```
   4. 查询本机的IP地址
+    ```C
+    #define DEVICE    "enp0s3"
+    struct ifreq ifr;
+
+    memset(&ifr, 0, sizeof(struct ifreq));
+    strncpy(ifr.ifr_name, DEVICE, IFNAMSIZ - 1);
+    if (ioctl(sock_raw, SIOCGIFADDR, &ifr) < 0) {
+        printf("SIOCGIFADDR.\n");
+        close(sock_raw);
+        exit(EXIT_FAILURE);
+    }
+    uint32_t src_ip;
+    memcpy((void *)&src_ip, &(((struct sockaddr_in *)&(ifr.ifr_addr))->sin_addr), sizeof(uint32_t));
+    ```
   5. 为发送arp报文设置sockaddr_ll
+    ```C
+    struct sockaddr_ll saddr_ll;
+
+    memset((void *)&saddr_ll, 0, sizeof(struct sockaddr_ll));
+    saddr_ll.sll_family   = PF_PACKET;
+    saddr_ll.sll_protocol = htons(ETH_P_IP);
+    saddr_ll.sll_ifindex  = ifindex;
+    saddr_ll.sll_hatype   = ARPHRD_ETHER;
+    saddr_ll.sll_pkttype  = PACKET_OTHERHOST;
+    saddr_ll.sll_halen    = ETH_ALEN;
+    ```
   6. 等待接收来自网络的数据包
+    ```C
+    struct __attribute__((packed)) arp_packet {
+        struct arphdr arp_hdr;
+        unsigned char arp_sha[ETH_ALEN];
+        unsigned char arp_spa[4];
+        unsigned char arp_dha[ETH_ALEN];
+        unsigned char arp_dpa[4];
+    };
+    int buf_size = sizeof(struct ethhdr) + sizeof(struct arp_packet);
+    void *buffer = (void *)malloc(buf_size);
+
+    memset(buffer, 0, buf_size);
+    recvfrom(sock_raw, buffer, buf_size, 0, NULL, NULL);
+    ```
   7. 如果数据包不是arp数据包，则忽略，回到步骤6
   8. 如果数据包不是arp请求包，则忽略，回到步骤6
   9. 如果arp请求包不是发给本机的，则忽略，回到步骤6
   10. 显示以太网报头
   11. 显示arp数据包(arp header + arp payload)
   12. 构建用于发送arp reply的以太网报头
+    ```C
+    unsigned char *eth_header = buffer;
+
+    memcpy((void *)eth_header, (const void *)(eth_header + ETH_ALEN), ETH_ALEN);
+    memcpy((void *)(eth_header + ETH_ALEN), (const void *)src_mac, ETH_ALEN);
+    struct ethhdr *eh = (struct ethhdr *)buffer;
+    eh->h_proto = ETH_P_ARP;
+    ```
   13. 构建用于发送arp reply的arp数据包
+    ```C
+    unsigned char *arp_header = buffer + sizeof(struct ethhdr);
+    struct arp_packet *ah = (struct arp_packet *)arp_header;
+    ah->arp_hdr.ar_op = ARPOP_REPLY;
+
+    memcpy(ah->arp_dha, ah->arp_sha, ETH_ALEN);
+    memcpy(ah->arp_dpa, ah->arp_spa, 4);
+    memcpy(ah->arp_sha, src_mac, ETH_ALEN);
+    memcpy(ah->arp_spa, (unsigned char *)&src_ip, 4);
+    ```
   14. 将sockaddr_ll中的sll_addr字段填为目的MAC地址
+    ```C
+    memcpy(saddr_ll.sll_addr, eh->h_dest, ETH_ALEN);
+    ```
   15. 显示用于发送arp reply的以太网报头
   16. 显示用于发送arp reply的arp数据包内容
   17. 发送arp reply
+    ```C
+    sendto(sock_raw, buffer, buf_size, 0, (struct sockaddr *)&saddr_ll, sizeof(struct sockaddr_ll));
+    ```
   18. 回到步骤6
 * 该程序的主体在一个死循环中，所以程序只能使用ctrl+c退出，为了保证退出时能很好地清理现场，程序中拦截了SIGINT信号，当按下ctrl+c时，程序将收到这个信号，进行现场清理并退出；
 * 还是要简单讨论一下构建发送arp reply的arp数据包的过程：
@@ -174,7 +255,7 @@ postid: 180007
 
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
-[src01]:/sourcecodes/180007/arp-requst-and-reply.c
+[src01]:https://whowin.gitee.io/sourcecodes/180007/arp-request-and-reply.c
 
 [img01]:https://whowin.gitee.io/images/180007/arp_packet.png
 [img02]:https://whowin.gitee.io/images/180007/arp_header.png

@@ -30,7 +30,7 @@ draft: false
 postid: 180014
 ---
 
-arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0
+arp cache中存放着局域网内IP地址和MAC地址的对应关系，对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0
 <!--more-->
 
 ## 1. ARP cache
@@ -40,10 +40,10 @@ arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护
   1. SIOCDARP：从ARP cache中删除一条记录
   2. SIOCGARP：从ARP cache中获取一条记录
   3. SIOCSARP：向ARP cache中添加一条记录
-* 如果仅仅是要查询ARP cache中的记录，也可以读取文件/proc/net/arp，该文件是内核中ARP cache的一个映射；
+* 如果仅仅是要查询ARP cache中的记录，也可以读取文件 ```/proc/net/arp```，该文件是内核中ARP cache的一个映射；
 * ARP cache中的记录分为动态记录和静态记录，动态记录是有时效的，时效到了记录会失效；静态记录则永久有效；
 * 通常，通过在局域网上广播arp请求获得的arp回应，在ARP cache中一定是动态记录，而使用ioctl设置的记录，通过设置arp_flags可以成为静态记录，永久有效，当然也可以是动态记录，在后面实例中会说明这一点；
-* 当我们ping [IP address]的时候，这个[IP address]的arp记录就会被加到ARP cache中；
+* 当我们 ```ping [IP address]``` 的时候，这个[IP address]的arp记录就会被加到ARP cache中；
 * 既然ARP cache中的记录多为动态记录，而动态记录有一个超时时间，过了这个时间，记录就会失效，那么这个超时时间是多少呢？
 * 内核中有专门的arp垃圾清除程序，这个垃圾清除程序可以清除已经失效的arp记录，该程序的启动遵循以下原则：
   - 内核中一些与arp垃圾清除有关的变量有：gc_thresh1、gc_thresh2、gc_thresh3和gc_interval
@@ -224,10 +224,10 @@ arp cache对socket通信是至关重要的，arp cache由Linux内核进行维护
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:/sourcecodes/180014/arp-get.c
-[src02]:/sourcecodes/180014/arp-get-all.c
-[src03]:/sourcecodes/180014/arp-set.c
-[src04]:/sourcecodes/180014/arp-del.c
+[src01]:https://whowin.gitee.io/sourcecodes/180014/arp-get.c
+[src02]:https://whowin.gitee.io/sourcecodes/180014/arp-get-all.c
+[src03]:https://whowin.gitee.io/sourcecodes/180014/arp-set.c
+[src04]:https://whowin.gitee.io/sourcecodes/180014/arp-del.c
 
 [img01]:https://whowin.gitee.io/images/180014/screenshot_arp_get.png
 [img02]:https://whowin.gitee.io/images/180014/screenshot_of_arp_get_all.png

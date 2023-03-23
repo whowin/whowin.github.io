@@ -45,41 +45,43 @@ postid: 180018
 
 ## 1. Linux下的虚拟网卡TUN/TAP
 * TUN和TAP是Linuxn内核的虚拟网络设备，不同于普通靠硬件网络适配器实现的设备，这些虚拟的网络设备全部用软件实现，并可以向运行于Linux上的应用软件提供与硬件的网络设备完全相同的功能；
-* TAP等同于一个以太网设备，它操作网络层第二层(数据链路层)数据包，通常我们所使用的网络就是以太网数据帧，所以要使用TAP设备，就需要自己构建以太网报头、IP报头、TCP/UDP报头；
+* TAP等同于一个以太网设备，它操作OSI模型的第二层(数据链路层)数据包，通常我们所使用的网络就是以太网数据帧，所以要使用TAP设备，就需要自己构建以太网报头、IP报头、TCP/UDP报头；
 * TUN模拟了网络层设备，操作第三层(网络层)数据包，通常我们使用的TCP/UDP报文在网络层使用的IP协议，所以使用TUN设备，需要自己构建IP报头和TCP/UDP报头，比TAP设备少构建一个以太网报头；
-* Linux通过TUN/TAP设备向绑定该设备的用户空间的应用程序发送数据；同样，用户空间的应用程序也可以像操作硬件网络设备那样，通过TUN/TAP设备发送数据；在后面这种情况下，TUN/TAP设备向Linux的网络栈提交数据包，从而模拟从外部接受数据的过程；
+* Linux通过TUN/TAP设备向绑定该设备的用户空间的应用程序发送数据；同样，用户空间的应用程序也可以像操作硬件网络设备那样，通过TUN/TAP设备发送数据；在后面这种情况下，TUN/TAP设备向Linux的网络协议栈提交数据包，从而模拟从外部接收数据的过程；
 
 ## 2. 构建一个TUN设备
 * 上一节的描述显然过于枯燥，可能会对初次接触虚拟网卡的读者感到困惑，不知所云，本节将实际建立一个tun设备，帮助你走出困惑；
 * 构建一个基本的tun设备，只需要两个步骤
   1. **编写一个程序，至少完成三个任务**
-    - 打开设备文件/dev/net/tun
-      ```C
-      int fd;
-      fd = open("/dev/net/tun" , O_RDWR));
-      ```
-    - 向Linux内核注册一个tun设备名称，本例中为tun0
-      ```C
-      struct ifreq ifr;
-      memset(&ifr, 0, sizeof(ifr));
-      ifr.ifr_flags = IFF_TUN | IFF_NO_PI;
-      strcpy(ifr.ifr_name, "tun0");
+      - 以可读写模式打开设备文件 ```/dev/net/tun```
+        ```C
+        int fd;
+        fd = open("/dev/net/tun", O_RDWR));
+        ```
+      - 向Linux内核注册一个tun设备名称，本例中为tun0
+        > (struct ifreq)定义在头文件<linux/if.h>中，在我的很多文章中都有介绍，比如文章[《如何使用raw socket发送UDP报文》][article01]，如果需要，可以参考；
 
-      ioctl(fd, TUNSETIFF, (void *)&ifr);
-      ```
-    - 编写处理tun0接收/发送数据的程序
-      ```C
-      char buffer[BUFSIZE];
+        ```C
+        struct ifreq ifr;
+        memset(&ifr, 0, sizeof(ifr));
+        ifr.ifr_flags = IFF_TUN | IFF_NO_PI;
+        strcpy(ifr.ifr_name, "tun0");
 
-      while (1) {
-        read(fd, buffer, BUFSIZE);
-        // todo
-      }
-      ```
+        ioctl(fd, TUNSETIFF, (void *)&ifr);
+        ```
+      - 编写处理tun0接收/发送数据的程序
+        ```C
+        char buffer[BUFSIZE];
+
+        while (1) {
+          read(fd, buffer, BUFSIZE);
+          // todo
+        }
+        ```
   2. **为设备分配IP地址**(本例中为tun0分配的IP为10.0.0.1)
-    ```bash
-    sudo ifconfig tun0 10.0.0.1 netmask 255.255.255.0 up
-    ```
+      ```bash
+      sudo ifconfig tun0 10.0.0.1 netmask 255.255.255.0 up
+      ```
 * 把上面的代码片段组合在一起，就可以完成一个tun设备的建立，文件名：[tun_01.c][src01](**点击文件名下载源文件**)
 * 这段程序在进入循环前增加了 ```system("ifconfig tun0 10.0.0.1/24 up")```，为tun0分配了IP地址10.0.0.1，所以运行完后就不需要再为这个设备分配IP了；
 * 编译：```gcc -Wall tun-01.c -o tun-01```
@@ -92,13 +94,13 @@ postid: 180018
 
   ------------
 
-* 尽管建立起了虚拟网卡tun0，但因为程序过于简单，所以这样建立的设备什么事情都做不了，必须完善程序，才能让这个设备真正地发回作用；
+* 尽管建立起了虚拟网卡tun0，但因为程序过于简单，所以这样建立的设备什么事情都做不了，必须完善程序，才能让这个设备真正地发挥作用；
 * tun设备是一个第三层(网络层)的设备，在这个设备上只能收到IP报头，收不到以太网报头，所以Linux索性没有为tun设备分配MAC地址；
 * 后面将以本节的程序为基础，不断改进，最终写出一个简单的IP隧道的程序。
 
-## 3. 使用tun设备是基本数据流向
+## 3. 使用tun设备的基本数据流向
 * 设备建立起来以后，程序员关心的是我们如何从这个设备上收发报文，如何处理这些报文；
-* 对于一个物理网络接口而言，接口一端连接着网络协议栈，另一端连接着物理网络；而对于一个虚拟网络接口而言，接口的一端仍然连接这网络协议栈，但是另一端连接着一个应用程序，也就是我们前面下载的那个程序([tun-01.c][src01])，我们把这个程序称为 **application-tun**；
+* 对于一个物理网络接口而言，接口一端连接着网络协议栈，另一端连接着物理网络；而对于一个虚拟网络接口而言，接口的一端仍然连接着网络协议栈，但是另一端连接着一个应用程序，也就是我们前面下载的那个程序([tun-01.c][src01])，我们把这个程序称为 **application-tun**；
 * 可以和一个物理网络接口比较来说明虚拟网络接口的数据流向，在物理接口上要发送到物理网络上去的报文，相对于虚拟接口将被发送到应用程序 **application-tun** 上；
 * 当我们使用socket发送报文时，报文被提交给Linux的网络协议栈，协议栈为报文封装各个协议层的报头，并根据路由表将报文交给相应设备的驱动程序，比如enp0s3的驱动程序，然后由驱动程序将报文发送到物理网络上(物理设备)，或者发送给应用程序 application-tun(虚拟设备)；
 * 在上一节中，我们使用 ```route -n``` 已经看到了关于tun0设备的路由：
@@ -138,11 +140,11 @@ postid: 180018
     ```bash
     sudo ./tun-01
     ```
-  - 打开另一个终端，使用下面命令分别向 **10.0.0.1:5678** 发送数据，在运行 tun-only 的终端上并不会显示收到数据；
+  - 打开另一个终端，使用下面命令分别向 **10.0.0.1:5678** 发送数据，在运行 tun-01 的终端上并不会显示收到数据；
     ```bash
     echo "hello" > /dev/udp/10.0.0.1/5678
     ```
-  - 使用下面命令分别向 **10.0.0.2:5678** 发送数据，在运行 tun-only 的终端上会显示收到数据；
+  - 使用下面命令分别向 **10.0.0.2:5678** 发送数据，在运行 tun-01 的终端上会显示收到数据；
     ```bash
     echo "hello" > /dev/udp/10.0.0.2/5678
     ```
@@ -170,7 +172,7 @@ postid: 180018
 
   -----------------
 
-  - 当使用sendmsg发送数据时，是可以显式地指定源IP地址的；
+  - 当使用sendmsg()发送数据时，是可以显式地指定源IP地址的；
   - 路由表中有一个src字段，当没有指定源IP地址时，将使用选定路由的src字段作为源IP地址，使用 ```ip route``` 可以看到src字段
     
     ![screenshot of 'ip route'][img05]
@@ -211,7 +213,7 @@ postid: 180018
 * Computer A的应用程序app A向10.0.0.1:1234发送报文，Computer B的应用程序app D侦听在10.0.0.1:1234上；
 * 目标很简单，computer A的app A直接向10.0.0.1:1234发送报文，computer B的app D能够正常收到收到，就像在一个局域网上一样；
 * 首先要明确的，物理局域网的网段是192.168.2.x，所以向10.0.0.1发送报文并不会被送到物理局域网上，按照路由，这条报文会被送到tun0的驱动程序上去，因为10.0.0.1并不是computer A的虚拟网卡tun0绑定的IP，所以驱动程序会把这个报文送到application-tun上，所以如果我们不做处理，这个报文根本无法到达目的地；
-* 如果处理这个报文使其发送到computer B的app D上去呢？通常的方法就是在computer A和computer B的物理网卡之间建立一条IP隧道；
+* 如何处理这个报文使其发送到computer B的app D上去呢？通常的方法就是在computer A和computer B的物理网卡之间建立一条IP隧道；
 * 当computer A启动applition-tun时，主动发起向computer B的连接，端口号定为5678，computer B在启动applition-tun时，主动侦听在端口5678上，并等待computer A的连接请求，一旦连接建立，这个隧道就建好了；
 * computer A的application-tun收到发往10.0.0.1的报文时，要在整个IP报文上再包装上一个IP报头+TCP报头，TCP报头中指定目的端口号为5678，IP报头中指定目的IP为192.168.2.114，源IP为192.168.2.112，然后把这个新报文从建立的隧道中发出；
 * computer B上侦听在5678端口上的应用程序app C会收到这个报文，app C去掉IP报头和TCP报头，把数据部分作为一个完整的报文重新从socket发出，这个报文的内容正是computer A发出的原始报文，computer B的内核协议栈根据路由会将该报文发给tun0的驱动程序，驱动程序会将这个报文送到正在侦听1234端口的app D上；
@@ -221,9 +223,9 @@ postid: 180018
   2. 创建socket，sock_fd，在这个 sock_fd 上连接服务器端(computer B)的5678端口，建立IP隧道；
   3. 使用select检查tun_fd和sock_fd，并分别处理在这两个 fd 上收到的数据；
   4. 在tun_fd上收到数据的处理流程
-    - 将收到的包括IP报头在内的报文作为数据从sock_fd上发出
+      - 将收到的包括IP报头在内的报文作为数据从sock_fd上发出
   5. 在sock_fd上收到数据的处理流程
-    - 把收到的数据作为一个IP报文显示报头及内容
+      - 把收到的数据作为一个IP报文显示报头及内容
 
 * 在服务器端(computer B)编写一个程序，文件名为：app-server.c，这个程序应遵循以下处理流程：
   1. 打开 /dev/net/tun 文件，返回tun_fd，在内核注册虚拟设备 tun0；
@@ -231,9 +233,9 @@ postid: 180018
   3. 接受客户端的连接请求，为新连接创建socket，fd为net_fd
   4. 使用select检查tun_fd和net_fd，并分别处理在这两个 fd 上收到的数据；
   4. 在tun_fd上收到数据的处理流程
-    - 将收到的包括IP报头在内的报文作为数据从net_fd上发出
+      - 将收到的包括IP报头在内的报文作为数据从net_fd上发出
   5. 在net_fd上收到数据的处理流程
-    - 把收到的数据作为带有IP报头的报文发到tun_fd上
+      - 把收到的数据(不包括IP报头和TCP报头)作为带有IP报头的报文发到tun_fd上
 
 * 客户端程序：[app-client.c][src03](**点击文件名下载源程序**)
 * 客户端程序编译：```gcc -Wall app-client.c -o app-client```
@@ -324,6 +326,9 @@ postid: 180018
 [src02]:https://whowin.gitee.io/sourcecodes/180018/tun-02.c
 [src03]:https://whowin.gitee.io/sourcecodes/180018/app-client.c
 [src04]:https://whowin.gitee.io/sourcecodes/180018/app-server.c
+
+[article01]:https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/
+
 
 [img01]:https://whowin.gitee.io/images/180018/screenshot-of-setting-up-tun0.png
 [img02]:https://whowin.gitee.io/images/180018/send-data-tun-local.png

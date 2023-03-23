@@ -44,7 +44,7 @@ postid: 180017
   1. 系统的时间总是正确的；
   2. 在初始校正时间后，系统时间不会再有任何时间跳跃。
 * 与NTP客户端不同，SNTP客户端通常只使用一个时间服务器来计算时间，然后将系统时间跳转到计算的时间；为了防止时间服务器出现不可用的情况，SNTP客户端可以有一个或多个备份时间服务器，但不会同时使用多个时间服务器来计算时间；
-* SNTP客户端通常按照一个固定的间隔时间去访问时间服务器，在间隔期间则不对系统时间做任何调整；
+* SNTP客户端通常按照一个固定的间隔时间去访问时间服务器，在间隔期间则不对系统时间做任何调整，所以，当SNTP访问时间服务器校准时间时，往往会产生时间跳跃；
 * 我们可以用一个更形象的例子来说明SNTP客户端，我们把墙上的挂钟当做时间服务器，把我们戴的手表当做客户端
   - 当我们的手表为SNTP客户端时，我们每隔一小时看一下挂钟，并使用挂钟来校准手表；
   - 当手表12:00时，挂钟的时间为11:59:57秒，手表快了3秒钟，所以把手表调慢3秒钟；
@@ -184,7 +184,7 @@ postid: 180017
   - Stratum-1层设备是可以通过网络授时的最准确的ntp时间源，1层设备通常通过0层参考时钟同步时间；
   - Stratum-2层设备通过网络连接从一级设备同步时间；由于网络抖动和延迟，二级服务器的时间准确度不如一级服务器；从第二层时间源同步的NTP客户端将是Stratum-3设备；
   - 以此类推，层级越高，其时间的精确度和可靠度越低；
-  - NTP协议不允许客户端接受来自Stratum-15设备的时间，因此Stratum-15是最低的NTP层；
+  - NTP协议不允许客户端接受来自Stratum-15以上设备的时间，因此Stratum-15是最低的NTP层；
 
 * **Poll Interval**
   - 表示连续时间消息之间的最大间隔，以2的指数表示(比如4则间隔时间为 2<sup>4</sup>)，单位为秒，此值为一个8位无符号整数；
@@ -271,11 +271,11 @@ postid: 180017
 * 由此可见，误差由 &delta; 产生，而 &delta; 的最大值为 d<sub>2</sub> 或者最小值为 -d<sub>1</sub>，假定Client到Server的最大时延为100ms，则 &delta; 的最大值为 100ms，则根据上式，其时间精度的最大误差为 &delta;/2，即 50ms
 * 由上面的计算可以得知，NTP协议进行时间同步的精度误差主要来自数据包从Client到Server和从Server到Client的时间不一样，这个差异越大，其误差越大；
 * SNTP使用UDP协议发送时间信息包，UDP又是一种无连接的协议，从Client到Server和从Server到Client的路由很可能是不一样的，这无形中会使时间同步的精度变差；
-* 找到一个时延比较小的时间服务器可以有效地提高时间同步的精度。
+* 由上面的分析可以看出：**找到一个时延比较小的时间服务器可以有效地提高时间同步的精度**。
 
 ## 4、SNTP客户端实例
 * 说起来一大堆，但实现起来其实并不像说的那么复杂。
-* SNTP协议允许使用单播(unicast)、广播(broadcast)和多播(manycast)模式，通常我们只能使用单播模式，广播和多播模式的时间服务器只存在与一个子网中，为有限的用户服务；互联网上并不存在实际的广播或多播模式的时间服务器；
+* SNTP协议允许使用单播(unicast)、广播(broadcast)和多播(manycast)模式，通常我们只能使用单播模式，广播和多播模式的时间服务器只存在于某个子网中，为有限的用户服务；互联网上并不存在实际的广播或多播模式的时间服务器；
 * 根据[《SNTP 协议》][article01]第5节"**SNTP Client Operations**"的说明，使用单播模式进行时间同步时，向时间服务器发送的请求数据包中，除了第一个字节以外，其他字段都可以设为0，也可以将Originate Timestamp(T<sub>1</sub>)填在Transmit Timestamp(T<sub>4</sub>)这个字段上，时间服务器会将Transmit Timestamp(T<sub>4</sub>)字段的内容搬移到Originate Timestamp(T<sub>1</sub>)上，然后填上正确的Transmit Timestamp(T<sub>4</sub>)；
 * 下面的例子中就是按照SNTP协议的说法去做的，在发送的请求包中，填了LI、VN、MODE三个字段，并把T<sub>1</sub>(Originate Timestamp)填在了T<sub>4</sub>(Transmit Timestamp)上，从时间服务器返回的数据看，完全印证了SNTP协议中的说法；
 * 要注意的是，ntp数据包中的各个字段都是网络字节序(big endian)，而我们使用的电脑都是主机字节序(little endian)，所以相互之间要做转换；
@@ -288,6 +288,8 @@ postid: 180017
 
   ![screenshot of sntp_client][img02]
 
+* 在源程序中，列出了几个时间服务器，可以通过百度或者谷歌找更多的时间服务器进行尝试。
+
 
 -------------
 **欢迎访问我的博客：https://whowin.cn**
@@ -298,7 +300,7 @@ postid: 180017
 
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
-[src01]:/sourcecodes/180017/sntp-client.c
+[src01]:https://whowin.gitee.io/sourcecodes/180017/sntp-client.c
 
 [article01]:https://www.rfc-editor.org/rfc/rfc5905
 [article02]:https://www.rfc-editor.org/rfc/rfc1305
