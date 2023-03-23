@@ -664,7 +664,7 @@
 <p>这两个程序在ubuntu 20.04下编译运行成功；</p>
 </li>
 <li>
-<p>服务器端程序：<a href="/sourcecodes/180012/tcp-server.c">tcp-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>服务器端程序：<a href="https://whowin.gitee.io/sourcecodes/180012/tcp-server.c">tcp-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 <blockquote>
 <p>服务器端程序在绑定地址时绑定的是服务器的地址，端口号是程序侦听的端口，INADDR_ANY这个宏在netinet/in.h中定义，实际上就是一个32位的0，对应的IP地址就是0.0.0.0，和inet_addr(&ldquo;0.0.0.0&rdquo;)是一样的，inet_addr()函数会把一个字符串形式的IP地址转换成一个网络字符顺序的32位的IP地址，这里将IP绑定为0.0.0.0的含义是本机的所有IP地址，一台机器有可能有多个网卡，比如有线网卡和无线网卡，那么这台机器就可能有两个IP地址，加上loopback，就有三个IP地址，假定这三个地址分别是：192.168.2.112(有线网卡)、192.168.2.113(无线网卡)和127.0.0.1(loopback)，如果这里设置成inet_addr(&ldquo;192.168.2.112&rdquo;)，则表示只接收发往目的地址是192.168.2.112这个IP的信息，也就是只接收从有线网卡收到的数据，大家可以试一下；如果绑定的IP地址不是本机的一个合法IP，在执行bind()时会出错；</p>
 </blockquote>
@@ -734,7 +734,7 @@
 <hr>
 <ul>
 <li>
-<p>客户端程序：<a href="/sourcecodes/180012/tcp-client.c">tcp-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>客户端程序：<a href="https://whowin.gitee.io/sourcecodes/180012/tcp-client.c">tcp-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 <blockquote>
 <p>客户端程序在发起连接时设置服务器地址，端口号是服务器端程序绑定的端口，192.168.2.112是服务器的IP地址，请根据自身的情况进行修改，IP和端口号必须和服务器一致，否则服务器无法收到信息；</p>
 </blockquote>

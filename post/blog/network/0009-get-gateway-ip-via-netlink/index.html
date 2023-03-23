@@ -50,7 +50,7 @@
 <meta itemprop="name" content="linux下使用netlink获取gateway的IP地址">
 <meta itemprop="description" content="要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，假定阅读本文的读者对linux下编程有一定了解，具备一定的C语言能力，熟悉IPv4的socket编程。"><meta itemprop="datePublished" content="2023-02-04T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-04T16:43:29+08:00" />
-<meta itemprop="wordCount" content="11104">
+<meta itemprop="wordCount" content="11135">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,netlink,rtnetlink," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="linux下使用netlink获取gateway的IP地址"/>
 <meta name="twitter:description" content="要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，假定阅读本文的读者对linux下编程有一定了解，具备一定的C语言能力，熟悉IPv4的socket编程。"/>
@@ -778,7 +778,7 @@
 </ul>
 <h2 id="5-使用rtnetlink发送请求">5. 使用rtnetlink发送请求</h2>
 <blockquote>
-<p>前面讨论了一堆预备知识后，现在终于</p>
+<p>前面讨论了一堆预备知识后，现在终于可以进行实际操作了；</p>
 </blockquote>
 <ol>
 <li><strong>建立一个rtnetlink</strong></li>
@@ -887,8 +887,8 @@
 <p>通常的做法是先把所有的报文接收下来，然后再去解析，接收数据的方法和在IPv4下使用socket接收数据的方法是一样的。</p>
 </blockquote>
 <ol>
-<li><strong>接收数据</strong></li>
-</ol>
+<li>
+<p><strong>接收数据</strong></p>
 <blockquote>
 <p>接收数据之前并不知道有多少字节的数据需要接收，所以很难确定接收缓冲区的大小，所以最好是先检查一下socket上可以接收到多少字节的数据，然后给接收缓冲区分配内存，再去接收数据；</p>
 </blockquote>
@@ -898,32 +898,60 @@
 <blockquote>
 <p>强调接收两次是因为我们首先要使用recv()测试一下有多少字节需要接收，然后为接收缓冲区分配内存，但是这个测试只能测试第一次要接收的报文长度，这个长度并不包括第二次接收时的NLMSG_DONE消息的长度，所以获得的字节数实际还要加上(struct nlmsghdr) + (struct rtmsg)的长度，最后加上的这部分就是NLMSG_DONE的消息长度，请看下面的代码。</p>
 </blockquote>
-<pre><code>```C
-char *buf_ptr, *p;
-int buf_size, msg_len = 0, read_len;
-buf_size = recv(nl_sock, NULL, 0, MSG_PEEK|MSG_TRUNC));
-buf_size += NLMSG_SPACE(sizeof(struct rtmsg));
-
-buf_ptr = malloc(buf_size);
-memset(buf_ptr, 0, buf_size);
-
-p = buf_ptr;
-do {
-    read_len = recv(nl_sock, p, buf_size - msg_len, MSG_DONTWAIT);
-    if (read_len &lt; 0) {
-        if (errno == EAGAIN || errno == EWOULDBLOCK) {
-            // TODO:
-            break;
-        }
-        // TODO:
-    } else if (read_len == 0) {
-        // TODO:
-    }
-    p += read_len;
-    msg_len += read_len;
-} while (msg_len &lt; buf_size &amp;&amp; read_len &gt; 0);
-```
-</code></pre>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">buf_ptr</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">buf_size</span><span class="p">,</span> <span class="n">msg_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">read_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">buf_size</span> <span class="o">=</span> <span class="n">recv</span><span class="p">(</span><span class="n">nl_sock</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MSG_PEEK</span><span class="o">|</span><span class="n">MSG_TRUNC</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">buf_size</span> <span class="o">+=</span> <span class="n">NLMSG_SPACE</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">rtmsg</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">buf_ptr</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">buf_size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="n">buf_ptr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">buf_size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">p</span> <span class="o">=</span> <span class="n">buf_ptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">do</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">read_len</span> <span class="o">=</span> <span class="n">recv</span><span class="p">(</span><span class="n">nl_sock</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">buf_size</span> <span class="o">-</span> <span class="n">msg_len</span><span class="p">,</span> <span class="n">MSG_DONTWAIT</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">read_len</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">errno</span> <span class="o">==</span> <span class="n">EAGAIN</span> <span class="o">||</span> <span class="n">errno</span> <span class="o">==</span> <span class="n">EWOULDBLOCK</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// TODO:
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// TODO:
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">read_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// TODO:
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p</span> <span class="o">+=</span> <span class="n">read_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">msg_len</span> <span class="o">+=</span> <span class="n">read_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">msg_len</span> <span class="o">&lt;</span> <span class="n">buf_size</span> <span class="o">&amp;&amp;</span> <span class="n">read_len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
 <ul>
 <li><code>NLMSG_SPACE(struct rtmsg)</code> 这个宏计算了NLMSG_DONE这个报文所需要的空间；</li>
 <li>recv()函数中的 <strong>MSG_PEEK|MSG_TRUNC</strong> 是一种固定用法，可以预知下一个报文有多少字节可以读取，但是并不会把这个报文标志为已读；</li>
@@ -1112,7 +1140,7 @@ do {
 <h2 id="7-完整源代码">7. 完整源代码</h2>
 <ul>
 <li>
-<p>源代码文件名：<a href="/sourcecodes/180009/get-gateway-netlink.c">get-gateway-netlink.c</a>(<strong>点击文件名下载源程序</strong>)，里面有详细的注释</p>
+<p>源代码文件名：<a href="https://whowin.gitee.io/sourcecodes/180009/get-gateway-netlink.c">get-gateway-netlink.c</a>(<strong>点击文件名下载源程序</strong>)，里面有详细的注释</p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall get-gataway-netlink.c -o get-gateway-netlink</code></p>

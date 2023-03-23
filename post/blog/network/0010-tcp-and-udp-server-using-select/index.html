@@ -614,7 +614,7 @@
 <p><strong>fd_set</strong></p>
 <ul>
 <li>文件描述符集，该结构定义在头文件sys/select.h中</li>
-<li>本质上，fd_set是一个long int的数组，其中的每一位表示一个文件描述符，在x86-64中，long int长度为8个字节，64位，所以fd_set[0]可以表示文件描述符fd=0~63，fd_set[1]可以表示文件描述符fd=64~127；</li>
+<li>本质上，fd_set是一个long int的数组，其中的每一位表示一个文件描述符，在x86-64中，long int长度为8个字节，64位，所以fd_set[0]可以表示文件描述符fd=0-63，fd_set[1]可以表示文件描述符fd=64-127；</li>
 <li>fd_set是一个文件描述符的集合，当fd_set中的某一位为1，表示这个集合中包含有这个fd</li>
 </ul>
 </li>
