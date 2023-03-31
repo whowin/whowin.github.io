@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="whowin" /><meta name="description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0。
+<meta name="author" content="whowin" /><meta name="description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0；阅读本文需要掌握基本的socket编程，本文对网络编程的初学者有一定的难度。
 " /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
@@ -41,19 +41,19 @@
 
 
 <meta property="og:title" content="使用SOCK_DGRAM类型的socket实现的ping程序" />
-<meta property="og:description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0。" />
+<meta property="og:description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0；阅读本文需要掌握基本的socket编程，本文对网络编程的初学者有一定的难度。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0020-implement-ping-program-with-sock-dgram/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2023-03-16T16:43:29+08:00" />
 <meta property="article:modified_time" content="2023-03-16T16:43:29+08:00" />
 
 <meta itemprop="name" content="使用SOCK_DGRAM类型的socket实现的ping程序">
-<meta itemprop="description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0。"><meta itemprop="datePublished" content="2023-03-16T16:43:29+08:00" />
+<meta itemprop="description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0；阅读本文需要掌握基本的socket编程，本文对网络编程的初学者有一定的难度。"><meta itemprop="datePublished" content="2023-03-16T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-03-16T16:43:29+08:00" />
-<meta itemprop="wordCount" content="7886">
+<meta itemprop="wordCount" content="7924">
 <meta itemprop="keywords" content="Linux,ICMP,网络编程,SOCK_DGRAM,ping,internet checksum," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用SOCK_DGRAM类型的socket实现的ping程序"/>
-<meta name="twitter:description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0。"/>
+<meta name="twitter:description" content="SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0；阅读本文需要掌握基本的socket编程，本文对网络编程的初学者有一定的难度。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -170,7 +170,7 @@
   </div>
 </div>
     <div class="post-content">
-      <p>SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0。</p>
+      <p>SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0；阅读本文需要掌握基本的socket编程，本文对网络编程的初学者有一定的难度。</p>
 <h2 id="1-前言">1. 前言</h2>
 <ul>
 <li>

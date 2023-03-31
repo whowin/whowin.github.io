@@ -13,7 +13,7 @@
       <pubDate>Thu, 16 Mar 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0020-implement-ping-program-with-sock-dgram/</guid>
-      <description>&lt;p&gt;SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0。&lt;/p&gt;</description>
+      <description>&lt;p&gt;SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用于ICMP协议，并完成一个简单的ping程序。使用ping去测试某个主机是否可用可能是一件很平常的事，尽管ping非常普通，但是编写一个实现ping功能的程序却并不是那么简单，因为ping使用的ICMP协议并不是一个应用层协议，在网上看到的实现ping的例子大多使用raw socket去实现，不仅增加了解析IP报头的麻烦，而且还需要有root权限才能运行，本文简要介绍ICMP协议，并给出一个使用普通的常用于UDP通信的socket实现ping的实例，本文将提供完整的源程序，本文的程序在 Ubuntu 20.04 下测试通过，gcc 版本号 9.4.0；阅读本文需要掌握基本的socket编程，本文对网络编程的初学者有一定的难度。&lt;/p&gt;</description>
     </item>
     
   </channel>
