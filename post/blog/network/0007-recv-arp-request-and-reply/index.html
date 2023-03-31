@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="whowin" /><meta name="description" content="本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。
+<meta name="author" content="whowin" /><meta name="description" content="ARP协议在网络编程中有着重要的地位，是一个工作在数据链路层的协议，本文简单介绍了ARP协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释；阅读本文需要有一定的网络编程基础，了解OSI的网络模型，本文对初学者有一定的难度。
 " /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
@@ -41,19 +41,19 @@
 
 
 <meta property="og:title" content="接收arp请求并发送回应的实例" />
-<meta property="og:description" content="本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。" />
+<meta property="og:description" content="ARP协议在网络编程中有着重要的地位，是一个工作在数据链路层的协议，本文简单介绍了ARP协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释；阅读本文需要有一定的网络编程基础，了解OSI的网络模型，本文对初学者有一定的难度。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0007-recv-arp-request-and-reply/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2023-01-12T16:43:29+08:00" />
 <meta property="article:modified_time" content="2023-01-12T16:43:29+08:00" />
 
 <meta itemprop="name" content="接收arp请求并发送回应的实例">
-<meta itemprop="description" content="本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。"><meta itemprop="datePublished" content="2023-01-12T16:43:29+08:00" />
+<meta itemprop="description" content="ARP协议在网络编程中有着重要的地位，是一个工作在数据链路层的协议，本文简单介绍了ARP协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释；阅读本文需要有一定的网络编程基础，了解OSI的网络模型，本文对初学者有一定的难度。"><meta itemprop="datePublished" content="2023-01-12T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-01-12T16:43:29+08:00" />
-<meta itemprop="wordCount" content="5098">
+<meta itemprop="wordCount" content="5189">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,arp,raw socket," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="接收arp请求并发送回应的实例"/>
-<meta name="twitter:description" content="本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。"/>
+<meta name="twitter:description" content="ARP协议在网络编程中有着重要的地位，是一个工作在数据链路层的协议，本文简单介绍了ARP协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释；阅读本文需要有一定的网络编程基础，了解OSI的网络模型，本文对初学者有一定的难度。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -168,7 +168,7 @@
   </div>
 </div>
     <div class="post-content">
-      <p>本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。</p>
+      <p>ARP协议在网络编程中有着重要的地位，是一个工作在数据链路层的协议，本文简单介绍了ARP协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释；阅读本文需要有一定的网络编程基础，了解OSI的网络模型，本文对初学者有一定的难度。</p>
 <h2 id="1-arp协议">1. ARP协议</h2>
 <ul>
 <li>
@@ -204,7 +204,7 @@
 <li>
 <p><strong>以太网报头(Ethernet Header)</strong></p>
 <ul>
-<li>数据链路层的以太网报头定义在头文件linux/if_ether.h中：
+<li>数据链路层的以太网报头定义在头文件&lt;linux/if_ether.h&gt;中：
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -259,7 +259,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>ar_hrd字段为ARP协议硬件类型，相关定义在linux/if_arp.h中，对以太网而言，硬件类型为1(宏ARPHRD_ETHER)；</li>
+<li>ar_hrd字段为ARP协议硬件类型，相关定义在&lt;linux/if_arp.h&gt;中，对以太网而言，硬件类型为1(宏ARPHRD_ETHER)；</li>
 <li>ar_pro字段为协议类型，协议类型定义在linux/if_ether.h中，IP协议的协议类型为0x800(宏ETH_P_IP)；</li>
 <li>ar_hln字段为硬件地址的长度，对以太网而言，硬件地址就是MAC地址，长度是6 bytes(宏ETH_ALEN)；</li>
 <li>ar_pln字段为协议地址长度，对IP协议的IPv4而言，协议地址就是IP地址，长度是4 bytes；</li>

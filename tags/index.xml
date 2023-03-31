@@ -6,7 +6,61 @@
     <description>Recent content in Tags on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 16 Mar 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 28 Mar 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>“dns client&#34;</title>
+      <link>https://whowin.gitee.io/tags/dns-client/</link>
+      <pubDate>Tue, 28 Mar 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/dns-client/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DNS</title>
+      <link>https://whowin.gitee.io/tags/dns/</link>
+      <pubDate>Tue, 28 Mar 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/dns/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>dns resolver</title>
+      <link>https://whowin.gitee.io/tags/dns-resolver/</link>
+      <pubDate>Tue, 28 Mar 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/dns-resolver/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>https://whowin.gitee.io/tags/linux/</link>
+      <pubDate>Tue, 28 Mar 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>UDP</title>
+      <link>https://whowin.gitee.io/tags/udp/</link>
+      <pubDate>Tue, 28 Mar 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/udp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>网络编程</title>
+      <link>https://whowin.gitee.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</link>
+      <pubDate>Tue, 28 Mar 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>ICMP</title>
       <link>https://whowin.gitee.io/tags/icmp/</link>
@@ -26,15 +80,6 @@
     </item>
     
     <item>
-      <title>Linux</title>
-      <link>https://whowin.gitee.io/tags/linux/</link>
-      <pubDate>Thu, 16 Mar 2023 16:43:29 +0800</pubDate>
-      
-      <guid>https://whowin.gitee.io/tags/linux/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>ping</title>
       <link>https://whowin.gitee.io/tags/ping/</link>
       <pubDate>Thu, 16 Mar 2023 16:43:29 +0800</pubDate>
@@ -49,15 +94,6 @@
       <pubDate>Thu, 16 Mar 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/sock_dgram/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>网络编程</title>
-      <link>https://whowin.gitee.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</link>
-      <pubDate>Thu, 16 Mar 2023 16:43:29 +0800</pubDate>
-      
-      <guid>https://whowin.gitee.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</guid>
       <description></description>
     </item>
     
@@ -202,15 +238,6 @@
       <pubDate>Sat, 07 Jan 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/tcp/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>UDP</title>
-      <link>https://whowin.gitee.io/tags/udp/</link>
-      <pubDate>Sat, 07 Jan 2023 16:43:29 +0800</pubDate>
-      
-      <guid>https://whowin.gitee.io/tags/udp/</guid>
       <description></description>
     </item>
     

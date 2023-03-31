@@ -13,7 +13,7 @@
       <pubDate>Fri, 10 Feb 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0016-longest-prefix-match/</guid>
-      <description>&lt;p&gt;在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。&lt;/p&gt;</description>
+      <description>&lt;p&gt;在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。本文对网络编程的初学者难度不大。&lt;/p&gt;</description>
     </item>
     
   </channel>

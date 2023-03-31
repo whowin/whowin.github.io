@@ -13,7 +13,7 @@
       <pubDate>Tue, 07 Mar 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0018-tun-example-for-setting-up-ip-tunnel/</guid>
-      <description>&lt;p&gt;通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；本文假定读者已经拥有了在Linux下使用C语言进行IPv4下socket编程的基本能力。&lt;/p&gt;</description>
+      <description>&lt;p&gt;通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；阅读本文需要具备在Linux下使用C语言进行IPv4下socket编程的基本能力，本文对网络编程的初学者难度较大。&lt;/p&gt;</description>
     </item>
     
   </channel>

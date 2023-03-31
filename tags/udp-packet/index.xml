@@ -13,7 +13,7 @@
       <pubDate>Sat, 10 Dec 2022 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/</guid>
-      <description>&lt;p&gt;众所周知，在传输层有两个常用的协议 TCP 和 UDP，本文介绍在 Linux 命令行下，如何使用 nc 命令发送或接收 UDP 数据包，这些命令的用法对调试 UDP 通信程序将有所帮助。&lt;/p&gt;</description>
+      <description>&lt;p&gt;众所周知，在传输层有两个常用的协议 TCP 和 UDP，本文介绍在 Linux 命令行下，如何使用 nc 命令发送或接收 UDP 数据包，这些命令的用法对调试 UDP 通信程序将有所帮助，本文适合初学者阅读。&lt;/p&gt;</description>
     </item>
     
   </channel>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>dns resolver on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/dns-resolver/</link>
+    <description>Recent content in dns resolver on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 28 Mar 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/dns-resolver/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>用C语言实现的一个DNS客户端</title>
+      <link>https://whowin.gitee.io/post/blog/network/0019-dns-client-in-c/</link>
+      <pubDate>Tue, 28 Mar 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0019-dns-client-in-c/</guid>
+      <description>&lt;p&gt;DNS可以帮助我们把域名映射到一个IP地址上，或者查询一个IP地址下有那些域名，使用域名访问一个网站或者服务器是一件很平常的事情，很少有人关心域名变成IP地址的实际过程，本文将使用C语言实现一个基本的DNS解析器，通过与DNS服务器的通信完成将一个域名转换成IP地址的过程，本文将提供完整的源程序；阅读本文需要有一定的网络编程基础，熟悉基本的socket编程并对DNS有一些了解，本文对网络编程的初学者难度较大。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

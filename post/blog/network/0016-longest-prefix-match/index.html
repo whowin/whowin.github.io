@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="whowin" /><meta name="description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。
+<meta name="author" content="whowin" /><meta name="description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。本文对网络编程的初学者难度不大。
 " /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
@@ -41,19 +41,19 @@
 
 
 <meta property="og:title" content="简单的路由表查找程序" />
-<meta property="og:description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。" />
+<meta property="og:description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。本文对网络编程的初学者难度不大。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0016-longest-prefix-match/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2023-02-10T16:43:29+08:00" />
 <meta property="article:modified_time" content="2023-02-10T16:43:29+08:00" />
 
 <meta itemprop="name" content="简单的路由表查找程序">
-<meta itemprop="description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。"><meta itemprop="datePublished" content="2023-02-10T16:43:29+08:00" />
+<meta itemprop="description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。本文对网络编程的初学者难度不大。"><meta itemprop="datePublished" content="2023-02-10T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-10T16:43:29+08:00" />
-<meta itemprop="wordCount" content="3711">
+<meta itemprop="wordCount" content="3727">
 <meta itemprop="keywords" content="Linux,routing table,网络编程,最长前缀匹配,longest prefix match," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="简单的路由表查找程序"/>
-<meta name="twitter:description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。"/>
+<meta name="twitter:description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。本文对网络编程的初学者难度不大。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -169,7 +169,7 @@
   </div>
 </div>
     <div class="post-content">
-      <p>在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。</p>
+      <p>在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。本文对网络编程的初学者难度不大。</p>
 <blockquote>
 <p>当我们在Linux系统下发送一个报文时，Linux需要确定路由，也就是将这个报文转发到哪个网络接口下的哪个设备上去，一个连接在网络上的Linux系统至少有两个网络接口，一个是网卡(有线或者无线网卡)，一个loopback，Linux从报文中的IP报头中获得目的IP地址，以这个目的IP地址为依据从系统内部的路由表中找到一条最适合的路由，然后将报文转发到这个路由上，在查找路由表的过程中会使用一个叫做 <strong>最长前缀匹配(Longest Prefix Match)</strong> 的算法来确定路由；本文将简要介绍Linux系统中的路由表、路由策略以及路由决策的过程，介绍**最长前缀匹配(Longest Prefix Match)**算法，并提供一个完整的源代码来模拟这个算法在路由查找中的应用。</p>
 </blockquote>

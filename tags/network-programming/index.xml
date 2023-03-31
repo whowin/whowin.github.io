@@ -13,16 +13,16 @@
       <pubDate>Wed, 14 Dec 2022 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0004-checksum-of-ip-header/</guid>
-      <description>&lt;p&gt;如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的。&lt;/p&gt;</description>
+      <description>&lt;p&gt;如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的，本文适合初学者阅读。&lt;/p&gt;</description>
     </item>
     
     <item>
-      <title>C语言如何获取ipv6地址</title>
+      <title>C语言获取ipv6地址的三种方法</title>
       <link>https://whowin.gitee.io/post/blog/network/0001-how-to-get-ipv6-in-c/</link>
       <pubDate>Sun, 16 Oct 2022 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0001-how-to-get-ipv6-in-c/</guid>
-      <description>&lt;p&gt;使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法：从proc文件从系统获取ipv6地址、使用getifaddrs()函数获取ipv6地址和使用netlink获取ipv6地址，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0。&lt;/p&gt;</description>
+      <description>&lt;p&gt;使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法：从proc文件从系统获取ipv6地址、使用getifaddrs()函数获取ipv6地址和使用netlink获取ipv6地址，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0；阅读本文需要有一定的网络编程基础知识和IPv6的知识。&lt;/p&gt;</description>
     </item>
     
   </channel>

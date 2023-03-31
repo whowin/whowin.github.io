@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="whowin" /><meta name="description" content="本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0
+<meta name="author" content="whowin" /><meta name="description" content="本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，使读者可以在这个框架下经过扩展构建出更加复杂的服务，本文适合网络通信的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0
 " /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
@@ -41,19 +41,19 @@
 
 
 <meta property="og:title" content="使用C语言实现服务器/客户端的UDP通信" />
-<meta property="og:description" content="本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0" />
+<meta property="og:description" content="本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，使读者可以在这个框架下经过扩展构建出更加复杂的服务，本文适合网络通信的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0013-udp-server-client-implementation-in-c/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2023-01-05T16:43:29+08:00" />
 <meta property="article:modified_time" content="2023-01-05T16:43:29+08:00" />
 
 <meta itemprop="name" content="使用C语言实现服务器/客户端的UDP通信">
-<meta itemprop="description" content="本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0"><meta itemprop="datePublished" content="2023-01-05T16:43:29+08:00" />
+<meta itemprop="description" content="本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，使读者可以在这个框架下经过扩展构建出更加复杂的服务，本文适合网络通信的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0"><meta itemprop="datePublished" content="2023-01-05T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-01-05T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4393">
+<meta itemprop="wordCount" content="4434">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,udp," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用C语言实现服务器/客户端的UDP通信"/>
-<meta name="twitter:description" content="本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0"/>
+<meta name="twitter:description" content="本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，使读者可以在这个框架下经过扩展构建出更加复杂的服务，本文适合网络通信的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -170,7 +170,7 @@
   </div>
 </div>
     <div class="post-content">
-      <p>本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0</p>
+      <p>本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，使读者可以在这个框架下经过扩展构建出更加复杂的服务，本文适合网络通信的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0</p>
 <h2 id="1-前言">1. 前言</h2>
 <blockquote>
 <p>当两台主机间需要通信时，TCP和UDP是两种最常用的传输层协议，TCP是一种面向连接的传输协议，常用于对传输可靠性要求比较高的场合，比如传输文件；而UDP是一种无连接的通信方式，用于传输一些要求速度快，但对可靠性要求不高的场合，比如实时视频的传输；</p>

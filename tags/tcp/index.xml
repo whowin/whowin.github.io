@@ -13,7 +13,7 @@
       <pubDate>Sat, 07 Jan 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0010-tcp-and-udp-server-using-select/</guid>
-      <description>&lt;p&gt;独立的TCP服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上及提供TCP服务，也提供UDP服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码。&lt;/p&gt;</description>
+      <description>&lt;p&gt;独立的TCP服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上及提供TCP服务，也提供UDP服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码，阅读本文需要掌握基本的socket变成方法，本文对初学者难度不大。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -22,7 +22,7 @@
       <pubDate>Fri, 06 Jan 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0012-tcp-server-client-implementation-in-c/</guid>
-      <description>&lt;p&gt;本文力求使用简单的描述说明一个服务器/客户端TCP通信的基本程序框架，文中给出了服务器端和客户端的实例源程序，本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0&lt;/p&gt;</description>
+      <description>&lt;p&gt;本文力求使用简单的描述说明一个服务器/客户端TCP通信的基本程序框架，使读者在这个框架下可以构建更加复杂的服务，文中给出了服务器端和客户端的实例源程序，本文适合网络编程的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0&lt;/p&gt;</description>
     </item>
     
   </channel>

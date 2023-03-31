@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="whowin" /><meta name="description" content="UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum。
+<meta name="author" content="whowin" /><meta name="description" content="UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum；本文对网络编程的初学者难度不大。
 " /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
@@ -41,19 +41,19 @@
 
 
 <meta property="og:title" content="如何计算UDP头的checksum" />
-<meta property="og:description" content="UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum。" />
+<meta property="og:description" content="UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum；本文对网络编程的初学者难度不大。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2022-12-12T16:43:29+08:00" />
 <meta property="article:modified_time" content="2022-12-12T16:43:29+08:00" />
 
 <meta itemprop="name" content="如何计算UDP头的checksum">
-<meta itemprop="description" content="UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum。"><meta itemprop="datePublished" content="2022-12-12T16:43:29+08:00" />
+<meta itemprop="description" content="UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum；本文对网络编程的初学者难度不大。"><meta itemprop="datePublished" content="2022-12-12T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-12-12T16:43:29+08:00" />
-<meta itemprop="wordCount" content="1965">
+<meta itemprop="wordCount" content="1981">
 <meta itemprop="keywords" content="C语言,UDP,internet checksum,UDP checksum," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="如何计算UDP头的checksum"/>
-<meta name="twitter:description" content="UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum。"/>
+<meta name="twitter:description" content="UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum；本文对网络编程的初学者难度不大。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -168,7 +168,7 @@
   </div>
 </div>
     <div class="post-content">
-      <p>UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum。</p>
+      <p>UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum；本文对网络编程的初学者难度不大。</p>
 <h2 id="1-udp报文结构">1. UDP报文结构</h2>
 <ul>
 <li>

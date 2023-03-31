@@ -13,7 +13,7 @@
       <pubDate>Mon, 09 Jan 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0011-handling-multiple-clients-on-server-with-select/</guid>
-      <description>&lt;p&gt;TCP是一种面向连接的通信方式，一个TCP服务器难免会遇到同时处理多个用户的连接请求的问题，本文用一个简化的实例说明如何在一个TCP服务器程序中，使用select处理同时出现的多个客户连接，文章给出了程序源代码，本文假定读者已经具备了基本的socket编程知识，熟悉基本的服务器/客户端模型架构。&lt;/p&gt;</description>
+      <description>&lt;p&gt;TCP是一种面向连接的通信方式，一个TCP服务器难免会遇到同时处理多个用户的连接请求的问题，本文用一个简化的实例说明如何在一个TCP服务器程序中，使用select处理同时出现的多个客户连接，文章给出了程序源代码，阅读本文应该具备了基本的socket编程知识，熟悉基本的服务器/客户端模型架构；本文对初学者难度不大。&lt;/p&gt;</description>
     </item>
     
   </channel>

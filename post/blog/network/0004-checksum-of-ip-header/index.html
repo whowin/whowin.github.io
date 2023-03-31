@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="whowin" /><meta name="description" content="如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的。
+<meta name="author" content="whowin" /><meta name="description" content="如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的，本文适合初学者阅读。
 " /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
@@ -41,19 +41,19 @@
 
 
 <meta property="og:title" content="如何计算IP报头的checksum" />
-<meta property="og:description" content="如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的。" />
+<meta property="og:description" content="如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的，本文适合初学者阅读。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0004-checksum-of-ip-header/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2022-12-14T16:43:29+08:00" />
 <meta property="article:modified_time" content="2022-12-14T16:43:29+08:00" />
 
 <meta itemprop="name" content="如何计算IP报头的checksum">
-<meta itemprop="description" content="如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的。"><meta itemprop="datePublished" content="2022-12-14T16:43:29+08:00" />
+<meta itemprop="description" content="如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的，本文适合初学者阅读。"><meta itemprop="datePublished" content="2022-12-14T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-12-14T16:43:29+08:00" />
-<meta itemprop="wordCount" content="2451">
+<meta itemprop="wordCount" content="2461">
 <meta itemprop="keywords" content="checksum,network programming,网络编程," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="如何计算IP报头的checksum"/>
-<meta name="twitter:description" content="如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的。"/>
+<meta name="twitter:description" content="如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的，本文适合初学者阅读。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -166,7 +166,7 @@
   </div>
 </div>
     <div class="post-content">
-      <p>如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的。</p>
+      <p>如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的，本文适合初学者阅读。</p>
 <h2 id="1-checksum是什么">1. checksum是什么？</h2>
 <ul>
 <li>简单地说，checksum就是从数据包中计算出来的一个值，用于检查数据包完整性；通过检查checksum来判断收到的数据是否有错误；</li>
