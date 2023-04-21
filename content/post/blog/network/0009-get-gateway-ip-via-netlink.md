@@ -47,8 +47,9 @@ draft: false
 postid: 180009
 ---
 
-要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，假定阅读本文的读者对linux下编程有一定了解，具备一定的C语言能力，熟悉IPv4的socket编程。
+要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，阅读本文需要对linux下编程有一定了解，熟悉IPv4的socket编程；本文对网络编程的初学者有较大难度。
 <!--more-->
+
 ------
 > 在linux编程的资料中，netlink编程的资料并不多，但netlink编程显然是本文无法越过的一道坎，所以下面需要用一定篇幅对netlink编程做个介绍；本文的最终目标是使用netlink这种与linux内核通信的机制，从内核获得路由表并从中找到gateway的IP地址。在具体实践中，获取路由表或者获取gateway的IP地址通常并不需要使用netlink编程实现，这种方法对应用层编程来说显得有些繁琐，本文主要还是作为netlink编程的一个范例，并以此为题介绍一些netlink的编程方法；有关其它获取gateway的IP地址的方法，请参见另一篇文章[《从proc文件系统中获取gateway的IP地址》][article1]。
 
@@ -91,11 +92,15 @@ postid: 180009
 
   > netlink socket本质上是进程间的通信，一个用户进程使用netlink socket不仅可以和内核进程进行通信，两个(多个)用户进程间也可以使用netlink socket进行通信；
 
+
   > netlink除了使用内核定义的协议外，也可以使用自定义协议，在上面定义的netlink协议中的NETLINK_GENERIC就是用于用户自定义协议的，我们可以编写一个内核进程，然后在用户进程中使用NETLINK_GENERIC进行通信；
+
 
   > netlink socket有一个多播的特性，所谓多播，就是一个进程发出的消息可以有多个其它进程接收，netlink允许最多32个多播组，当向一个多播组发出消息时，所有已经加入这个多播组的进程都可以收到这个消息。
 
+
   > 当使用rtnetlink与内核进行通信时，**用户进程需要先向内核进程发出一个请求，然后接收内核进程返回的消息**，从而实现与内核的通信；
+
 
   > netlink socket可以使用send、sendto、sendmsg发送消息，使用recv、recvfrom、recvmsg接收消息，这些和IPv4 socket是一样的；
 
@@ -292,6 +297,7 @@ postid: 180009
 ## 3. netlink编程中常用的宏定义
 > 按照netlink手册中的要求，对(struct nlmsghdr)的访问要使用一组标准的宏来完成，本节将简单介绍这组宏，也可以使用在线手册 ```man 3 netlink``` 来更多地了解这组宏；这些宏定义在头文件<linux/netlink.h>中，必要时可以查看代码理解其意义。
 
+
 > 这些宏这样看上去会很枯燥，但在第5、6节和源代码中均会大量出现，可以先大致看一下，等看到相关章节遇到具体的宏时在回来仔细阅读。
 
 * **NLMSG_ALIGN(len)**
@@ -332,6 +338,7 @@ postid: 180009
 ## 4. rtnetlink编程中常用的宏
 > 在头文件<linux/rtnetlink.h>中定义了一组操作(struct rtmsg)的宏，以RTM_开头，只有两个；还定义了一组操作(struct rtattr)的宏，以RTA_开头，在这里简单介绍一下；使用在线手册 ```man rtnetlink``` 可以了解关于操作(struct rtattr)的宏的更详细的信息。
 
+
 > 这些宏这样看上去会很枯燥，但在第5、6节和源代码中均会大量出现，可以先大致看一下，等看到相关章节遇到具体的宏时在回来仔细阅读。
 
 * **RTM_RTA(r)**
@@ -371,7 +378,8 @@ postid: 180009
   - 返回data长度为len的(struct rtattr) + data占用的字节数。
 
 ## 5. 使用rtnetlink发送请求
-> 前面讨论了一堆预备知识后，现在终于
+> 前面讨论了一堆预备知识后，现在终于可以进行实际操作了；
+
 1. **建立一个rtnetlink**
   ```C
   int nl_sock;
@@ -423,11 +431,12 @@ postid: 180009
 > 通常的做法是先把所有的报文接收下来，然后再去解析，接收数据的方法和在IPv4下使用socket接收数据的方法是一样的。
 
 1. **接收数据**
-  > 接收数据之前并不知道有多少字节的数据需要接收，所以很难确定接收缓冲区的大小，所以最好是先检查一下socket上可以接收到多少字节的数据，然后给接收缓冲区分配内存，再去接收数据；
-  
-  > netlink返回的路由表的报文有点意思，路由表不会只有一条记录，所以这个返回的报文一定是个多部分消息，应该是由多个(struct nlmsghde) + payload组成，最后一个(struct nlmsghdr)中的nlmsg_type=NLMSG_DONE，表示整个路由表传送完毕，实际接收时发现要接收两次，第一次接收到的报文中，没有NLMSG_DONE消息，再接收一次，接收到的一个单独的NLMSG_DONE消息。
+    > 接收数据之前并不知道有多少字节的数据需要接收，所以很难确定接收缓冲区的大小，所以最好是先检查一下socket上可以接收到多少字节的数据，然后给接收缓冲区分配内存，再去接收数据；
 
-  > 强调接收两次是因为我们首先要使用recv()测试一下有多少字节需要接收，然后为接收缓冲区分配内存，但是这个测试只能测试第一次要接收的报文长度，这个长度并不包括第二次接收时的NLMSG_DONE消息的长度，所以获得的字节数实际还要加上(struct nlmsghdr) + (struct rtmsg)的长度，最后加上的这部分就是NLMSG_DONE的消息长度，请看下面的代码。
+    > netlink返回的路由表的报文有点意思，路由表不会只有一条记录，所以这个返回的报文一定是个多部分消息，应该是由多个(struct nlmsghde) + payload组成，最后一个(struct nlmsghdr)中的nlmsg_type=NLMSG_DONE，表示整个路由表传送完毕，实际接收时发现要接收两次，第一次接收到的报文中，没有NLMSG_DONE消息，再接收一次，接收到的一个单独的NLMSG_DONE消息。
+
+    > 强调接收两次是因为我们首先要使用recv()测试一下有多少字节需要接收，然后为接收缓冲区分配内存，但是这个测试只能测试第一次要接收的报文长度，这个长度并不包括第二次接收时的NLMSG_DONE消息的长度，所以获得的字节数实际还要加上(struct nlmsghdr) + (struct rtmsg)的长度，最后加上的这部分就是NLMSG_DONE的消息长度，请看下面的代码。
+
 
     ```C
     char *buf_ptr, *p;
@@ -563,7 +572,7 @@ postid: 180009
 
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
-[src01]:/sourcecodes/180009/get-gateway-netlink.c
+[src01]:https://whowin.gitee.io/sourcecodes/180009/get-gateway-netlink.c
 
 [img01]:https://whowin.gitee.io/images/180009/netlink-message-format.png
 [img02]:https://whowin.gitee.io/images/180009/rtnetlink-request_message.png

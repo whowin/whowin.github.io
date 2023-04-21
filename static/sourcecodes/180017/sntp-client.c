@@ -251,7 +251,7 @@ int main(int argc, char **argv) {
     tv.tv_sec = 10;
     tv.tv_usec = 0;
     select(sock + 1, &readfds, NULL, NULL, &tv);
-    if (FD_ISSET(sock, &readfds)) {  // someone connects to me
+    if (FD_ISSET(sock, &readfds)) {
         ret_value = recvfrom(sock,
                              (char *)&sntp_reply,
                              sizeof(struct sntp_packet),

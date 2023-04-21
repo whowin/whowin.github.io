@@ -277,17 +277,17 @@ postid: 160008
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
 
-[article01]:../0007-network-programming-on-dos-1/
+[article01]:https://whowin.gitee.io/post/blog/dos/0007-network-programming-on-dos-1/
 [article02]:https://beej.us/guide/bgnet/
-[article03]:/references/BSDsocket.pdf
+[article03]:https://whowin.gitee.io/references/BSDsocket.pdf
 
 
-[img01]:/images/160008/run_ftp_on_windows.jpg
-[img02]:/images/160008/input_ftp_user_on_windows.jpg
-[img03]:/images/160008/input_password_on_windows.jpg
-[img04]:/images/160008/ftp_login_ok.jpg
-[img05]:/images/160008/quit_from_ftp.jpg
+[img01]:https://whowin.gitee.io/images/160008/run_ftp_on_windows.jpg
+[img02]:https://whowin.gitee.io/images/160008/input_ftp_user_on_windows.jpg
+[img03]:https://whowin.gitee.io/images/160008/input_password_on_windows.jpg
+[img04]:https://whowin.gitee.io/images/160008/ftp_login_ok.jpg
+[img05]:https://whowin.gitee.io/images/160008/quit_from_ftp.jpg

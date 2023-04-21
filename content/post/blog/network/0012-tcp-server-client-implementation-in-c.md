@@ -21,7 +21,7 @@ draft: false
 postid: 180012
 ---
 
-本文力求使用简单的描述说明一个服务器/客户端TCP通信的基本程序框架，文中给出了服务器端和客户端的实例源程序，本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0
+本文力求使用简单的描述说明一个服务器/客户端TCP通信的基本程序框架，使读者在这个框架下可以构建更加复杂的服务，文中给出了服务器端和客户端的实例源程序，本文适合网络编程的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0
 <!--more-->
 
 ## 1. 前言
@@ -337,8 +337,8 @@ postid: 180012
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:/sourcecodes/180012/tcp-client.c
-[src02]:/sourcecodes/180012/tcp-server.c
+[src01]:https://whowin.gitee.io/sourcecodes/180012/tcp-client.c
+[src02]:https://whowin.gitee.io/sourcecodes/180012/tcp-server.c
 
 [img01]:https://whowin.gitee.io/images/180012/tcp_server_testing.png
 [img02]:https://whowin.gitee.io/images/180012/tcp_netcat_testing.png

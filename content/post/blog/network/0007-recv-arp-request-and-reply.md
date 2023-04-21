@@ -26,7 +26,7 @@ draft: false
 postid: 180007
 ---
 
-本文简单介绍了arp协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释。
+ARP协议在网络编程中有着重要的地位，是一个工作在数据链路层的协议，本文简单介绍了ARP协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释；阅读本文需要有一定的网络编程基础，了解OSI的网络模型，本文对初学者有一定的难度。
 <!--more-->
 
 ## 1. ARP协议
@@ -49,7 +49,7 @@ postid: 180007
 
 *****************
 * **以太网报头(Ethernet Header)**
-  - 数据链路层的以太网报头定义在头文件linux/if_ether.h中：
+  - 数据链路层的以太网报头定义在头文件<linux/if_ether.h>中：
     ```C
     struct ethhdr {
         unsigned char  h_dest[ETH_ALEN];    /* destination eth addr  */
@@ -81,7 +81,7 @@ postid: 180007
         __be16          ar_op;        /* ARP opcode (command)         */
     }
     ```
-  - ar_hrd字段为ARP协议硬件类型，相关定义在linux/if_arp.h中，对以太网而言，硬件类型为1(宏ARPHRD_ETHER)；
+  - ar_hrd字段为ARP协议硬件类型，相关定义在<linux/if_arp.h>中，对以太网而言，硬件类型为1(宏ARPHRD_ETHER)；
   - ar_pro字段为协议类型，协议类型定义在linux/if_ether.h中，IP协议的协议类型为0x800(宏ETH_P_IP)；
   - ar_hln字段为硬件地址的长度，对以太网而言，硬件地址就是MAC地址，长度是6 bytes(宏ETH_ALEN)；
   - ar_pln字段为协议地址长度，对IP协议的IPv4而言，协议地址就是IP地址，长度是4 bytes；

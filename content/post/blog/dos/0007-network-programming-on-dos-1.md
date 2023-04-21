@@ -143,11 +143,11 @@ postid: 160007
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[article01]:../0004-install-djgpp-rhide-under-dos/
+[article01]:https://whowin.gitee.io/post/blog/dos/0004-install-djgpp-rhide-under-dos/
 [article02]:https://beej.us/guide/bgnet/
-[article03]:/references/bgnet.txt
-[article04]:/references/Beej-cn-20140429.pdf
-[article05]:/references/watt-32.chm
+[article03]:https://whowin.gitee.io/references/bgnet.txt
+[article04]:https://whowin.gitee.io/references/Beej-cn-20140429.pdf
+[article05]:https://whowin.gitee.io/references/watt-32.chm

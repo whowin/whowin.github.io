@@ -22,9 +22,9 @@ postid: 160003
 <!--more-->
 
 ## DJGPP介绍
-  * DJGPP是MS-DOS下使用C/C++开发32位保护模式软件的免费环境，点击进入[DJGPP的官方网站](http://www.delorie.com/djgpp/)
+  * DJGPP是MS-DOS下使用C/C++开发32位保护模式软件的免费环境，点击进入[DJGPP的官方网站][article01]
   * DJGPP的最新状态及其他信息（在线文档，FAQ、邮件文档）通过DJGPP的官方网站发布。有关DJGPP的使用与特点方面的讨论在DJGPP的新闻组（提交到comp.os.msdos.djgpp）和DJGPP的邮件列表（发信息到djgpp@delorie.com，通过listserv@delorie.com订阅），有关DJGPP的最新版本信息，请登陆网站查看。
-  * 在下面网站上有一些获取、设置和使用DJGPP的文档：[DJGPP文档](http://www.delorie.com/djgpp/doc/)
+  * 在下面网站上有一些获取、设置和使用DJGPP的文档：[DJGPP文档][article02]
   * **截止到2022年4月11日，DJGPP的网站依然存活**
 
 ## 发行
@@ -61,7 +61,7 @@ postid: 160003
 ## 下载
   * 要获得并运行DJGPP，下面是新用户必须了解的内容，更详细的信息请阅读DJGPP文档和FAQ，建议新用户完整阅读一下FAQ。
   * 下载什么？
-    - [http://www.delorie.com/djgpp/zip-picker.html](http://www.delorie.com/djgpp/zip-picker.html) 将指引你了解应该下载那些文件，一般情况下，仅下载安装发行包即可，大多数人不需要下载源程序。
+    - [http://www.delorie.com/djgpp/zip-picker.html][web01] 将指引你了解应该下载那些文件，一般情况下，仅下载安装发行包即可，大多数人不需要下载源程序。
     - 要开发C程序，你需要djdev203.zip, gcc*b.zip和bnu*b.zip
     - 如果要开发C++程序，你还需要gpp*b.zip
     - 要阅读在线手册，需要下载txi*b.zip，并且运行“info”，如果你没有安装DPMI服务器，你还需要下载cwdpmi*b.zip。（windows, QDPMI, 386Max, NWDOS, OpenDOS, OS/2, win/NT和linux DOSEmu都提供DPMI服务，在这些环境下你不需要CWSDPMI）。详细信息请下载faq*b.zip（完整FAQ）并阅读第4节“下载什么和在哪里下载？”。
@@ -135,4 +135,12 @@ postid: 160003
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+
+
+[article01]:http://www.delorie.com/djgpp/
+[article02]:http://www.delorie.com/djgpp/doc/
+
+[web01]:http://www.delorie.com/djgpp/zip-picker.html
+
+

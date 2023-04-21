@@ -15,7 +15,7 @@ draft: true
 postid: 160009
 ---
 
-在互联网上发布精确时间，要依靠NTP（Network Time Protocol）协议，互联网上有许多时间服务器，负责提供精确时间，本文简要描述了 NTP 协议的原理，并实际实现了 SNTP(Simple Network Time Protocol) 下的客户端。
+(**该文不再发布**)在互联网上发布精确时间，要依靠NTP（Network Time Protocol）协议，互联网上有许多时间服务器，负责提供精确时间，本文简要描述了 NTP 协议的原理，并实际实现了 SNTP(Simple Network Time Protocol) 下的客户端。
 <!--more-->
 
 ## 1、NTP协议的基本原理

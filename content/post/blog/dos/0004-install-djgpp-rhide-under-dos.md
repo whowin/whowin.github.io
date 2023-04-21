@@ -45,7 +45,7 @@ postid: 160004
   * USB驱动程序：如果您需要，请与我联系：hengch@163.com
 
 ## 2、下载所需的DJGPP安装包
-  * 打开网页：[http://www.delorie.com/djgpp/zip-picker.html](http://www.delorie.com/djgpp/zip-picker.html)
+  * 打开网页：[http://www.delorie.com/djgpp/zip-picker.html][web01]
   * 做如下选择，其中[ ... ]部分为我的选择，其他为提示。
     ```
     FTP Site
@@ -140,7 +140,7 @@ postid: 160004
     ```
   * 这是因为 *go32-v2.exe* 这个程序是32位保护模式下的程序，而我们没有安装 **DPMI** 服务，所以不能运行。
   * 下载 v2misc/csdpmi5b.zip
-    - 下载地址：[http://www.delorie.com/pub/djgpp/current/v2misc/csdpmi5b.zip](http://www.delorie.com/pub/djgpp/current/v2misc/csdpmi5b.zip)
+    - 下载地址：[http://www.delorie.com/pub/djgpp/current/v2misc/csdpmi5b.zip][download01]
   * 安装 **CWSDPMI**
     - 将下载的 *cwdpmi5b.zip* 拷贝到硬盘的 **c:\djgpp** 下：
       ```
@@ -175,4 +175,10 @@ postid: 160004
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+
+
+[web01]:http://www.delorie.com/djgpp/zip-picker.html
+
+[download01]:http://www.delorie.com/pub/djgpp/current/v2misc/csdpmi5b.zip
+

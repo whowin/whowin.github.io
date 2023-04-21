@@ -162,12 +162,11 @@ PC机在启动的时候，都会看到一个PCI设备清单，可以看到机器
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
+[article01]:https://whowin.gitee.io/post/blog/dos/0001-32bit-bios-introduction/
+[article02]:https://whowin.gitee.io/post/blog/dos/0002-invoking-pci-bios/
 
-[article01]:../0001-32bit-bios_introduction/
-[article02]:../0002-invoking-pci-bios/
+[img01]:https://whowin.gitee.io/images/160005/traverse_PCI_devices_01.jpg
 
-[img01]:/images/160005/traverse_PCI_devices_01.jpg
-[-img01]:../../../static/images/160005/traverse_PCI_devices_01.jpg

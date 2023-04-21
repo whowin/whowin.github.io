@@ -30,7 +30,7 @@ draft: false
 postid: 180014
 ---
 
-arp cache中存放着局域网内IP地址和MAC地址的对应关系，对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0
+arp cache中存放着局域网内IP地址和MAC地址的对应关系，对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0，阅读本文需要有基本的socket编程和ioctl的知识，并对ARP协议有所了解，本文对网络编程的初学者难度不大。
 <!--more-->
 
 ## 1. ARP cache
