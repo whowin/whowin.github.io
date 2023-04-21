@@ -175,7 +175,7 @@
 </blockquote>
 <h2 id="2你的-bios-是否支持-pci-bios-服务">2、你的 BIOS 是否支持 PCI BIOS 服务</h2>
 <blockquote>
-<p>在我的另一篇博客文章：<a href="../0001-32bit-bios_introduction/">《32位BIOS说明》</a>中，说明了如何判断 <strong>BIOS</strong> 是否是32位的，以及是否支持PCI BIOS服务，实际上，并没有那么麻烦，因为在绝大多数有 PCI 插槽的 PC 机中，BIOS 都是32位的，同时也是支持 PCI BIOS 的，在我的另一篇博客文章：<a href="../0002-invoking-pci-bios/">《调用PCI BIOS》</a>中，介绍了PCI BIOS中常用的功能调用，其中的第一个调用就是检查 <strong>PCI BIOS的存在性</strong>，通常我们利用这个功能调用来作为 PCI BIOS 的存在检测已经足够了，方法如下：</p>
+<p>在我的另一篇博客文章：<a href="https://whowin.gitee.io/post/blog/dos/0001-32bit-bios-introduction/">《32位BIOS说明》</a>中，说明了如何判断 <strong>BIOS</strong> 是否是32位的，以及是否支持PCI BIOS服务，实际上，并没有那么麻烦，因为在绝大多数有 PCI 插槽的 PC 机中，BIOS 都是32位的，同时也是支持 PCI BIOS 的，在我的另一篇博客文章：<a href="https://whowin.gitee.io/post/blog/dos/0002-invoking-pci-bios/">《调用PCI BIOS》</a>中，介绍了PCI BIOS中常用的功能调用，其中的第一个调用就是检查 <strong>PCI BIOS的存在性</strong>，通常我们利用这个功能调用来作为 PCI BIOS 的存在检测已经足够了，方法如下：</p>
 </blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -218,7 +218,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><blockquote>
-<p>根据返回参数就可以判断 <strong>PCI BIOS</strong> 是否存在，具体方法请参阅：<a href="../0002-invoking-pci-bios/">《调用PCI BIOS》</a>这篇博客文章，如果你的BIOS不支持PCI BIOS，那么本文介绍的方法可能不完全适用你。</p>
+<p>根据返回参数就可以判断 <strong>PCI BIOS</strong> 是否存在，具体方法请参阅：<a href="https://whowin.gitee.io/post/blog/dos/0002-invoking-pci-bios/">《调用PCI BIOS》</a>这篇博客文章，如果你的BIOS不支持PCI BIOS，那么本文介绍的方法可能不完全适用你。</p>
 </blockquote>
 <h2 id="3了解pci配置空间">3、了解PCI配置空间</h2>
 <ul>
@@ -227,7 +227,7 @@
 </li>
 <li>
 <p>配置空间的前 64 个字节叫头标区，头标区又分成两个部分，第一部分为前 16 个字节，在各种类型的设备中定义都是一样的，其他字节随各设备支持的功能不同而有所不同，位于偏移 0EH 的投标类型字段规定了是何种布局，目前有三种头标类型，头标类型 1 用于 PCI-PCI 桥，头标类型 2 用于 PCI-CARDBUS 桥，头标类型 0 用于其他 PCI 设备，下图为头标类型 0 的头标区布局。</p>
-<p><img src="/images/160005/traverse_PCI_devices_01.jpg" alt="遍历PCI设备"></p>
+<p><img src="https://whowin.gitee.io/images/160005/traverse_PCI_devices_01.jpg" alt="遍历PCI设备"></p>
 <p><strong>图1：遍历 PCI 设备</strong></p>
 </li>
 <li>
@@ -437,7 +437,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">

@@ -779,15 +779,64 @@
   </url>
   
   <url>
+    <loc>https://whowin.gitee.io/tags/allegro/</loc>
+    <lastmod>2008-05-14T17:10:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/djgpp/</loc>
+    <lastmod>2008-05-14T17:10:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://whowin.gitee.io/tags/dos/</loc>
-    <lastmod>2008-04-11T10:10:33+08:00</lastmod>
+    <lastmod>2008-05-14T17:10:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/categories/dos/</loc>
-    <lastmod>2008-04-11T10:10:33+08:00</lastmod>
+    <lastmod>2008-05-14T17:10:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/dos/0012-install-allegro-under-dos-djgpp/</loc>
+    <lastmod>2008-05-14T17:10:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/dos/0011-hw-int-mechanism-under-dos-dpmi/</loc>
+    <lastmod>2008-05-07T17:45:03+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/dpmi/</loc>
+    <lastmod>2008-05-07T17:45:03+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/ac97/</loc>
+    <lastmod>2008-04-22T14:52:57+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/dos/0010-ac97-programing-in-dos/</loc>
+    <lastmod>2008-04-22T14:52:57+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -835,13 +884,6 @@
   </url>
   
   <url>
-    <loc>https://whowin.gitee.io/tags/djgpp/</loc>
-    <lastmod>2008-04-02T09:15:23+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://whowin.gitee.io/tags/pci/</loc>
     <lastmod>2008-04-02T09:15:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -872,13 +914,6 @@
   <url>
     <loc>https://whowin.gitee.io/post/blog/dos/0004-install-djgpp-rhide-under-dos/</loc>
     <lastmod>2008-03-28T13:48:41+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/dpmi/</loc>
-    <lastmod>2008-03-27T14:27:38+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>

@@ -134,6 +134,70 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/dos/0011-hw-int-mechanism-under-dos-dpmi/">DOS DPMI下的硬件中断机制</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2008-05-07 </span>
+      <div class="post-category">
+          <a href="/categories/dos/"> DOS </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>本文旨在探讨DPMI(DOS Protect Mode Interface)环境下的硬件中断机制，以及在此环境下硬件中断的编写方法，本文并不探讨实模式下和保护模式下硬件中断的原理，但文中难免涉及一些这方面的知识，请读者自行阅读相关资料解决。在本文的最后将举一个硬件中断的编写实例。本文主要讨论的环境为：DOS6.22 + DJGPP + CWSDPMI。CWSDPMI为DJGPP自带的DPMI服务，也是一个好用的且免费的DPMI，有关这个环境的搭建，请参阅我以前的博文。<strong>本文是我2008年的作品，2023年重新整理发布，仅为存档，其中的程序并没有再次验证，特此说明。</strong></p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/dos/0011-hw-int-mechanism-under-dos-dpmi/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/dos/0010-ac97-programing-in-dos/">在DOS下针对AC&#39;97编程</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2008-04-22 </span>
+      <div class="post-category">
+          <a href="/categories/dos/"> DOS </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>AC'97大多数应该听说过，可能有些人把它当成一种声卡，或者是声卡上的芯片等等，其实它仅仅是一种规范，符合AC'97规范的声卡，通常叫做AC'97声卡，但其实上面使用的芯片可能完全不一样。现在很多桥片中甚至已经集成了AC'97的规范进去，就不需要专门的声卡了。本文针对AMD的较新的一种桥片CS5536上集成的AC'97进行编程，进而说明如何对符合AC'97规范的声卡进行编程。以下为书写方便，把AC'97写成AC97。<strong>本文是我2008年的作品，2023年重新整理发布，仅为存档，其中的程序并没有再次验证，特此说明。</strong></p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/dos/0010-ac97-programing-in-dos/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/dos/0008-network-programming-on-dos-2/">在DOS下进行网络编程（下）</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2008-04-11 </span>
+      <div class="post-category">
+          <a href="/categories/dos/"> DOS </a>
+          <a href="/categories/network/"> network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>该文在上一篇文章的基础上，用一个完整的例子讲解在DOS下的网络编程方法</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/dos/0008-network-programming-on-dos-2/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/dos/0007-network-programming-on-dos-1/">在DOS下进行网络编程（上）</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2008-04-09 </span>
@@ -171,69 +235,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/dos/0006-dos-int15h-introduction/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/dos/0005-traverse-pci-devices/">遍历 PCI 设备</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2008-04-02 </span>
-      <div class="post-category">
-          <a href="/categories/dos/"> DOS </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>PC机在启动的时候，都会看到一个PCI设备清单，可以看到机器中的所有PCI设备，其实搜索PCI设备的程序并不难编，本文通过一个实例说明如何遍历PCI设备。本文程序的工作环境：MS-DOS 6.22，djgpp+RHIDE。本文初次发表于2008年4月2日，2011年3月11日做过修改，将其中的代码片段换为完整代码。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/dos/0005-traverse-pci-devices/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/dos/0004-install-djgpp-rhide-under-dos/">在 DOS 下的 DJGPP &#43; RHIDE 安装实作</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2008-03-28 </span>
-      <div class="post-category">
-          <a href="/categories/dos/"> DOS </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>本文介绍在一个纯DOS构建一个C、C++和汇编的保护模式开发环境，编写的程序可以在纯DOS环境下运行在保护模式下</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/dos/0004-install-djgpp-rhide-under-dos/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/dos/0003-djgpp-installation/">在 DOS 下安装 DJGPP</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2008-03-27 </span>
-      <div class="post-category">
-          <a href="/categories/dos/"> DOS </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>该文翻译自 <strong>djgpp version 2.03</strong> 的 <em>.readme</em> 文件。本文中包含获得、安装、使用 <strong>DJGPP</strong> 的信息，在寻求帮助之前请完整阅读该文档。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/dos/0003-djgpp-installation/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ALLEGRO on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/allegro/</link>
+    <description>Recent content in ALLEGRO on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 14 May 2008 17:10:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/allegro/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>在DJGPP&#43;DOS下安装ALLEGRO</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0012-install-allegro-under-dos-djgpp/</link>
+      <pubDate>Wed, 14 May 2008 17:10:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0012-install-allegro-under-dos-djgpp/</guid>
+      <description>&lt;p&gt;Allegro是一个用于编写游戏和多媒体程序的库，我发现它时是在2008年，但其实它的诞生可能要追溯到2000年以前了，当时我把它用在DOS+DJGPP的环境下，那是我当时能找到的在DOS下可以使用的为数不多的图像库之一，而且比较好用，本文主要介绍如何在DOS+DJGPP环境下安装ALLEGRO。&lt;strong&gt;本文是我2008年的作品，2023年重新整理发布，仅为存档，其中的程序并没有再次验证，特此说明。&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
