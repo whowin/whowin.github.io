@@ -2,21 +2,105 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://whowin.gitee.io/tags/dns-client/</loc>
-    <lastmod>2023-03-28T16:43:29+08:00</lastmod>
+    <loc>https://whowin.gitee.io/tags/802.11/</loc>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/categories/c-language/</loc>
-    <lastmod>2023-03-28T16:43:29+08:00</lastmod>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/categories/</loc>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/ioctl/</loc>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/linux/</loc>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/categories/linux/</loc>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/categories/network/</loc>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/</loc>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/</loc>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/</loc>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/wifi/</loc>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/network/0022-how-to-scan-wifi-signal/</loc>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</loc>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2023-06-26T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/dns-client/</loc>
     <lastmod>2023-03-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -37,56 +121,7 @@
   </url>
   
   <url>
-    <loc>https://whowin.gitee.io/tags/linux/</loc>
-    <lastmod>2023-03-28T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/categories/linux/</loc>
-    <lastmod>2023-03-28T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/categories/network/</loc>
-    <lastmod>2023-03-28T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/post/</loc>
-    <lastmod>2023-03-28T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/</loc>
-    <lastmod>2023-03-28T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://whowin.gitee.io/tags/udp/</loc>
-    <lastmod>2023-03-28T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/</loc>
-    <lastmod>2023-03-28T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/</loc>
     <lastmod>2023-03-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -262,13 +297,6 @@
   
   <url>
     <loc>https://whowin.gitee.io/tags/arp/</loc>
-    <lastmod>2023-01-12T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/ioctl/</loc>
     <lastmod>2023-01-12T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -779,29 +807,57 @@
   </url>
   
   <url>
-    <loc>https://whowin.gitee.io/tags/allegro/</loc>
-    <lastmod>2008-05-14T17:10:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/djgpp/</loc>
-    <lastmod>2008-05-14T17:10:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://whowin.gitee.io/tags/dos/</loc>
-    <lastmod>2008-05-14T17:10:29+08:00</lastmod>
+    <lastmod>2013-04-23T14:27:38+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/categories/dos/</loc>
-    <lastmod>2008-05-14T17:10:29+08:00</lastmod>
+    <lastmod>2013-04-23T14:27:38+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/virtual-box/</loc>
+    <lastmod>2013-04-23T14:27:38+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/dos/0014-install-dos-on-vbox-under-ubuntu/</loc>
+    <lastmod>2013-04-23T14:27:38+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/allegro/</loc>
+    <lastmod>2008-05-15T11:42:58+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/djgpp/</loc>
+    <lastmod>2008-05-15T11:42:58+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/jpgalleg/</loc>
+    <lastmod>2008-05-15T11:42:58+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/dos/0013-install-jpgalleg-for-allegro-under-djgpp/</loc>
+    <lastmod>2008-05-15T11:42:58+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -954,6 +1010,42 @@
   
   <url>
     <loc>https://whowin.gitee.io/article-categories/categories/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/dos/2008-05-21cs5536%E4%B8%8A%E7%9A%84i2c%E6%80%BB%E7%BA%BF%E7%9A%84%E5%BA%94%E7%94%A8/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/dos/2008-05-23usb%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E5%88%97%E5%87%BA%E4%BD%A0%E7%9A%84usb%E8%AE%BE%E5%A4%87/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/dos/2008-06-11usb%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%8C%E8%AF%BB%E5%8F%96usb%E8%AE%BE%E5%A4%87%E7%9A%84%E6%8F%8F%E8%BF%B0%E7%AC%A6/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/dos/2008-07-08usb%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%89%E4%BB%8E%E4%BD%A0%E7%9A%84u%E7%9B%98%E9%87%8C%E8%AF%BB%E5%87%BA%E6%9B%B4%E5%A4%9A%E7%9A%84%E5%86%85%E5%AE%B9/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/dos/2008-07-15usb%E7%B3%BB%E5%88%97%E4%B9%8B%E5%9B%9B%E5%90%91u%E7%9B%98%E4%B8%8A%E5%86%99%E6%95%B0%E6%8D%AE/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/dos/2008-07-16%E5%88%86%E5%8C%BA%E4%BF%A1%E6%81%AF%E8%A1%A8%E7%9A%84%E7%BB%93%E6%9E%84/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>

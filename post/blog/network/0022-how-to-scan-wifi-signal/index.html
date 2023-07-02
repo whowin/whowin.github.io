@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>使用ioctl扫描wifi信号获取AP的essid、mac地址等属性 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="使用 wifi 是一件再平常不过的是事情，有很多 wifi 工具可以帮助你扫描附近的 wifi 信号，测试信号强度等，但如何通过编程来操作 wifi 却鲜有文章涉及；本文立足实践，不使用任何第三方库，仅使用 ioctl 扫描附近的 wifi 信号，并获取这些 AP 的 ESSID、MAC 地址、占用信道和工作频率，本文将给出完整的源程序，今后还会写一些文章讨论如果编程获取 wifi 信号的其它属性(比如：信号强度、加密方式等)的方法，敬请关注；本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；阅读本文并不需要对 IEEE802.11 协议有所了解。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/network/0022-how-to-scan-wifi-signal/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="使用ioctl扫描wifi信号获取AP的essid、mac地址等属性" />
+<meta property="og:description" content="使用 wifi 是一件再平常不过的是事情，有很多 wifi 工具可以帮助你扫描附近的 wifi 信号，测试信号强度等，但如何通过编程来操作 wifi 却鲜有文章涉及；本文立足实践，不使用任何第三方库，仅使用 ioctl 扫描附近的 wifi 信号，并获取这些 AP 的 ESSID、MAC 地址、占用信道和工作频率，本文将给出完整的源程序，今后还会写一些文章讨论如果编程获取 wifi 信号的其它属性(比如：信号强度、加密方式等)的方法，敬请关注；本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；阅读本文并不需要对 IEEE802.11 协议有所了解。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0022-how-to-scan-wifi-signal/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-06-26T16:43:29+08:00" />
+<meta property="article:modified_time" content="2023-06-26T16:43:29+08:00" />
+
+<meta itemprop="name" content="使用ioctl扫描wifi信号获取AP的essid、mac地址等属性">
+<meta itemprop="description" content="使用 wifi 是一件再平常不过的是事情，有很多 wifi 工具可以帮助你扫描附近的 wifi 信号，测试信号强度等，但如何通过编程来操作 wifi 却鲜有文章涉及；本文立足实践，不使用任何第三方库，仅使用 ioctl 扫描附近的 wifi 信号，并获取这些 AP 的 ESSID、MAC 地址、占用信道和工作频率，本文将给出完整的源程序，今后还会写一些文章讨论如果编程获取 wifi 信号的其它属性(比如：信号强度、加密方式等)的方法，敬请关注；本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；阅读本文并不需要对 IEEE802.11 协议有所了解。"><meta itemprop="datePublished" content="2023-06-26T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2023-06-26T16:43:29+08:00" />
+<meta itemprop="wordCount" content="8360">
+<meta itemprop="keywords" content="Linux,网络编程,802.11,wifi,无线网络,ioctl," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用ioctl扫描wifi信号获取AP的essid、mac地址等属性"/>
+<meta name="twitter:description" content="使用 wifi 是一件再平常不过的是事情，有很多 wifi 工具可以帮助你扫描附近的 wifi 信号，测试信号强度等，但如何通过编程来操作 wifi 却鲜有文章涉及；本文立足实践，不使用任何第三方库，仅使用 ioctl 扫描附近的 wifi 信号，并获取这些 AP 的 ESSID、MAC 地址、占用信道和工作频率，本文将给出完整的源程序，今后还会写一些文章讨论如果编程获取 wifi 信号的其它属性(比如：信号强度、加密方式等)的方法，敬请关注；本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；阅读本文并不需要对 IEEE802.11 协议有所了解。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">使用ioctl扫描wifi信号获取AP的essid、mac地址等属性</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-06-26 </span>
+        <div class="post-category">
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            <a href="/categories/network/"> Network </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-前言">1 前言</a></li>
+        <li><a href="#2-使用ioctl进行wifi信号扫描的基本原理">2 使用ioctl进行wifi信号扫描的基本原理</a>
+          <ul>
+            <li><a href="#21-we-api">2.1 WE API</a></li>
+            <li><a href="#22-启动-wifi-信号扫描">2.2 启动 wifi 信号扫描</a></li>
+            <li><a href="#23-获取-wifi-信号的扫描结果">2.3 获取 wifi 信号的扫描结果</a></li>
+            <li><a href="#24-扫描结果的数据格式">2.4 扫描结果的数据格式</a></li>
+          </ul>
+        </li>
+        <li><a href="#3-wifi信号扫描的步骤和方法">3 wifi信号扫描的步骤和方法</a>
+          <ul>
+            <li><a href="#31-wifi信号扫描的基本步骤">3.1 wifi信号扫描的基本步骤</a></li>
+            <li><a href="#32-wifi信号扫描的基本方法">3.2 wifi信号扫描的基本方法</a></li>
+            <li><a href="#33-如何获取本机的所有网络接口">3.3 如何获取本机的所有网络接口</a></li>
+            <li><a href="#34-如何判断网络接口是无线网络接口">3.4 如何判断网络接口是无线网络接口</a></li>
+            <li><a href="#35-wifi信号扫描有关的其它技术要点">3.5 wifi信号扫描有关的其它技术要点</a></li>
+            <li><a href="#36-关于内存对齐memory-alignment">3.6 关于内存对齐(memory alignment)</a></li>
+          </ul>
+        </li>
+        <li><a href="#4-完整的-wifi-信号扫描程序">4 完整的 wifi 信号扫描程序</a></li>
+        <li><a href="#5-后记">5 后记</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>使用 wifi 是一件再平常不过的是事情，有很多 wifi 工具可以帮助你扫描附近的 wifi 信号，测试信号强度等，但如何通过编程来操作 wifi 却鲜有文章涉及；本文立足实践，不使用任何第三方库，仅使用 ioctl 扫描附近的 wifi 信号，并获取这些 AP 的 ESSID、MAC 地址、占用信道和工作频率，本文将给出完整的源程序，今后还会写一些文章讨论如果编程获取 wifi 信号的其它属性(比如：信号强度、加密方式等)的方法，敬请关注；本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；阅读本文并不需要对 IEEE802.11 协议有所了解。</p>
+<h2 id="1-前言">1 前言</h2>
+<ul>
+<li>目前的无线网络都是采用 <code>IEEE802.11</code> 协议，<code>802.11</code> 是一个协议簇，目前无线网络最常用的是 <code>802.11n</code>，理论最高速度高达 <code>600Mbit/s</code></li>
+<li>WIFI 是 <code>802.11</code> 规范的一种具体实现；</li>
+<li>本文的目标是使用 C 语言在 ubuntu 下编写出一个扫描 WIFI 信号的程序，电脑上至少要有一片无线网卡才能扫描附近的 WIFI 信号；</li>
+<li>扫描 WIFI 信号显然是要操作无线网卡才能实现，通常情况下无线网卡的驱动程序是在内核空间的，用户空间的应用程序是无法直接控制驱动程序的；</li>
+<li>为了能够从用户空间控制无线网卡的驱动程序，我们在用户空间编写的程序需要使用 IPC 通信与内核进程进行通信；</li>
+<li>实现 IPC 进程间通信的方式有很多，本文采用的是 <code>ioctl</code>，但还有其它方式，比如 <code>netlink</code> 等；</li>
+<li>本文采用的 <code>ioctl</code> 方法是基于 <strong>Wireless Extensions</strong>(简称 <strong>WE</strong> 或 WEXT)的，WE 是一组通用 API，可以控制无线网卡驱动程序向用户空间进程传送 wifi 的配置和统计信息；</li>
+<li>2006年，出现了 <code>cfg80211</code> 和 <code>nl80211</code>，其目标是取代 WE，<code>cfg80211</code> 和 <code>nl80211</code> 不再使用 <code>ioctl</code> 与无线网卡驱动程序进行通信，而是采用 <code>netlink</code>；</li>
+<li>有些无线网络工具是使用 <code>cfg80211</code> 和 <code>nl80211的</code>，像 <code>iw、hostapd</code> 或 <code>wpa_supplicant</code> 程序，它们需要使用 <code>netlink</code> 库(如 <code>libnl</code> 或 <code>libnl-tiny</code>)和 <code>netlink</code> 头文件 <code>nl80211.h</code>；</li>
+<li>使用 WE 的另一个好处就是不需要依赖其它库(比如 <code>libnl</code>)，只要有标准 C 语言库即可实现，像无线网络工具 <code>iwlist</code> 等使用的就是 WE</li>
+<li>实际上，不管是 WE 还是 <code>cfg80211</code> 和 <code>nl80211</code>，都鲜有资料和范例，本文介绍了 WE 的使用，后续文章可能会介绍 <code>cfg80211</code> 和 <code>nl80211</code> 的使用；</li>
+<li>尽管前面多次提到 802.11 协议，但阅读本文并不需要对该协议有所了解，但需要有一定的 C 语言基础，范例中大量使用了单向链表和系统调用 <code>ioctl()</code>，读者需要对这些知识有足够的了解。</li>
+</ul>
+<h2 id="2-使用ioctl进行wifi信号扫描的基本原理">2 使用ioctl进行wifi信号扫描的基本原理</h2>
+<h3 id="21-we-api">2.1 WE API</h3>
+<ul>
+<li><strong>WE</strong>(Wireless Extensions) 定义了一系列关于无线网络接口的系统调用，使用 <code>ioctl()</code> 实现，这些系统调用实现了用户空间的应用程序与内核中的无线网络接口驱动程序之间的通信；</li>
+<li>这些系统调用定义在头文件 <code>/usr/include/linux/wireless.h</code>，调用 <code>ioctl()</code> 的基本方法如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">ioctl</span><span class="p">(</span><span class="kt">int</span> <span class="n">socket</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">request</span><span class="p">,</span> <span class="k">struct</span> <span class="n">iwreq</span> <span class="o">*</span><span class="n">wrq</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>其中的 request 在 <code>wireless.h</code> 中定义，以 SIOC 开头的宏定义；<code>struct iwreq</code> 同样在 <code>wireless.h</code> 中定义，所有 WE 中的调用均使用这个结构的指针作为 <code>ioctl()</code> 的第三个参数；</li>
+<li>下面一段代码可以获得无线网络接口 <code>wlp3s0</code> 当前连接的 WIFI 信号的 ESSID，将其中的 <code>wlp3s0</code> 改成你的电脑上的无线网卡的设备名就可以编译运行了
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/ioctl.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/wireless.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define IF_NAME         &#34;wlp3s0&#34;
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">iwreq</span> <span class="n">wrq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">essid</span><span class="p">[</span><span class="n">IW_ESSID_MAX_SIZE</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">wrq</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iwreq</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">strncpy</span><span class="p">(</span><span class="n">wrq</span><span class="p">.</span><span class="n">ifr_name</span><span class="p">,</span> <span class="n">IF_NAME</span><span class="p">,</span> <span class="n">IFNAMSIZ</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ioctl</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">SIOCGIWNAME</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wrq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Protocol: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">pointer</span> <span class="o">=</span> <span class="n">essid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ioctl</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">SIOCGIWESSID</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wrq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;ESSID is %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">essid</span><span class="p">.</span><span class="n">pointer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">close</span><span class="p">(</span><span class="n">sock</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>这段代码调用了两次 <code>ioctl()</code>，第一次的指令是 <code>SIOCGIWNAME</code>，获取了无线网卡的协议，第二次的指令是 <code>SIOCGIWESSID</code>，获取了无线网卡连接的wifi信号的 <code>ESSID</code>；</li>
+<li>对 WE 的很多指令而言，在执行 ioctl() 之前，需要先调用一下 <strong>SIOCGIWNAME</strong>，这个调用比较简单，只需要设置一下接口名称，调用成功会返回协议名称，可以用来检验是否为无线网卡，有线接口的设备名在调用这个 <code>ioctl()</code> 时会出错；</li>
+<li>这段程序没有任何错误处理，如果要实际应用一定要补充一些代码；</li>
+<li>编译：<code>gcc -Wall wifi-essid.c -o wifi-essid</code></li>
+<li>运行：<code>./wifi-essid</code></li>
+</ul>
+<h3 id="22-启动-wifi-信号扫描">2.2 启动 wifi 信号扫描</h3>
+<ul>
+<li>在头文件 <code>wireless.h</code> 中定义的众多指令中，有一个 <strong>SIOCSIWSCAN</strong> 可以使用指定的无线网卡扫描附近的 AP(Access Point)，然后使用 <strong>SIOCGIWSCAN</strong> 获取扫描结果；</li>
+<li>在使用 <code>SIOCSIWSCAN</code> 启动扫描之前，不需要先调用 <code>SIOCGIWNAME</code></li>
+<li>下面这段代码会在无线网卡 <code>wlp3s0</code> 上启动 AP 扫描
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iwreq</span> <span class="n">wrq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">wrq</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iwreq</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">strncpy</span><span class="p">(</span><span class="n">wrq</span><span class="p">.</span><span class="n">ifr_name</span><span class="p">,</span> <span class="n">ifname</span><span class="p">,</span> <span class="n">IFNAMSIZ</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">pointer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">length</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">ioctl</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">SIOCSIWSCAN</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wrq</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>在启动 <code>SIOCSIWSCAN</code> 之前，要初始化 <code>struct iwreq</code> 中的四个字段，参考上面程序。</li>
+</ul>
+<h3 id="23-获取-wifi-信号的扫描结果">2.3 获取 wifi 信号的扫描结果</h3>
+<ul>
+<li>使用头文件 wireless.h 中的 <strong>SIOCGIWSCAN</strong> 可以获取 wifi 信号的扫描结果</li>
+<li>在启动 wifi 信号扫描后，并不能立即返回结果，要等待几秒后在发出 <code>SIOCGIWSCAN</code> 获取扫描结果，等待的时间主要取决于当前的系统和驱动程序，所以在调用 ioctl() 获取扫描结果时，要监视 <strong>errno</strong>，如果 <code>error == EAGAIN</code>，则需要 sleep 一下后再次调用 ioctl()</li>
+<li>下面这段程序演示了获取扫描结果的过程
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iwreq</span> <span class="n">wrq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nl">GET_AGAIN</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">pointer</span> <span class="o">=</span> <span class="n">buffer</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">buflen</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">SIOCGIWSCAN</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wrq</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">errno</span> <span class="o">==</span> <span class="n">EAGAIN</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">goto</span> <span class="n">GET_AGAIN</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>在发出指令 <code>SIOCGIWSCAN</code> 之前，需要初始化 <code>struct iwreq</code> 中的三个字段，参考上面程序，<code>buffer</code> 是存放返回结果的内存缓冲区，<code>buflen</code> 是 <code>buffer</code> 的长度；</li>
+<li>扫描结果的数据需要多大的内存空间，在调用 <code>SIOCGIWSCAN</code> 之前并不知道，所以在调用 <code>ioctl()</code> 时可能会因为 <code>buffer</code> 不够大而失败，这时我们不得不重新为 <code>buffer</code> 申请一块更大的内存并再次调用 <code>ioctl()</code>；</li>
+<li>下面这段代码演示了获取扫描结果的全过程
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iwreq</span> <span class="n">wrq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">buffer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint32_t</span> <span class="n">buflen</span> <span class="o">=</span> <span class="n">IW_SCAN_MAX_DATA</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nl">REALLOC_MEM</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">free</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">buflen</span> <span class="o">=</span> <span class="n">IW_SCAN_MAX_DATA</span> <span class="o">*</span> <span class="p">(</span><span class="n">counter</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">buffer</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">buflen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">buffer</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Can&#39;t allocate enough memory for scanning result.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nl">GET_AGAIN</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl"><span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">pointer</span> <span class="o">=</span> <span class="n">buffer</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">buflen</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">SIOCGIWSCAN</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wrq</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">errno</span> <span class="o">==</span> <span class="n">EAGAIN</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">goto</span> <span class="n">GET_AGAIN</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">errno</span> <span class="o">==</span> <span class="n">E2BIG</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">counter</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">goto</span> <span class="n">REALLOC_MEM</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">free</span><span class="p">(</span><span class="n">buffer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* TODO */</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>当 <code>errno == E2BIG</code> 表示 buffer 不够大；<code>IW_SCAN_MAX_DATA</code> 是头文件 <code>wireless.h</code> 中定义的一个常数，在我的版本下是 4096；</li>
+</ul>
+<h3 id="24-扫描结果的数据格式">2.4 扫描结果的数据格式</h3>
+<ul>
+<li>
+<p>首先，扫描结果是一个数据流(stream)，所谓数据流，就是收到的数据是各种不同结构的数据连接在一起的连续字节序列，中间并不会有分隔符，这些数据需要自行进行解析、分割；</p>
+</li>
+<li>
+<p>在收到的数据中，包含有扫描到的所有 wifi 信号的各种属性，比如：ESSID、MAC、工作频率、占用信道等等，如果不能正确解析，将导致混乱；</p>
+</li>
+<li>
+<p>下面所展示的 <code>struct、union</code> 等如无特别说明，均在 <code>wireless.h</code> 中定义；</p>
+</li>
+<li>
+<p>我们先来看一下前面经常提到的 <code>struct iwreq</code>，WE 中每次发起 ioctl() 都会用到这个结构，调用前设置参数，调用后返回数据，均使用这个结构；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iwreq</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">union</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span>  <span class="n">ifrn_name</span><span class="p">[</span><span class="n">IFNAMSIZ</span><span class="p">];</span>  <span class="cm">/* if name, e.g. &#34;eth0&#34; */</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="n">ifr_ifrn</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Data part (defined just above) */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">union</span> <span class="n">iwreq_data</span>  <span class="n">u</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在头文件 <code>/usr/include/linux/if.h</code>，有一个宏定义，使得我们可以较为方便地访问 <code>struct iwreq</code> 中的 <code>ifrn_name</code> 字段；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#define ifr_name    ifr_ifrn.ifrn_name;
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>下面这段代码使用这个宏定义去访问 <code>struct iwreq</code> 中的 <code>ifrn_name</code> 字段；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iwreq</span> <span class="n">wrq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">strncpy</span><span class="p">(</span><span class="n">wrq</span><span class="p">.</span><span class="n">ifr_name</span><span class="p">,</span> <span class="n">IF_NAME</span><span class="p">,</span> <span class="n">IFNAMSIZ</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>因为 <code>if.h</code> 中的这个宏定义，上面代码中的 <code>wrq.ifr_name</code> 实际访问的是 <code>wrq.ifr_ifrn.ifrn_name</code>，在前面的代码中，也曾有过这种用法，如果你当时有疑问的话，现在应该清楚了；</p>
+</li>
+<li>
+<p><code>struct iwreq</code> 的第二个字段是 <code>union iwreq_data</code>，这个 union 的定义如下(中间省略了一些本例用不上的定义)：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">union</span> <span class="n">iwreq_data</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="cm">/* Config - generic */</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span>    <span class="n">name</span><span class="p">[</span><span class="n">IFNAMSIZ</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">          <span class="cm">/* Name : used to verify the presence of  wireless extensions.
+</span></span></span><span class="line"><span class="cl"><span class="cm">           * Name of the protocol/provider... */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">iw_point</span>  <span class="n">essid</span><span class="p">;</span>   <span class="cm">/* Extended network name */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">iw_param</span>  <span class="n">nwid</span><span class="p">;</span>    <span class="cm">/* network id (or domain - the cell) */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">iw_freq</span>   <span class="n">freq</span><span class="p">;</span>    <span class="cm">/* frequency or channel :
+</span></span></span><span class="line"><span class="cl"><span class="cm">                             * 0-1000 = channel
+</span></span></span><span class="line"><span class="cl"><span class="cm">                             * &gt; 1000 = frequency in Hz */</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">sockaddr</span>  <span class="n">ap_addr</span><span class="p">;</span> <span class="cm">/* Access point address */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">sockaddr</span>  <span class="n">addr</span><span class="p">;</span>    <span class="cm">/* Destination address (hw/mac) */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">iw_param</span>  <span class="n">param</span><span class="p">;</span>   <span class="cm">/* Other small parameters */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">iw_point</span>  <span class="n">data</span><span class="p">;</span>    <span class="cm">/* Other large parameters */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>我们在前面的代码中多次用到的 <code>wrq.u.data</code>，按照上面的定义，是一个 <code>struct iw_point</code>，这个结构的定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_point</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span>  <span class="o">*</span><span class="n">pointer</span><span class="p">;</span>   <span class="cm">/* Pointer to the data  (in user space) */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span> <span class="n">length</span><span class="p">;</span>     <span class="cm">/* number of fields or size in bytes */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span> <span class="n">flags</span><span class="p">;</span>      <span class="cm">/* Optional params */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在调用 <code>ioctl()</code> 获取扫描结果前，我们把存储返回数据的指针放在了 <code>struct iw_point</code> 的 <code>pointer</code> 中，把 <code>length</code> 设置为缓冲区的长度，把 <code>flags</code> 设置为0；</p>
+</li>
+<li>
+<p>当这个 <code>ioctl()</code> 调用成功后，<code>struct iw_point</code> 中的 <code>flags</code> 被设置为 1，<code>length</code> 返回数据的实际长度，当然数据的指针还在 <code>pointer</code> 中；</p>
+</li>
+<li>
+<p>下面这段代码简单回顾一下到现在为止我们在这一节的成果：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iwreq</span> <span class="n">wrq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">pointer</span> <span class="o">=</span> <span class="n">buffer</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">buflen</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">wrq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">flags</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">ioctl</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">SIOCGIWSCAN</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wrq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* 
+</span></span></span><span class="line"><span class="cl"><span class="cm">   wrq.u.data.flags   由初始值0变为1
+</span></span></span><span class="line"><span class="cl"><span class="cm">   wrq.u.data.pointer 扫描结果数据指针
+</span></span></span><span class="line"><span class="cl"><span class="cm">   wrq.u.data.length  扫描结果数据的实际长度
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>获得了返回数据的实际长度，我们就可以遍历数据，而不至于产生越界等不可预知的错误；</p>
+</li>
+<li>
+<p>前面说过，wifi 信号扫描结果返回的是一个数据流(stream)，这些数据的首指针就是 <code>wrq.u.data.pointer</code>，通常称这个数据流为 event stream，数据流中包含着很多 wifi 信号的属性，每个属性被称为一个 event；</p>
+</li>
+<li>
+<p>这个 <code>event stream</code> 中每个 <code>event</code> 符合 <code>struct iw_event</code>，定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_event</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span>		<span class="n">len</span><span class="p">;</span>			<span class="cm">/* Real length of this stuff */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span>		<span class="n">cmd</span><span class="p">;</span>			<span class="cm">/* Wireless IOCTL */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">union</span> <span class="n">iwreq_data</span>	<span class="n">u</span><span class="p">;</span>		<span class="cm">/* IOCTL fixed payload */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>先来看一下实际收到的数据(<code>wrq.u.data.pointer</code>指向的数据)是什么样子：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plain" data-lang="plain"><span class="line"><span class="cl">18 00 15 8B 00 00 00 00 01 00 DC FE 18 68 73 80 
+</span></span><span class="line"><span class="cl">00 00 00 00 00 00 00 00 10 00 05 8B 00 00 00 00 
+</span></span><span class="line"><span class="cl">9D 00 00 00 00 00 00 00 10 00 05 8B 00 00 00 00 
+</span></span><span class="line"><span class="cl">99 16 00 00 06 00 00 00 17 00 1B 8B 00 00 00 00 
+</span></span><span class="line"><span class="cl">07 00 01 00 00 00 00 00 31 35 2D 31 31 30 31
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>用 <code>struct iw_enent</code> 去对应这个数据，那么，<code>len</code> 是 0x0018(十进制24)，表示这个 event 数据的总长度，所以可以确定这个 event 的数据如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plain" data-lang="plain"><span class="line"><span class="cl">18 00 15 8B 00 00 00 00 01 00 DC FE 18 68 73 80 
+</span></span><span class="line"><span class="cl">00 00 00 00 00 00 00 00 
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>这是第 1 个 event(简称为 event_1)，后面的数据是另一个 event，仍然可以用 <code>struct iw_enent</code> 去对应，以此类推，还可以再分割出三个 event；</p>
+</li>
+<li>
+<p>第 2 个 event(event_2)，长度是0X0010(十进制16)：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plain" data-lang="plain"><span class="line"><span class="cl">10 00 05 8B 00 00 00 00 9D 00 00 00 00 00 00 00
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>第 3 个 event(event_2)，长度是0X0010(十进制16)：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plain" data-lang="plain"><span class="line"><span class="cl">10 00 05 8B 00 00 00 00 99 16 00 00 06 00 00 00
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>第 4 个 event，长度是0X0017(十进制23)：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plain" data-lang="plain"><span class="line"><span class="cl">17 00 1B 8B 00 00 00 00 07 00 01 00 00 00 00 00 
+</span></span><span class="line"><span class="cl">31 35 2D 31 31 30 31
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在 event_1 中，<code>struct iw_enent</code> 中的 <code>cmd</code> 在这个 event 中是 0X8B15，这个值决定着 <code>struct iw_event</code> 中的 <code>union iwreq_data</code> 如何取值；</p>
+</li>
+<li>
+<p>前面说到过 <code>WE API</code> 定义了一组与无线网卡驱动程序交互的指令，定义在头文件 <code>wireless.h</code> 中，以 SIOC 开头的宏定义，这些指令代码适用于 <code>struct iw_event</code> 中的 <code>cmd</code>；</p>
+</li>
+<li>
+<p>从 <code>wireless.h</code> 中可以查到 0X8B15 的指令宏定义是 <code>SIOCGIWAP</code>，含义是 <strong>获取AP的MAC地址</strong>，可以把指令为 <code>SIOCGIWAP</code> 的 event 称为 <code>SIOCGIWAP event</code>；</p>
+</li>
+<li>
+<p>按照这个方法，可以把 event_2、event_3 和 event_4 的指令宏定义查出来：</p>
+<ul>
+<li>event_2：指令代码是 0X8B05，宏定义为：<code>SIOCGIWFREQ</code>，含义为：获取 AP 的工作信道/工作频率；</li>
+<li>event_3：指令代码是 0X8B05，宏定义为：<code>SIOCGIWFREQ</code>，含义为：获取 AP 的工作信道/工作频率；</li>
+<li>event_4：指令代码是 0X8B1B，宏定义为：<code>SIOCGIWESSID</code>，含义为：获取 AP 的 ESSID；</li>
+</ul>
+</li>
+<li>
+<p>这里面有两个 <code>SIOCGIWFREQ event</code>，一个返回的是占用的信道，另一个返回的工作频率；</p>
+</li>
+<li>
+<p>再回到 <code>struct iw_event</code> 上来，我们已经搞清楚了其中的 len 和 cmd 两个字段，还有一个字段是 <code>union wreq_data u</code>；</p>
+</li>
+<li>
+<p>从 <code>union wreq_data</code> 的定义(前面介绍过)中可以看到，这个 union 可以有很多种选择，本文的范例中仅处理了 <code>SIOCGIWAP、SIOCGIWFREQ、SIOCGIWESSID</code> 三个指令，仅以这三个指令为例做出说明；</p>
+<ul>
+<li>当指令为 <code>SIOCGIWAP</code> 时，<code>union wreq_data u</code> 应选择 <code>struct sockaddr ap_addr</code>；</li>
+<li>当指令为 <code>SIOCGIWFREQ</code> 时，<code>union wreq_data u</code> 应选择 <code>struct iw_freq freq</code>；</li>
+<li>当指令为 <code>SIOCGIWESSID</code> 时，相对复杂一些，并不能选择 <code>struct iw_point essid</code>(在用指令 <code>SIOCGIWESSID</code> 获取 ESSID 时要选择这个结构)，建议自定义一个结构使问题变得简单一点；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_essid</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">flags</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">aligned</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span><span class="n">essid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_event</span> <span class="o">*</span><span class="n">essid_evt</span> <span class="o">=</span> <span class="p">...;</span>   <span class="cm">/* 指向 SIOCGIWESSID event 数据 */</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_essid</span> <span class="o">*</span><span class="n">essid_p</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">iw_essid</span> <span class="o">*</span><span class="p">)</span><span class="n">essid_evt</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* 
+</span></span></span><span class="line"><span class="cl"><span class="cm">   essid_p-&gt;len     为 essid 的长度
+</span></span></span><span class="line"><span class="cl"><span class="cm">   &amp;essid_p-&gt;essid  指向 essid 字符串
+</span></span></span><span class="line"><span class="cl"><span class="cm">   essid_p-&gt;flags   为 1
+</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>下面这段程序可以打印出这段 event_1 中的 AP 的 MAC 地址：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/wireless.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mh">0x18</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0x15</span><span class="p">,</span><span class="mh">0x8B</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0x01</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0xDC</span><span class="p">,</span><span class="mh">0xFE</span><span class="p">,</span><span class="mh">0x18</span><span class="p">,</span><span class="mh">0x68</span><span class="p">,</span><span class="mh">0x73</span><span class="p">,</span><span class="mh">0x80</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">iw_event</span> <span class="o">*</span><span class="n">wevt</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">iw_event</span> <span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">wevt</span><span class="o">-&gt;</span><span class="n">cmd</span> <span class="o">==</span> <span class="n">SIOCGIWAP</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">mac</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span><span class="n">wevt</span><span class="o">-&gt;</span><span class="n">u</span><span class="p">.</span><span class="n">ap_addr</span><span class="p">.</span><span class="n">sa_data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;MAC: &#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%02X&#34;</span><span class="p">,</span> <span class="n">mac</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)</span> <span class="n">putchar</span><span class="p">(</span><span class="sc">&#39;:&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">puts</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>event_2 和 event_3 都是 <code>SIOCGIWFREQ event</code>，在 wireless.h 中有说明，当计算出来的频率大于 1000(Hz) 时，其值为 AP 的工作频率，否则为 AP 占用的信道，所以，event_2 和 event_3 一个返回的是频率，另一个返回的是信道；</p>
+</li>
+<li>
+<p>前面说过，<code>SIOCGIWFREQ event</code> 返回数据使用 <code>struct iw_freq</code>，这个结构的定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_freq</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__s32</span>       <span class="n">m</span><span class="p">;</span>      <span class="cm">/* Mantissa */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__s16</span>       <span class="n">e</span><span class="p">;</span>      <span class="cm">/* Exponent */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>        <span class="n">i</span><span class="p">;</span>      <span class="cm">/* List index (when in range struct) */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>        <span class="n">flags</span><span class="p">;</span>  <span class="cm">/* Flags (fixed/auto) */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>字段 flags 为 0 时，表示工作频率是由驱动程序自动选择的；为 1 时表示工作频率为固定设置值；</li>
+<li>字段 i 在本例中没有意义；</li>
+<li>频率由 m 和 e 两个字段计算得到，其中：e 为底数为 10 的指数，m 为尾数，frequency = m x 10<sup>e</sup></li>
+</ul>
+</li>
+<li>
+<p>下面这段程序可以处理 event_2 和 event_3，打印出 AP 占用的信道号和工作频率：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;math.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/wireless.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mh">0x10</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0x05</span><span class="p">,</span><span class="mh">0x8B</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0x9D</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="mh">0x10</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0x05</span><span class="p">,</span><span class="mh">0x8B</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0x99</span><span class="p">,</span><span class="mh">0x16</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0x06</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">channel_or_frequency</span><span class="p">(</span><span class="k">struct</span> <span class="n">iw_event</span> <span class="o">*</span><span class="n">wevt</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">wevt</span><span class="o">-&gt;</span><span class="n">cmd</span> <span class="o">==</span> <span class="n">SIOCGIWFREQ</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">iw_freq</span> <span class="o">*</span><span class="n">ap_freq</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">iw_freq</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">wevt</span><span class="o">-&gt;</span><span class="n">u</span><span class="p">.</span><span class="n">freq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">double</span> <span class="n">freq</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">ap_freq</span><span class="o">-&gt;</span><span class="n">m</span> <span class="o">*</span> <span class="n">pow</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">ap_freq</span><span class="o">-&gt;</span><span class="n">e</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">freq</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// ap的工作频率
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Frequency: %.3f</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">freq</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1e9</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// AP的channel
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Channel: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">freq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">iw_event</span> <span class="o">*</span><span class="n">wevt</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">iw_event</span> <span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">channel_or_frequency</span><span class="p">(</span><span class="n">wevt</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">wevt</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">iw_event</span> <span class="o">*</span><span class="p">)(</span><span class="n">data</span> <span class="o">+</span> <span class="n">wevt</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">channel_or_frequency</span><span class="p">(</span><span class="n">wevt</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>这段程序因为使用了数学函数 pow()，所以用 gcc 编译时要带上参数 <strong>-lm</strong></p>
+</blockquote>
+</li>
+<li>
+<p>event_4 中的 essid 在前面已经基本说清楚了，下面这段代码会打印出 event_4 中的 ssid</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/wireless.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mh">0x17</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0x1B</span><span class="p">,</span><span class="mh">0x8B</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0x07</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0x01</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mh">0x31</span><span class="p">,</span><span class="mh">0x35</span><span class="p">,</span><span class="mh">0x2D</span><span class="p">,</span><span class="mh">0x31</span><span class="p">,</span><span class="mh">0x31</span><span class="p">,</span><span class="mh">0x30</span><span class="p">,</span><span class="mh">0x31</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_essid</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">flags</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">aligned</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span><span class="n">essid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">iw_event</span> <span class="o">*</span><span class="n">wevt</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">iw_event</span> <span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">iw_essid</span> <span class="o">*</span><span class="n">essid_p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">wevt</span><span class="o">-&gt;</span><span class="n">cmd</span> <span class="o">==</span> <span class="n">SIOCGIWESSID</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">essid_p</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">iw_essid</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">wevt</span><span class="o">-&gt;</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Len: %d</span><span class="se">\t</span><span class="s">flags: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">essid_p</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">,</span> <span class="n">essid_p</span><span class="o">-&gt;</span><span class="n">flags</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">char</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">essid_p</span><span class="o">-&gt;</span><span class="n">essid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;ESSID: &#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">essid_p</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%c&#34;</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">puts</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>本文范例中仅处理四个 wifi 信号的属性：MAC、Channel、Frequency、ESSID，涉及三个指令代码：SIOCGIWAP、SIOCGIWFREQ、SIOCGIWESSID；</p>
+</li>
+<li>
+<p>本文涉及的相关数据结构及调用方法至此已经介绍完毕。</p>
+</li>
+</ul>
+<h2 id="3-wifi信号扫描的步骤和方法">3 wifi信号扫描的步骤和方法</h2>
+<h3 id="31-wifi信号扫描的基本步骤">3.1 wifi信号扫描的基本步骤</h3>
+<ol>
+<li>获取本机所有的网络接口</li>
+<li>从所有的网络接口中找到无线网络接口</li>
+<li>向无线网络接口发出wifi信号扫描指令</li>
+<li>等待扫描结果的返回</li>
+<li>分析返回结果，从中找到我们需要的event</li>
+<li>从event中提取出wifi信号的属性</li>
+<li>将wifi信号的属性显示在屏幕上</li>
+</ol>
+<h3 id="32-wifi信号扫描的基本方法">3.2 wifi信号扫描的基本方法</h3>
+<ul>
+<li>本例中，大量的信息的长度和数量都是未知的：
+<ol>
+<li>本机网络接口的数量</li>
+<li>本机无线网络接口数量</li>
+<li>wifi信号扫描后返回的结果的长度</li>
+<li>返回结果中有多少个 event</li>
+<li>扫描到了多少个wifi信号</li>
+</ol>
+</li>
+<li>为此，本例中大量使用的单向链表结构，主要有下面四个单向链表：
+<ul>
+<li>本机网络接口链表 - <code>struct ifaddrs</code>
+<blockquote>
+<p>调用 getifaddrs() 生成该链表</p>
+</blockquote>
+</li>
+<li>本机无线网络接口链表 - <code>struct wifs_chain</code>
+<blockquote>
+<p>扫描本机网络接口链表，找出其中的无线网络接口，生成本机无线网络接口链表，当本机只有一片无线网卡时，通常这个链表中只有一项；如果没有找到无线网络接口，应该终止程序运行</p>
+</blockquote>
+</li>
+<li>扫描返回结果的 event 链表 - <code>struct events_chain</code>
+<blockquote>
+<p>向无线网卡发出扫描指令 <code>SIOCSIWSCAN</code> 后，使用 <code>SIOCGIWSCAN</code> 指令获取扫描结果，分析扫描结果生成 <code>event</code> 链表</p>
+</blockquote>
+</li>
+<li>无线 AP(Access Point) 链表 - <code>struct aps_chain</code>
+<blockquote>
+<p>遍历 event 链表，提取出各个 AP 的属性，生成无线 AP 链表</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="33-如何获取本机的所有网络接口">3.3 如何获取本机的所有网络接口</h3>
+<ul>
+<li>使用 <code>getifaddrs()</code> 可以非常容易地获取全部网络接口</li>
+<li>可以通过在线手册 <code>man getifaddrs</code> 了解详细的关于 <code>getifaddrs</code> 函数的信息；</li>
+<li><code>getifaddrs</code> 函数会创建一个本地网络接口的结构链表，该结构链表定义在 <code>struct ifaddrs</code> 中(头文件 <code>ifaddrs.h</code>)；</li>
+<li>关于 <code>ifaddrs</code> 结构有很多文章介绍，本文仅简单介绍一下与本文密切相关的内容，下面是 <code>struct ifaddrs</code> 的定义
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ifaddrs</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">ifaddrs</span>  <span class="o">*</span><span class="n">ifa_next</span><span class="p">;</span>          <span class="cm">/* Next item in list */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span>            <span class="o">*</span><span class="n">ifa_name</span><span class="p">;</span>          <span class="cm">/* Name of interface */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">int</span>     <span class="n">ifa_flags</span><span class="p">;</span>         <span class="cm">/* Flags from SIOCGIFFLAGS */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">ifa_addr</span><span class="p">;</span>          <span class="cm">/* Address of interface */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">ifa_netmask</span><span class="p">;</span>       <span class="cm">/* Netmask of interface */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">union</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">ifu_broadaddr</span><span class="p">;</span> <span class="cm">/* Broadcast address of interface */</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">ifu_dstaddr</span><span class="p">;</span>   <span class="cm">/* Point-to-point destination address */</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">ifa_ifu</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define              ifa_broadaddr ifa_ifu.ifu_broadaddr
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define              ifa_dstaddr   ifa_ifu.ifu_dstaddr
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>    <span class="kt">void</span>            <span class="o">*</span><span class="n">ifa_data</span><span class="p">;</span>          <span class="cm">/* Address-specific data */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li><code>ifa_next</code> 是结构链表的后向指针，指向链表的下一项，当前项为最后一项时，该指针为 NULL；</li>
+<li>本例中，我们的目标是找到这些网络接口中的无线网络接口，实际上我们仅需要 <code>ifa_name</code> 这个字段，也就是接口名称；</li>
+<li>下面是获取全部网络接口的代码片段：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ifaddrs</span> <span class="o">*</span><span class="n">ifs_start_pointer</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">getifaddrs</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ifs_start_pointer</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">perror</span><span class="p">(</span><span class="s">&#34;can&#39;t get local address</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h3 id="34-如何判断网络接口是无线网络接口">3.4 如何判断网络接口是无线网络接口</h3>
+<ul>
+<li>头文件 <code>wireless.h</code> 中定义了一个 <code>SIOCGIWNAME</code> 指令，使用 <code>ioctl()</code> 调用该指令时只需设置接口名称，如果该接口是无线网络接口，<code>ioctl()</code> 执行成功并返回该接口使用的协议，否则，执行失败；</li>
+<li>当我们生成了网络接口链表后，只需遍历该链表，并依此调用 <code>SIOCGIWNAME</code> 指令，便可找到所有的无线网络接口，并生成无线网络接口链表；</li>
+<li>下面代码检查网络接口是否为无线接口，其中 <code>if_name</code> 为网络接口名称：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sock</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iwreq</span> <span class="n">wreq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">wreq</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">wreq</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">strncpy</span><span class="p">(</span><span class="n">wreq</span><span class="p">.</span><span class="n">ifr_name</span><span class="p">,</span> <span class="n">if_name</span><span class="p">,</span> <span class="n">IFNAMSIZ</span><span class="p">);</span>      <span class="c1">// 接口名称
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">SIOCGIWNAME</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wreq</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">The [%s] is a wireless interface. The protocol is %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">if_name</span><span class="p">,</span> <span class="n">wreq</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;</span><span class="se">\n</span><span class="s">The [%s] is a wireless interface.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">if_name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">close</span><span class="p">(</span><span class="n">sock</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h3 id="35-wifi信号扫描有关的其它技术要点">3.5 wifi信号扫描有关的其它技术要点</h3>
+<ul>
+<li>本文第 2 节已经对 wifi 信号的扫描原理做了详尽的描述，请参考 [<strong>2 使用ioctl进行wifi信号扫描的基本原理</strong>]；</li>
+<li>[<strong>2.2 启动 wifi 信号扫描</strong>] - 详细描述了启动 wifi 信号扫描的方法；</li>
+<li>[<strong>2.3 获取 wifi 信号的扫描结果</strong>] - 详细描述了获取 wifi 信号扫描结果的方法；</li>
+<li>[<strong>2.4 扫描结果的数据格式</strong>] - 详细描述了如何从扫描结果中提取出 event，以及如何从 event 提取出 wifi 信号属性的方法；</li>
+<li>下面这张图对 wifi 信号扫描的过程做了简单的回顾：
+<img src="https://whowin.gitee.io/images/180022/SIOCGIWSCAN.png" alt="wifi signals scanning"></li>
+</ul>
+<h3 id="36-关于内存对齐memory-alignment">3.6 关于内存对齐(memory alignment)</h3>
+<ul>
+<li>
+<p>编写应用程序的程序员可能很少关心内存对齐问题，绝大多数情况下，内存对齐对应用程序的影响也不大，但内存对齐问题对本文有重要的影响；</p>
+</li>
+<li>
+<p>我们用前面介绍过的 <code>struct iw_event</code> 来说明内存对齐对这个结构的影响：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_event</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span>		<span class="n">len</span><span class="p">;</span>			<span class="cm">/* Real length of this stuff */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span>		<span class="n">cmd</span><span class="p">;</span>			<span class="cm">/* Wireless IOCTL */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">union</span> <span class="n">iwreq_data</span>	<span class="n">u</span><span class="p">;</span>		<span class="cm">/* IOCTL fixed payload */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>不使用 <code>sizeof()</code> 函数，你能够猜到系统会为这个结构分配多少内存吗？</p>
+</li>
+<li>
+<p>首先，对于 union 而言，系统会选择其中最大的一个结构为其分配内存，<code>union iwreq_data</code> 中最大字段的长度是16个字节，所以系统会为其分配 16 字节内存，加上 len 和 cmd 两个字段共 4 个字节，似乎系统应该为这个结构分配 20 个字节；</p>
+</li>
+<li>
+<p>但是，如果用 <code>sizeof(struct iw_event)</code> 计算这个结构的大小，给出的结果是 24，那么多出来的 4 个字节在哪里呢？</p>
+</li>
+<li>
+<p>这 4 个字节用于内存对齐了，我的 ubuntu 系统是 64 位(数据总线是 64 位)的，内存当然是按照 8 字节对齐的(32 位系统是按 4 字节对齐)，len 和 cmd 两个字段共用前 8 个字节中的前 4 个字节，后 4 个字节空着用于内存对齐，然后从第 9 个字节开始为 <code>union iwreq_data</code> 分配 16个字节的内存，这样算下来刚好是 24 个字节；</p>
+</li>
+<li>
+<p>下面这段程序可以很直观地看到内存分配的实际情况</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/wireless.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">iw_event</span> <span class="n">wevt</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">wevt</span><span class="p">.</span><span class="n">cmd</span> <span class="o">=</span> <span class="mh">0x8b15</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">wevt</span><span class="p">.</span><span class="n">len</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">strcpy</span><span class="p">(</span><span class="n">wevt</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&#34;struct iw_event&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;sizeof(struct iw_event): %ld</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iw_event</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;pointer of len: %p</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wevt</span><span class="p">.</span><span class="n">len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;pointer of cmd: %p</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wevt</span><span class="p">.</span><span class="n">cmd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;pointer of u.name: %p</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">wevt</span><span class="p">.</span><span class="n">u</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">wevt</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iw_event</span><span class="p">);</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%02x &#34;</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">puts</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>这段程序的运行截图
+<img src="https://whowin.gitee.io/images/180022/screenshot-of-iwevent-test.png" alt="Screenshot of iwevent test"></p>
+<ul>
+<li>首先可以看到系统确实为 <code>struct iw_event</code> 分配了 24 字节的内存，而不是 20 字节；</li>
+<li>字段 len 的地址是 <code>~f160</code>，字段 cmd 的地址是 <code>~f162</code>，因为 len 的数据类型是 __u16，占用 2 个字节；</li>
+<li>cmd 字段的类型也是 __u16，按理也应该占用 2 个字节，但字段 u 的地址却是 <code>~f168</code>，而不是 <code>~f164</code>，这其中多出的 4 个字节就是为了内存对齐；</li>
+<li>最后我们打印出了这个结构的所有数据，红线所示的 4 个字节就是为了内存对齐而填充的；</li>
+</ul>
+</li>
+<li>
+<p>那么，为什么不在 cmd 字段后面为 <code>union iwreq_data</code> 分配内存呢？这是因为 64 位的系统每次从内存读 8 个字节，如果按照 8 字节对齐分配内存，读取 <code>union iwreq_data</code> 需要读两次，否则就需要读三次，速度降低 50%，当然也可以强制不按 8 字节对齐，节省了内存但会损失性能；</p>
+</li>
+<li>
+<p>系统为这个结构按内存对齐规则分配内存后，是否还能和实际的数据流对应呢？我们看看 event_1 的数据：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plain" data-lang="plain"><span class="line"><span class="cl">18 00 15 8B 00 00 00 00 01 00 DC FE 18 68 73 80 
+</span></span><span class="line"><span class="cl">00 00 00 00 00 00 00 00 
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>0x0018 对应 len 字段，0x8B15 对应 cmd 字段，后面的 4 个字节刚好和 <code>struct iw_event</code> 中的 4 个用于对齐的字节一致，然后应该是 <code>struct sockaddr</code>，0x0001 是 <code>struct sockaddr</code> 中的 <code>sa_family</code>，再后面的 14 个字节是 <code>struct sockaddr</code> 中的 <code>sa_data</code> 字段，对应的非常好；</p>
+</li>
+<li>
+<p>为了提取出 AP 的 ESSID，我们在前面自定义了一个结构 <code>struct iw_essid</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_essid</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">flags</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="nf">__attribute</span><span class="p">((</span><span class="n">aligned</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span><span class="n">essid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>这里用了 <code>__attribute((aligned(8)))</code>，其作用也是为了 essid 字段能够按照 8 字节对齐的方式分配内存，因为 essid 字段是 char 型，仅占 1 个字节，与 len 和 flags 合起来也不超过 8 个字节，所以会紧跟着 flags 分配内存，这样会和实际的数据流不一致，所以这里必须要使用 <code>__attribute((aligned(8)))</code>；</li>
+</ul>
+</li>
+<li>
+<p>如果希望更多地了解有关内存对齐的相关信息，请自行搜索相关文章。</p>
+</li>
+</ul>
+<h2 id="4-完整的-wifi-信号扫描程序">4 完整的 wifi 信号扫描程序</h2>
+<ul>
+<li>完整的源代码，文件名：<a href="https://whowin.gitee.io/sourcecodes/180022/wifi-scanner.c">wifi-scanner.c</a>(<strong>点击文件名下载源程序</strong>)</li>
+<li>编译，因为在计算工作频率时使用了函数 pow()，所以编译时要加上 <code>-lm</code> 选项，意即连接数学函数库；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall wifi-scanner.c wifi-scanner -lm
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>运行，本程序的运行需要 root 权限
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo ./wifi-scanner
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>运行截图
+<img src="https://whowin.gitee.io/images/180022/screenshot-of-wifi-scanner.png" alt="Screenshot of wifi-scanner"></li>
+</ul>
+<h2 id="5-后记">5 后记</h2>
+<ul>
+<li>本文仅处理了很少的几个 wifi 信号的属性，wifi 信号的属性还有很多，比如：信号强度、加密方式、安全协议等，读者可以试着扩展该程序，获取更多的 wifi 信号属性；</li>
+<li>本文范例中的很多地方都是有修改空间的，比如在获取无线网络接口上，我们可以直接从 proc 文件系统上获得，读取 <code>/proc/net/wireless</code> 文件即可，proc 文件系统也是 IPC 的一种方式；</li>
+<li>本文范例使用了 <strong>Wireless Extensions</strong> 的 API，非常遗憾的是，几乎找不到这方面的完整资料，学习其调用方法的唯一办法是认真阅读头文件 <code>wireless.h</code> 和学习一些使用 WE 的源代码，下面是有关的两个链接：
+<ul>
+<li>相对完整的 <strong>Wireless Extensions</strong> 资料：<a href="https://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html">Wireless Tools for Linux</a></li>
+<li>官方发布的使用 WE 的无线工具源代码：<a href="https://github.com/HewlettPackard/wireless-tools">Wireless Tools for Linux</a></li>
+</ul>
+</li>
+<li>扫描 wifi 信号除了本文介绍的 ioctl() 方法外还有一些其它方法，希望今后有机会介绍其它方法；</li>
+<li>对 wifi 信号的操作，扫描仅仅是一个基本的操作，还有其它操作，比如：连接 wifi、共享 wifi、配置wifi等；</li>
+<li>实际上，对 wifi 进行编程的文章和资料并不多，希望这篇文章能给你带来一些启发和帮助。</li>
+</ul>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-06-26
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+          <a href="/tags/802.11/">802.11</a>
+          <a href="/tags/wifi/">wifi</a>
+          <a href="/tags/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C/">无线网络</a>
+          <a href="/tags/ioctl/">ioctl</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/network/0019-dns-client-in-c/">
+            <span class="next-text nav-default">用C语言实现的一个DNS客户端</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/network/0022-how-to-scan-wifi-signal/" class="leancloud_visitors" data-flag-title="使用ioctl扫描wifi信号获取AP的essid、mac地址等属性">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

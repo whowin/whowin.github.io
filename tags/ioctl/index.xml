@@ -6,7 +6,16 @@
     <description>Recent content in ioctl on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 12 Jan 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/ioctl/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 26 Jun 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/ioctl/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用ioctl扫描wifi信号获取AP的essid、mac地址等属性</title>
+      <link>https://whowin.gitee.io/post/blog/network/0022-how-to-scan-wifi-signal/</link>
+      <pubDate>Mon, 26 Jun 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0022-how-to-scan-wifi-signal/</guid>
+      <description>&lt;p&gt;使用 wifi 是一件再平常不过的是事情，有很多 wifi 工具可以帮助你扫描附近的 wifi 信号，测试信号强度等，但如何通过编程来操作 wifi 却鲜有文章涉及；本文立足实践，不使用任何第三方库，仅使用 ioctl 扫描附近的 wifi 信号，并获取这些 AP 的 ESSID、MAC 地址、占用信道和工作频率，本文将给出完整的源程序，今后还会写一些文章讨论如果编程获取 wifi 信号的其它属性(比如：信号强度、加密方式等)的方法，敬请关注；本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；阅读本文并不需要对 IEEE802.11 协议有所了解。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>如何用C语言操作arp cache</title>
       <link>https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/</link>

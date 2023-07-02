@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>在vitual box虚拟机上安装dos - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="现在找一台运行DOS的机器可是太不容易了，如果想玩DOS，只有在虚拟机上安装了，本文介绍如何在Virtual Box虚拟机上安装dos 6.22，本文的实例是在Ubuntu下，在windows基本也是一样的。本文适合初学者阅读。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/dos/0014-install-dos-on-vbox-under-ubuntu/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="在vitual box虚拟机上安装dos" />
+<meta property="og:description" content="现在找一台运行DOS的机器可是太不容易了，如果想玩DOS，只有在虚拟机上安装了，本文介绍如何在Virtual Box虚拟机上安装dos 6.22，本文的实例是在Ubuntu下，在windows基本也是一样的。本文适合初学者阅读。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/dos/0014-install-dos-on-vbox-under-ubuntu/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2013-04-23T14:27:38+08:00" />
+<meta property="article:modified_time" content="2013-04-23T14:27:38+08:00" />
+
+<meta itemprop="name" content="在vitual box虚拟机上安装dos">
+<meta itemprop="description" content="现在找一台运行DOS的机器可是太不容易了，如果想玩DOS，只有在虚拟机上安装了，本文介绍如何在Virtual Box虚拟机上安装dos 6.22，本文的实例是在Ubuntu下，在windows基本也是一样的。本文适合初学者阅读。"><meta itemprop="datePublished" content="2013-04-23T14:27:38+08:00" />
+<meta itemprop="dateModified" content="2013-04-23T14:27:38+08:00" />
+<meta itemprop="wordCount" content="1290">
+<meta itemprop="keywords" content="DOS,Ubuntu,Virtual Box," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="在vitual box虚拟机上安装dos"/>
+<meta name="twitter:description" content="现在找一台运行DOS的机器可是太不容易了，如果想玩DOS，只有在虚拟机上安装了，本文介绍如何在Virtual Box虚拟机上安装dos 6.22，本文的实例是在Ubuntu下，在windows基本也是一样的。本文适合初学者阅读。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">在vitual box虚拟机上安装dos</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2013-04-23 </span>
+        <div class="post-category">
+            <a href="/categories/dos/"> DOS </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-前言">1. 前言</a></li>
+        <li><a href="#2-下载dos的镜像">2. 下载DOS的镜像</a></li>
+        <li><a href="#3-在virtual-box上安装dos">3. 在Virtual Box上安装DOS</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>现在找一台运行DOS的机器可是太不容易了，如果想玩DOS，只有在虚拟机上安装了，本文介绍如何在Virtual Box虚拟机上安装dos 6.22，本文的实例是在Ubuntu下，在windows基本也是一样的。本文适合初学者阅读。</p>
+<h2 id="1-前言">1. 前言</h2>
+<blockquote>
+<p>因为最近收到一封email，内容是关于我2008年写的一篇关于DOS的文章，这使我想要在博客上恢复2008年的那些关于DOS的文章，但是现在基本找不到安装DOS的机器了，所以想要写这篇文件，介绍一下如何在虚拟机上安装DOS</p>
+</blockquote>
+<ul>
+<li>本文的安装过程，以及所有截图均在ubuntu 20.04下完成；</li>
+<li>假设你的ubuntu下已经安装了virtual Box，如果没有安装，可以按下面方法安装：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install virtualbox
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id="2-下载dos的镜像">2. 下载DOS的镜像</h2>
+<ul>
+<li>我们要安装的DOS版本是6.22，应该是纯DOS的最后一个版本，后面的DOS版本都是搭载在windows下的；</li>
+<li>我们需要一个DOS 6.22的软盘镜像，在虚拟机上挂载成一个可以启动的软盘</li>
+<li>恐怕很难找到这样的镜像了，所以只能用我提供的了
+<ul>
+<li>[dos 6.22启动软盘镜像]</li>
+</ul>
+</li>
+<li>从上面的连接上下载文件dos622.img，将其放在某个文件夹下，比如：<code>~/dos/</code> 下，备用。</li>
+</ul>
+<h2 id="3-在virtual-box上安装dos">3. 在Virtual Box上安装DOS</h2>
+<ul>
+<li>
+<p>启动Virtual Box，点击&quot;新建&quot;建立一个新的虚拟电脑
+<img src="/images/160014/start-vbox.png" alt="Start Virtual /box"></p>
+</li>
+<li>
+<p>选择&quot;类型&quot;为&quot;Other&quot;，&ldquo;名称&quot;可以随便填，这里填&quot;dos622&rdquo;，&ldquo;版本&quot;选&quot;DOS&rdquo;
+<img src="/images/160014/set-virtual-computer-name-type.png" alt="Set Virtual Computer name and type"></p>
+</li>
+<li>
+<p>内存按默认即可
+<img src="/images/160014/set-memory-as-default.png" alt="Set memory as default"></p>
+</li>
+<li>
+<p>硬盘大小按照默认即可
+<img src="/images/160014/set-virtual-harddisk-as-default.png" alt="Set virtual harddisk as default"></p>
+</li>
+<li>
+<p>硬盘类型按照默认即可
+<img src="/images/160014/set-virtual-disk-type-as-default.png" alt="Set virtual disk type as default"></p>
+</li>
+<li>
+<p>建议设定虚拟硬盘为&quot;固定大小&quot;，当然也可以选择&quot;动态分配&quot;
+<img src="/images/160014/set-disk-size-as-fixed-value.png" alt="Set virtual disk size as fixed value"></p>
+</li>
+<li>
+<p>文件位置和大小按照默认即可，点击&quot;创建&quot;，创建虚拟电脑
+<img src="/images/160014/set-file-position-size-as-default.png" alt="Set file position and size as default"></p>
+</li>
+<li>
+<p>虚拟电脑创建完毕
+<img src="/images/160014/complete-virtual-computer.png" alt="Virtual computer creation complete"></p>
+</li>
+<li>
+<p>点击&quot;设置&quot;，设置虚拟电脑参数
+<img src="/images/160014/virtual-computer-setting.png" alt="Setting virtual computer"></p>
+</li>
+<li>
+<p>按图示步骤，设置虚拟软盘
+<img src="/images/160014/storage-settings.png" alt="Storage Settings"></p>
+</li>
+<li>
+<p>点击&quot;注册&quot;找到在上一节下载的文件dos622.img，然后点击&quot;选择&quot;
+<img src="/images/160014/choice-softdisk.png" alt="Choice soft disk"></p>
+</li>
+<li>
+<p>至此，已经完成了一个可以从软盘启动dos的虚拟电脑，点击&quot;启动&quot;，启动dos
+<img src="/images/160014/start-dos-from-softdisk.png" alt="Start DOS from soft disk"></p>
+</li>
+<li>
+<p>遇到启动菜单时直接回车，则进入DOS提示符
+<img src="/images/160014/dos-first-start.png" alt="Start for the first time"></p>
+</li>
+<li>
+<p>软盘的盘符是A:，硬盘的盘符是C:，现在的C盘因为还没有分区和格式化，所以还没法用，我们可以用下面的命令试一下，会收到错误信息的</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">A:\&gt;c:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">C:\&gt;dir
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>按下面图示步骤为硬盘分区，命令：<code>fdisk</code>
+<img src="/images/160014/fdisk-create-dos-partition.png" alt="Create dos partition"></p>
+<p><img src="/images/160014/fdisk-create-primary-dos-partition.png" alt="Create primary dos partition"></p>
+<p><img src="/images/160014/fdisk-partition-size.png" alt="Set partition size"></p>
+<p><img src="/images/160014/fdisk-reboot-dos.png" alt="Reboot DOS"></p>
+</li>
+<li>
+<p>格式化硬盘，命令：<code>format c:/s</code>
+<img src="/images/160014/format-hard-disk.png" alt="Format hard disk"></p>
+</li>
+<li>
+<p>至此，硬盘已经可以使用了，我们首先要把整个DOS的基本文件从软盘拷贝到硬盘上</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">A:\&gt;xcopy *.* c:\*.* /s
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>现在你的硬盘上就安装好一个完整的dos6.22了，你可以从软盘中取出软盘，然后从硬盘启动dos</p>
+<ol>
+<li>
+<p>首先退出DOS，退出dos使用&quot;强制退出&quot;即可
+<img src="/images/160014/exit-from-dos.png" alt="Exit from DOS"></p>
+</li>
+<li>
+<p>从软驱中取出软盘，在下图的dos622.img上鼠标点右键，选择&quot;删除盘片&quot;
+<img src="/images/160014/remove-softdisk-from-drive.png" alt="Remove soft disk from drive"></p>
+</li>
+<li>
+<p>再次启动dos，将从硬盘启动
+<img src="/images/160014/boot-dos-from-harddisk.png" alt="Boot DOS from hard disk"></p>
+</li>
+</ol>
+</li>
+<li>
+<p>至此已经在虚拟机Virtual Box上安装好了一个完整的DOS.</p>
+</li>
+</ul>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2013-04-23
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/dos/">DOS</a>
+          <a href="/tags/ubuntu/">Ubuntu</a>
+          <a href="/tags/virtual-box/">Virtual Box</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/linux/0002-ps1-control-codes/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">完整的PS1控制码</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/dos/0013-install-jpgalleg-for-allegro-under-djgpp/">
+            <span class="next-text nav-default">给Allegro增加一个JPEG库</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/dos/0014-install-dos-on-vbox-under-ubuntu/" class="leancloud_visitors" data-flag-title="在vitual box虚拟机上安装dos">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
