@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Article-categories on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/article-categories/</link>
+    <description>Recent content in Article-categories on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language><atom:link href="https://whowin.gitee.io/article-categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title></title>
+      <link>https://whowin.gitee.io/article-categories/archives/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/article-categories/archives/</guid>
+      <description>2023 01-12 如何用C语言操作arp cache 01-12 接收arp请求并发送回应的实例 01-09 TCP服务器如何使用select处理多客户连接 01-07 使用select实现的UDP/</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://whowin.gitee.io/article-categories/categories/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/article-categories/categories/</guid>
+      <description>文章分类 1. 网络编程 主要涉及Linux下的socket编程，有一些涉及基本的socket编程，大量的文章讨论raw socket下的编程，对以太</description>
+    </item>
+    
+  </channel>
+</rss>

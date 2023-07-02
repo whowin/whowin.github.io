@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>如何使用raw socket发送UDP报文 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；阅读本文需要掌握基本的IPv4下的socket编程方法，本文对初学者有一定难度。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="如何使用raw socket发送UDP报文" />
+<meta property="og:description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；阅读本文需要掌握基本的IPv4下的socket编程方法，本文对初学者有一定难度。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-12-27T16:43:29+08:00" />
+<meta property="article:modified_time" content="2022-12-27T16:43:29+08:00" />
+
+<meta itemprop="name" content="如何使用raw socket发送UDP报文">
+<meta itemprop="description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；阅读本文需要掌握基本的IPv4下的socket编程方法，本文对初学者有一定难度。"><meta itemprop="datePublished" content="2022-12-27T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2022-12-27T16:43:29+08:00" />
+<meta itemprop="wordCount" content="4986">
+<meta itemprop="keywords" content="Linux,Socket,网络编程,数据链路层编程,raw socket," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="如何使用raw socket发送UDP报文"/>
+<meta name="twitter:description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；阅读本文需要掌握基本的IPv4下的socket编程方法，本文对初学者有一定难度。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">如何使用raw socket发送UDP报文</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2022-12-27 </span>
+        <div class="post-category">
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            <a href="/categories/network/"> Network </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-前言">1. 前言</a></li>
+        <li><a href="#2-其它技术要点">2. 其它技术要点</a></li>
+        <li><a href="#3-构建各层报头">3. 构建各层报头</a></li>
+        <li><a href="#4-发送数据">4. 发送数据</a></li>
+        <li><a href="#5-完整的源程序">5. 完整的源程序</a></li>
+        <li><a href="#6-结束语">6. 结束语</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；阅读本文需要掌握基本的IPv4下的socket编程方法，本文对初学者有一定难度。</p>
+<h2 id="1-前言">1. 前言</h2>
+<ul>
+<li>阅读本文前可以考虑先阅读一下我的另外一篇文章<a href="https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>，那篇文章中已经介绍过的一些概念，本文中将不再赘述；下面仅罗列一些曾经在<a href="https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>介绍过的技术要点；</li>
+<li>发送数据时打开raw_socket
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">sock_raw</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_PACKET</span><span class="p">,</span> <span class="n">SOCK_RAW</span><span class="p">,</span> <span class="n">IPPROTO_RAW</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">sock_raw</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;error in socket&#34;</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>以太网报头结构(定义在头文件linux/if_ether.h中)
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ethhdr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span>  <span class="n">h_dest</span><span class="p">[</span><span class="n">ETH_ALEN</span><span class="p">];</span>    <span class="cm">/* destination eth addr  */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span>  <span class="n">h_source</span><span class="p">[</span><span class="n">ETH_ALEN</span><span class="p">];</span>  <span class="cm">/* source ether addr  */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>         <span class="n">h_proto</span><span class="p">;</span>             <span class="cm">/* packet type ID field  */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>IP报头结构(定义在头文件linux/ip.h中)
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iphdr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>    <span class="nl">ihl</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nl">version</span><span class="p">:</span><span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>    <span class="n">tos</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>  <span class="n">tot_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>  <span class="n">id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>  <span class="n">frag_off</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>    <span class="n">ttl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>    <span class="n">protocol</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__sum16</span> <span class="n">check</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be32</span>  <span class="n">saddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be32</span>  <span class="n">daddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/*The options start here. */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>UDP报头结构(定义在头文件linux/udp.h中)
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">udphdr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>    <span class="n">source</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>    <span class="n">dest</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>    <span class="n">len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__sum16</span>    <span class="n">check</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id="2-其它技术要点">2. 其它技术要点</h2>
+<ul>
+<li>
+<p>struct ifreq</p>
+<blockquote>
+<p>Linux支持标准的ioctl，使用ioctl，应用程序可以和Linux内核进行通信，从而可以获取网络设备的信息或者对网络设备进行设置，ioctl既可以用于普通的socket，也可以用于raw socket；应用程序使用ioctl时，需要把一个ifreq结构传递给ioctl，ioctl通过ifreq结构与应用程序交换数据；</p>
+</blockquote>
+<blockquote>
+<p>struct ifreq定义在头文件&lt;linux/if.h&gt;中</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ifreq</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#define IFHWADDRLEN    6
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>    <span class="k">union</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">char</span>   <span class="n">ifrn_name</span><span class="p">[</span><span class="n">IFNAMSIZ</span><span class="p">];</span>     <span class="cm">/* if name, e.g. &#34;en0&#34; */</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">ifr_ifrn</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">union</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">ifru_addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">ifru_dstaddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">ifru_broadaddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">ifru_netmask</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">sockaddr</span> <span class="n">ifru_hwaddr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">short</span>  <span class="n">ifru_flags</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span>    <span class="n">ifru_ivalue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span>    <span class="n">ifru_mtu</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">ifmap</span> <span class="n">ifru_map</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">char</span>   <span class="n">ifru_slave</span><span class="p">[</span><span class="n">IFNAMSIZ</span><span class="p">];</span>    <span class="cm">/* Just fits the size */</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">char</span>   <span class="n">ifru_newname</span><span class="p">[</span><span class="n">IFNAMSIZ</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">void</span> <span class="o">*</span> <span class="n">ifru_data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="n">if_settings</span> <span class="n">ifru_settings</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="n">ifr_ifru</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>简而言之，使用ifreq将设备名称(ifrn_name)传递给ioctl后，可以通过ioctl获取设备的索引号(index)，硬件地址(MAC)等一些信息；</p>
+</blockquote>
+<blockquote>
+<p>man netdevice可以在线了解有关ifreq的更详细的信息</p>
+</blockquote>
+</li>
+<li>
+<p>ioctl的调用</p>
+<ul>
+<li>ioctl的定义在sys/ioctl.h中定义</li>
+<li>ioctl调用中可以允许的request在bits/ioctl.h中定义</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">ioctl</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">request</span><span class="p">,</span> <span class="p">...);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>获取网络接口的索引号(ifr_ifindex)</p>
+<blockquote>
+<p>在发送数据之前，必须要确定从哪个网络接口发送数据，因为你的机器上可能有多个网络接口：有线网口、无线网口以及loopback，可以使用ifconfig命令查看所有接口的名称；</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ifreq</span> <span class="n">ifreq_index</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ifreq_index</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ifreq_index</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">strncpy</span><span class="p">(</span><span class="n">ifreq_index</span><span class="p">.</span><span class="n">ifr_name</span><span class="p">,</span> <span class="s">&#34;eth0&#34;</span><span class="p">,</span> <span class="n">IFNAMSIZ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">SIOCGIFINDEX</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ifreq_index</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">perror</span><span class="p">(</span><span class="s">&#34;ioctl() with SIOCGIFINDEX&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">else</span> <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;index=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ifreq_index</span><span class="p">.</span><span class="n">ifr_ifindex</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>调用ioctl之前将设备名称(例中为eth0)，填写到ifreq结构中，使用SIOCGIFINDEX作为request，网络接口的设备索引号将返回在ifreq结构中</p>
+</blockquote>
+</li>
+<li>
+<p>获取网络接口的MAC地址(ifr_hwaddr)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ifreq</span> <span class="n">if_req</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">if_req</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ifreq</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">strncpy</span><span class="p">(</span><span class="n">if_req</span><span class="p">.</span><span class="n">ifr_name</span><span class="p">,</span> <span class="s">&#34;eth0&#34;</span><span class="p">,</span> <span class="n">IFNAMSIZ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">((</span><span class="n">ioctl</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">SIOCGIFHWADDR</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">if_req</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">perror</span><span class="p">(</span><span class="s">&#34;ioctl() with SIOCGIFHWADDR&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">mac</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">mac</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="p">)(</span><span class="n">if_req</span><span class="p">.</span><span class="n">ifr_hwaddr</span><span class="p">.</span><span class="n">sa_data</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">printf</span><span class="p">(</span><span class="s">&#34;Mac = %.2X-%.2X-%.2X-%.2X-%.2X-%.2X</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">       <span class="n">mac</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mac</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mac</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">mac</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">mac</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">mac</span><span class="p">[</span><span class="mi">5</span><span class="p">]);</span> 
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>与上面类似，使用SIOCGIFHWADDR作为request，网络接口的MAC地址将返回在ifreq结构中</p>
+</blockquote>
+</li>
+<li>
+<p>获取网络接口的IP地址(ifr_addr)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ifreq</span> <span class="n">if_req</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">char</span> <span class="n">ip</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">if_req</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ifreq</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">strncpy</span><span class="p">(</span><span class="n">if_req</span><span class="p">.</span><span class="n">ifr_name</span><span class="p">,</span> <span class="s">&#34;eth0&#34;</span><span class="p">,</span> <span class="n">IFNAMSIZ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ioctl</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">SIOCGIFADDR</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">if_req</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">perror</span><span class="p">(</span><span class="s">&#34;ioctl() with SIOCGIFADDR&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">strcpy</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">           <span class="n">inet_ntoa</span><span class="p">((((</span><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">if_req</span><span class="p">.</span><span class="n">ifr_addr</span><span class="p">))</span><span class="o">-&gt;</span><span class="n">sin_addr</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;IP address: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ip</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>与上面类似，使用SIOCGIFADDR作为request，网络接口的MAC地址将返回在ifreq结构中</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="3-构建各层报头">3. 构建各层报头</h2>
+<ul>
+<li>
+<p>构建以太网报头</p>
+<blockquote>
+<p>在获得了网络接口的索引号、MAC和IP地址后，就可以构造报头并发送报文了，本例中我们仅发送一组简单的UDP报文：hello</p>
+</blockquote>
+<blockquote>
+<p>首先要在内存中分配一块内存，用以存放以太网报头、IP报头、UDP报头和报文，以太网报头14个字节，IP报头20个字节，UDP报头8个字节，在加上报文的5个字节，所以在内存中分配一块64字节的空间已经足够</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">send_buf</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="mi">64</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="n">send_buf</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">64</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>构建以太网报头，需要在报头中填写源MAC地址、目的MAC地址，以及上一层报头的协议，源MAC地址上面已经介绍如何使用ioctl获得，上一层协议也很清楚是IP协议，麻烦的是如何填写目的MAC地址，我们这个例子中，目的地址和源地址在一个局域网内，我们有各种办法可以获得目的地址的MAC地址，但是很多情况下我们只知道目的IP地址，并不知道目的MAC地址，很遗憾这个问题我们并不想在本文中进行讨论，或许今后会另写一篇文章讨论这个问题，其实，不管实际的目的地址的MAC地址是什么，我们只要在目的MAC地址处填上路由器的MAC地址，这个问题就可以完美解决，路由器会帮助我们填上正确的MAC地址，当然，找到路由器的MAC地址也是要花费一点功夫的，这个问题我们也不在本文中讨论；</p>
+</blockquote>
+<blockquote>
+<p>为了简单起见，我们假定我们已经知道了目的MAC地址，并将其定义在常数：DEST_MAC_0~~DEST_MAC_5中；</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ethhdr</span> <span class="o">*</span><span class="n">eth_hdr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span> <span class="o">*</span><span class="p">)(</span><span class="n">send_buf</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_source</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mac</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* filling destination mac. 
+</span></span></span><span class="line"><span class="cl"><span class="cm">   DEST_MAC_0 to DEST_MAC_5 are macro having octets of mac address. */</span>
+</span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_dest</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">eth_hdr</span><span class="o">-&gt;</span><span class="n">h_proto</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">ETH_P_IP</span><span class="p">);</span> <span class="c1">// means next header is IP header
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>构建IP报头</p>
+<blockquote>
+<p>和构建以太网报头类似，将iphdr结构中的字段填上即可；</p>
+</blockquote>
+<blockquote>
+<p>id这个字段可以是任意一个唯一的数字，在IP包传输过程中要保持唯一，当一个IP包过长需要分片传输时，这个id对分片重组有着重要的意义；对于ipv4而言，version字段必须填4；ttl字段最大可以填255，每经过一个路由器时，该字段会被减1，当ttl=0时，该数据包将被丢弃，用于防止一个数据包在网络上永远不消失；protocol字段和以太网头中的h_proto的含义不同，为上一层协议号，各种协议的协议号定义在文件/etc/protocols中；</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iphdr</span> <span class="o">*</span><span class="n">ip_hdr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span> <span class="o">*</span><span class="p">)(</span><span class="n">send_buf</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">ihl</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>            <span class="c1">// Internet Header Length - 20 bytes
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">version</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>        <span class="c1">// ipv4
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">tos</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>            <span class="c1">// Type Of Service - fill 0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">id</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">32501</span><span class="p">);</span>  <span class="c1">// any number
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">ttl</span> <span class="o">=</span> <span class="mi">64</span><span class="p">;</span>           <span class="c1">// Time To Live
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">protocol</span> <span class="o">=</span> <span class="mi">17</span><span class="p">;</span>      <span class="c1">// protocol number - 17 represents UDP protocol
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">saddr</span> <span class="o">=</span> <span class="n">inet_addr</span><span class="p">(</span><span class="n">ip</span><span class="p">);</span>          <span class="c1">// source IP address
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">daddr</span> <span class="o">=</span> <span class="n">inet_addr</span><span class="p">(</span><span class="n">DEST_IP</span><span class="p">);</span>     <span class="c1">// put destination IP address
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>至此，整个IP报头还有三个字段没有填：frag_off这个字段是用于分片传输的，本例并不需要分片传输，可以不用填这个字段；tot_len这个字段表示总长度，包括IP头和IP payload，因为还没有填IP payload，所以还没有办法填这个字段，留在后面再填；check这个字段目前也无法填，因为IP头还没有填完，暂时还无法计算checksum，留待后面计算。</p>
+</blockquote>
+</li>
+<li>
+<p>构建UDP报头</p>
+<blockquote>
+<p>和构建IP报头类似，填充udphdr结构中的字段即可构建UDP报头；</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">udphdr</span> <span class="o">*</span><span class="n">udp_hdr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">udphdr</span> <span class="o">*</span><span class="p">)(</span><span class="n">send_buf</span> <span class="o">+</span> 
+</span></span><span class="line"><span class="cl">                                           <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span><span class="p">)</span> <span class="o">+</span> 
+</span></span><span class="line"><span class="cl">                                           <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">udp_hdr</span><span class="o">-&gt;</span><span class="n">source</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">34561</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">udp_hdr</span><span class="o">-&gt;</span><span class="n">dest</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">34562</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">udp_hdr</span><span class="o">-&gt;</span><span class="n">check</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>UDP报头中的check字段不是强制的，可以不用，填0即可；和IP报头一样，UDP报头中有一个len字段，这个长度字段包含UDP报头的长度和UDP payload的长度，所以在填完payload之前还无法填写这个字段。</p>
+</blockquote>
+</li>
+<li>
+<p>构建要发送的数据</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">total_len</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">)</span> <span class="o">+</span> 
+</span></span><span class="line"><span class="cl">            <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span><span class="p">)</span> <span class="o">+</span> 
+</span></span><span class="line"><span class="cl">            <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">udphdr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">send_buf</span><span class="p">[</span><span class="n">total_len</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;h&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">send_buf</span><span class="p">[</span><span class="n">total_len</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;e&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">send_buf</span><span class="p">[</span><span class="n">total_len</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;l&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">send_buf</span><span class="p">[</span><span class="n">total_len</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;l&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">send_buf</span><span class="p">[</span><span class="n">total_len</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;o&#39;</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>填充IP和UDP报头中的长度字段</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="c1">// UDP length field
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">udp_hdr</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">total_len</span> <span class="o">-</span> 
+</span></span><span class="line"><span class="cl">                     <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span><span class="p">)</span> <span class="o">-</span> 
+</span></span><span class="line"><span class="cl">                     <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// IP length field
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">tot_len</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">total_len</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">));</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>IP报头中的checksum计算</p>
+<blockquote>
+<p>在IP报头中还有一个check字段没有填，关于这个字段的计算请参考我的另外两篇文章<a href="https://whowin.gitee.io/post/blog/network/0004-checksum-of-ip-header/">《如何计算IP报头的checksum》</a>和<a href="https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/">《如何计算UDP头的checksum》</a>；checksum字段是用于错误检测的，当报文经过一个路由器时，路由器会重新计算IP报文的checksum，并与IP报头中的checksum进行比较，如果不一致，该报文将被丢弃，否则，路由器会把IP报头中ttl字段减1，然后转发这个报文；</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">short</span> <span class="nf">checksum</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span> <span class="o">*</span><span class="n">buff</span><span class="p">,</span> <span class="kt">int</span> <span class="n">_16bitword</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">sum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">_16bitword</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">_16bitword</span><span class="o">--</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sum</span> <span class="o">+=</span> <span class="n">htons</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">buff</span><span class="p">)</span><span class="o">++</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sum</span> <span class="o">=</span> <span class="p">((</span><span class="n">sum</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">sum</span> <span class="o">&amp;</span> <span class="mh">0xFFFF</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sum</span> <span class="o">+=</span> <span class="p">(</span><span class="n">sum</span><span class="o">&gt;&gt;</span><span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">)(</span><span class="o">~</span><span class="n">sum</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">ip_hdr</span><span class="o">-&gt;</span><span class="n">check</span> <span class="o">=</span> <span class="n">checksum</span><span class="p">((</span><span class="kt">unsigned</span> <span class="kt">short</span> <span class="o">*</span><span class="p">)(</span><span class="n">send_buf</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ethhdr</span><span class="p">)),</span> 
+</span></span><span class="line"><span class="cl">                         <span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">iphdr</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">));</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id="4-发送数据">4. 发送数据</h2>
+<ul>
+<li>
+<p>我们已经将报文组织好了，我们在发送数据的外面包装上了UDP报头、IP报头和以太网报头，但在发送之前，我们还需要了解sockaddr_ll结构，并使用目的MAC地址填充其中的字段；</p>
+</li>
+<li>
+<p>sendto的定义</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">ssize_t</span> <span class="nf">sendto</span><span class="p">(</span><span class="kt">int</span> <span class="n">sockfd</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">len</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">               <span class="k">const</span> <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="n">dest_addr</span><span class="p">,</span> <span class="n">socklen_t</span> <span class="n">addrlen</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>通常情况下在应用层发送数据时，dest_addr会指向一个sockaddr_in结构，在这个结构中填入目的端口和目的IP后，即可调用sendto；但是当我们在数据链路层使用sendto发送数据时，dest_addr要指向一个sodkaddr_ll结构，ll即为link-layer的意思，在其中要填上网络接口的索引号、目的MAC地址等数据链路层的信息，然后才能调用sendto发送数据；</p>
+</blockquote>
+</li>
+<li>
+<p>sockaddr_ll结构</p>
+<blockquote>
+<p>这个结构在linux/if_packet.h中定义，有关该结构的详细说明请参考其它文章，本文仅就相关字段做出说明；</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr_ll</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span>  <span class="n">sll_family</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__be16</span>          <span class="n">sll_protocol</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>             <span class="n">sll_ifindex</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span>  <span class="n">sll_hatype</span><span class="p">;</span>     <span class="c1">// Hardware Address Type
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">unsigned</span> <span class="kt">char</span>   <span class="n">sll_pkttype</span><span class="p">;</span>    <span class="c1">// Packet Type
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">unsigned</span> <span class="kt">char</span>   <span class="n">sll_halen</span><span class="p">;</span>      <span class="c1">// Hardware Address Length
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">unsigned</span> <span class="kt">char</span>   <span class="n">sll_addr</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>    <span class="c1">// Address(Hardware Address)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>当要在数据链路层发送数据时，需要填sll_family、sll_protocol、sll_ifindex、sll_halen和sll_addr，其它字段填0即可；在接收到数据包时会填写sll_hatype和sll_pkttype；其中sll_family为协议族，和建立raw socket是使用的协议族要一致，所以肯定是AF_PACKET(PF_PACKET)，sll_protocol是标准的以太网协议类型，定义在头文件linux/if_ether.h中，默认为socket的协议，可以和建立socket时的协议一致，也可以不填；sll_ifindex是网络接口的索引号，我们可以根据接口名称使用ioctl获得；sll_halen是硬件地址(MAC)的长度，ha是Hardware Address的意思，填常数ETH_ALEN(定义在头文件linux/if_ether.h中)；sll_addr是目的MAC地址。</p>
+</blockquote>
+<blockquote>
+<p>实际上，在发送数据时，由于sll_family和sll_protocol都是和socket中一样的，所以都可以不填，只要填sll_ifindex、sll_halen和sll_addr即可。</p>
+</blockquote>
+</li>
+<li>
+<p>构建sockaddr_ll结构</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr_ll</span> <span class="n">saddr_ll</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_ifindex</span> <span class="o">=</span> <span class="n">ifreq_index</span><span class="p">.</span><span class="n">ifr_ifindex</span><span class="p">;</span>     <span class="c1">// index of interface
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_halen</span>   <span class="o">=</span> <span class="n">ETH_ALEN</span><span class="p">;</span>      <span class="c1">// length of destination mac address
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_addr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_addr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_addr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_addr</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_addr</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">saddr_ll</span><span class="p">.</span><span class="n">sll_addr</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEST_MAC_5</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>发送数据</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">send_len</span> <span class="o">=</span> <span class="n">sendto</span><span class="p">(</span><span class="n">sock_raw</span><span class="p">,</span> <span class="n">send_buf</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                  <span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">saddr_ll</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                  <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_ll</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">send_len</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">perror</span><span class="p">(</span><span class="s">&#34;sendto()&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id="5-完整的源程序">5. 完整的源程序</h2>
+<ul>
+<li>在这个实例中，目的IP地址为：192.168.2.112，目的MAC地址为：00:21:cc:d8:30:4b；源IP地址和MAC地址我们将从程序中得到；网络接口名称为：enp0s3；源端口号为：34561，目的端口号为：34562</li>
+<li>这个程序需要使用root权限运行，因为使用了raw socket</li>
+<li>下面是完整的源程序，文件名为：<a href="https://whowin.gitee.io/sourcecodes/180006/send-raw-udp-packet.c">send-raw-udp-packet.c</a>(<strong>点击文件名下载源程序</strong>)</li>
+<li>运行程序
+<ol>
+<li>编译程序
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall send-raw-udp-packet.c -o send-raw-udp-packet
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>在目的电脑(192.168.2.112)上启动一个监听程序，监听UDP的34562端口，因为我们的程序会向这个端口发送一个UDP报文，内容是：hello；这里我们使用netcat命令，关于这个命令的介绍，请参考我的另一篇文章<a href="https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/">《如何在Linux命令行下发送和接收UDP数据包》</a>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">nc -u -l <span class="m">34562</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>在源电脑上使用root权限启动程序
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo ./send-raw-udp-packet
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>在目的电脑(192.168.2.112)上应该可以看到发过来的数据：hello</li>
+</ol>
+</li>
+</ul>
+<h2 id="6-结束语">6. 结束语</h2>
+<ul>
+<li>平常进行网络编程，大多是在应用层编程，基本上不会接触到数据链路层、网络层和传输层，这个程序实际上是在数据链路层上直接发送数据，可以让我们对网络模型及各层的工作原理有更深入的了解，掌握了这种编程方式，可以编写出更加复杂的网络程序；</li>
+<li>在封装各层报头的过程中，实际上唯一比较让人头疼的就是目的MAC地址，本文受篇幅所限略去了这部分的讨论；</li>
+<li>可以修改一下程序，尝试使用你的默认网关的MAC地址代替目的MAC地址，正常情况下报文也是可以送达的；</li>
+<li>如果你可以在互联网上找到一台服务器，可以尝试向局域网外发送数据，同样，建议你将目的MAC地址填上默认网关的MAC地址，特别要注意的是要确认服务器上的防火墙放开了你在程序中设置的目的端口号，在服务器上启动netcat命令监听目的端口，在你自己的机器上运行程序，正常情况下，报文是可以送达的。</li>
+</ul>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2022-12-27
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/socket/">Socket</a>
+          <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+          <a href="/tags/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%E7%BC%96%E7%A8%8B/">数据链路层编程</a>
+          <a href="/tags/raw-socket/">raw socket</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/network/0013-udp-server-client-implementation-in-c/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">使用C语言实现服务器/客户端的UDP通信</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/network/0004-checksum-of-ip-header/">
+            <span class="next-text nav-default">如何计算IP报头的checksum</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/network/0006-send-udp-with-raw-socket/" class="leancloud_visitors" data-flag-title="如何使用raw socket发送UDP报文">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

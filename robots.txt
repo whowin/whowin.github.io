@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://whowin.gitee.io/sitemap.xml

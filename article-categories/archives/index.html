@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="2023 01-12 如何用C语言操作arp cache 01-12 接收arp请求并发送回应的实例 01-09 TCP服务器如何使用select处理多客户连接 01-07 使用select实现的UDP/" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/article-categories/archives/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="" />
+<meta property="og:description" content="2023 01-12 如何用C语言操作arp cache 01-12 接收arp请求并发送回应的实例 01-09 TCP服务器如何使用select处理多客户连接 01-07 使用select实现的UDP/" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/article-categories/archives/" /><meta property="article:section" content="article-categories" />
+
+
+
+<meta itemprop="name" content="">
+<meta itemprop="description" content="2023 01-12 如何用C语言操作arp cache 01-12 接收arp请求并发送回应的实例 01-09 TCP服务器如何使用select处理多客户连接 01-07 使用select实现的UDP/">
+
+<meta itemprop="wordCount" content="466">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="2023 01-12 如何用C语言操作arp cache 01-12 接收arp请求并发送回应的实例 01-09 TCP服务器如何使用select处理多客户连接 01-07 使用select实现的UDP/"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+  <div class="post-content">
+    <h2 id="2023">2023</h2>
+<hr>
+<ul>
+<li>01-12 <a href="/0014-handling-arp-cache/">如何用C语言操作arp cache</a></li>
+<li>01-12 <a href="/0007-recv-arp-request-and-reply/">接收arp请求并发送回应的实例</a></li>
+<li>01-09 <a href="/0011-handling-multiple-clients-on-server-with-select/">TCP服务器如何使用select处理多客户连接</a></li>
+<li>01-07 <a href="/0010-tcp-and-udp-server-using-select/">使用select实现的UDP/TCP组合服务器</a></li>
+<li>01-06 <a href="/0012-tcp-server-client-implementation-in-c/">使用C语言实现服务器/客户端的TCP通信</a></li>
+<li>01-05 <a href="/0013-udp-server-client-implementation-in-c/">使用C语言实现服务器/客户端的UDP通信</a></li>
+</ul>
+<h2 id="2022">2022</h2>
+<hr>
+<ul>
+<li>12-27 <a href="/0006-send-udp-with-raw-socket/">如何使用raw socket发送UDP报文</a></li>
+<li>12-14 <a href="/0004-checksum-of-ip-header/">如何计算IP报头的checksum</a></li>
+<li>12-12 <a href="/0003-checksum-of-udp-header/">如何计算UDP头的checksum</a></li>
+<li>12-10 <a href="/0005-send-udp-via-linux-cli/">如何在Linux命令行下发送和接收UDP数据包</a></li>
+<li>12-07 <a href="/0002-link-layer-programming/">Linux下如何在数据链路层接收原始数据包</a></li>
+<li>10-16 <a href="/0001-how-to-get-ipv6-in-c/">C语言如何获取ipv6地址</a></li>
+<li>09-20 <a href="/0001-parameters-passing-mechanism/">C语言函数调用时的参数传递机制</a></li>
+<li>08-25 <a href="/0012-setuid/">Linux文件权限：setuid、setgid和sticky bit</a></li>
+<li>08-18 <a href="/0001-wake-on-lan/">远程开机：一个简单的嵌入式项目开发</a></li>
+<li>07-10 <a href="/0008-apt-update-ubuntu/">apt update 如何工作</a></li>
+<li>05-06 <a href="/0007-ubuntu-desktop/">安装一个好用的Ubuntu桌面</a></li>
+<li>04-18 <a href="/0004-setup-ps1/">bash下变量PS1的完整理解</a></li>
+<li>04-10 <a href="0001-environment-variables-and-shell-variables/">bash 的环境变量和 shell 变量</a></li>
+<li>04-06 <a href="/0003-ansi-escape-code/">ANSI的ESC转义序列</a></li>
+<li>04-01 <a href="/0002-ps1-control-codes/">完整的PS1控制码</a></li>
+</ul>
+<h2 id="2008">2008</h2>
+<hr>
+<ul>
+<li>04-11 <a href="/0008-network-programming-on-dos-2/">在DOS下进行网络编程（下）</a></li>
+<li>04-09 <a href="/0007-network-programming-on-dos-1/">在DOS下进行网络编程（上）</a></li>
+<li>04-04 <a href="/0006-dos-int15h-introduction/">DOS的系统杂项服务INT 15H介绍</a></li>
+<li>04-02 <a href="/0005-traverse-pci-devices/">遍历 PCI 设备</a></li>
+<li>03-28 <a href="/0004-install-djgpp-rhide-under-dos/">在 DOS 下的 DJGPP + RHIDE 安装实作</a></li>
+<li>03-27 <a href="/0003-djgpp-installation/">在 DOS 下安装 DJGPP</a></li>
+<li>03-18 <a href="/0002-invoking-pci-bios/">调用PCI BIOS</a></li>
+<li>03-18 <a href="/0001-32bit-bios-introduction/">32位 BIOS 说明</a></li>
+</ul>
+
+  </div>
+</article>
+        </div>
+        
+
+  <span id="/article-categories/archives/" class="leancloud_visitors" data-flag-title="">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

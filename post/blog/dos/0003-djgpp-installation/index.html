@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>在 DOS 下安装 DJGPP - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="该文翻译自 djgpp version 2.03 的 .readme 文件。本文中包含获得、安装、使用 DJGPP 的信息，在寻求帮助之前请完整阅读该文档。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/dos/0003-djgpp-installation/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="在 DOS 下安装 DJGPP" />
+<meta property="og:description" content="该文翻译自 djgpp version 2.03 的 .readme 文件。本文中包含获得、安装、使用 DJGPP 的信息，在寻求帮助之前请完整阅读该文档。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/dos/0003-djgpp-installation/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2008-03-27T14:27:38+08:00" />
+<meta property="article:modified_time" content="2008-03-27T14:27:38+08:00" />
+
+<meta itemprop="name" content="在 DOS 下安装 DJGPP">
+<meta itemprop="description" content="该文翻译自 djgpp version 2.03 的 .readme 文件。本文中包含获得、安装、使用 DJGPP 的信息，在寻求帮助之前请完整阅读该文档。"><meta itemprop="datePublished" content="2008-03-27T14:27:38+08:00" />
+<meta itemprop="dateModified" content="2008-03-27T14:27:38+08:00" />
+<meta itemprop="wordCount" content="3096">
+<meta itemprop="keywords" content="DOS,DJGPP,保护模式,DPMI," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="在 DOS 下安装 DJGPP"/>
+<meta name="twitter:description" content="该文翻译自 djgpp version 2.03 的 .readme 文件。本文中包含获得、安装、使用 DJGPP 的信息，在寻求帮助之前请完整阅读该文档。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">在 DOS 下安装 DJGPP</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2008-03-27 </span>
+        <div class="post-category">
+            <a href="/categories/dos/"> DOS </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#djgpp介绍">DJGPP介绍</a></li>
+        <li><a href="#发行">发行</a></li>
+        <li><a href="#下载">下载</a></li>
+        <li><a href="#安装">安装</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>该文翻译自 <strong>djgpp version 2.03</strong> 的 <em>.readme</em> 文件。本文中包含获得、安装、使用 <strong>DJGPP</strong> 的信息，在寻求帮助之前请完整阅读该文档。</p>
+<h2 id="djgpp介绍">DJGPP介绍</h2>
+<ul>
+<li>DJGPP是MS-DOS下使用C/C++开发32位保护模式软件的免费环境，点击进入<a href="http://www.delorie.com/djgpp/">DJGPP的官方网站</a></li>
+<li>DJGPP的最新状态及其他信息（在线文档，FAQ、邮件文档）通过DJGPP的官方网站发布。有关DJGPP的使用与特点方面的讨论在DJGPP的新闻组（提交到comp.os.msdos.djgpp）和DJGPP的邮件列表（发信息到djgpp@delorie.com，通过listserv@delorie.com订阅），有关DJGPP的最新版本信息，请登陆网站查看。</li>
+<li>在下面网站上有一些获取、设置和使用DJGPP的文档：<a href="http://www.delorie.com/djgpp/doc/">DJGPP文档</a></li>
+<li><strong>截止到2022年4月11日，DJGPP的网站依然存活</strong></li>
+</ul>
+<h2 id="发行">发行</h2>
+<ul>
+<li>DJGPP的发行包，根据内容被分成了几个目录，每个目录下有一个00_index.txt的文件，对这个目录下的文件进行了说明。</li>
+<li>以“b”结尾的zip压缩包中包含有二进制文件和在线文档，在写这篇文件时，文件目录清单如下：
+<table>
+<thead>
+<tr>
+<th style="text-align:left">文件或目录名</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">FAQ</td>
+<td style="text-align:left">一个很小的文件，告诉你应该读的文档在什么地方（包括完整的FAQ）</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left">v2/</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left">unzip32</td>
+<td style="text-align:left">一个免费的解压缩程序（与pkunzip类似）</td>
+</tr>
+<tr>
+<td style="text-align:left">djdev203</td>
+<td style="text-align:left">DJGPP V2开发包和运行程序</td>
+</tr>
+<tr>
+<td style="text-align:left">djlsr203</td>
+<td style="text-align:left">DJGPP V2基本库源程序</td>
+</tr>
+<tr>
+<td style="text-align:left">djtst203</td>
+<td style="text-align:left">DJGPP V2测试程序（用于测试C库）</td>
+</tr>
+<tr>
+<td style="text-align:left">djcrx203</td>
+<td style="text-align:left">DJGPP V2跨平台编译器支持文件（来自djlsr/djdev）</td>
+</tr>
+<tr>
+<td style="text-align:left">djtzn203</td>
+<td style="text-align:left">DJGPP V2 TimeZone文件</td>
+</tr>
+<tr>
+<td style="text-align:left">djtzs203</td>
+<td style="text-align:left">DJGPP V2 TimeZone源程序</td>
+</tr>
+<tr>
+<td style="text-align:left">faq*b</td>
+<td style="text-align:left">各种格式（info, ascii, html&hellip;&hellip;）的FAQ</td>
+</tr>
+<tr>
+<td style="text-align:left">faq*s</td>
+<td style="text-align:left">FAQ文本格式源文件和生成各种格式FAQ的工具</td>
+</tr>
+<tr>
+<td style="text-align:left">frfaq*</td>
+<td style="text-align:left">DJGPP FAQ法文版</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">文件或目录名</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">v2apps/</td>
+<td style="text-align:left">各种用DJGPP编写的应用程序和用于DJGPP的应用程序，如：RHIDE和Tex</td>
+</tr>
+<tr>
+<td style="text-align:left">v2gnu/</td>
+<td style="text-align:left">各种用于DJGPP的FSF/GNU程序，如：gcc和binutils</td>
+</tr>
+<tr>
+<td style="text-align:left">v2tk/</td>
+<td style="text-align:left">各种与DJGPP一同使用的工具包，如：Allegro和libsocket</td>
+</tr>
+<tr>
+<td style="text-align:left">v2misc/</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left">csdpmi*</td>
+<td style="text-align:left">CWSDPMI，Charles Sandmann的免费的DPMI服务器程序和文档</td>
+</tr>
+<tr>
+<td style="text-align:left">mlp*</td>
+<td style="text-align:left">ML的可执行packer，二进制文件（“djp”）</td>
+</tr>
+<tr>
+<td style="text-align:left">pmode*</td>
+<td style="text-align:left">PMODE stub for djgpp v2</td>
+</tr>
+<tr>
+<td style="text-align:left">wmemu*</td>
+<td style="text-align:left">WM的可选的用于DJGPP V2的387仿真文件</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">（其他与DJGPP一起使用的东西）</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<h2 id="下载">下载</h2>
+<ul>
+<li>要获得并运行DJGPP，下面是新用户必须了解的内容，更详细的信息请阅读DJGPP文档和FAQ，建议新用户完整阅读一下FAQ。</li>
+<li>下载什么？
+<ul>
+<li><a href="http://www.delorie.com/djgpp/zip-picker.html">http://www.delorie.com/djgpp/zip-picker.html</a> 将指引你了解应该下载那些文件，一般情况下，仅下载安装发行包即可，大多数人不需要下载源程序。</li>
+<li>要开发C程序，你需要djdev203.zip, gcc<em>b.zip和bnu</em>b.zip</li>
+<li>如果要开发C++程序，你还需要gpp*b.zip</li>
+<li>要阅读在线手册，需要下载txi<em>b.zip，并且运行“info”，如果你没有安装DPMI服务器，你还需要下载cwdpmi</em>b.zip。（windows, QDPMI, 386Max, NWDOS, OpenDOS, OS/2, win/NT和linux DOSEmu都提供DPMI服务，在这些环境下你不需要CWSDPMI）。详细信息请下载faq*b.zip（完整FAQ）并阅读第4节“下载什么和在哪里下载？”。</li>
+<li>如果你使用的windows Me, 2000或xp是2001年12月以前发行的，可能不能正常运行DJGPP，所以请确认你的windows版本。</li>
+</ul>
+</li>
+</ul>
+<h2 id="安装">安装</h2>
+<ol>
+<li>
+<p>为DJGPP建立一个目录，如：c:\djgpp（注意：不能把DJGPP安装在一个目录下，如：c:\dev, d:\dev等，这将使DJGPP无法运行，详细内容请看FAQ）。目录名不能用长文件名，目录名中也不能有空格或其它特殊字符。</p>
+<ul>
+<li>如果你以前安装了DJGPP V1.x版，最好是删除“bin/”目录下的内容或者将该目录移到其它目录下（不能是PATH设置的目录），并且删除老的v1.x版安装的其它内容（在用户提交的问题报告中，有一些就是由于无意中把DJGPP v2和老的v1.x混在一起引起的）。v1.x版中唯一可以留下的程序是go32.exe。</li>
+<li>如果你要在Windows NT 4.0下运行，在安装之前你需要决定是使用长文件名还是使用DOS 8.3文件名，如果你打算使用长文件名，在解压缩之前你需要先下载并安装长文件名驻留程序（ntlfn*b.zip）。</li>
+</ul>
+</li>
+<li>
+<p>从你指定的目录中解压缩所有的文件，注意要保存原目录结构。例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">pkunzip -d djdev203 或者 unzip32 djdev203
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>在Windows 9x, Windows/ME, Windows 2000和Windows XP下安装，应使用支持长文件名的解压缩程序，InfoZip的UnZip和PKUnZip，包括WinZip都支持长文件名，从DJGPP网站上得到的unzip32.exe也支持长文件名。确定是否支持长文件名的一种方法可以查找一个文件：include/sys/sysmacros.h，如果你看到的文件名是：sysmacro.h，说明你的解压缩程序不支持长文件名，你需要换一个解压缩程序。</li>
+<li>必须保证解压缩时保存了原有的目录结构，如果你使用WinZip，你一定要检查选中“Use folder names”选项，如果使用pkunzip，必须要使用-d开关。</li>
+<li>如果不打算在Windows/NT（版本4以下，不是W2K！）下使用长文件名的驻留程序，那么unzip程序将不支持长文件名，没有长文件名的驻留程序，DJGPP不能读取NT4下的长文件名。unzip32.exe可以避免这个问题，所以强烈推荐。</li>
+</ul>
+</li>
+<li>
+<p>解压缩所有的zip文件后，要将DJGPP的环境变量指到DJGPP安装目录下的DJGPP.ENV文件上，并把BIN子目录加入到PATH设置中。</p>
+<ul>
+<li>
+<p>设置方法要看你使用什么操作系统。</p>
+<ul>
+<li>
+<p>Windows 98</p>
+<ul>
+<li>点击“开始”</li>
+<li>选择：程序-&gt;附件-&gt;系统工具-&gt;系统信息</li>
+<li>像下面说明的那样修改autoexec.bat文件</li>
+</ul>
+</li>
+<li>
+<p>Windows ME</p>
+<ul>
+<li>点击“开始”，选择“运行”，键入“msconfig.exe”，点击“确定”</li>
+<li>点击“环境变量”</li>
+<li>修改PATH系统变量加入DJGPP的bin子目录</li>
+<li>增加一个新变量DJGPP并且把值设置成DJGPP.ENV的全路径名，参照下面解释</li>
+</ul>
+</li>
+<li>
+<p>Windows NT</p>
+<ul>
+<li>右击“我的电脑”，选择“属性”</li>
+<li>选择“环境变量”</li>
+<li>编辑PATH系统变量增加DJGPP bin子目录</li>
+<li>增加一个新变量DJGPP并且把值设置成DJGPP.ENV的全路径名，参照下面解释</li>
+</ul>
+</li>
+<li>
+<p>windows 2000和Windows XP</p>
+<ul>
+<li>右击“我的电脑”，选择“属性”</li>
+</ul>
+<ul>
+<li>选择“高级”并点击“环境变量”</li>
+</ul>
+<ul>
+<li>编辑PATH系统变量增加DJGPP bin子目录</li>
+<li>增加一个新变量DJGPP并且把值设置成DJGPP.ENV的全路径名，参照下面解释</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>对于其它系统（DOS, Windows 3.x和Windows 95），使用任意一种文本编辑软件，比如 <em>EDIT</em>，编辑启动盘（通常是C）根目录下的 <strong>autoexec.bat</strong> 文件。</p>
+<ul>
+<li>不改变autoexec.bat文件或者不改变全局环境变量，你也可以为DJGPP单独建立一个BAT文件，如果你的系统中有多个编译器，可能需要这种方法。</li>
+<li>不管你用什么方法，假定你的DJGPP安装在C:\DJGPP下，则DJGPP和PATH这两个环境变量应该如下设置：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">set DJGPP=C:\DJGPP\DJGPP.ENV
+</span></span><span class="line"><span class="cl">set PATH=C:\DJGPP\BIN;%PATH%
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>重新启动。</p>
+<ul>
+<li>这将使你在 <strong>autoexec.bat</strong> 中加入的两行生效。（在Windows NT，Windows 2000和Windows XP下，设置立即生效，所以不需要重新启动，但要关闭并重新打开DOS窗口）</li>
+</ul>
+</li>
+<li>
+<p>不带参数运行 <em>go32-v2.exe</em> 程序</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">go32-v2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>显示系统中DJGPP可用的DPMI存储器和DPMI交换空间，如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">DPMI memory available: 8020 kb
+</span></span><span class="line"><span class="cl">DPMI swap space available: 39413 kb
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>实际数值会根据你系统中内存大小和空闲磁盘空间大小以及DPMI服务器不同而有所变化。如果两个数值的总和少于4MB，请阅读FAQ的第3.9节，“How to configure your system for DJGPP”。（尽管两数值之和大于4MB，为了使你的系统性能更高，也可以阅读这部分）</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2008-03-27
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/dos/">DOS</a>
+          <a href="/tags/djgpp/">DJGPP</a>
+          <a href="/tags/%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/">保护模式</a>
+          <a href="/tags/dpmi/">DPMI</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/dos/0004-install-djgpp-rhide-under-dos/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">在 DOS 下的 DJGPP &#43; RHIDE 安装实作</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/dos/0002-invoking-pci-bios/">
+            <span class="next-text nav-default">调用PCI BIOS</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/dos/0003-djgpp-installation/" class="leancloud_visitors" data-flag-title="在 DOS 下安装 DJGPP">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

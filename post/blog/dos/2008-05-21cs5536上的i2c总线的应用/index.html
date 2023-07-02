@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="CS5536上的I2C总线的应用 2008-05-21 13:28:41 以前我们使用AMD 的GX1搭配CS5530做主板，用的还比较顺手，后来AMD的GX1停产了，加上欧洲无铅" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/dos/2008-05-21cs5536%E4%B8%8A%E7%9A%84i2c%E6%80%BB%E7%BA%BF%E7%9A%84%E5%BA%94%E7%94%A8/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="" />
+<meta property="og:description" content="CS5536上的I2C总线的应用 2008-05-21 13:28:41 以前我们使用AMD 的GX1搭配CS5530做主板，用的还比较顺手，后来AMD的GX1停产了，加上欧洲无铅" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/dos/2008-05-21cs5536%E4%B8%8A%E7%9A%84i2c%E6%80%BB%E7%BA%BF%E7%9A%84%E5%BA%94%E7%94%A8/" /><meta property="article:section" content="post" />
+
+
+
+<meta itemprop="name" content="">
+<meta itemprop="description" content="CS5536上的I2C总线的应用 2008-05-21 13:28:41 以前我们使用AMD 的GX1搭配CS5530做主板，用的还比较顺手，后来AMD的GX1停产了，加上欧洲无铅">
+
+<meta itemprop="wordCount" content="5093">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="CS5536上的I2C总线的应用 2008-05-21 13:28:41 以前我们使用AMD 的GX1搭配CS5530做主板，用的还比较顺手，后来AMD的GX1停产了，加上欧洲无铅"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"></h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#cs5536上的i2c总线的应用">CS5536上的I2C总线的应用</a>
+      <ul>
+        <li><a href="#1i2c总线介绍">1、I2C总线介绍</a></li>
+        <li><a href="#2cs5536上的i2c总线">2、CS5536上的I2C总线</a></li>
+        <li><a href="#3一个简单的应用">3、一个简单的应用</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h1 id="cs5536上的i2c总线的应用">CS5536上的I2C总线的应用</h1>
+<p><strong>2008-05-21 13:28:41</strong></p>
+<blockquote>
+<p>以前我们使用AMD 的GX1搭配CS5530做主板，用的还比较顺手，后来AMD的GX1停产了，加上欧洲无铅化的要求，只好在AMD的LX CPU搭配CS5536开新主板，在这片新主板上，我们为了能有一个较好的AV输出，放上了一颗AIT2138的芯片，专门负责把VGA输出转换成AV输出，AIT2138这颗芯片也可以不用软件去控制，但是如果能用软件控制，当然更好，AIT2138上有一个I2C总线可以实现软件控制，我们看到CS5536上也有一个I2C总线的接口，于是我们把他们接到了一起，实践证明，非常有效，本文将重点介绍CS5536上的这个I2C总线接口的操作方法。</p>
+</blockquote>
+<h2 id="1i2c总线介绍">1、I2C总线介绍</h2>
+<blockquote>
+<p>I2C(Inter－Integrated Circuit)总线是一种由PHILIPS公司开发的两线式串行总线，用于连接微控制器及其外围设备。I2C总线产生于在80年代，最初为音频和视频设备开发，如今主要在服务器管理中使用，其中包括单个组件状态的通信。</p>
+</blockquote>
+<blockquote>
+<p>I2C总线最主要的优点是其简单性和有效性；另一个优点是它支持多主控， 其中任何能够进行发送和接收的设备都可以成为主控。一个主控能够控制信号的传输和时钟频率，当然，在任何时间点上只能有一个主控。</p>
+</blockquote>
+<blockquote>
+<p>I2C总线只有两条线，数据线SDA和时钟SCL构成的串行总线，可发送和接收数据。在CPU与被控IC之间、IC与IC之间进行双向传送，最高传送速率100kbps。</p>
+</blockquote>
+<p><img src="images%5CCS5536%E4%B8%8A%E7%9A%84I2C%E6%80%BB%E7%BA%BF%E7%9A%84%E5%BA%94%E7%94%A8-01.jpg" alt="CS5536上的I2C总线的应用"></p>
+<blockquote>
+<p>上图截自I2C总线的规范，它清楚地告诉我们，I2C总线，只有两条线，所有的设备（IC）都并联接在这两条线上，图中有两个MICRO CONTROLLER，A和B，告诉我们在I2C总线上可以连接多个主控。下面我们尽可能简单地说明它的通信原理。</p>
+</blockquote>
+<p><img src="images%5CCS5536%E4%B8%8A%E7%9A%84I2C%E6%80%BB%E7%BA%BF%E7%9A%84%E5%BA%94%E7%94%A8-02.jpg" alt="CS5536上的I2C总线的应用"></p>
+<blockquote>
+<p>上图同样截自I2C总线的规范，它清楚地告诉我们，I2C总线在空闲状态由两个上拉电阻把总线拉到高电平，器件对I2C总线的控制只有释放和拉低这两种方式，这一点对后面理解信号很有帮助。</p>
+</blockquote>
+<blockquote>
+<p>I2C总线在传送数据过程中共有三种类型信号， 它们分别是：开始信号、结束信号和应答信号。</p>
+</blockquote>
+<ul>
+<li>
+<p>开始信号：SCL为高电平时，SDA由高电平向低电平跳变，开始传送数据。</p>
+</li>
+<li>
+<p>结束信号：SCL为低电平时，SDA由低电平向高电平跳变，结束传送数据。</p>
+</li>
+<li>
+<p>应答信号：接收数据的IC在接收到8bit数据后，向发送数据的IC发出特定的低电平脉冲，表示已收到数据。CPU向受控单元发出一个信号后，等待受控单元发出一个应答信号，CPU接收到应答信号后，根据实际情况作出是否继续传递信号的判断。若未收到应答信号，可以判断为受控单元出现故障。</p>
+<p><img src="images%5CCS5536%E4%B8%8A%E7%9A%84I2C%E6%80%BB%E7%BA%BF%E7%9A%84%E5%BA%94%E7%94%A8-03.jpg" alt="CS5536上的I2C总线的应用"></p>
+</li>
+</ul>
+<blockquote>
+<p>先看开始和结束信号，空闲状态，SDA、SCL高，当某个主控器件要传输或接收数据时，它要将SDA拉低，这便产生一个开始信号，之后，主控机要控制SCL，开始在SCL上发送时钟信号，当传输完毕后，主控机首先释放SCL，然后再释放SDA，经过一定时延后，认为传输结束。</p>
+</blockquote>
+<p><img src="images%5CCS5536%E4%B8%8A%E7%9A%84I2C%E6%80%BB%E7%BA%BF%E7%9A%84%E5%BA%94%E7%94%A8-04.jpg" alt="CS5536上的I2C总线的应用"></p>
+<blockquote>
+<p>在开始信号后，主控期间开始发送时钟信号，根据规范，SDA上的数据要在SCL为低时改变，在SCL为高时保持稳定，这样数据位就可以在总线上传输，数据必须以8位为一组传输，高位在前，低位再后，8位之后要有一个确认位，在确认位的时钟周期，主控机释放SDA，此时SDA为高，从机要把SDA拉低，同时保证在SCL为高电平时保持信号稳定，如果从机由于某些原因不能马上响应下一位的数据传输，可以一直保持SDA为低，直到可以响应为止，此时，主控机将处于等待状态。</p>
+</blockquote>
+<blockquote>
+<p>根据规范，主控机在I2C上传输的第一个字节（8位）中，bit0&ndash;bit6为地址，bit7位读/写位，0表示要向从机写信息，即由主控机向从机发送数据，1表示读数据，即表示准备从从机接收数据。很显然，接在总线上的所有器件均可以收到这个信息，但应该只有与地址码相符的从机响应，否则将引起混乱。</p>
+</blockquote>
+<blockquote>
+<p>基本上I2C总线的传输原理就是这样，并不复杂，可以很容易地使用单片机实现，下面是I2C总线规范的下载地址：</p>
+</blockquote>
+<ul>
+<li>英文原版I2C总线规范：http://blog.whowin.net/specification/i2c-en.pdf</li>
+<li>中文翻译版I2C总线规范：http://blog.whowin.net/specification/i2c-cn.pdf</li>
+</ul>
+<blockquote>
+<p>个人建议尽量阅读原文文献，但中文版可以做参考，对概念的理解会有帮助。</p>
+</blockquote>
+<h2 id="2cs5536上的i2c总线">2、CS5536上的I2C总线</h2>
+<blockquote>
+<p>在CS5536这颗芯片上集成了一个I2C总线，在芯片的DATASHEET中被称作为System Management Bus Controller，简称SMB，有7个内部寄存器控制总线，使操作变得十分方便。</p>
+</blockquote>
+<p><img src="images%5CCS5536%E4%B8%8A%E7%9A%84I2C%E6%80%BB%E7%BA%BF%E7%9A%84%E5%BA%94%E7%94%A8-05.jpg" alt="CS5536上的I2C总线的应用"></p>
+<blockquote>
+<p>SMBCTL2和SMBCTL3用来指定在SCL上发送的时钟频率，其中SMBCTL2的bit0是一个使能位，1&ndash;SMB使能，0&ndash;SMB禁止，bit1&ndash;bit7是时钟频率的低7位，SMBCTL3的bit0&ndash;bit7是时钟频率的高8位，一共15位（抱歉，这些与上图中标注不符，上图尽管截自规范，但很遗憾，其中的SMBCTL2和SMBCTL3是错的），始终频率的结果符合下面公式：</p>
+</blockquote>
+<p>$ t_{SCL} = 2 \times SCLFRQ \times t_{clk} $</p>
+<blockquote>
+<p>下面我们仅介绍工作在主控状态时，信号的产生方法，但CS5536也可以工作在从机模式。</p>
+</blockquote>
+<ul>
+<li>
+<p>START信号的产生</p>
+<ul>
+<li>把SMBCTL1的INTEN置为0，采用轮询方式，如果使用中断方式，可以设为1</li>
+<li>把SMBCTL1的START置为1，表示要产生START信号</li>
+</ul>
+<blockquote>
+<p>这将使CS5536发出START信号，如果总线发生冲突，SMBST的BER将置为1；如果没有冲突，SMBST的MASTER和SDAST将被置为1，其中MASTER=1表明CS5536工作在主控方式，SDAST=1表明准备好发送数据位。</p>
+</blockquote>
+</li>
+<li>
+<p>发送地址字节</p>
+<blockquote>
+<p>发送的地址字节不能是自己的地址，另外，在SMB的寄存器中，有一个SMBADDR寄存器，这个寄存器是CS5536做从机时用的，里面放本机地址，用于比较总线上发出的地址信息，要特别说明的是，这个寄存器不是用于放地址字节的。实际发送地址字节与发送数据基本无异。</p>
+</blockquote>
+<ul>
+<li>把7位地址位和一位数据传送方向位按照前面介绍I2C总线时介绍的顺序放到SMBSDA中</li>
+<li>SMBSDA中的数据发送到总线上，地址字节发送完毕。</li>
+<li>在发送地址字节时，如果发生冲突，SMBST的BER将置位，同时SMBST的MASTER将被清0</li>
+<li>发送完毕，将把收到的确认位放到SMBST的NEGACK中</li>
+</ul>
+</li>
+<li>
+<p>发送数据</p>
+<blockquote>
+<p>先说明一下SMBCTL1的STASTRE的作用，如果这位置1，当发送完一个字节并收到确认信号后，CS5536会把SDA拉低，使总线进入等待状态（前面有介绍），此时SMBST的STASTR会置位，表明总线处于等待状态，要清除此状态需要读取SMBST寄存器，如果下一字节不需进入等待，请记得把SMBCTL1的STASTRE清0。</p>
+</blockquote>
+<ul>
+<li>检查SMBST的BER和NEGACK，均应该是0，BER为1说明出错（一般是总线冲突），NEGACK为1说明没有收到相应的确认信号，所以在这种情况下再发数据没有意义。</li>
+<li>在SMBST的BER和NEGACK均为0的情况下，检查SMBST的SDAST，如果为1，表示可以发送数据</li>
+<li>把要发送的数据字节放到SMBSDA中</li>
+<li>数据发送到总线上</li>
+</ul>
+</li>
+<li>
+<p>STOP信号的产生</p>
+<ul>
+<li>在发送最后一个字节后不要去读SMBST</li>
+<li>将SMBCTL1的STOP置1</li>
+</ul>
+</li>
+<li>
+<p>如何操作CS5536的SMB？</p>
+<ul>
+<li>说了半天，我们一直说SMB的寄存器，而且一直用的是偏移地址，那么到底SMB的基地址是多少？应该用I/O方式还是访问存储器的方式访问SMB呢？</li>
+<li>CS5536的所有器件均以虚拟PCI的形式挂在PCI总线上，SMB挂接在其中的ISA上，ISA的基地址就是SMB的基地址，CS5536的Vendor ID是0x1022，这个在以前的文章中说过，ISA的Device ID是0x2090，通过这两个条件就可以在PCI总线上找到这个设备，然后读取它的基地址即可。SMB的寄存器是用I/O端口映射的，所以要用in和out指令操作SMB的寄存器。</li>
+<li>有关CS5536的datasheet在下面地址下可以下载：http://blog.hengch.com/datasheet/cs5536.pdf</li>
+</ul>
+</li>
+</ul>
+<h2 id="3一个简单的应用">3、一个简单的应用</h2>
+<blockquote>
+<p>下面是一个类，我实际用在系统中用CS5536的SMB连接AIT2138的应用中，类中有产生各种信号的源代码，我想对读者理解CS5536和I2C总线均会有帮助。</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span><span class="lnt">203
+</span><span class="lnt">204
+</span><span class="lnt">205
+</span><span class="lnt">206
+</span><span class="lnt">207
+</span><span class="lnt">208
+</span><span class="lnt">209
+</span><span class="lnt">210
+</span><span class="lnt">211
+</span><span class="lnt">212
+</span><span class="lnt">213
+</span><span class="lnt">214
+</span><span class="lnt">215
+</span><span class="lnt">216
+</span><span class="lnt">217
+</span><span class="lnt">218
+</span><span class="lnt">219
+</span><span class="lnt">220
+</span><span class="lnt">221
+</span><span class="lnt">222
+</span><span class="lnt">223
+</span><span class="lnt">224
+</span><span class="lnt">225
+</span><span class="lnt">226
+</span><span class="lnt">227
+</span><span class="lnt">228
+</span><span class="lnt">229
+</span><span class="lnt">230
+</span><span class="lnt">231
+</span><span class="lnt">232
+</span><span class="lnt">233
+</span><span class="lnt">234
+</span><span class="lnt">235
+</span><span class="lnt">236
+</span><span class="lnt">237
+</span><span class="lnt">238
+</span><span class="lnt">239
+</span><span class="lnt">240
+</span><span class="lnt">241
+</span><span class="lnt">242
+</span><span class="lnt">243
+</span><span class="lnt">244
+</span><span class="lnt">245
+</span><span class="lnt">246
+</span><span class="lnt">247
+</span><span class="lnt">248
+</span><span class="lnt">249
+</span><span class="lnt">250
+</span><span class="lnt">251
+</span><span class="lnt">252
+</span><span class="lnt">253
+</span><span class="lnt">254
+</span><span class="lnt">255
+</span><span class="lnt">256
+</span><span class="lnt">257
+</span><span class="lnt">258
+</span><span class="lnt">259
+</span><span class="lnt">260
+</span><span class="lnt">261
+</span><span class="lnt">262
+</span><span class="lnt">263
+</span><span class="lnt">264
+</span><span class="lnt">265
+</span><span class="lnt">266
+</span><span class="lnt">267
+</span><span class="lnt">268
+</span><span class="lnt">269
+</span><span class="lnt">270
+</span><span class="lnt">271
+</span><span class="lnt">272
+</span><span class="lnt">273
+</span><span class="lnt">274
+</span><span class="lnt">275
+</span><span class="lnt">276
+</span><span class="lnt">277
+</span><span class="lnt">278
+</span><span class="lnt">279
+</span><span class="lnt">280
+</span><span class="lnt">281
+</span><span class="lnt">282
+</span><span class="lnt">283
+</span><span class="lnt">284
+</span><span class="lnt">285
+</span><span class="lnt">286
+</span><span class="lnt">287
+</span><span class="lnt">288
+</span><span class="lnt">289
+</span><span class="lnt">290
+</span><span class="lnt">291
+</span><span class="lnt">292
+</span><span class="lnt">293
+</span><span class="lnt">294
+</span><span class="lnt">295
+</span><span class="lnt">296
+</span><span class="lnt">297
+</span><span class="lnt">298
+</span><span class="lnt">299
+</span><span class="lnt">300
+</span><span class="lnt">301
+</span><span class="lnt">302
+</span><span class="lnt">303
+</span><span class="lnt">304
+</span><span class="lnt">305
+</span><span class="lnt">306
+</span><span class="lnt">307
+</span><span class="lnt">308
+</span><span class="lnt">309
+</span><span class="lnt">310
+</span><span class="lnt">311
+</span><span class="lnt">312
+</span><span class="lnt">313
+</span><span class="lnt">314
+</span><span class="lnt">315
+</span><span class="lnt">316
+</span><span class="lnt">317
+</span><span class="lnt">318
+</span><span class="lnt">319
+</span><span class="lnt">320
+</span><span class="lnt">321
+</span><span class="lnt">322
+</span><span class="lnt">323
+</span><span class="lnt">324
+</span><span class="lnt">325
+</span><span class="lnt">326
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">/***********************************************************
+</span></span><span class="line"><span class="cl"> * class : AIT2138
+</span></span><span class="line"><span class="cl"> * int getStatus(void) : return class status
+</span></span><span class="line"><span class="cl"> *                       0--exist AIT2138
+</span></span><span class="line"><span class="cl"> *                      -1--No PCI BIOS  -2--NO AIT2138
+</span></span><span class="line"><span class="cl"> * int getData(int regNo) : get Data from AIT2138
+</span></span><span class="line"><span class="cl"> *     return : see function note
+</span></span><span class="line"><span class="cl"> * int setData(int regNo, char value) : set data to ait2138
+</span></span><span class="line"><span class="cl"> *     return : see function note
+</span></span><span class="line"><span class="cl"> ************************************************************/
+</span></span><span class="line"><span class="cl">001  #define  CS5536_VENDOR_ID      0X1022
+</span></span><span class="line"><span class="cl">002  #define  CS5536_ISA_DEVICE     0X2090
+</span></span><span class="line"><span class="cl">     // SMB NATIVE REGISTER
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">003  #define  SMBSDA            0X00
+</span></span><span class="line"><span class="cl">004  #define  SMBST             0X01
+</span></span><span class="line"><span class="cl">005  #define  SMBCST            0X02
+</span></span><span class="line"><span class="cl">006  #define  SMBCTL1           0X03
+</span></span><span class="line"><span class="cl">007  #define  SMBADDR           0X04
+</span></span><span class="line"><span class="cl">008  #define  SMBCTL2           0X05
+</span></span><span class="line"><span class="cl">009  #define  SMBCTL3           0X06
+</span></span><span class="line"><span class="cl">// BIT DEFINE
+</span></span><span class="line"><span class="cl">010  #define  SMBSDA_DIRECTION  0X80     // BIT 7
+</span></span><span class="line"><span class="cl">011  #define  SMBST_XMIT        0X01     // BIT 0
+</span></span><span class="line"><span class="cl">012  #define  SMBST_MASTER      0X02     // BIT 1
+</span></span><span class="line"><span class="cl">013  #define  SMBST_NMATCH      0X04     // BIT 2
+</span></span><span class="line"><span class="cl">014  #define  SMBST_STASTR      0X08     // BIT 3
+</span></span><span class="line"><span class="cl">015  #define  SMBST_NEGACK      0X10     // BIT 4
+</span></span><span class="line"><span class="cl">016  #define  SMBST_BER         0X20     // BIT 5
+</span></span><span class="line"><span class="cl">017  #define  SMBST_SDAST       0X40     // BIT 6
+</span></span><span class="line"><span class="cl">018  #define  SMBST_SLVSTP      0X80     // BIT 7
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">019  #define  SMBCST_BUSY       0X01     // BIT 0
+</span></span><span class="line"><span class="cl">020  #define  SMBCST_BB         0X02     // BIT 1
+</span></span><span class="line"><span class="cl">021  #define  SMBCST_MATCH      0X04     // BIT 2
+</span></span><span class="line"><span class="cl">022  #define  SMBCST_GCMTCH     0X08     // BIT 3
+</span></span><span class="line"><span class="cl">023  #define  SMBCST_TSDA       0X10     // BIT 4
+</span></span><span class="line"><span class="cl">024  #define  SMBCST_TGSCL      0X20     // BIT 5
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">025  #define  SMBCTL1_START     0X01     // BIT 0
+</span></span><span class="line"><span class="cl">026  #define  SMBCTL1_STOP      0X02     // BIT 1
+</span></span><span class="line"><span class="cl">027  #define  SMBCTL1_INTEN     0X04     // BIT 2
+</span></span><span class="line"><span class="cl">028  #define  SMBCTL1_ACK       0X10     // BIT 4
+</span></span><span class="line"><span class="cl">029  #define  SMBCTL1_GCMEN     0X20     // BIT 5
+</span></span><span class="line"><span class="cl">030  #define  SMBCTL1_NMINTE    0X40     // BIT 6
+</span></span><span class="line"><span class="cl">031  #define  SMBCTL1_STASTRE   0X80     // BIT 7
+</span></span><span class="line"><span class="cl">032  #define  SMBADDR_SAEN      0X80     // BIT 7
+</span></span><span class="line"><span class="cl">033  #define  SMBCTL2_SCLFRQ    0X80     // BIT 7
+</span></span><span class="line"><span class="cl">034  #define  SMBCTL3_SCLFRQ    0X80     // BIT 7
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">035  class SMBCLASS {
+</span></span><span class="line"><span class="cl">036      protected:
+</span></span><span class="line"><span class="cl">037          __dpmi_regs  r;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">038          int i, j;
+</span></span><span class="line"><span class="cl">039          int status;                  // 0--DS3231 exist  -1--No PCI BIOS  -2--No DS3231
+</span></span><span class="line"><span class="cl">040          int retValue;
+</span></span><span class="line"><span class="cl">041          unsigned int busNo;          // Bus Number
+</span></span><span class="line"><span class="cl">042          unsigned int devNo;          // Device Number
+</span></span><span class="line"><span class="cl">043          unsigned int funcNo;         // Function Number
+</span></span><span class="line"><span class="cl">044          unsigned int devFunc;        //
+</span></span><span class="line"><span class="cl">045          unsigned long int baseAddr;  // Base address of mixer
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">046          struct SMB {
+</span></span><span class="line"><span class="cl">047              char  sda;
+</span></span><span class="line"><span class="cl">048              char  st;
+</span></span><span class="line"><span class="cl">049              char  cst;
+</span></span><span class="line"><span class="cl">050              char  ctl1;
+</span></span><span class="line"><span class="cl">051              char  addr;
+</span></span><span class="line"><span class="cl">052              char  ctl2;
+</span></span><span class="line"><span class="cl">053              char  ctl3;
+</span></span><span class="line"><span class="cl">054          }smb;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">             /**************************************
+</span></span><span class="line"><span class="cl">              * CheckPCIBios
+</span></span><span class="line"><span class="cl">              **************************************/
+</span></span><span class="line"><span class="cl">055          unsigned int CheckPCIBios(void) {
+</span></span><span class="line"><span class="cl">056              unsigned int i;
+</span></span><span class="line"><span class="cl">                 // Check BIOS Support PCI or not
+</span></span><span class="line"><span class="cl">057              r.x.ax = 0xb101;
+</span></span><span class="line"><span class="cl">058              __dpmi_int(0x1a, &amp;r);
+</span></span><span class="line"><span class="cl">059              i = r.x.flags;
+</span></span><span class="line"><span class="cl">060              if ((i &amp; 0x01) == 0) return 1;
+</span></span><span class="line"><span class="cl">061              else return 0;
+</span></span><span class="line"><span class="cl">062          }
+</span></span><span class="line"><span class="cl">             /****************************************
+</span></span><span class="line"><span class="cl">              * Find CS5536&#39;s PCI Configuration space
+</span></span><span class="line"><span class="cl">              ****************************************/
+</span></span><span class="line"><span class="cl">063          unsigned int FindCS5536(void) {
+</span></span><span class="line"><span class="cl">064              r.x.ax = 0xb102;
+</span></span><span class="line"><span class="cl">065              r.x.cx = CS5536_ISA_DEVICE;  // Device ID
+</span></span><span class="line"><span class="cl">066              r.x.dx = CS5536_VENDOR;  // Vendor ID
+</span></span><span class="line"><span class="cl">067              r.x.si = 0;              // Device index 0--n
+</span></span><span class="line"><span class="cl">068              __dpmi_int(0x1a, &amp;r);    // Find PCI device
+</span></span><span class="line"><span class="cl">069              busNo = r.h.bh;          // Bus nnmber
+</span></span><span class="line"><span class="cl">070              devFunc = r.h.bl;        // device/function no(bits 7-3 device, bits 2-0 function)
+</span></span><span class="line"><span class="cl">071              return r.h.ah;
+</span></span><span class="line"><span class="cl">072          }
+</span></span><span class="line"><span class="cl">             /**********************************************
+</span></span><span class="line"><span class="cl">              * Read a dword fromPCI Configuration register
+</span></span><span class="line"><span class="cl">              **********************************************/
+</span></span><span class="line"><span class="cl">073          unsigned long int ReadConfigDword(unsigned int reg) {
+</span></span><span class="line"><span class="cl">                 // Read Configure Byte
+</span></span><span class="line"><span class="cl">074              r.x.ax = 0xb10a;
+</span></span><span class="line"><span class="cl">075              r.h.bl = devFunc;
+</span></span><span class="line"><span class="cl">076              r.h.bh = busNo;           // Bus number
+</span></span><span class="line"><span class="cl">077              r.x.di = reg;             // register no
+</span></span><span class="line"><span class="cl">078              __dpmi_int(0x1a, &amp;r);
+</span></span><span class="line"><span class="cl">079              return r.d.ecx;
+</span></span><span class="line"><span class="cl">080          }
+</span></span><span class="line"><span class="cl">             /*******************************************
+</span></span><span class="line"><span class="cl">              * Read a byte from SMB register
+</span></span><span class="line"><span class="cl">              *******************************************/
+</span></span><span class="line"><span class="cl">081          char getI2cReg(int regOffset) {
+</span></span><span class="line"><span class="cl">082              return inportb(baseAddr + regOffset);
+</span></span><span class="line"><span class="cl">083          }
+</span></span><span class="line"><span class="cl">             /*******************************************
+</span></span><span class="line"><span class="cl">              * Write a byte to SMB register
+</span></span><span class="line"><span class="cl">              *******************************************/
+</span></span><span class="line"><span class="cl">084          void setI2cReg(int regOffset, char value) {
+</span></span><span class="line"><span class="cl">085              outportb(baseAddr + regOffset, value);
+</span></span><span class="line"><span class="cl">086          }
+</span></span><span class="line"><span class="cl">             /*********************************************
+</span></span><span class="line"><span class="cl">              * Get content of all SMB  registers
+</span></span><span class="line"><span class="cl">              *********************************************/
+</span></span><span class="line"><span class="cl">087          void getAllRegs(void) {
+</span></span><span class="line"><span class="cl">088              smb.sda  = getI2cReg(SMBSDA);
+</span></span><span class="line"><span class="cl">089              smb.st   = getI2cReg(SMBST);
+</span></span><span class="line"><span class="cl">090              smb.cst  = getI2cReg(SMBCST);
+</span></span><span class="line"><span class="cl">091              smb.ctl1 = getI2cReg(SMBCTL1);
+</span></span><span class="line"><span class="cl">092              smb.addr = getI2cReg(SMBADDR);
+</span></span><span class="line"><span class="cl">093              smb.ctl2 = getI2cReg(SMBCTL2);
+</span></span><span class="line"><span class="cl">094              smb.ctl3 = getI2cReg(SMBCTL3);
+</span></span><span class="line"><span class="cl">095          }
+</span></span><span class="line"><span class="cl">             /****************************************
+</span></span><span class="line"><span class="cl">              * Generate a START condition
+</span></span><span class="line"><span class="cl">              * return :  0--OK
+</span></span><span class="line"><span class="cl">              *          -1--FAIL
+</span></span><span class="line"><span class="cl">              *           1--OTHERS
+</span></span><span class="line"><span class="cl">              ****************************************/
+</span></span><span class="line"><span class="cl">096          int start(void) {
+</span></span><span class="line"><span class="cl">097              smb.ctl1 = getI2cReg(SMBCTL1);
+</span></span><span class="line"><span class="cl">098              smb.ctl1 &amp;= (~SMBCTL1_INTEN);
+</span></span><span class="line"><span class="cl">099              smb.ctl1 |= SMBCTL1_START;
+</span></span><span class="line"><span class="cl">100              setI2cReg(SMBCTL1, smb.ctl1);
+</span></span><span class="line"><span class="cl">101              delay(2);
+</span></span><span class="line"><span class="cl">102              smb.st = getI2cReg(SMBST);
+</span></span><span class="line"><span class="cl">103              if ((smb.st &amp; SMBST_BER) != 0)
+</span></span><span class="line"><span class="cl">104                  return -1;
+</span></span><span class="line"><span class="cl">105              if ((smb.st &amp; SMBST_SDAST) != 0 &amp;&amp; (smb.st &amp; SMBST_MASTER) != 0)
+</span></span><span class="line"><span class="cl">106                  return 0;
+</span></span><span class="line"><span class="cl">107              return 1;
+</span></span><span class="line"><span class="cl">108          }
+</span></span><span class="line"><span class="cl">             /*****************************************
+</span></span><span class="line"><span class="cl">              * Clear  STASTR
+</span></span><span class="line"><span class="cl">              *****************************************/
+</span></span><span class="line"><span class="cl">109          void clearSTASTR(void) {
+</span></span><span class="line"><span class="cl">110              smb.st = getI2cReg(SMBST);
+</span></span><span class="line"><span class="cl">111              smb.st |= SMBST_STASTR;
+</span></span><span class="line"><span class="cl">112              setI2cReg(SMBST, smb.st);
+</span></span><span class="line"><span class="cl">113          }
+</span></span><span class="line"><span class="cl">             /*****************************************
+</span></span><span class="line"><span class="cl">              * Clear  NEGACK
+</span></span><span class="line"><span class="cl">              *****************************************/
+</span></span><span class="line"><span class="cl">114          void clearNEGACK(void) {
+</span></span><span class="line"><span class="cl">115              smb.st = getI2cReg(SMBST);
+</span></span><span class="line"><span class="cl">116              smb.st |= SMBST_NEGACK;
+</span></span><span class="line"><span class="cl">117              setI2cReg(SMBST, smb.st);
+</span></span><span class="line"><span class="cl">118          }
+</span></span><span class="line"><span class="cl">             /*****************************************
+</span></span><span class="line"><span class="cl">              * clear  STASTRE
+</span></span><span class="line"><span class="cl">              *****************************************/
+</span></span><span class="line"><span class="cl">119          void clearSTASTRE(void) {
+</span></span><span class="line"><span class="cl">120              smb.ctl1 = getI2cReg(SMBCTL1);
+</span></span><span class="line"><span class="cl">121              smb.ctl1 &amp;= (~SMBCTL1_STASTRE);
+</span></span><span class="line"><span class="cl">122              setI2cReg(SMBCTL1, smb.ctl1);
+</span></span><span class="line"><span class="cl">123          }
+</span></span><span class="line"><span class="cl">             /*****************************************
+</span></span><span class="line"><span class="cl">              * set ACK
+</span></span><span class="line"><span class="cl">              *****************************************/
+</span></span><span class="line"><span class="cl">124          void setACK(void) {
+</span></span><span class="line"><span class="cl">125              smb.ctl1 = getI2cReg(SMBCTL1);
+</span></span><span class="line"><span class="cl">126              smb.ctl1 |= SMBCTL1_ACK;
+</span></span><span class="line"><span class="cl">127              setI2cReg(SMBCTL1, smb.ctl1);
+</span></span><span class="line"><span class="cl">128          }
+</span></span><span class="line"><span class="cl">             /*****************************************
+</span></span><span class="line"><span class="cl">              * Sending a byte to bus
+</span></span><span class="line"><span class="cl">              * return:  0--ok
+</span></span><span class="line"><span class="cl">              *          1--NO ACK
+</span></span><span class="line"><span class="cl">              *          2--NO ACK and SDAST = 0
+</span></span><span class="line"><span class="cl">              *          3--OTHER ERROR
+</span></span><span class="line"><span class="cl">              *          4--UNKNOWN
+</span></span><span class="line"><span class="cl">              *****************************************/
+</span></span><span class="line"><span class="cl">129          int sendData(unsigned char aByte) {
+</span></span><span class="line"><span class="cl">130              clearSTASTR();
+</span></span><span class="line"><span class="cl">131              clearSTASTRE();
+</span></span><span class="line"><span class="cl">132              setI2cReg(SMBSDA, aByte);
+</span></span><span class="line"><span class="cl">133              delay(2);
+</span></span><span class="line"><span class="cl">134              smb.st = getI2cReg(SMBST);
+</span></span><span class="line"><span class="cl">135              if ((smb.st &amp; SMBST_NEGACK) != 0) {
+</span></span><span class="line"><span class="cl">136                  if ((smb.st &amp; SMBST_SDAST) == 0)
+</span></span><span class="line"><span class="cl">137                      return 2;
+</span></span><span class="line"><span class="cl">138                  else return 1;
+</span></span><span class="line"><span class="cl">139              } else {
+</span></span><span class="line"><span class="cl">140                  if ((smb.st &amp; SMBST_BER) != 0)
+</span></span><span class="line"><span class="cl">141                      return 3;
+</span></span><span class="line"><span class="cl">142                  else if ((smb.st &amp; SMBST_SDAST) != 0 &amp;&amp; (smb.st &amp; SMBST_MASTER) != 0)
+</span></span><span class="line"><span class="cl">143                      return 0;
+</span></span><span class="line"><span class="cl">144                  else return 4;
+</span></span><span class="line"><span class="cl">145              }
+</span></span><span class="line"><span class="cl">146          }
+</span></span><span class="line"><span class="cl">             /*************************************
+</span></span><span class="line"><span class="cl">              * generate a STOP condition
+</span></span><span class="line"><span class="cl">              *************************************/
+</span></span><span class="line"><span class="cl">147          int stop(void) {
+</span></span><span class="line"><span class="cl">148              clearNEGACK();
+</span></span><span class="line"><span class="cl">149              clearSTASTR();
+</span></span><span class="line"><span class="cl">150              smb.sda = getI2cReg(SMBSDA);
+</span></span><span class="line"><span class="cl">151              smb.ctl1 = getI2cReg(SMBCTL1);
+</span></span><span class="line"><span class="cl">152              smb.ctl1 |= SMBCTL1_STOP;
+</span></span><span class="line"><span class="cl">153              setI2cReg(SMBCTL1, smb.ctl1);
+</span></span><span class="line"><span class="cl">154              delay(2);
+</span></span><span class="line"><span class="cl">155              smb.st = getI2cReg(SMBST);
+</span></span><span class="line"><span class="cl">156              if ((smb.st &amp; SMBST_BER) != 0)
+</span></span><span class="line"><span class="cl">157                  return -1;
+</span></span><span class="line"><span class="cl">158              if ((smb.st &amp; SMBST_SDAST) != 0 &amp;&amp; (smb.st &amp; SMBST_MASTER) != 0)
+</span></span><span class="line"><span class="cl">159                  return 0;
+</span></span><span class="line"><span class="cl">160              return 1;
+</span></span><span class="line"><span class="cl">161          }
+</span></span><span class="line"><span class="cl">161      public:
+</span></span><span class="line"><span class="cl">162          AIT2138(void) {
+</span></span><span class="line"><span class="cl">                 // Check BIOS Support PCI or not
+</span></span><span class="line"><span class="cl">163              if (CheckPCIBios() == 0) {
+</span></span><span class="line"><span class="cl">164                  status = -1;
+</span></span><span class="line"><span class="cl">165                  return;
+</span></span><span class="line"><span class="cl">166              }
+</span></span><span class="line"><span class="cl">                 // Find CS5536. After this Step I will get Bus Number, Device Number
+</span></span><span class="line"><span class="cl">                 // and Function Number
+</span></span><span class="line"><span class="cl">167              if (FindCS5536() != 0) {
+</span></span><span class="line"><span class="cl">168                  status = -2;
+</span></span><span class="line"><span class="cl">169                  return;
+</span></span><span class="line"><span class="cl">170              }
+</span></span><span class="line"><span class="cl">171              devNo = devFunc &gt;&gt; 3;     // Device Number
+</span></span><span class="line"><span class="cl">172              funcNo = devFunc &amp; 07;    // Function Number
+</span></span><span class="line"><span class="cl">                 // Get CS5536 Base address from PCI configuration space
+</span></span><span class="line"><span class="cl">                 // Configuration register index is 0x10
+</span></span><span class="line"><span class="cl">173              baseAddr = ReadConfigDword(CS5536_BASEADDR_REG);
+</span></span><span class="line"><span class="cl">174              baseAddr = baseAddr &amp; 0Xfffffff0;
+</span></span><span class="line"><span class="cl">175              status = 0;
+</span></span><span class="line"><span class="cl">176          }
+</span></span><span class="line"><span class="cl">             /**********************************************
+</span></span><span class="line"><span class="cl">              * Get Data From AIT2138
+</span></span><span class="line"><span class="cl">              * return 0 : ok
+</span></span><span class="line"><span class="cl">              *       &lt;0 : fail
+</span></span><span class="line"><span class="cl">              *       -1 : START fail
+</span></span><span class="line"><span class="cl">              *       -2 : Sending ADDRESS for write fail
+</span></span><span class="line"><span class="cl">              *       -3 : Sending pointer of ait2138 fail
+</span></span><span class="line"><span class="cl">              *       -4 : Repeated START fail
+</span></span><span class="line"><span class="cl">              *       -5 : Sending Address for read fail
+</span></span><span class="line"><span class="cl">              *       -6 : Other fault
+</span></span><span class="line"><span class="cl">              ************************************************/
+</span></span><span class="line"><span class="cl">177          int getData(int regNo) {
+</span></span><span class="line"><span class="cl">178              int i;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">179              if (start() != 0) {
+</span></span><span class="line"><span class="cl">180                  return -1;
+</span></span><span class="line"><span class="cl">181              }
+</span></span><span class="line"><span class="cl">                 // Send ADDRESS
+</span></span><span class="line"><span class="cl">182              if (sendData(0x88) != 0) {
+</span></span><span class="line"><span class="cl">183                  return -2;
+</span></span><span class="line"><span class="cl">184              }
+</span></span><span class="line"><span class="cl">                 // initial pointer od ait2138
+</span></span><span class="line"><span class="cl">185              setACK();
+</span></span><span class="line"><span class="cl">186              if (sendData(regNo) != 0) {
+</span></span><span class="line"><span class="cl">187                  return -3;
+</span></span><span class="line"><span class="cl">188              }
+</span></span><span class="line"><span class="cl">                 // Repeated START
+</span></span><span class="line"><span class="cl">189              if (start() != 0) {
+</span></span><span class="line"><span class="cl">190                  return -4;
+</span></span><span class="line"><span class="cl">191              }
+</span></span><span class="line"><span class="cl">192              setACK();
+</span></span><span class="line"><span class="cl">193              if (sendData(0x89) != 0) {
+</span></span><span class="line"><span class="cl">194                  return -5;
+</span></span><span class="line"><span class="cl">195              }
+</span></span><span class="line"><span class="cl">196              smb.st = getI2cReg(SMBST);
+</span></span><span class="line"><span class="cl">197              if ((smb.st &amp; SMBST_SDAST) != 0 &amp;&amp; (smb.st &amp; SMBST_BER) == 0) {
+</span></span><span class="line"><span class="cl">198                  smb.sda = getI2cReg(SMBSDA);
+</span></span><span class="line"><span class="cl">199              } else return -1;
+</span></span><span class="line"><span class="cl">200              delay(2);
+</span></span><span class="line"><span class="cl">201              i = stop();
+</span></span><span class="line"><span class="cl">202              return 0;
+</span></span><span class="line"><span class="cl">203          }
+</span></span><span class="line"><span class="cl">             /***************************************************
+</span></span><span class="line"><span class="cl">              * Set Date To AIT2138
+</span></span><span class="line"><span class="cl">              * return :  0 : OK
+</span></span><span class="line"><span class="cl">              *          &lt;1 : fail
+</span></span><span class="line"><span class="cl">              *          -1 : START fail
+</span></span><span class="line"><span class="cl">              *          -2 : Sending Address for write fail
+</span></span><span class="line"><span class="cl">              *          -3 : Sending pointer of ait2138 fail
+</span></span><span class="line"><span class="cl">              *          -4 : Sending data fail
+</span></span><span class="line"><span class="cl">              ***************************************************/
+</span></span><span class="line"><span class="cl">204          int setData(int regNo, char value) {
+</span></span><span class="line"><span class="cl">205              int i, j;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">206              if (start() != 0) {
+</span></span><span class="line"><span class="cl">207                  return -1;
+</span></span><span class="line"><span class="cl">208              }
+</span></span><span class="line"><span class="cl">                 // Send ADDRESS
+</span></span><span class="line"><span class="cl">209              if (sendData(0x88) != 0) {
+</span></span><span class="line"><span class="cl">210                  return -2;
+</span></span><span class="line"><span class="cl">211              }
+</span></span><span class="line"><span class="cl">                 // initial pointer od ait2138
+</span></span><span class="line"><span class="cl">                 //setACK();
+</span></span><span class="line"><span class="cl">212              if (sendData(regNo) != 0) {
+</span></span><span class="line"><span class="cl">213                  return -3;
+</span></span><span class="line"><span class="cl">214              }
+</span></span><span class="line"><span class="cl">215              smb.sda = value;
+</span></span><span class="line"><span class="cl">216              setACK();
+</span></span><span class="line"><span class="cl">217              if (sendData(smb.sda) != 0) {
+</span></span><span class="line"><span class="cl">218                  return -3;
+</span></span><span class="line"><span class="cl">219              }
+</span></span><span class="line"><span class="cl">220              delay(2);
+</span></span><span class="line"><span class="cl">221              i = stop();
+</span></span><span class="line"><span class="cl">222              return 0;
+</span></span><span class="line"><span class="cl">223          }
+</span></span><span class="line"><span class="cl">224  };
+</span></span></code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/dos/0001-32bit-bios-introduction/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">32位 BIOS 说明</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/dos/2008-05-23usb%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E5%88%97%E5%87%BA%E4%BD%A0%E7%9A%84usb%E8%AE%BE%E5%A4%87/">
+            <span class="next-text nav-default"></span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/dos/2008-05-21cs5536%E4%B8%8A%E7%9A%84i2c%E6%80%BB%E7%BA%BF%E7%9A%84%E5%BA%94%E7%94%A8/" class="leancloud_visitors" data-flag-title="">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

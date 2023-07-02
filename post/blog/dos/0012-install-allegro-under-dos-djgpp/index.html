@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>在DJGPP&#43;DOS下安装ALLEGRO - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="Allegro是一个用于编写游戏和多媒体程序的库，我发现它时是在2008年，但其实它的诞生可能要追溯到2000年以前了，当时我把它用在DOS&#43;DJGPP的环境下，那是我当时能找到的在DOS下可以使用的为数不多的图像库之一，而且比较好用，本文主要介绍如何在DOS&#43;DJGPP环境下安装ALLEGRO。本文是我2008年的作品，2023年重新整理发布，仅为存档，其中的程序并没有再次验证，特此说明。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/dos/0012-install-allegro-under-dos-djgpp/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="在DJGPP&#43;DOS下安装ALLEGRO" />
+<meta property="og:description" content="Allegro是一个用于编写游戏和多媒体程序的库，我发现它时是在2008年，但其实它的诞生可能要追溯到2000年以前了，当时我把它用在DOS&#43;DJGPP的环境下，那是我当时能找到的在DOS下可以使用的为数不多的图像库之一，而且比较好用，本文主要介绍如何在DOS&#43;DJGPP环境下安装ALLEGRO。本文是我2008年的作品，2023年重新整理发布，仅为存档，其中的程序并没有再次验证，特此说明。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/dos/0012-install-allegro-under-dos-djgpp/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2008-05-14T17:10:29+08:00" />
+<meta property="article:modified_time" content="2008-05-14T17:10:29+08:00" />
+
+<meta itemprop="name" content="在DJGPP&#43;DOS下安装ALLEGRO">
+<meta itemprop="description" content="Allegro是一个用于编写游戏和多媒体程序的库，我发现它时是在2008年，但其实它的诞生可能要追溯到2000年以前了，当时我把它用在DOS&#43;DJGPP的环境下，那是我当时能找到的在DOS下可以使用的为数不多的图像库之一，而且比较好用，本文主要介绍如何在DOS&#43;DJGPP环境下安装ALLEGRO。本文是我2008年的作品，2023年重新整理发布，仅为存档，其中的程序并没有再次验证，特此说明。"><meta itemprop="datePublished" content="2008-05-14T17:10:29+08:00" />
+<meta itemprop="dateModified" content="2008-05-14T17:10:29+08:00" />
+<meta itemprop="wordCount" content="3866">
+<meta itemprop="keywords" content="DOS,DJGPP,ALLEGRO," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="在DJGPP&#43;DOS下安装ALLEGRO"/>
+<meta name="twitter:description" content="Allegro是一个用于编写游戏和多媒体程序的库，我发现它时是在2008年，但其实它的诞生可能要追溯到2000年以前了，当时我把它用在DOS&#43;DJGPP的环境下，那是我当时能找到的在DOS下可以使用的为数不多的图像库之一，而且比较好用，本文主要介绍如何在DOS&#43;DJGPP环境下安装ALLEGRO。本文是我2008年的作品，2023年重新整理发布，仅为存档，其中的程序并没有再次验证，特此说明。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">在DJGPP&#43;DOS下安装ALLEGRO</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2008-05-14 </span>
+        <div class="post-category">
+            <a href="/categories/dos/"> DOS </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-前言">1. 前言</a></li>
+        <li><a href="#2-allegro需要的软件环境">2. Allegro需要的软件环境</a></li>
+        <li><a href="#3-下载allegro">3. 下载Allegro</a></li>
+        <li><a href="#4allegro的安装">4、Allegro的安装</a></li>
+        <li><a href="#4验证allegro的安装">4、验证Allegro的安装</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>Allegro是一个用于编写游戏和多媒体程序的库，我发现它时是在2008年，但其实它的诞生可能要追溯到2000年以前了，当时我把它用在DOS+DJGPP的环境下，那是我当时能找到的在DOS下可以使用的为数不多的图像库之一，而且比较好用，本文主要介绍如何在DOS+DJGPP环境下安装ALLEGRO。<strong>本文是我2008年的作品，2023年重新整理发布，仅为存档，其中的程序并没有再次验证，特此说明。</strong></p>
+<h2 id="1-前言">1. 前言</h2>
+<ul>
+<li>
+<p>我在2023年4月21日开始整理这篇文章时，惊奇地发现ALLEGRO仍然活着，这让我非常高兴，整个项目的网址在：http://liballeg.org/，而且已经发展到了allegro 5.2.8</p>
+</li>
+<li>
+<p>在整理其他文章时，发现要用到Allegro库，而我还没有介绍Allegro的安装，所以只好停下来先介绍一下Allegro的安装过程。</p>
+</li>
+<li>
+<p>Allegro是一个主要用于游戏和多媒体编程的函数库，开始是由一个叫Shawn Hargreaves的人(应该是个英国人)写的，用C+汇编的混合编程，最初的版本在DJGPP下编译完成，现在的ALLEGRO的官网似乎已经看不到他的名字了；</p>
+</li>
+<li>
+<p>以前他的个人博客在这个网址上：http://www.talula.demon.co.uk，现在这个网址已经失效了</p>
+</li>
+<li>
+<p>这是我在我的废墟中找到的他本人的照片</p>
+<p><img src="https://whowin.gitee.io/images/160012/author-of-allegro.jpg" alt="在DJGPP+DOS下安装ALLEGRO"></p>
+</li>
+<li>
+<p>不过我仍然在网上搜索到了这个人，这里应该是 <a href="https://shawnhargreaves.com/">Shawn Hargreaves</a> 新的个人空间。</p>
+</li>
+<li>
+<p>我们之所以要安装Allegro是因为它可以让我们在真彩的图形模式下编程，使我们的界面丰富多彩，它的声音功能我倒是不觉得有太大的用，因为它支持的环境我几乎没有。</p>
+</li>
+<li>
+<p>Allegro可以提供跨平台支持，目前支持的平台包括：</p>
+<ol>
+<li>Unix (Linux, FreeBSD, Irix, Solaris, Darwin)</li>
+<li>Windows (MSVC, MinGW, Cygwin, Borland)</li>
+<li>BeOS</li>
+<li>QNX</li>
+<li>MacOS X</li>
+<li>Dos (DJGPP, Watcom)</li>
+</ol>
+</li>
+<li>
+<p>Allegro有源代码发行版本，如果使用源代码发行版进行安装，需要根据环境首先进行编译，本文只介绍在DOS+DJGPP环境下二进制版的安装方法</p>
+</li>
+<li>
+<p>有关源代码的编译方法请参考下面网址：<a href="https://shawnhargreaves.com/">http://liballeg.org/docs.html</a></p>
+</li>
+</ul>
+<h2 id="2-allegro需要的软件环境">2. Allegro需要的软件环境</h2>
+<ul>
+<li>
+<p>安装Allegro前应具备的软件环境</p>
+<ol>
+<li>DJGPP 2.01以上 (djdev*.zip).</li>
+<li>GCC compiler 2.91.x 以上(gcc*b.zip).</li>
+<li>Binutils 2.9.x 以上(bnu*b.zip).</li>
+<li>GNU make (mak*b.zip).</li>
+<li>Texinfo (txi*b.zip).</li>
+<li>可选: sed (sed*b.zip).</li>
+</ol>
+</li>
+<li>
+<p>如果是按照我以前的文章[《在DOS下的DJGPP+RHIDE安装实作》][article01的步骤进行的安装，那我们已经具备了上述条件，可选的软件我们放弃，其他的部分我们应该有：</p>
+<ol>
+<li>DJGPP 2.03</li>
+<li>GCC compiler 4.23</li>
+<li>Binutils 2.17</li>
+<li>GNU make 3.79</li>
+<li>Texinfo 4.11</li>
+</ol>
+</li>
+<li>
+<p>完全符合条件。</p>
+</li>
+<li>
+<p>如果有些软件你没有安装，可以在下面网址下找到这些软件：<a href="http://ftp.delorie.com/pub/djgpp/current/v2gnu/">djgpp相关软件</a></p>
+</li>
+<li>
+<p>(2023年4月21日注：很高兴这个链接还健在，不过为了以防万一，我已经下载了这个地方与djgpp有关的所有东东，稍后会提供有效的下载地址)</p>
+<ol>
+<li>GCC compilier 4.23 (gcc423b.zip)    4422 kb</li>
+<li>Binutils 2.17 (bnu217b.zip)        3962 kb</li>
+<li>GNU make 3.79 (mak3791b.zip)        267 kb</li>
+<li>Texinfo 4.11 (txi411b.zip)         888 kb</li>
+</ol>
+</li>
+<li>
+<p>很抱歉，这些软件的安装不是本文的话题，请自行阅读相关的readme文件进行安装。</p>
+</li>
+<li>
+<p>如果你不确定你安装的DJGPP中是否有以上软件，请按下面方法检验：</p>
+</li>
+<li>
+<p>DJGPP的版本</p>
+<ul>
+<li>到你安装DJGPP的目录下(比如：c:\djgpp)，应该可以看到文件readme.1st，用edit打开，可以看到一行类似这样的话：This is the README.1ST file for DJGPP Version 2.03. 这足以说明你安装的DJGPP的版本。</li>
+</ul>
+</li>
+<li>
+<p>GCC的版本</p>
+<ul>
+<li>在DOS提示符下键入如下命令：<code>c:&gt; gcc -v</code></li>
+<li>如果没有这个命令，那可能是你根本就没有安装gcc；否则你应该看到几行字显示出来，最下面一行应该是：gcc version 4.2.3</li>
+</ul>
+</li>
+<li>
+<p>Binutils的版本</p>
+<ul>
+<li>Binutils 是一组开发工具，包括连接器，汇编器和其他用于目标文件和档案的工具。</li>
+<li>安装下列程序:
+<ol>
+<li>addr2line.exe</li>
+</ol>
+<blockquote>
+<p>把程序地址转换为文件名和行号。在命令行中给它一个地址和一个可执行文件名，它就会使用这个可执行文件的调试信息指出在给出的地址上是哪个文件以及行号。</p>
+</blockquote>
+<ol start="2">
+<li>ar.exe</li>
+</ol>
+<blockquote>
+<p>建立、修改、提取归档文件。归档文件是包含多个文件内容的一个大文件，其结构保证了可以恢复原始文件内容。</p>
+</blockquote>
+<ol start="3">
+<li>as.exe</li>
+</ol>
+<blockquote>
+<p>主要用来编译GNU C编译器gcc输出的汇编文件，产生的目标文件由连接器ld连接。</p>
+</blockquote>
+<ol start="4">
+<li>cxxfilt.exe</li>
+</ol>
+<blockquote>
+<p>cxxfilt.exe 连接器使用它来过滤 C++ 和 Java 符号，防止重载函数冲突。</p>
+</blockquote>
+<ol start="5">
+<li>gprof.exe</li>
+</ol>
+<blockquote>
+<p>显示程序调用段的各种数据。</p>
+</blockquote>
+<ol start="6">
+<li>ld.exe</li>
+</ol>
+<blockquote>
+<p>是连接器，它把一些目标和归档文件结合在一起，重定位数据，并链接符号引用。通常，建立一个新编译程序的最后一步就是调用ld。</p>
+</blockquote>
+<ol start="7">
+<li>nm.exe</li>
+</ol>
+<blockquote>
+<p>列出目标文件中的符号。</p>
+</blockquote>
+<ol start="8">
+<li>objcopy.exe</li>
+</ol>
+<blockquote>
+<p>把一种目标文件中的内容复制到另一种类型的目标文件中.</p>
+</blockquote>
+<ol start="9">
+<li>objdump.exe</li>
+</ol>
+<blockquote>
+<p>显示一个或者更多目标文件的信息。显示一个或者更多目标文件的信息。使用选项来控制其显示的信息。它所显示的信息通常只有编写编译工具的人才感兴趣。</p>
+</blockquote>
+<ol start="10">
+<li>ranlib.exe</li>
+</ol>
+<blockquote>
+<p>产生归档文件索引，并将其保存到这个归档文件中。在索引中列出了归档文件各成员所定义的可重分配目标文件。</p>
+</blockquote>
+<ol start="11">
+<li>readelf.exe</li>
+</ol>
+<blockquote>
+<p>显示ebf格式可执行文件的信息。</p>
+</blockquote>
+<ol start="12">
+<li>size.exe</li>
+</ol>
+<blockquote>
+<p>列出目标文件每一段的大小以及总体的大小。默认情况下，对于每个目标文件或者一个归档文件中的每个模块只产生一行输出。</p>
+</blockquote>
+<ol start="13">
+<li>strings.exe</li>
+</ol>
+<blockquote>
+<p>打印某个文件的可打印字符串，这些字符串最少4个字符长，也可以使用选项-n设置字符串的最小长度。默认情况下，它只打印目标文件初始化和可加载段中的可打印字符；对于其它类型的文件它打印整个文件的可打印字符，这个程序对于了解非文本文件的内容很有帮助。</p>
+</blockquote>
+<ol start="14">
+<li>strip.exe</li>
+</ol>
+<blockquote>
+<p>丢弃目标文件中的全部或者特定符号。</p>
+</blockquote>
+</li>
+<li>由于软件包由多个软件组成，不太容易判断当前的版本；但从是否在bin目录下存在这些文件，可以大致判断是否已经安装了该软件包。</li>
+</ul>
+</li>
+<li>
+<p>GNU make的版本</p>
+<ul>
+<li>在DOS提示符下键入如下命令：<code>c:&gt; make -v</code></li>
+<li>如果没有这个命令，那可能是你根本就没有安装GNU make；否则你应该看到几行字显示出来，第一行应该是：GNU make version 3.79.1</li>
+</ul>
+</li>
+<li>
+<p>texinfo的版本</p>
+<ul>
+<li>Texinfo 软件包包含读取、写入、转换 Info 文档的程序。</li>
+<li>它包括下面这些软件：info.exe、infokey.exe、install-info.exe、makeinfo.exe、texi2dvi、texi2pdf、texindex.exe
+<ol>
+<li>info.exe</li>
+</ol>
+<blockquote>
+<p>用于读取 Info 文档。</p>
+</blockquote>
+<ol start="2">
+<li>infokey.exe</li>
+</ol>
+<blockquote>
+<p>把包括 Info 设置的源文件编译成二进制格式</p>
+</blockquote>
+<ol start="3">
+<li>install-info.exe</li>
+</ol>
+<blockquote>
+<p>安装 info 文档，它会更新</p>
+</blockquote>
+<ol start="4">
+<li>makeinfo.exe</li>
+</ol>
+<blockquote>
+<p>将 Texinfo 源文档翻译成不同的格式，包括html、info文档、文本文档。</p>
+</blockquote>
+<ol start="5">
+<li>texi2dvi</li>
+</ol>
+<blockquote>
+<p>把给定的 Texinfo 文档格式化成可打印的设备无关的文件</p>
+</blockquote>
+<ol start="6">
+<li>texi2pdf</li>
+</ol>
+<blockquote>
+<p>将 Texinfo 文档转化成 PDF 文件</p>
+</blockquote>
+<ol start="7">
+<li>texindex.exe</li>
+</ol>
+<blockquote>
+<p>对 Texinfo 索引文件进行排序</p>
+</blockquote>
+</li>
+<li>由于软件包由多个软件组成，不太容易判断当前的版本；但从是否在bin目录下存在这些文件，可以大致判断是否已经安装了该软件包。</li>
+<li>如果你是按照常规方法进行的安装，在DJGPP安装目录下应该有一个gnu目录，进入该目录可以看到一些子目录，从这些子目录名上可以很容易地判断出我们已经安装的gnu软件及其版本，例如我得机器中在gnu目录下有这些子目录：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[BINUTL-2.17]  [GCC-4.23]  [MAKE-3.791]  [TEXINFO4.11]
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+<h2 id="3-下载allegro">3. 下载Allegro</h2>
+<ul>
+<li>
+<p>在下面网址可以下载到完整的Allegro：<a href="http://ftp.delorie.com/pub/djgpp/current/v2tk/allegro/">http://ftp.delorie.com/pub/djgpp/current/v2tk/allegro/</a></p>
+</li>
+<li>
+<p>我使用的版本是4.22版，对应的文件是all422x.zip，我们可以看到，这样的文件有四个，分别是：</p>
+<ol>
+<li>all422a.zip</li>
+</ol>
+<blockquote>
+<p>Allegro二进制库文件和包含文件</p>
+</blockquote>
+<ol start="2">
+<li>all422b.zip</li>
+</ol>
+<blockquote>
+<p>Allegro二进制执行文件</p>
+</blockquote>
+<ol start="3">
+<li>all422d.zip</li>
+</ol>
+<blockquote>
+<p>Allegro的文档</p>
+</blockquote>
+<ol start="4">
+<li>all422s.zip</li>
+</ol>
+<blockquote>
+<p>Allegro的所有源程序,演示源程序及范例源程序</p>
+</blockquote>
+</li>
+<li>
+<p>一般情况下，我们安装Allegro的目的是为了编程，实际上我们只安装all422a.zip就可以了；all422b.zip中是一些可执行文件，通常我们用不上；all422d.zip中是Allegro的文档，肯定是有用的，但不一定安装在这台机器上，可以放在平常你用的windows的机器上以备查看；all422s.zip中为源代码，其中的范例程序源代码对我们学习Allegro会很有帮助，建议您下载并放在DOS+DJGPP的这台机器上。</p>
+</li>
+<li>
+<p>鉴于此，建议你不妨把这4个文件都下载下来，但实际只安装all422a.zip和all422s.zip。</p>
+</li>
+</ul>
+<h2 id="4allegro的安装">4、Allegro的安装</h2>
+<ul>
+<li>Allegro的安装及其简单，按以下步骤：
+<ul>
+<li>把all422a.zip和all422s.zip拷贝到DJGPP的安装目录下，比如c:\djgpp</li>
+<li>解压缩这两个文件
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">c:\djgpp&gt;unzip32 all422a.zip
+</span></span><span class="line"><span class="cl">.........
+</span></span><span class="line"><span class="cl">c:\djgpp&gt;unzip32 all422s.zip
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>如果你使用pkunzip，千万不要忘记加-d选项。</li>
+<li>如果你没有unzip32，但希望使用这个解压缩程序，可以在下面地址下载：<a href="http://ftp.delorie.com/pub/djgpp/current/unzip32.exe">http://ftp.delorie.com/pub/djgpp/current/unzip32.exe</a></li>
+<li>解压缩过程中可能会有重复文件所以提示你是否覆盖，选全部覆盖，没有关系。</li>
+</ul>
+</li>
+<li>安装完毕。</li>
+</ul>
+</li>
+</ul>
+<h2 id="4验证allegro的安装">4、验证Allegro的安装</h2>
+<ul>
+<li>
+<p>由于我们安装了源代码，所以在DJGPP安装目录下应该有这个目录，allegro\examples，比如：c:\djgpp\allegro\examples，进入该目录可以看到很多范例程序，有一个最简单的程序叫exhello.c，我们试着编译以下。</p>
+</li>
+<li>
+<p>进入rhide</p>
+<ul>
+<li>这个在安装DJGPP的时候我们已经安装好了。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">c:\djgpp\allegro\examples&gt;rhide
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>打开源文件exhello.c</p>
+<ul>
+<li>在rhide下的菜单中选择：File&mdash;-&gt;Open</li>
+<li>选择exhello.c文件并打开</li>
+</ul>
+</li>
+<li>
+<p>设置带allegro库德编译参数</p>
+<ul>
+<li>
+<p>在rhide菜单下选择：Option&mdash;-&gt;Libraries</p>
+</li>
+<li>
+<p>如下图，填入alleg并使该项有效<input checked="" disabled="" type="checkbox"> ，然后回车</p>
+</li>
+</ul>
+<p><img src="https://whowin.gitee.io/images/160012/set-using-allegro-under-rhide.jpg" alt="在DJGPP+DOS下安装ALLEGRO"></p>
+</li>
+<li>
+<p>编译</p>
+<ul>
+<li>在rhide菜单中选择：Compile&mdash;-&gt;Make</li>
+<li>如果没有错误，说明Allegro安装成功。</li>
+</ul>
+</li>
+<li>
+<p>运行</p>
+<ul>
+<li>在rhide菜单中选择：Run&mdash;-&gt;Run</li>
+<li>你应该可以看到运行结果。</li>
+</ul>
+</li>
+<li>
+<p>至此，Allegro全部安装完毕，关于Allegro的使用方法，请参阅你下载的文档。</p>
+</li>
+</ul>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2008-05-14
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/dos/">DOS</a>
+          <a href="/tags/djgpp/">DJGPP</a>
+          <a href="/tags/allegro/">ALLEGRO</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/dos/0013-install-jpgalleg-for-allegro-under-djgpp/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">给Allegro增加一个JPEG库</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/dos/0011-hw-int-mechanism-under-dos-dpmi/">
+            <span class="next-text nav-default">DOS DPMI下的硬件中断机制</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/dos/0012-install-allegro-under-dos-djgpp/" class="leancloud_visitors" data-flag-title="在DJGPP&#43;DOS下安装ALLEGRO">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

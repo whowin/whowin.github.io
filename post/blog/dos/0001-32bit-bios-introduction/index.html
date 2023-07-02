@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>32位 BIOS 说明 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="PCI BIOS 在 PCI 编程中起着一定的作用，PCI BIOS 的资料也不是很好找，把找到的集中到这里，供参考。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/dos/0001-32bit-bios-introduction/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="32位 BIOS 说明" />
+<meta property="og:description" content="PCI BIOS 在 PCI 编程中起着一定的作用，PCI BIOS 的资料也不是很好找，把找到的集中到这里，供参考。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/dos/0001-32bit-bios-introduction/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2008-03-18T13:15:48+08:00" />
+<meta property="article:modified_time" content="2008-03-18T13:15:48+08:00" />
+
+<meta itemprop="name" content="32位 BIOS 说明">
+<meta itemprop="description" content="PCI BIOS 在 PCI 编程中起着一定的作用，PCI BIOS 的资料也不是很好找，把找到的集中到这里，供参考。"><meta itemprop="datePublished" content="2008-03-18T13:15:48+08:00" />
+<meta itemprop="dateModified" content="2008-03-18T13:15:48+08:00" />
+<meta itemprop="wordCount" content="862">
+<meta itemprop="keywords" content="DOS,BIOS," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="32位 BIOS 说明"/>
+<meta name="twitter:description" content="PCI BIOS 在 PCI 编程中起着一定的作用，PCI BIOS 的资料也不是很好找，把找到的集中到这里，供参考。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">32位 BIOS 说明</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2008-03-18 </span>
+        <div class="post-category">
+            <a href="/categories/dos/"> DOS </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1确定系统是否实现-32-位-bios">1、确定系统是否实现 32 位 BIOS</a></li>
+        <li><a href="#2确定32位bios支持的服务">2、确定32位BIOS支持的服务</a></li>
+        <li><a href="#3确定32位bios是否支持pci-bios服务">3、确定32位BIOS是否支持PCI BIOS服务</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>PCI BIOS 在 PCI 编程中起着一定的作用，PCI BIOS 的资料也不是很好找，把找到的集中到这里，供参考。</p>
+<h2 id="1确定系统是否实现-32-位-bios">1、确定系统是否实现 32 位 BIOS</h2>
+<ul>
+<li>在调用 32 位 BIOS 之前，32 位操作系统必须要确定系统中是否存在 32 位 BIOS，以及入口点是什么？</li>
+<li>并不是所有的 BIOS 都支持 32 位调用。</li>
+<li>BIOS 32 服务目录的实现必须嵌入一个特定的、相邻的 16 个字节的数据结构，其物理地址范围为 0E0000H&mdash;-0FFFFFH，数据结构中各字段的描述如下，此数据结构必须排列在 16 字节地址边界。
+<table>
+<thead>
+<tr>
+<th style="text-align:center">偏移量</th>
+<th style="text-align:center">大小</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">00H</td>
+<td style="text-align:center">4字节</td>
+<td style="text-align:left">ASCII表示的特征字符串，“<em>32</em>”，最左边的下标存储在偏移0中</td>
+</tr>
+<tr>
+<td style="text-align:center">04H</td>
+<td style="text-align:center">4字节</td>
+<td style="text-align:left">BIOS 32服务目录入口，是一个32位的物理地址</td>
+</tr>
+<tr>
+<td style="text-align:center">08H</td>
+<td style="text-align:center">1字节</td>
+<td style="text-align:left">修订版本号，为00H</td>
+</tr>
+<tr>
+<td style="text-align:center">09H</td>
+<td style="text-align:center">1字节</td>
+<td style="text-align:left">数据结构长度，以字节为单位</td>
+</tr>
+<tr>
+<td style="text-align:center">0AH</td>
+<td style="text-align:center">1字节</td>
+<td style="text-align:left">整个数据结构的检查和，使整个数据结构的所有字节总和为0</td>
+</tr>
+<tr>
+<td style="text-align:center">0BH</td>
+<td style="text-align:center">5字节</td>
+<td style="text-align:left">预留单元，必须为0</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<h2 id="2确定32位bios支持的服务">2、确定32位BIOS支持的服务</h2>
+<ul>
+<li>EAX = 服务识别器。
+<blockquote>
+<p>为确定 32 位 BIOS 是否支持指定的服务，服务目录程序根据 EAX 寄存器中的调用者提供的 4 字节的服务识别器执行查找；</p>
+</blockquote>
+</li>
+<li>BL = 服务目录功能识别器。填 00H。EBX 的高三个字节为保留，必须清 0；</li>
+<li>在调用服务目录程序返回后，寄存器组中包含以下值：
+<ol>
+<li>如果指定的服务存在，则 AL 包含00H；否则，包含 80H；如果 BL 中包含的功能识别器未实现，则包含 81H；</li>
+<li>EBX 包含指定的 BIOS 服务的物理起始地址；</li>
+<li>ECX 包含指定的 BIOS 服务的长度；</li>
+<li>EDX 包含指定的 BIOS 服务的入口。这是EBX中返回的起始地址的偏移。</li>
+</ol>
+</li>
+</ul>
+<h2 id="3确定32位bios是否支持pci-bios服务">3、确定32位BIOS是否支持PCI BIOS服务</h2>
+<ul>
+<li>PCI BIOS 服务的服务识别器包含 ASCII 串 “$PCI” ，在 EAX 中被指定为 49435024H；</li>
+<li>假定服务目录程序调用后指出 PCI BIOS 存在，则可通过向 EDX 寄存器中返回的入口来执行远程调用；</li>
+<li>在调用 PCI BIOS 以前，操作系统必须将 BIOS 的代码和数据段定义为具有 EBX 和 ECX 中返回的物理地址范围；</li>
+<li>代码和数据段必须具有相同的起始地址。操作系统必须启动 BIOS 的优先级，以允许 I/O 操作，且必须为 BIOS 定义一个容量至少为 1KB 的堆栈区域；</li>
+<li>BIOS 设计者必须假定操作系统将代码段定义为只执行，将数据段定义为只读。</li>
+</ul>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2008-03-18
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/dos/">DOS</a>
+          <a href="/tags/bios/">BIOS</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/dos/0002-invoking-pci-bios/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">调用PCI BIOS</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/dos/2008-05-21cs5536%E4%B8%8A%E7%9A%84i2c%E6%80%BB%E7%BA%BF%E7%9A%84%E5%BA%94%E7%94%A8/">
+            <span class="next-text nav-default"></span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/dos/0001-32bit-bios-introduction/" class="leancloud_visitors" data-flag-title="32位 BIOS 说明">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

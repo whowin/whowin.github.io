@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Desktop on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/desktop/</link>
+    <description>Recent content in Desktop on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 06 May 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/desktop/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>安装一个好用的Ubuntu桌面</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0007-ubuntu-desktop/</link>
+      <pubDate>Fri, 06 May 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0007-ubuntu-desktop/</guid>
+      <description>&lt;p&gt;本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

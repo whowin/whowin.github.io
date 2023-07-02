@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Socket on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/socket/</link>
+    <description>Recent content in Socket on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 05 Feb 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/socket/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>从proc文件系统中获取gateway的IP地址</title>
+      <link>https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/</link>
+      <pubDate>Sun, 05 Feb 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/</guid>
+      <description>&lt;p&gt;在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有&lt;code&gt;ip route&lt;/code&gt;或者&lt;code&gt;route -n&lt;/code&gt;，&lt;code&gt;route -n&lt;/code&gt;是通过读取proc文件系统下的文件来从内核获取路由表的，但&lt;code&gt;ip route&lt;/code&gt;是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序，本文对初学者基本没有难度。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>linux下使用netlink获取gateway的IP地址</title>
+      <link>https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/</link>
+      <pubDate>Sat, 04 Feb 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/</guid>
+      <description>&lt;p&gt;要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，阅读本文需要对linux下编程有一定了解，熟悉IPv4的socket编程；本文对网络编程的初学者有较大难度。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>接收arp请求并发送回应的实例</title>
+      <link>https://whowin.gitee.io/post/blog/network/0007-recv-arp-request-and-reply/</link>
+      <pubDate>Thu, 12 Jan 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0007-recv-arp-request-and-reply/</guid>
+      <description>&lt;p&gt;ARP协议在网络编程中有着重要的地位，是一个工作在数据链路层的协议，本文简单介绍了ARP协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释；阅读本文需要有一定的网络编程基础，了解OSI的网络模型，本文对初学者有一定的难度。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>如何用C语言操作arp cache</title>
+      <link>https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/</link>
+      <pubDate>Thu, 12 Jan 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/</guid>
+      <description>&lt;p&gt;arp cache中存放着局域网内IP地址和MAC地址的对应关系，对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0，阅读本文需要有基本的socket编程和ioctl的知识，并对ARP协议有所了解，本文对网络编程的初学者难度不大。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>TCP服务器如何使用select处理多客户连接</title>
+      <link>https://whowin.gitee.io/post/blog/network/0011-handling-multiple-clients-on-server-with-select/</link>
+      <pubDate>Mon, 09 Jan 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0011-handling-multiple-clients-on-server-with-select/</guid>
+      <description>&lt;p&gt;TCP是一种面向连接的通信方式，一个TCP服务器难免会遇到同时处理多个用户的连接请求的问题，本文用一个简化的实例说明如何在一个TCP服务器程序中，使用select处理同时出现的多个客户连接，文章给出了程序源代码，阅读本文应该具备了基本的socket编程知识，熟悉基本的服务器/客户端模型架构；本文对初学者难度不大。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>使用select实现的UDP/TCP组合服务器</title>
+      <link>https://whowin.gitee.io/post/blog/network/0010-tcp-and-udp-server-using-select/</link>
+      <pubDate>Sat, 07 Jan 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0010-tcp-and-udp-server-using-select/</guid>
+      <description>&lt;p&gt;独立的TCP服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上及提供TCP服务，也提供UDP服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码，阅读本文需要掌握基本的socket变成方法，本文对初学者难度不大。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>使用C语言实现服务器/客户端的TCP通信</title>
+      <link>https://whowin.gitee.io/post/blog/network/0012-tcp-server-client-implementation-in-c/</link>
+      <pubDate>Fri, 06 Jan 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0012-tcp-server-client-implementation-in-c/</guid>
+      <description>&lt;p&gt;本文力求使用简单的描述说明一个服务器/客户端TCP通信的基本程序框架，使读者在这个框架下可以构建更加复杂的服务，文中给出了服务器端和客户端的实例源程序，本文适合网络编程的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>使用C语言实现服务器/客户端的UDP通信</title>
+      <link>https://whowin.gitee.io/post/blog/network/0013-udp-server-client-implementation-in-c/</link>
+      <pubDate>Thu, 05 Jan 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0013-udp-server-client-implementation-in-c/</guid>
+      <description>&lt;p&gt;本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，使读者可以在这个框架下经过扩展构建出更加复杂的服务，本文适合网络通信的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>如何使用raw socket发送UDP报文</title>
+      <link>https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/</link>
+      <pubDate>Tue, 27 Dec 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/</guid>
+      <description>&lt;p&gt;使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；阅读本文需要掌握基本的IPv4下的socket编程方法，本文对初学者有一定难度。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Linux下如何在数据链路层接收原始数据包</title>
+      <link>https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/</link>
+      <pubDate>Wed, 07 Dec 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/</guid>
+      <description>&lt;p&gt;大多数的网络编程都是在应用层接收数据和发送数据的，程序员无需关注报文的各种报头，网络协议栈会解决这些问题，本文介绍在数据链路层的网络编程方法，介绍如何在数据链路层直接接收从物理层发过来的原始数据包，要得到数据，必须自己解开数据链路层、网络层和传输层的报头，文章给出了一个完整的范例程序，希望本文能帮助读者对网络通信有更深刻的理解；阅读本文需要具备基本的使用socket进行网络编程的能力，熟悉OSI的网络模型，本文对初学者有一定的难度。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

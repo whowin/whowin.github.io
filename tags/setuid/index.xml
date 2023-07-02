@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>setuid on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/setuid/</link>
+    <description>Recent content in setuid on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 25 Aug 2022 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/setuid/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linux文件权限：setuid、setgid和sticky bit</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0012-setuid/</link>
+      <pubDate>Thu, 25 Aug 2022 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0012-setuid/</guid>
+      <description>&lt;p&gt;Linux 下的文件权限管理分为三组：拥有者、组、其它用户，文件权限分为读、写、执行，但其实并不仅仅如此，还有 setuid、setgid、sticky bit 这一组标志，本文通过一个可执行文件的权限 4755 展开介绍 setuid、setgid 和 sticky bit 的概念，希望本文对读者理解 Linux 文件权限管理能有所帮助。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

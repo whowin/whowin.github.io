@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DPMI on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/dpmi/</link>
+    <description>Recent content in DPMI on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 07 May 2008 17:45:03 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/dpmi/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>DOS DPMI下的硬件中断机制</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0011-hw-int-mechanism-under-dos-dpmi/</link>
+      <pubDate>Wed, 07 May 2008 17:45:03 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0011-hw-int-mechanism-under-dos-dpmi/</guid>
+      <description>&lt;p&gt;本文旨在探讨DPMI(DOS Protect Mode Interface)环境下的硬件中断机制，以及在此环境下硬件中断的编写方法，本文并不探讨实模式下和保护模式下硬件中断的原理，但文中难免涉及一些这方面的知识，请读者自行阅读相关资料解决。在本文的最后将举一个硬件中断的编写实例。本文主要讨论的环境为：DOS6.22 + DJGPP + CWSDPMI。CWSDPMI为DJGPP自带的DPMI服务，也是一个好用的且免费的DPMI，有关这个环境的搭建，请参阅我以前的博文。&lt;strong&gt;本文是我2008年的作品，2023年重新整理发布，仅为存档，其中的程序并没有再次验证，特此说明。&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在 DOS 下安装 DJGPP</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0003-djgpp-installation/</link>
+      <pubDate>Thu, 27 Mar 2008 14:27:38 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0003-djgpp-installation/</guid>
+      <description>&lt;p&gt;该文翻译自 &lt;strong&gt;djgpp version 2.03&lt;/strong&gt; 的 &lt;em&gt;.readme&lt;/em&gt; 文件。本文中包含获得、安装、使用 &lt;strong&gt;DJGPP&lt;/strong&gt; 的信息，在寻求帮助之前请完整阅读该文档。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

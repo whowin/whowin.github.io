@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DOS on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/dos/</link>
+    <description>Recent content in DOS on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 23 Apr 2013 14:27:38 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/dos/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>在vitual box虚拟机上安装dos</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0014-install-dos-on-vbox-under-ubuntu/</link>
+      <pubDate>Tue, 23 Apr 2013 14:27:38 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0014-install-dos-on-vbox-under-ubuntu/</guid>
+      <description>&lt;p&gt;现在找一台运行DOS的机器可是太不容易了，如果想玩DOS，只有在虚拟机上安装了，本文介绍如何在Virtual Box虚拟机上安装dos 6.22，本文的实例是在Ubuntu下，在windows基本也是一样的。本文适合初学者阅读。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>给Allegro增加一个JPEG库</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0013-install-jpgalleg-for-allegro-under-djgpp/</link>
+      <pubDate>Thu, 15 May 2008 11:42:58 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0013-install-jpgalleg-for-allegro-under-djgpp/</guid>
+      <description>&lt;p&gt;Allegro本身不能对jpeg图片进行处理，比如把生成的图形存储成jpeg文件，所以给Allegro配上一个合适的jpeg库是很有必要的，本文详细介绍了如何在Allegro上安装一个叫做jpgalleg的jpeg库。&lt;strong&gt;本文是我2008年的作品，2023年重新整理发布，仅为存档，其中的程序并没有再次验证，特此说明。&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在DJGPP&#43;DOS下安装ALLEGRO</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0012-install-allegro-under-dos-djgpp/</link>
+      <pubDate>Wed, 14 May 2008 17:10:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0012-install-allegro-under-dos-djgpp/</guid>
+      <description>&lt;p&gt;Allegro是一个用于编写游戏和多媒体程序的库，我发现它时是在2008年，但其实它的诞生可能要追溯到2000年以前了，当时我把它用在DOS+DJGPP的环境下，那是我当时能找到的在DOS下可以使用的为数不多的图像库之一，而且比较好用，本文主要介绍如何在DOS+DJGPP环境下安装ALLEGRO。&lt;strong&gt;本文是我2008年的作品，2023年重新整理发布，仅为存档，其中的程序并没有再次验证，特此说明。&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>DOS DPMI下的硬件中断机制</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0011-hw-int-mechanism-under-dos-dpmi/</link>
+      <pubDate>Wed, 07 May 2008 17:45:03 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0011-hw-int-mechanism-under-dos-dpmi/</guid>
+      <description>&lt;p&gt;本文旨在探讨DPMI(DOS Protect Mode Interface)环境下的硬件中断机制，以及在此环境下硬件中断的编写方法，本文并不探讨实模式下和保护模式下硬件中断的原理，但文中难免涉及一些这方面的知识，请读者自行阅读相关资料解决。在本文的最后将举一个硬件中断的编写实例。本文主要讨论的环境为：DOS6.22 + DJGPP + CWSDPMI。CWSDPMI为DJGPP自带的DPMI服务，也是一个好用的且免费的DPMI，有关这个环境的搭建，请参阅我以前的博文。&lt;strong&gt;本文是我2008年的作品，2023年重新整理发布，仅为存档，其中的程序并没有再次验证，特此说明。&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在DOS下针对AC&#39;97编程</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0010-ac97-programing-in-dos/</link>
+      <pubDate>Tue, 22 Apr 2008 14:52:57 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0010-ac97-programing-in-dos/</guid>
+      <description>&lt;p&gt;AC&#39;97大多数应该听说过，可能有些人把它当成一种声卡，或者是声卡上的芯片等等，其实它仅仅是一种规范，符合AC&#39;97规范的声卡，通常叫做AC&#39;97声卡，但其实上面使用的芯片可能完全不一样。现在很多桥片中甚至已经集成了AC&#39;97的规范进去，就不需要专门的声卡了。本文针对AMD的较新的一种桥片CS5536上集成的AC&#39;97进行编程，进而说明如何对符合AC&#39;97规范的声卡进行编程。以下为书写方便，把AC&#39;97写成AC97。&lt;strong&gt;本文是我2008年的作品，2023年重新整理发布，仅为存档，其中的程序并没有再次验证，特此说明。&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在DOS下进行网络编程（下）</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0008-network-programming-on-dos-2/</link>
+      <pubDate>Fri, 11 Apr 2008 10:10:33 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0008-network-programming-on-dos-2/</guid>
+      <description>&lt;p&gt;该文在上一篇文章的基础上，用一个完整的例子讲解在DOS下的网络编程方法&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在DOS下进行网络编程（上）</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0007-network-programming-on-dos-1/</link>
+      <pubDate>Wed, 09 Apr 2008 10:06:26 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0007-network-programming-on-dos-1/</guid>
+      <description>&lt;p&gt;该文介绍了在 DOS 下的进行网络编程的基本方法，该文写于2008年4月，2022年重新发表修了一些修改&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>DOS的系统杂项服务INT 15H介绍</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0006-dos-int15h-introduction/</link>
+      <pubDate>Fri, 04 Apr 2008 09:32:48 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0006-dos-int15h-introduction/</guid>
+      <description>&lt;p&gt;该文介绍了 DOS 下的 int 15h 的功能，可以作为资料备查&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>遍历 PCI 设备</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0005-traverse-pci-devices/</link>
+      <pubDate>Wed, 02 Apr 2008 09:15:23 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0005-traverse-pci-devices/</guid>
+      <description>&lt;p&gt;PC机在启动的时候，都会看到一个PCI设备清单，可以看到机器中的所有PCI设备，其实搜索PCI设备的程序并不难编，本文通过一个实例说明如何遍历PCI设备。本文程序的工作环境：MS-DOS 6.22，djgpp+RHIDE。本文初次发表于2008年4月2日，2011年3月11日做过修改，将其中的代码片段换为完整代码。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在 DOS 下的 DJGPP &#43; RHIDE 安装实作</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0004-install-djgpp-rhide-under-dos/</link>
+      <pubDate>Fri, 28 Mar 2008 13:48:41 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0004-install-djgpp-rhide-under-dos/</guid>
+      <description>&lt;p&gt;本文介绍在一个纯DOS构建一个C、C++和汇编的保护模式开发环境，编写的程序可以在纯DOS环境下运行在保护模式下&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>在 DOS 下安装 DJGPP</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0003-djgpp-installation/</link>
+      <pubDate>Thu, 27 Mar 2008 14:27:38 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0003-djgpp-installation/</guid>
+      <description>&lt;p&gt;该文翻译自 &lt;strong&gt;djgpp version 2.03&lt;/strong&gt; 的 &lt;em&gt;.readme&lt;/em&gt; 文件。本文中包含获得、安装、使用 &lt;strong&gt;DJGPP&lt;/strong&gt; 的信息，在寻求帮助之前请完整阅读该文档。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>调用PCI BIOS</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0002-invoking-pci-bios/</link>
+      <pubDate>Tue, 18 Mar 2008 15:10:28 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0002-invoking-pci-bios/</guid>
+      <description>&lt;p&gt;通过执行INT 1AH指令可以调用16位的PCI BIOS，也可以直接在物理寄存器位置000FFE6EH调用PCI BIOS。32位BIOS的调用要通过一个远程调用来实现。在这两种情况下，调用这都必须首先将需要的请求参数装入处理器的寄存器组。在入口AH寄存器必须包含PCI的功能ID：B1H，AL寄存器必须包含PCI下级功能识别器。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>32位 BIOS 说明</title>
+      <link>https://whowin.gitee.io/post/blog/dos/0001-32bit-bios-introduction/</link>
+      <pubDate>Tue, 18 Mar 2008 13:15:48 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/dos/0001-32bit-bios-introduction/</guid>
+      <description>&lt;p&gt;PCI BIOS 在 PCI 编程中起着一定的作用，PCI BIOS 的资料也不是很好找，把找到的集中到这里，供参考。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

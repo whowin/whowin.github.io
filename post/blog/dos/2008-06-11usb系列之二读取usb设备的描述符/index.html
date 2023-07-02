@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="USB系列之二：读取USB设备的描述符 2008-06-11 08:33:59 在前面的文章中，我们已经给出了USB协议的链接地址，从这篇文章起，我们会涉及到许多USB 1.1的内" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/dos/2008-06-11usb%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%8C%E8%AF%BB%E5%8F%96usb%E8%AE%BE%E5%A4%87%E7%9A%84%E6%8F%8F%E8%BF%B0%E7%AC%A6/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="" />
+<meta property="og:description" content="USB系列之二：读取USB设备的描述符 2008-06-11 08:33:59 在前面的文章中，我们已经给出了USB协议的链接地址，从这篇文章起，我们会涉及到许多USB 1.1的内" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/dos/2008-06-11usb%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%8C%E8%AF%BB%E5%8F%96usb%E8%AE%BE%E5%A4%87%E7%9A%84%E6%8F%8F%E8%BF%B0%E7%AC%A6/" /><meta property="article:section" content="post" />
+
+
+
+<meta itemprop="name" content="">
+<meta itemprop="description" content="USB系列之二：读取USB设备的描述符 2008-06-11 08:33:59 在前面的文章中，我们已经给出了USB协议的链接地址，从这篇文章起，我们会涉及到许多USB 1.1的内">
+
+<meta itemprop="wordCount" content="6456">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="USB系列之二：读取USB设备的描述符 2008-06-11 08:33:59 在前面的文章中，我们已经给出了USB协议的链接地址，从这篇文章起，我们会涉及到许多USB 1.1的内"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"></h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#usb系列之二读取usb设备的描述符">USB系列之二：读取USB设备的描述符</a>
+      <ul>
+        <li><a href="#1usb系统主机端的软件结构">1、USB系统主机端的软件结构</a></li>
+        <li><a href="#2dosusb介绍">2、DOSUSB介绍</a></li>
+        <li><a href="#3usb-11协议中的一些内容">3、USB 1.1协议中的一些内容</a></li>
+        <li><a href="#4读取设备描述符的范例程序">4、读取设备描述符的范例程序</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h1 id="usb系列之二读取usb设备的描述符">USB系列之二：读取USB设备的描述符</h1>
+<p><strong>2008-06-11 08:33:59</strong></p>
+<blockquote>
+<p>在前面的文章中，我们已经给出了USB协议的链接地址，从这篇文章起，我们会涉及到许多USB 1.1的内容，我们的指导思想是先从熟悉USB 1.1协议入手，先使用现成的HCD和USBD，直接面对客户端驱动编程，尽快看到成果，使读者对USB的开发充满信心，进而去研究USBD和HCD的编程方法。请读者自行阅读协议，文章中有关协议的详细情况，由于会涉及非常多的文字，恕不能过多解释。</p>
+</blockquote>
+<h2 id="1usb系统主机端的软件结构">1、USB系统主机端的软件结构</h2>
+<blockquote>
+<p>一般来说，教科书或者协议上都会把USB主机端的软件说成有三层，第一层叫主机控制器驱动程序HCD(Host Controller Driver)，第二层叫USB驱动程序USBD(USB Driver)，第三层叫客户端驱动程序(Client Driver)；实际上，我们实际看到的东西，往往HCD和USBD是由一个程序完成的，比如windows就提供了HCD和USBD，如果你自己开发了一个USB设备，只需要在HCD和USBD上面开发一个客户端驱动程序即可；linux也是同样，linux内核已经提供了HCD和USBD；所以在windows和linux下我们基本上没有开发HCD和USBD的必要，而且linux还提供源代码；但DOS就不一样了，DOS本身对USB没有任何支持，所以要想在DOS下彻底玩转USB，需要研究HCD、USBD和客户端驱动程序。</p>
+</blockquote>
+<h2 id="2dosusb介绍">2、DOSUSB介绍</h2>
+<blockquote>
+<p>很显然，HCD和USBD更加底层一些，需要理解的东西也更多一些；如果我们能够绕过HCD和USBD，直接从客户端驱动程序入手，将会容易许多。幸运的是我们可以找到一个免费的DOS下的USB驱动程序，叫DOSUSB，该驱动程序实现了大部分的HCD和USBD的功能，使我们进行USB编程的好帮手。</p>
+</blockquote>
+<blockquote>
+<p>DOSUSB目前还没有实现EHIC的驱动，也就是说还不支持USB2.0，这也是我们从USB 1.1开始的原因之一，另一方面，由于USB2.0是兼容USB1.1的，所以，即便你在USB2.0的设备下，仍然可以使用USB1.1的驱动程序，只不过不能实现480MB/秒的传送速度而已。</p>
+</blockquote>
+<blockquote>
+<p>下面我们介绍一下DOSUSB。DOSUSB的官方网站如下：http://www.dosusb.net(2021年08月06日注：这个链接仍然有效)</p>
+</blockquote>
+<blockquote>
+<p>可以从其官方网站上下载DOSUSB的最新版本，当前版本是1.1.1。或者在下面在下面网址下载这个版本的DOSUSB。</p>
+</blockquote>
+<blockquote>
+<p><a href="http://blog.whowin.net/software/dosusb/dosusb.zip">http://blog.whowin.net/software/dosusb/dosusb.zip</a></p>
+</blockquote>
+<blockquote>
+<p>DOSUSB可以在非商业领域免费使用，如果肯花费费用，可以购买到源代码，从其官方网站的论坛上看到，在2006年9月作者开出的源代码的价格是1000欧元。（2017年3月15日注：我靠，现在还是这个价钱，而且不能免费使用了）</p>
+</blockquote>
+<blockquote>
+<p>DOSUSB的安装十分简便，只需要解压缩到某一个目录下即可，比如放在c:\dosusb目录下，请自行阅读DOSUSB自带的文档，使用也非常简单，在DOS提示符下键入dosusb执行即可。</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl"> c:\dosusb&gt;dosusb
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>缺省情况下，DOSUSB使用int 65h作为其驱动的调用软中断，如果和你的系统有冲突，在运行dosusb时可以加参数/I，请自行阅读DOSUSB的文档。</p>
+</blockquote>
+<blockquote>
+<p>DOSUSB通过一个叫做URB(USB Request Block)的数据结构与客户端驱动程序进行通讯，这一点和linux非常相似，估计作者参考了linux下的源代码，在DOSUSB文档里给出了这个结构的定义，如下：</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  struct {
+</span></span><span class="line"><span class="cl">    BYTE  transaction_type;   // 设置事务（控制传输）(2Dh)，输入事务(69h)输出事务(E1h)
+</span></span><span class="line"><span class="cl">    BYTE  chain_end_flag;     // 备用
+</span></span><span class="line"><span class="cl">    BYTE  dev_add;            // 设备地址
+</span></span><span class="line"><span class="cl">    BYTE  end_point;          // 端点号
+</span></span><span class="line"><span class="cl">    BYTE  error_code;         // 错误吗
+</span></span><span class="line"><span class="cl">    BYTE  status;             // 设备状态
+</span></span><span class="line"><span class="cl">    WORD  transaction_flags;  // 备用
+</span></span><span class="line"><span class="cl">    WORD  buffer_off;         // 接收/发送缓冲区偏移地址
+</span></span><span class="line"><span class="cl">    WORD  buffer_seg;         // 接收/发送缓冲区段地址
+</span></span><span class="line"><span class="cl">    WORD  buffer_length;      // 接收/发送缓冲区长度
+</span></span><span class="line"><span class="cl">    WORD  actual_length;      // 接收/发送时每个包的最大长度
+</span></span><span class="line"><span class="cl">    WORD  setup_buffer_off;   // setup_request结构的偏移地址
+</span></span><span class="line"><span class="cl">    WORD  setup_buffer_seg;   // setup_request结构的段地址
+</span></span><span class="line"><span class="cl">    WORD  start_frame;        // 备用
+</span></span><span class="line"><span class="cl">    WORD  nr_of_packets;      // &gt;0时会启动实时传输
+</span></span><span class="line"><span class="cl">    WORD  int_interval;       // 备用
+</span></span><span class="line"><span class="cl">    WORD  error_count;        // 重试的次数
+</span></span><span class="line"><span class="cl">    WORD  timeout;            // 备用
+</span></span><span class="line"><span class="cl">    WORD  next_urb_off;       // 备用
+</span></span><span class="line"><span class="cl">    WORD  next_urb_seg;       // 备用
+</span></span><span class="line"><span class="cl">  } urb                       // 32字节
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>之所以列出这个结构，是因为我们将使用这个结构与USBD进行交互。关于结构中字段的定义，在DOSUSB的文档中有详细的说明。除备用字段不需要填以外，error_code和status由DOSUSB返回，故填0即可，后面还会介绍更详细的填写方法。</p>
+</blockquote>
+<blockquote>
+<p>在DOSUSB的发行包中，有一个sample目录，里面有很多例子，但大多是使用power basic写的，不过仍然有很好的参考价值。</p>
+</blockquote>
+<h2 id="3usb-11协议中的一些内容">3、USB 1.1协议中的一些内容</h2>
+<blockquote>
+<p>USB协议为USB设备定义了一套描述设备功能和属性的固有结构的描述符，包括标准描述符（设备描述符、配置描述符、接口描述符、端点描述符和字符串描述符），还有非标准描述符，如类描述符等。按照协议，设备描述符下可以有若干个配置描述符，每个配置描述符可以有若干个接口描述符，每个接口描述符下又可以有若干个端点描述符，字符串描述符主要用于描述一些文字信息，比如厂家名称，产品名称等。这篇文章的目的就是要读出这些描述符。</p>
+</blockquote>
+<blockquote>
+<p>实际上，所谓描述符就是一个数据结构，不管是什么描述符，其前两个字节的含义都是一样的，第一个字节是描述符的长度，第二个字节是描述符的类型。</p>
+</blockquote>
+<ul>
+<li>
+<p>设备描述符(Device Descriptor)：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  struct {
+</span></span><span class="line"><span class="cl">    BYTE    bLength;            // 描述符的长度，以字节为单位
+</span></span><span class="line"><span class="cl">    BYTE    bDescriptorType;    // 设备描述符类型，0x01
+</span></span><span class="line"><span class="cl">    WORD    bcdUSB;             // 设备支持的USB协议版本，BCD码
+</span></span><span class="line"><span class="cl">    BYTE    bDeviceClass;       // 设备类代码(由USB-IF分配)
+</span></span><span class="line"><span class="cl">    BYTE    bDeviceSubClass;    // 子类代码
+</span></span><span class="line"><span class="cl">    BYTE    bDeviceProtocol;    // 协议码
+</span></span><span class="line"><span class="cl">    BYTE    bMaxPacketSize0;    // 端点0的最大包长度(仅为8,16,32,64)
+</span></span><span class="line"><span class="cl">    WORD    idVendor;           // 厂商ID(由USB-IF分配)
+</span></span><span class="line"><span class="cl">    WORD    idProduct;          // 产品ID(由制造商定义)
+</span></span><span class="line"><span class="cl">    WORD    bcdDevice;          // 设备发行号(BCD码)
+</span></span><span class="line"><span class="cl">    BYTE    iManufacture;       // 描述厂商信息的字符串描述符的索引值
+</span></span><span class="line"><span class="cl">    BYTE    iProduct;           // 描述产品信息的字符串描述符的索引值
+</span></span><span class="line"><span class="cl">    BYTE    iSerialNumber;      // 描述设备序列号信息的字符串描述符的索引值
+</span></span><span class="line"><span class="cl">    BYTE    bNumConfigurations; // 可能的配置描述符的数目
+</span></span><span class="line"><span class="cl">  } device_descriptor
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>配置描述符(Configuration Descriptor)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  struct {
+</span></span><span class="line"><span class="cl">    BYTE    bLength;             // 描述符的长度，以字节为单位
+</span></span><span class="line"><span class="cl">    BYTE    bDescriptorType;     // 配置描述符类型，0x02
+</span></span><span class="line"><span class="cl">    WORD    wTotalLength;        // 配置信息的总长
+</span></span><span class="line"><span class="cl">    BYTE    bNumInterfaces;      // 该配置所支持的接口数目
+</span></span><span class="line"><span class="cl">    BYTE    bConfigurationValue; // 被SetCongiguration()请求用做参数来选定该配置
+</span></span><span class="line"><span class="cl">    BYTE    bConfiguration;      // 描述该配置的字符串描述符的索引值
+</span></span><span class="line"><span class="cl">    BYTE    bmAttributes;        // 配置特性
+</span></span><span class="line"><span class="cl">    BYTE    MaxPower;            // 该配置下的总线电源耗费量，以2mA为一个单位 
+</span></span><span class="line"><span class="cl">  }configuration_descriptor;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>bmAttributes ：b7：备用，b6：自供电，b5：远程唤醒，b4&ndash;b0：备用</p>
+</blockquote>
+<blockquote>
+<p>另外，在读取配置描述符时可以把该配置下的所有描述符全部读出，这些描述符的总长度就是wTotalLength字段的值，读出所有描述符后，在一个一个地拆分。</p>
+</blockquote>
+</li>
+<li>
+<p>接口描述符(Interface Descriptor)：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  struct {
+</span></span><span class="line"><span class="cl">    BYTE    bLength;            // 描述符的长度，以字节为单位
+</span></span><span class="line"><span class="cl">    BYTE    bDescriptorType;    // 接口描述符类型，0x04
+</span></span><span class="line"><span class="cl">    BYTE    bInterfaceNumber;   // 接口号，从0开始
+</span></span><span class="line"><span class="cl">    BYTE    bAlternateSetting;  // 可选设置的索引值.
+</span></span><span class="line"><span class="cl">    BYTE    bNumEndpoints;      // 此接口的端点数量。 
+</span></span><span class="line"><span class="cl">    BYTE    bInterfaceClass;    // 接口类编码(由USB-IF分配)
+</span></span><span class="line"><span class="cl">    BYTE    bInterfaceSubClass; // 接口子类编码(由USB-IF分配)
+</span></span><span class="line"><span class="cl">    BYTE    bInterfaceProtocol; // 协议码(由USB-IF分配)
+</span></span><span class="line"><span class="cl">    BYTE    iInterface;         // 描述该接口的字符串描述符的索引值
+</span></span><span class="line"><span class="cl">  }interface_descriptor;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>bInterfaceClass：USB协议根据功能将不同的接口划分成不同的类，如下：</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">1：音频类，2：CDC控制类，3：人机接口类（HID），5：物理类，6：图像类，
+</span></span><span class="line"><span class="cl">7：打印机类，8：大数据存储类，9：集线器类，10：CDC数据类，11：智能卡类，
+</span></span><span class="line"><span class="cl">13：安全类，220：诊断设备类，224：无线控制类，254：特定应用类，255厂商定义的设备。
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>端点描述符(Endpoint Descriptor)：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  struct {
+</span></span><span class="line"><span class="cl">    BYTE    bLength;            // 描述符的长度，以字节为单位
+</span></span><span class="line"><span class="cl">    BYTE    bDescriptorType;    // 端点描述符类型，0x05
+</span></span><span class="line"><span class="cl">    BYTE    bEndpointAddress;   // 端点地址
+</span></span><span class="line"><span class="cl">    BYTE    bmAttributes;       // 在bconfigurationValue所指的配置下的端点特性.
+</span></span><span class="line"><span class="cl">    WORD    wMaxPacketSize;     // 接收/发送的最大数据报长度. 
+</span></span><span class="line"><span class="cl">    BYTE    bInterval;          // 周期数据传输端点的时间间隙.
+</span></span><span class="line"><span class="cl">  }endpoint_descriptor;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>bmAttributes：bit 1:0&ndash;传送类型，00=控制传输，01=实时传输，10=批量传输，11=中断传输；所有其他位均保留。</p>
+</blockquote>
+</li>
+<li>
+<p>字符串描述符(String Descriptor)：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  struct {
+</span></span><span class="line"><span class="cl">    BYTE    bLength;            // 描述符的长度，以字节为单位
+</span></span><span class="line"><span class="cl">    BYTE    bDescriptorType;    // 字符串描述符类型，0x03
+</span></span><span class="line"><span class="cl">    char    bString[];          // UNICODE编码的字符串
+</span></span><span class="line"><span class="cl">  }string_descriptor;
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>USB命令请求（USB DEVICE REQUEST）</p>
+<blockquote>
+<p>为了更好地协调USB主机与设备之间的数据通信，USB规范定义了一套命令请求，用于完成主机对总线上所有USB设备的统一控制，USB命令请求由统一的格式，其结构如下：</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">  struct {
+</span></span><span class="line"><span class="cl">    BYTE  bmRequestType;  // 请求类型
+</span></span><span class="line"><span class="cl">    BYTE  bRequest;       // 命令请求的编码
+</span></span><span class="line"><span class="cl">    WORD  wValue;         // 命令不同，含义不同
+</span></span><span class="line"><span class="cl">    WORD  wIndex;         // 命令不同，含义不同 
+</span></span><span class="line"><span class="cl">    WORD  wLength;        // 如果有数据阶段，此字段为数据字节数
+</span></span><span class="line"><span class="cl">  } setup_request;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>后面我们向设备发出指令就全靠这个结构了。作为我们本文要用到的读取USB设备描述符的命令请求，该结构各字段的填法如下。</p>
+</blockquote>
+<blockquote>
+<p>bmRequestType : b7&ndash;数据传输方向，0=主机到设备，1=设备到主机；b6:5&ndash;命令的类型，0=标准命令，1=类命令，2=厂商提供的命令，3=保留；b4:0&ndash;接收对象，0=设备，1=接口，2=端点，3=其他。我们发出的得到描述符的命令，数据传输方向为设备到主机，标准命令，接收对象为设备，所以该字段填0x80。</p>
+</blockquote>
+<blockquote>
+<p>bRequest : 标准命令的编码如下，GET_STATUS=0;CLEAR_FEATURE=1;SET_FEATURE=3;SET_ADDRESS=5；GET_DESCRIPTOR=6;SET_DESCRIPTOR=7;GET_CONFIGURATION=8;SET_CONFIGURATION=9;GET_INTERFACE=10;SET_INTERFACE=11;SYNCH_FRAME=12。我们的命令是GET_DESCRIPTOR，所以应该填6。</p>
+</blockquote>
+<blockquote>
+<p>wValue : 高字节表示描述符的类型，0x01=设备描述符，0x02=配置描述符，0x03=字符串描述符，0x04=接口描述符，0x05=端点描述符，0x29=集线器类描述符，0x21=人机接口类描述符，0xFF=厂商定义的描述符。</p>
+</blockquote>
+<blockquote>
+<p>低字节表示表示描述符的索引值。所以，当读取设备描述符时，该字段值为0x100，当读取配置描述符是，应为0x03yy，其中yy为描述符的索引值。</p>
+</blockquote>
+<blockquote>
+<p>wIndex : 当读取字符串描述符时，填0x0409，表示希望获得英文字符串，其他情况下填0。</p>
+</blockquote>
+<blockquote>
+<p>wLength : 数据长度，一般应该填写，描述符的第一个字节，bLength。由于我们在读描述符时，并不知道其实际长度，通常的做法是先读取8个字节，然后根据第一个字节bLength的值在重新读取一次完整的描述符；注意，当读取配置描述符的钱8个字节后，应该使用wTotalLength字段的值作为长度读取与该配置有关的所有描述符。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="4读取设备描述符的范例程序">4、读取设备描述符的范例程序</h2>
+<blockquote>
+<p>按照我们文章的习惯，几乎每篇文章都有一个范例程序，本文也不例外，本文的范例程序请在下面地址下载：http://blog.whowin.net/source/usbview.zip</p>
+</blockquote>
+<blockquote>
+<p>程序用C++写成，在DJGPP下编译通过，所以是32位保护模式下的代码，要注意的是，DOSUSB是实模式下的驱动，所以在申请内存块时要申请1M以内实模式可以读取的内存，否则，在使用int 65h调用DOSUSB时一定会出现问题。</p>
+</blockquote>
+<blockquote>
+<p>有4个头文件，public.h中定义了一些方便使用的数据类型，比如BYTE为char，WORD为short int等等，可以不必太关注；x86int.h中定义了调用DOS中断所需的函数和数据结构，直到怎么使用就可以了；dosmem.h中定义了一个DOS_MEM类，主要是为了在保护模式下申请和使用DOS内存块更为方便，也是知道其中的方法，能够明白程序中的意义就可以了；usb.h定义了与USB协议有关的所有常数，这些常数与前面介绍的各种数据结构一一对应，由于我们是在保护模式下使用DOS内存，所以把一个内存块映射到一个数据结构上有一些麻烦，读取各个字段主要靠在usb.h中定义的这些常数。</p>
+</blockquote>
+<blockquote>
+<p>主要程序在usbview.cc中，主要思路如下：</p>
+</blockquote>
+<ul>
+<li>USB设备的地址从1&ndash;127，所以我们从1&ndash;127做一个循环，逐一读取USB设备描述符，直到出现“非法地址”为止。</li>
+<li>每一个USB设备的设备描述符只有一个，所以我们从读取某个地址下的设备描述符开始。</li>
+<li>开始我们并不知道设备描述符的长度，即便我们知道其长度为18个字符，但我们仍然不知道端点0允许的包长度（设备描述符中bMaxPacketSize0字段），但我们知道包长度的最小值是8，所以我们先读取8个字节的设备描述符。</li>
+<li>在我们得到8个字符的设备描述符后，我们就可以得到该描述符的长度和端点0的包长度，在后面发出的所有命令中，始终要把这个值填在URB结构的actual_length字段中。</li>
+<li>buffer用于存放USBD返回的描述符，在使用前建议初始化一下，全部清0。</li>
+<li>要向设备发出命令请求（Request），需要先填setup_request结构，前面讲过，bmRequestType=0x80，bRequest=6，这两个字段的填法始终不变；我们现在读取设备描述符，所以wValue=0x100，wIndex=0，wLength在首次调用时填8，第二次调用时填返回的bLength字段（应该是18）。</li>
+<li>准备好buffer和setup_request后，我们要填URB一边与DOSUSB交互；读取描述符是一个控制传输，所以transaction=0x2D(后面一直是0x2D)；dev_add填上面提到的循环变量；end_point=0，因为我们总对端点0（见USB协议）；buffer_off和buffer_seg分别填buffer的便宜地址和段地址；setup_buffer_off和setup_buffer_seg分别填前面setup_request结构的偏移地址和段地址；buffer_length同setup_request结构中的wLength，也可以把值设在wLength和buferr的最大长度之间，如果buffer的最大长度小于wLength，我们只能填buffer的最大长度，但这种情况下我们将得不到完整的描述符；actual_length在第一次调用时填8，以后一直填返回的bMaxPacketsize0字段；其他字段均为0。</li>
+<li>让DS:DX指向刚刚填完的URB结构，调用软中断65h，DOSUSB将为你处理下面的事情。</li>
+<li>如果正常，error_code应该返回0，如果非0，含义如下：
+<blockquote>
+<p>1&ndash;非法的设备地址；2&ndash;内部错误；3&ndash;非法的transation_type字段；4&ndash;非法的buffer长度。</p>
+</blockquote>
+</li>
+<li>如果正常，status字段应该为0，该字段是是USB控制器返回的状态字节，不同的控制器（OHCI或UHCI）会返回不同的值。
+*当我们得到设备描述符后，如果设备描述符中的iManufacturer字段不为0，我们可以根据这个所引值得到相应的字符串描述符，从而显示出厂家信息，要注意的是字符串描述符是UNICODE编码，对于ASCII而言，它是一个ASSCII码跟一个ASCII 0组成；同理我们可以得到产品信息和序列号信息。</li>
+<li>当我们得到了设备的设备描述符后，我们就可以知道这个设备上有多少个配置（设备描述符中的bNumConfigurations），进而通过一个循环得到所有的配置描述符及其配置下的所有描述符。</li>
+<li>读取配置描述符的方法与读取设备描述符大同小异，也是先读取8个字节，然后根据返回的内容再读取所有的描述符内容，要注意的是，实际上，我们不能单独得到接口描述符和端点描述符，唯一的办法是把一个配置下的描述符全部读出来，所以setup_request结构中的wLength字段一定要与配置描述符中返回的wTotalLength值一致才行。</li>
+<li>剩下的事情就是如何显示我们得到的描述符，我想这对每一位读者而言都不是什么困难的事。</li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/dos/2008-05-23usb%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E5%88%97%E5%87%BA%E4%BD%A0%E7%9A%84usb%E8%AE%BE%E5%A4%87/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"></span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/dos/2008-07-08usb%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%89%E4%BB%8E%E4%BD%A0%E7%9A%84u%E7%9B%98%E9%87%8C%E8%AF%BB%E5%87%BA%E6%9B%B4%E5%A4%9A%E7%9A%84%E5%86%85%E5%AE%B9/">
+            <span class="next-text nav-default"></span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/dos/2008-06-11usb%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%8C%E8%AF%BB%E5%8F%96usb%E8%AE%BE%E5%A4%87%E7%9A%84%E6%8F%8F%E8%BF%B0%E7%AC%A6/" class="leancloud_visitors" data-flag-title="">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

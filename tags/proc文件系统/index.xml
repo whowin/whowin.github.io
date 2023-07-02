@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>proc文件系统 on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/proc%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</link>
+    <description>Recent content in proc文件系统 on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 05 Feb 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/proc%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>从proc文件系统中获取gateway的IP地址</title>
+      <link>https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/</link>
+      <pubDate>Sun, 05 Feb 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/</guid>
+      <description>&lt;p&gt;在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有&lt;code&gt;ip route&lt;/code&gt;或者&lt;code&gt;route -n&lt;/code&gt;，&lt;code&gt;route -n&lt;/code&gt;是通过读取proc文件系统下的文件来从内核获取路由表的，但&lt;code&gt;ip route&lt;/code&gt;是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序，本文对初学者基本没有难度。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

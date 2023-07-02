@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>用C语言实现的一个DNS客户端 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="DNS可以帮助我们把域名映射到一个IP地址上，或者查询一个IP地址下有那些域名，使用域名访问一个网站或者服务器是一件很平常的事情，很少有人关心域名变成IP地址的实际过程，本文将使用C语言实现一个基本的DNS解析器，通过与DNS服务器的通信完成将一个域名转换成IP地址的过程，本文将提供完整的源程序；阅读本文需要有一定的网络编程基础，熟悉基本的socket编程并对DNS有一些了解，本文对网络编程的初学者难度较大。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/network/0019-dns-client-in-c/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="用C语言实现的一个DNS客户端" />
+<meta property="og:description" content="DNS可以帮助我们把域名映射到一个IP地址上，或者查询一个IP地址下有那些域名，使用域名访问一个网站或者服务器是一件很平常的事情，很少有人关心域名变成IP地址的实际过程，本文将使用C语言实现一个基本的DNS解析器，通过与DNS服务器的通信完成将一个域名转换成IP地址的过程，本文将提供完整的源程序；阅读本文需要有一定的网络编程基础，熟悉基本的socket编程并对DNS有一些了解，本文对网络编程的初学者难度较大。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0019-dns-client-in-c/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-03-28T16:43:29+08:00" />
+<meta property="article:modified_time" content="2023-03-28T16:43:29+08:00" />
+
+<meta itemprop="name" content="用C语言实现的一个DNS客户端">
+<meta itemprop="description" content="DNS可以帮助我们把域名映射到一个IP地址上，或者查询一个IP地址下有那些域名，使用域名访问一个网站或者服务器是一件很平常的事情，很少有人关心域名变成IP地址的实际过程，本文将使用C语言实现一个基本的DNS解析器，通过与DNS服务器的通信完成将一个域名转换成IP地址的过程，本文将提供完整的源程序；阅读本文需要有一定的网络编程基础，熟悉基本的socket编程并对DNS有一些了解，本文对网络编程的初学者难度较大。"><meta itemprop="datePublished" content="2023-03-28T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2023-03-28T16:43:29+08:00" />
+<meta itemprop="wordCount" content="6871">
+<meta itemprop="keywords" content="Linux,DNS,网络编程,dns resolver,“dns client&#34;,UDP," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="用C语言实现的一个DNS客户端"/>
+<meta name="twitter:description" content="DNS可以帮助我们把域名映射到一个IP地址上，或者查询一个IP地址下有那些域名，使用域名访问一个网站或者服务器是一件很平常的事情，很少有人关心域名变成IP地址的实际过程，本文将使用C语言实现一个基本的DNS解析器，通过与DNS服务器的通信完成将一个域名转换成IP地址的过程，本文将提供完整的源程序；阅读本文需要有一定的网络编程基础，熟悉基本的socket编程并对DNS有一些了解，本文对网络编程的初学者难度较大。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">用C语言实现的一个DNS客户端</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-03-28 </span>
+        <div class="post-category">
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            <a href="/categories/network/"> Network </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-目标">1. 目标</a></li>
+        <li><a href="#2-dns协议">2. DNS协议</a></li>
+        <li><a href="#3-实现一个dns客户端">3. 实现一个DNS客户端</a></li>
+        <li><a href="#4-后记">4. 后记</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>DNS可以帮助我们把域名映射到一个IP地址上，或者查询一个IP地址下有那些域名，使用域名访问一个网站或者服务器是一件很平常的事情，很少有人关心域名变成IP地址的实际过程，本文将使用C语言实现一个基本的DNS解析器，通过与DNS服务器的通信完成将一个域名转换成IP地址的过程，本文将提供完整的源程序；阅读本文需要有一定的网络编程基础，熟悉基本的socket编程并对DNS有一些了解，本文对网络编程的初学者难度较大。</p>
+<h2 id="1-目标">1. 目标</h2>
+<ul>
+<li>本文要实现一个DNS的客户端解析器(DNS resolver)，意即通过直接与DNS服务器通讯，将一个域名转换成其所对应的IP地址；</li>
+<li>对DNS客户端解析器的要求：
+<ol>
+<li>命令行接受用户输入的域名</li>
+<li>向DNS服务器发出查询请求，并将查询结果显示在屏幕上</li>
+<li>仅查询域名的A记录(QTYPE=HOST，QCLASS=IN)，后面会讨论相关细节</li>
+<li>如果查询结果有多条记录，要求显示所有查询结果</li>
+<li>如果查询的域名为别名(Alias)，要求显示其实际域名(Canonical Name)</li>
+<li>仅查询IPv4地址。</li>
+</ol>
+</li>
+<li>在C语言编程中，当需要将一个域名转换成IP地址时，通常是使用getaddrbyname()或者getaddrinfo()函数，这两个函数会使用系统设定的DNS服务器，本文实现的DNS客户端将使用自己定义的DNS服务器；</li>
+<li>一个DNS的客户端无非就是按照一定的格式向DNS服务器发送一个报文，然后接收来自DNS服务器的响应，并解析收到的信息，从而获得结果。</li>
+</ul>
+<h2 id="2-dns协议">2. DNS协议</h2>
+<ul>
+<li>
+<p>要编写一个DNS客户端程序，了解DNS协议是必须的，本节将仅对我们有用的有关DNS协议中的内容加以说明；看协议是枯燥的，也可以先不看，到后面需要时再回来查阅；</p>
+</li>
+<li>
+<p>DNS协议的主要内容包含在下面两个文件中</p>
+<ul>
+<li><a href="https://www.ietf.org/rfc/rfc1034.txt">rfc 1034: Domain Concepts and Facilities</a></li>
+<li><a href="https://www.ietf.org/rfc/rfc1035.txt">rfc 1035: Domain Implementation and Specification</a></li>
+</ul>
+</li>
+<li>
+<p>rfc 1035中对一些参数的最大值做了限制</p>
+<ul>
+<li>labels - 最多63个字符</li>
+<li>names - 最多255字符</li>
+<li>TTL - 32bit有符号数字，只能是正数</li>
+<li>UDP messages - 最多512个字符</li>
+</ul>
+</li>
+<li>
+<p>这些限制告诉我们：</p>
+<ol>
+<li>一个域名最长为255个字符，以&rsquo;.&lsquo;分开的各个部分，每部分最多63个字符</li>
+<li>使用UDP与DNS通信时，每个报文的长度不能超过512个字节</li>
+<li>TTL(Time To Live)，指查询到的一个DNS信息的生命周期，过了这个时间，这条信息即为作废，应该重新查询；</li>
+</ol>
+</li>
+<li>
+<p>在DNS的各种文章中，会经常看到<strong>RR</strong>的表述，这个是Resource Record的缩写，从DNS服务器返回的各种信息，都会存储在RR中；</p>
+</li>
+<li>
+<p>RR其实就是一个符合某种格式的数据结构，RR是DNS协议中非常重要的一个结构，rfc 1035(3.2)中，对<strong>RR</strong>做了定义：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">                                1  1  1  1  1  1
+</span></span><span class="line"><span class="cl">  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                                               |
+</span></span><span class="line"><span class="cl">/                                               /
+</span></span><span class="line"><span class="cl">/                      NAME                     /
+</span></span><span class="line"><span class="cl">|                                               |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                      TYPE                     |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                     CLASS                     |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                      TTL                      |
+</span></span><span class="line"><span class="cl">|                                               |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                   RDLENGTH                    |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--|
+</span></span><span class="line"><span class="cl">/                     RDATA                     /
+</span></span><span class="line"><span class="cl">/                                               /
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>其中</p>
+<ul>
+<li>
+<p>NAME - 拥有者名称，意即该资源记录RR所属的节点名称；实际上就是个域名，这个字段的长度是可变的，下面会详细说明其记录方式；</p>
+</li>
+<li>
+<p>TYPE - RR的类别，占2个字节；常用的TYPE如下，更多信息请查阅<a href="https://www.ietf.org/rfc/rfc1035.txt">rfc 1035</a>第3.2.2；本文中，会用到TYPE=A和TYPE=CNAME两种；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">TYPE  VALUE   MEANING
+</span></span><span class="line"><span class="cl">-----------------------------
+</span></span><span class="line"><span class="cl">A       1     主机地址
+</span></span><span class="line"><span class="cl">CNAME   5     别名的正式名称
+</span></span><span class="line"><span class="cl">MX      15    邮件交换
+</span></span><span class="line"><span class="cl">TXT     16    文本信息
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>CLASS - RR的适用的网络类别；CLASS的值常用的只有一个，即CLASS=IN，其值为1，表示互联网(Internet)</p>
+</li>
+<li>
+<p>TTL - 32bit的正整数表示该RR可以被缓存的时长，以秒为单位；该值为0时表示该RR只能用于当前事务，不能被缓存；</p>
+</li>
+<li>
+<p>RDLENGTH - 16bit无符号整数；该值表示RDATA字段的长度(字节数)；</p>
+</li>
+<li>
+<p>RDATA - 用于描述资源的可变长度字串；其格式取决于TYPE和CLASS字段的值，比如当TYPE=A时，RDATA中是一个32bit的IP地址。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>在<a href="https://www.ietf.org/rfc/rfc1035.txt">rfc 1035</a>的第4章定义了DNS协议的消息格式，向DNS服务器发送的查询报文以及DNS服务器的返回报文都符合这个格式；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">+---------------------+
+</span></span><span class="line"><span class="cl">|        Header       |
+</span></span><span class="line"><span class="cl">+---------------------+
+</span></span><span class="line"><span class="cl">|       Question      | the question for the name server
+</span></span><span class="line"><span class="cl">+---------------------+
+</span></span><span class="line"><span class="cl">|        Answer       | RRs answering the question
+</span></span><span class="line"><span class="cl">+---------------------+
+</span></span><span class="line"><span class="cl">|      Authority      | RRs pointing toward an authority
+</span></span><span class="line"><span class="cl">+---------------------+
+</span></span><span class="line"><span class="cl">|      Additional     | RRs holding additional information
+</span></span><span class="line"><span class="cl">+---------------------+
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在这个报文格式中，不管是查询请求报文还是应答报文，都会有一个报头(Header)、在查询请求报文中，显然不需要有Answer、Authority和Additional三部分；</p>
+</li>
+<li>
+<p>Question部分有自己的格式，Answer、Authority和Additional这三部分的格式是一样的，下面将就这三种格式(Header、Question、Answer)做个简要说明；</p>
+</li>
+<li>
+<p>如果觉着这部分枯燥也可以先跳过，等看不懂程序时才回来查阅；</p>
+</li>
+<li>
+<p><strong>Header的格式</strong></p>
+<ul>
+<li>Header部分占了12个字节
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">                                1  1  1  1  1  1
+</span></span><span class="line"><span class="cl">  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                      ID                       |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                    QDCOUNT                    |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                    ANCOUNT                    |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                    NSCOUNT                    |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                    ARCOUNT                    |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>其中
+<ul>
+<li>
+<p>ID - 随机标识，16bit长，随便填一个数即可；</p>
+</li>
+<li>
+<p>QR - Query Response；0表示该报文为查询报文，1表示该报文为应答报文；</p>
+</li>
+<li>
+<p>Opcode - Operation Code；表示报文的查询类型，该值由查询的发起方设置，并复制到应答报文中；0表示一个标准查询(QUERY)，1表示一个反向查询(IQUERY)，2表示查询服务器状态(STATUS)，3-15备用；</p>
+</li>
+<li>
+<p>AA - Authoritative Answer；权威答案，该位仅在响应报文中有效，该位为1表示当前名称服务器对所查询的域名具有权威性；</p>
+</li>
+<li>
+<p>TC - TrunCation；该位为1表示该报文不完整；由于该报文的长度过长，超过了传输通道允许的最大长度，该报文被截断；</p>
+</li>
+<li>
+<p>RD - Recursion Desired；该位为1表示要求DNS服务器做递归查询；如果在查询报文中设置了RD，在应答报文中将复制该位；</p>
+</li>
+<li>
+<p>RA - Recursion Available；递归可用，在应答报文中将该位置1表示名称服务器支持递归查询，将该位清0表示不支持递归查询(因为协议规定递归查询功能是可选的)；</p>
+</li>
+<li>
+<p>Z  - Reserved；备用</p>
+</li>
+<li>
+<p>RCODE - Response code；响应码，在相应报文中设置，按照 <a href="https://www.ietf.org/rfc/rfc1035.txt">rfc 1035</a> 的定义，其值的含义如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">值</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:left">没有错误</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:left">格式错误 - 名称服务器无法解释查询报文</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:left">服务器故障 - 由于服务器故障，无法处理此查询</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:left">名称错误 - 仅对来自权威名称服务器的响应有意义，表示查询的域名不存在</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:left">功能未实现 - 名称服务器不支持所请求的查询类型</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:left">拒绝 - 名称服务器出于政策原因拒绝执行指定的操作</td>
+</tr>
+<tr>
+<td style="text-align:center">6-15</td>
+<td style="text-align:left">备用</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>QDCOUNT - 无符号16位整数，表示该报文中 <strong>QUESTION部分</strong> 有多少条查询请求；</p>
+</li>
+<li>
+<p>ANCOUNT - 无符号16位整数，表示该报文中 <strong>ANSWER部分</strong> 有多少条RR(Resource Record)；</p>
+</li>
+<li>
+<p>NSCOUNT - 无符号16位整数，表示该报文中 <strong>Authority部分</strong> 有多少条有权威性的RR(Resource Record)</p>
+</li>
+<li>
+<p>ARCOUNT - 无符号16位整数，表示该报文中 <strong>Additional部分</strong> 有多少条附加的RR(Resource Record)</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Question的格式</strong></p>
+<ul>
+<li>Question部分是可变长度的
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">                                1  1  1  1  1  1
+</span></span><span class="line"><span class="cl">  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                                               |
+</span></span><span class="line"><span class="cl">/                     QNAME                     /
+</span></span><span class="line"><span class="cl">/                                               /
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                     QTYPE                     |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                     QCLASS                    |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>其中QNAME是可变长度的，QTYPE和QCLASS各占2个字节，16bits</li>
+<li>QNAME - 域名；以标签(label)方式表示的域名；每个标签的第一个字节表示这个标签的长度，后面跟着与该长度相同的字符，多个标签组成一个域名，标签的最后填充1个字节的0，表示标签结束；举例来说，www.baidu.com将用如下方式表达(以16进制表示)：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">length------length------------length------end 
+</span></span><span class="line"><span class="cl">03 77 77 77 05 62 61 69 64 75 03 63 6f 6d 00
+</span></span><span class="line"><span class="cl">   w  w  w     b  a  i  d  u     c  o  m
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>要注意的是，这个字段的长度(字节数)可能是奇数，不需要填充以保证4字节或2字节对齐；</li>
+<li>QTYPE - 2字节，表示查询类型；在前面介绍RR时曾介绍了RR中的TYPE字段，所有TYPE的值这里都使用，本文用到的有：QTYPE=1(A记录)，QTYPE=5(CNAME记录)</li>
+<li>QCLASS - 2字节，表示网络类别，常用的值只有1个，即CALSS=1(Internet - 表示互联网)</li>
+</ul>
+</li>
+<li>
+<p><strong>Answer的格式</strong></p>
+<ul>
+<li>Answer、Authority、Additional的格式是一样的，就是前面介绍的RR的格式，只是这里可能放着多个RR，其具体数量由Header中的ANCOUNT、AUCOUNT和ARCOUNT确定；</li>
+<li>我们把RR的的格式在这里再展示一下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">                                1  1  1  1  1  1
+</span></span><span class="line"><span class="cl">  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                                               |
+</span></span><span class="line"><span class="cl">/                                               /
+</span></span><span class="line"><span class="cl">/                      NAME                     /
+</span></span><span class="line"><span class="cl">|                                               |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                      TYPE                     |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                     CLASS                     |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                      TTL                      |
+</span></span><span class="line"><span class="cl">|                                               |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span><span class="line"><span class="cl">|                   RDLENGTH                    |
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--|
+</span></span><span class="line"><span class="cl">/                     RDATA                     /
+</span></span><span class="line"><span class="cl">/                                               /
+</span></span><span class="line"><span class="cl">+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>要说明的是，为了减小报文的长度，其NAME部分常常采用一种压缩方案(Compression Scheme)；因为在服务器发回的应答报文中，会包含查询请求报文中的QUESTION字段，这个字段中已经存放了域名，如果在ANSWER中再存放一次域名，显然是重复的，所以通常采用压缩方案；</li>
+<li>比如我们查询 baidu.com 的A记录，在发出DNS请求的报文中，会包含 baidu.com 这个域名，在应答报文中，会把请求报文中的 question 部分复制过来，那么在 answer 部分的 RR 中的 baidu.com 与 question 中的 baidu.com 就是重复的，这时候，在 anwser 部分的 baidu.com 就会采用压缩方案存储；</li>
+<li>采用标签方式存储域名时，第一个字符用于表示这个标签的长度，DNS协议规定，当这个长度字节的最高两位为0时，后面的6位表示这个标签的长度，当这个字节的最高两位全为1时，这个字节的后面6位连同下一个字节一起表示一个从报文首字节开始的偏移，指向一个域名；</li>
+<li>前面说过，一个域名的总长度最大为255个字符，以&rsquo;.&lsquo;分开的各个部分，每部分的最大长度为63个字符，<strong>为什么会限制为63个字符呢</strong>？因为在DNS协议里规定只有6 bit用于表示域名每部分的长度，所以每部分的长度最大只能是 2<sup>6</sup> - 1 = 63</li>
+<li>我们用一个实际的例子来说明，这个例子是查询域名 baidu.com 的 A 记录时，实际返回的数据：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">0000:   0xf1  0x01  0x81  0x80  0x00  0x01  0x00  0x02  
+</span></span><span class="line"><span class="cl">0008:   0x00  0x00  0x00  0x00  0x05  0x62  0x61  0x69  
+</span></span><span class="line"><span class="cl">0010:   0x64  0x75  0x03  0x63  0x6f  0x6d  0x00  0x00  
+</span></span><span class="line"><span class="cl">0018:   0x01  0x00  0x01  0xc0  0x0c  0x00  0x01  0x00  
+</span></span><span class="line"><span class="cl">0020:   0x01  0x00  0x00  0x01  0x72  0x00  0x04  0x6e  
+</span></span><span class="line"><span class="cl">0028:   0xf2  0x44  0x42  0xc0  0x0c  0x00  0x01  0x00  
+</span></span><span class="line"><span class="cl">0030:   0x01  0x00  0x00  0x01  0x72  0x00  0x04  0x27  
+</span></span><span class="line"><span class="cl">0038:   0x9c  0x42  0x0a 
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>最左边的一列是在内存中的偏移地址，在 question 部分的域名 baidu.com 出现在偏移地址为 0x000c 的位置，我们把它单独拿出来看：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">000c:   0x05  0x62  0x61  0x69  0x64  0x75  0x03  0x63  0x6f  0x6d  0x00
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>这样可能还不直观，我们换一种更加直观的方式：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">000c:   0x05  &#39;b&#39;  &#39;a&#39;  &#39;i&#39;  &#39;d&#39;  &#39;u&#39;  0x03  &#39;c&#39;  &#39;o&#39;  &#39;m&#39;  0x00
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>这是一种标准的标签方式记录的域名；</li>
+<li>这个回应报文中的 answer 有两个，第一个从偏移地址 0x001b 开始，answer 的开始是 NAME 字段，采用了压缩方案存储：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">001b:   0xc0  0x0c
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>按照标签方式，第一个字节应该表示这个标签的长度，但是这个字节 0xc0 的最高两位全为1，所以这里采用的是压缩方案，这个字节的后6位与下个字节一起组成一个偏移，下一个字节是 0x0c，所以偏移应该是：((0xc0 &amp; 0x3f) &laquo; 8) + 0x0c = 0x000c，偏移地址 0x000c 处显示的是什么呢？正是 question 部分用标签方式存储的域名 baidu.com</li>
+<li>这个例子只是为了直观的说明阳索方案是如何表达一个域名的，实际应用中可能比这个复杂一些，比如可能前面使用标签方式，但最后是一个压缩方案的指针等。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-实现一个dns客户端">3. 实现一个DNS客户端</h2>
+<ul>
+<li>
+<p>我们要实现的这个DNS客户端，仅实现域名 A 记录和 CNAME 记录的查询，这也是最常见的两种DNS记录；</p>
+</li>
+<li>
+<p>通常 DNS 客户端使用 UDP 实现，DNS 协议规定的端口号是 53；</p>
+</li>
+<li>
+<p>实现一个DNS客户端的步骤：</p>
+<ol>
+<li>
+<p>建立一个UDP socket</p>
+</li>
+<li>
+<p>设置socket接收超时，避免在接收应答消息时阻塞</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">timeval</span> <span class="n">timeout</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">timeout</span><span class="p">.</span><span class="n">tv_sec</span>  <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">timeout</span><span class="p">.</span><span class="n">tv_usec</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">setsockopt</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">SO_RCVTIMEO</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">timeout</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">timeout</span><span class="p">));</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>构建DNS request报文</strong></p>
+<ul>
+<li>DNS request报文由(报头 + 域名 + QTYPE + QCLASS)组成，报头的长度为12字节，QTYPE和QCLASS的长度均为2字节，域名为不定长度</li>
+<li>一个域名在 request 中占用的字节数为(域名字符串长度 + 2)；域名中每个&rsquo;.&lsquo;的位置要换成标签的长度，域名的第一个标签需要增加1字节的长度字节，域名的结束需要填充一个0；</li>
+<li>通过以上计算可以得出一个request的长度，合理地分配内存空间
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">dns_name_len</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">domain_name</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">dns_request_len</span> <span class="o">=</span> <span class="mi">12</span> <span class="o">+</span> <span class="n">dns_name_len</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">dns_request</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="n">dns_request_len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="n">dns_request</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dns_request_len</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>将一个域名用标签方式存储，这是构建request最复杂的部分，<code>struct dnshdr</code> 定义了DNS报头结构，详见源程序
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">dns_name</span> <span class="o">=</span> <span class="n">dns_request</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">dnshdr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">dns_name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">strcpy</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">domain_name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">pdot</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">((</span><span class="n">pdot</span> <span class="o">=</span> <span class="n">index</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="sc">&#39;.&#39;</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">pdot</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p</span> <span class="o">=</span> <span class="n">pdot</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">strlen</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>填写request中的QTYPE和QCLASS
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">uint16_t</span> <span class="o">*</span><span class="n">qtype</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint16_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">dns_name</span> <span class="o">+</span> <span class="n">dns_name_len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint16_t</span> <span class="o">*</span><span class="n">qclass</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint16_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">dns_name</span> <span class="o">+</span> <span class="n">dns_name_len</span> <span class="o">+</span> <span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">*</span><span class="n">qtype</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">*</span><span class="n">qclass</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>填写DNS报头，ID填任何数字都可以，flags中RD=1表示要求服务器进行递归查询，其他字段均为0，qu_count=1表示有一个查询，要注意的是，request中的存储都必须是网络字节序，所以要使用htons()转换一下
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">dnshdr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">flags</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">qu_count</span><span class="p">;</span>      <span class="c1">// Number of questions
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">uint16_t</span> <span class="n">an_count</span><span class="p">;</span>      <span class="c1">// Number of answer rr
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">uint16_t</span> <span class="n">au_count</span><span class="p">;</span>      <span class="c1">// Number of authority rr
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">uint16_t</span> <span class="n">ad_count</span><span class="p">;</span>      <span class="c1">// Number of additional rr
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">dnshdr</span> <span class="o">*</span><span class="n">dns_header</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">dnshdr</span> <span class="o">*</span><span class="p">)</span><span class="n">dns_request</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">dns_header</span><span class="o">-&gt;</span><span class="n">id</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mh">0x1234</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">dns_header</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mh">0x0100</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">dns_header</span><span class="o">-&gt;</span><span class="n">qu_count</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">dns_header</span><span class="o">-&gt;</span><span class="n">an_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">dns_header</span><span class="o">-&gt;</span><span class="n">au_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">dns_header</span><span class="o">-&gt;</span><span class="n">ad_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p><strong>向DNS服务器发送DNS request报文</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">dns_addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dns_addr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">dns_addr</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">dns_addr</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">53</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">dns_addr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">inet_addr</span><span class="p">(</span><span class="s">&#34;114.114.114.114&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sendto</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">dns_request</span><span class="p">,</span> <span class="n">dns_request_len</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">dns_addr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="p">));</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>接收来自DNS服务器的应答报文</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">buf</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">512</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">512</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">addr_len</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr_in</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">recvfrom</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">addr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">addr_len</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>DNS协议规定，DNS数据包的长度不超过512字节，所以这里仅给接收缓冲区分配512个字节</li>
+</ul>
+</li>
+<li>
+<p><strong>解析DNS服务器的应答报文</strong></p>
+<ul>
+<li>从DNS报头获取answer部分的RR数量
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">dnshdr</span> <span class="o">*</span><span class="n">dns_hdr</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">dnshdr</span> <span class="o">*</span><span class="p">)</span><span class="n">buf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint16_t</span> <span class="n">ancount</span> <span class="o">=</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">dns_hdr</span><span class="o">-&gt;</span><span class="n">an_count</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>找到answer部分的起始位置，在应答报文中，要跳过question部分才是answer部分，但question部分不是固定长度的，所以要费点周折；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">p_question</span> <span class="o">=</span> <span class="n">buf</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">dnshdr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">p_question</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="o">*</span><span class="n">p</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p</span> <span class="o">+=</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">p_answer</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>p_question指向question部分的开头，经过一个循环找到QTYPE字段的位置，再加上QTYPE和QCLASS的长度就找到了answer的起始位置；</li>
+<li>answer中的内容其实就是一个一个的RR，前面我们已经从包头中获得了RR的数量，这里循环就好了</li>
+<li>前面介绍过RR的结构，一个RR是由(NAME + TYPE + CLASS + TTL + RDLENGTH + RDATA)组成，其中CLASS永远为IN，TTL是设置DNS cache时用的，这两项我们可以不用管；</li>
+<li>TYPE决定着RDATA的格式和内容，我们只解析A记录和CNAME记录，所以如果TYPE为其他类型，我们可以放弃</li>
+<li>如果是A记录(TYPE=1)，则RDATA中是一个32位的IP地址，占4个字节，NAME中存放着其主域名(不是别名)；</li>
+<li>如果是CNAME记录(TYPE=5)，则NAME中存放的是一个别名，RDATA中存放着这个别名的主域名，此时RDATA中的数据采用标签方式或压缩方案存储域名；</li>
+<li>在源程序中有一个函数parse_name()专门用于将RR中的name或者RDATA中的name转换成我们可以读懂的域名格式
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">owner_name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">cname</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">name_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint16_t</span> <span class="n">ans_type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint16_t</span> <span class="n">rdlength</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">p_rdata</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">owner_name</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">256</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ancount</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">memset</span><span class="p">(</span><span class="n">owner_name</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">256</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">name_len</span> <span class="o">=</span> <span class="n">parse_name</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">p_answer</span><span class="p">,</span> <span class="n">owner_name</span><span class="p">,</span> <span class="mi">256</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ans_type</span> <span class="o">=</span> <span class="n">ntohs</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">int16_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">p_answer</span> <span class="o">+</span> <span class="n">name_len</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rdlength</span> <span class="o">=</span> <span class="n">ntohs</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">int16_t</span> <span class="o">*</span><span class="p">)(</span><span class="n">p_answer</span> <span class="o">+</span> <span class="n">name_len</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">4</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">p_rdata</span> <span class="o">=</span> <span class="n">p_answer</span> <span class="o">+</span> <span class="n">name_len</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">ans_type</span> <span class="o">==</span> <span class="n">TYPE_HOST</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// host ip in rdata. ip points to rdata.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;The owner name: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">owner_name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;ip: %d.%d.%d.%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">p_rdata</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p_rdata</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p_rdata</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">p_rdata</span><span class="p">[</span><span class="mi">3</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">ans_type</span> <span class="o">==</span> <span class="n">TYPE_CNAME</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// canonical name in rdata
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">cname</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="mi">256</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">memset</span><span class="p">(</span><span class="n">cname</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">256</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">parse_name</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">p_rdata</span><span class="p">,</span> <span class="n">cname</span><span class="p">,</span> <span class="mi">256</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;The alias name: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">owner_name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;The canonical name: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">cname</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">free</span><span class="p">(</span><span class="n">cname</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// point to next answer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">p_answer</span> <span class="o">=</span> <span class="n">p_answer</span> <span class="o">+</span> <span class="n">name_len</span> <span class="o">+</span> <span class="n">QTYPE_LEN</span> <span class="o">+</span> <span class="n">QCLASS_LEN</span> <span class="o">+</span> <span class="n">TTL_LEN</span> <span class="o">+</span> <span class="n">RDLENGTH_LEN</span> <span class="o">+</span> <span class="n">rdlength</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">free</span><span class="p">(</span><span class="n">owner_name</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>owner_name是RR中NAME字段中的域名，cname是当TYPE=CNAME时，RDATA中的域名</li>
+<li>parse_name()是解析name的函数，其返回值为该name在报文中占用的字节数，p_answer是指向answer部分开头的指针，所以p_answer加上parse_name()的返回值就是RR中TYPE字段的位置，再加上TYPE、CLASS和TTL的长度，就是RDLENGTH字段的位置，再加上RDLENGTH的长度，就是RDATA的位置，p_data指针就是这样得到的；</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+<p>完整源程序的文件名为：<a href="https://whowin.gitee.io/sourcecodes/180019/dns-client.c">dns-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
+<li>
+<p>编译：```gcc -Wall dns-client.c -o dns-client``</p>
+</li>
+<li>
+<p>运行：<code>./dns-client baidu.com</code></p>
+<ul>
+<li>
+<p>查询这个域名通常会返回2条A记录</p>
+<p><img src="https://whowin.gitee.io/images/180019/screenshot-dns-baidu.com.png" alt="Screenshot of baidu.com"></p>
+</li>
+</ul>
+</li>
+<li>
+<p>运行：<code>./dns-test www.baidu.com</code></p>
+<ul>
+<li>
+<p><a href="https://www.baidu.com">www.baidu.com</a>其实是一个别名，所以这个查询会得到一个CNAME记录和2个A记录</p>
+<p><img src="https://whowin.gitee.io/images/180019/screenshot-dns-www-baidu-com.png" alt="Screenshot of www.baidu.com"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-后记">4. 后记</h2>
+<ul>
+<li>在日常的网络活动中，有时会遇到DNS污染的困扰，比如在浏览器中输入域名，却无法到达我们期望到达的网站，这有时就是因为我们收到的DNS回应并不是来自一个合法的DNS服务器；当遇到此类问题时，本文的程序可以帮助你判断是否存在DNS污染；</li>
+<li>如果一个网站没有完成备案，则使用域名访问时也无法到达该网站，这其实也是在DNS上做的文章；</li>
+<li>本文仅对DNS的A记录和CNAME记录做了解析，其实常用DNS记录还有MX、TXT等；</li>
+<li>DNS的反向查询指的是使用IP地址查询其对应的域名；</li>
+<li>DNS协议的在rfc 1035中定义的反向查询(Inverse Queries)，但是该功能是可选的(Optional)，也就是说DNS服务器可以不具备反向查询的功能，所以使用这个功能可能无法达到预期结果；</li>
+<li>但是DNS协议在rfc 1035中定义了一个域 <strong>IN-ADDR.ARPA</strong>，利用这个域的查询可以达到和反向查询类似的功能，所以在实际应用中，如果需要做DNS反向查询，通常都是采用 IN-ADDR.PARA 域来完成，更详细的信息请查阅 <a href="https://www.ietf.org/rfc/rfc1035.txt">rfc 1035</a> 第3.5节。</li>
+</ul>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-03-28
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/dns/">DNS</a>
+          <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+          <a href="/tags/dns-resolver/">dns resolver</a>
+          <a href="/tags/dns-client/">“dns client&#34;</a>
+          <a href="/tags/udp/">UDP</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/network/0022-how-to-scan-wifi-signal/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">使用ioctl扫描wifi信号获取AP的essid、mac地址等属性</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/network/0020-implement-ping-program-with-sock-dgram/">
+            <span class="next-text nav-default">使用SOCK_DGRAM类型的socket实现的ping程序</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/network/0019-dns-client-in-c/" class="leancloud_visitors" data-flag-title="用C语言实现的一个DNS客户端">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

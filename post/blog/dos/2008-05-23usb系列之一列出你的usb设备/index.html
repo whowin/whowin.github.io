@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="USB系列之一：列出你的USB设备 2008-05-23 11:04:56 USB现在已经成为PC机必不可少的接口之一，几乎所有的设备都可以接在USB设备上，USB键盘、鼠标、打" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/dos/2008-05-23usb%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E5%88%97%E5%87%BA%E4%BD%A0%E7%9A%84usb%E8%AE%BE%E5%A4%87/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="" />
+<meta property="og:description" content="USB系列之一：列出你的USB设备 2008-05-23 11:04:56 USB现在已经成为PC机必不可少的接口之一，几乎所有的设备都可以接在USB设备上，USB键盘、鼠标、打" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/dos/2008-05-23usb%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E5%88%97%E5%87%BA%E4%BD%A0%E7%9A%84usb%E8%AE%BE%E5%A4%87/" /><meta property="article:section" content="post" />
+
+
+
+<meta itemprop="name" content="">
+<meta itemprop="description" content="USB系列之一：列出你的USB设备 2008-05-23 11:04:56 USB现在已经成为PC机必不可少的接口之一，几乎所有的设备都可以接在USB设备上，USB键盘、鼠标、打">
+
+<meta itemprop="wordCount" content="1914">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="USB系列之一：列出你的USB设备 2008-05-23 11:04:56 USB现在已经成为PC机必不可少的接口之一，几乎所有的设备都可以接在USB设备上，USB键盘、鼠标、打"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"></h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 0001-01-01 </span>
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#usb系列之一列出你的usb设备">USB系列之一：列出你的USB设备</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h1 id="usb系列之一列出你的usb设备">USB系列之一：列出你的USB设备</h1>
+<p><strong>2008-05-23 11:04:56</strong></p>
+<blockquote>
+<p>USB现在已经成为PC机必不可少的接口之一，几乎所有的设备都可以接在USB设备上，USB键盘、鼠标、打印机、摄像头，还有常用的U盘等等，从本篇文章开始，将集中篇幅介绍一下在DOS中使用USB设备的方法，具体会有几篇暂不好定，写到哪里算哪里吧，三、四篇总是少不了的。</p>
+</blockquote>
+<blockquote>
+<p>本文介绍如何使用我以前文章中介绍过的知识在你的机器中找到USB设备，并判定设备类型。</p>
+</blockquote>
+<blockquote>
+<p>一个USB系统一般由一个USB主机（HOST）、一个或多个USB集线器（HUB，但不是局域网里的集线器）和一个或多个USB设备节点（NODE）组成，一个系统中只有一个HOST，我们PC机里的USB实际上就是HOST和HUB两部分，你的PC机可能会有4个USB口，其实是一个HOST，一个HUB，HUB为你提供了4个端口，我们插在USB口上的器件，一般是USB设备，比如U盘，USB打印机等，当然我们也可以插一个集线器上去，使你的一个USB口扩展成多个。</p>
+</blockquote>
+<blockquote>
+<p>实际上我们说在DOS下使用USB，就是对USB系统中的HOST进行编程管理，根据USB的规范，HOST将对连接在上面的HUB和USB设备进行管理，不用我们操心。HOST器件目前有三个规范，OHCI(Open Host Controller Interface)、UHCI(Universal Host Controller Interface)支持USB1.1，EHCI(Enhanced Host Controller Interface)支持USB2.0，以后的文章中，我们将侧重介绍OHCI和EHCI。</p>
+</blockquote>
+<blockquote>
+<p>学习USB编程，读规范是少不了的，以下是一些应该阅读的规范下载：</p>
+</blockquote>
+<ul>
+<li>OHCI规范：http://blog.whowin.net/specification/usb_ohci_r10a.pdf</li>
+<li>EHCI规范：http://blog.whowin.net/specification/usb_ehci_r10.pdf</li>
+<li>USB规范1.1：http://blog.whowin.net/specification/usb_spec11.pdf</li>
+<li>USB规范2.0：http://blog.whowin.net/specification/usb_spec20.pdf</li>
+</ul>
+<blockquote>
+<p>本文介绍的内容不需要学习规范。</p>
+</blockquote>
+<blockquote>
+<p>下面进入正题，列出你的USB设备，USB的HOST是挂接在PCI总线上的，所以通过PCI设备的遍历就可以找到你的机器上的所有USB设备，在以前介绍PCI的配置空间时，曾经介绍过在配置空间中有一个占三个字节的分类代码字段（如果不知道，请参阅我以前的博文《遍历PCI设备》），在偏移为0x0B的字节叫基本分类代码，在偏移为0x0A的字节叫子分类代码，在偏移为0x09的字节叫编程接口代码，对于USB设备类说，基本分类代码为0x0C，子分类代码为0x03，对于符合不同规范的HOST器件而言，编程接口代码是不同的，UHCI的编程接口代码是0x00，OHCI的编程接口代码是0x10，EHCI的编程接口代码是0x20，我想了解这些就足够了。</p>
+</blockquote>
+<blockquote>
+<p>下面列出USB设备的源程序。</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">#include &lt;stdio.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;stdlib.h&gt;
+</span></span><span class="line"><span class="cl">#include &lt;dpmi.h&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">typedef unsigned long      UDWORD;
+</span></span><span class="line"><span class="cl">typedef short int          WORD;
+</span></span><span class="line"><span class="cl">typedef unsigned short int UWORD;
+</span></span><span class="line"><span class="cl">typedef unsigned char      UBYTE;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">typedef union {
+</span></span><span class="line"><span class="cl">    struct {
+</span></span><span class="line"><span class="cl">        UDWORD edi;
+</span></span><span class="line"><span class="cl">        UDWORD esi;
+</span></span><span class="line"><span class="cl">        UDWORD ebp;
+</span></span><span class="line"><span class="cl">        UDWORD res;
+</span></span><span class="line"><span class="cl">        UDWORD ebx;
+</span></span><span class="line"><span class="cl">        UDWORD edx;
+</span></span><span class="line"><span class="cl">        UDWORD ecx;
+</span></span><span class="line"><span class="cl">        UDWORD eax;
+</span></span><span class="line"><span class="cl">    } d;
+</span></span><span class="line"><span class="cl">    struct {
+</span></span><span class="line"><span class="cl">        UWORD di, di_hi;
+</span></span><span class="line"><span class="cl">        UWORD si, si_hi;
+</span></span><span class="line"><span class="cl">        UWORD bp, bp_hi;
+</span></span><span class="line"><span class="cl">        UWORD res, res_hi;
+</span></span><span class="line"><span class="cl">        UWORD bx, bx_hi;
+</span></span><span class="line"><span class="cl">        UWORD dx, dx_hi;
+</span></span><span class="line"><span class="cl">        UWORD cx, cx_hi;
+</span></span><span class="line"><span class="cl">        UWORD ax, ax_hi;
+</span></span><span class="line"><span class="cl">        UWORD flags;
+</span></span><span class="line"><span class="cl">        UWORD es;
+</span></span><span class="line"><span class="cl">        UWORD ds;
+</span></span><span class="line"><span class="cl">        UWORD fs;
+</span></span><span class="line"><span class="cl">        UWORD gs;
+</span></span><span class="line"><span class="cl">        UWORD ip;
+</span></span><span class="line"><span class="cl">        UWORD cs;
+</span></span><span class="line"><span class="cl">        UWORD sp;
+</span></span><span class="line"><span class="cl">        UWORD ss;
+</span></span><span class="line"><span class="cl">    } x;
+</span></span><span class="line"><span class="cl">    struct {
+</span></span><span class="line"><span class="cl">        UBYTE edi[4];
+</span></span><span class="line"><span class="cl">        UBYTE esi[4];
+</span></span><span class="line"><span class="cl">        UBYTE ebp[4];
+</span></span><span class="line"><span class="cl">        UBYTE res[4];
+</span></span><span class="line"><span class="cl">        UBYTE bl, bh, ebx_b2, ebx_b3;
+</span></span><span class="line"><span class="cl">        UBYTE dl, dh, edx_b2, edx_b3;
+</span></span><span class="line"><span class="cl">        UBYTE cl, ch, ecx_b2, ecx_b3;
+</span></span><span class="line"><span class="cl">        UBYTE al, ah, eax_b2, eax_b3;
+</span></span><span class="line"><span class="cl">  } h;
+</span></span><span class="line"><span class="cl">} X86_REGS;
+</span></span><span class="line"><span class="cl">/*************************************************************
+</span></span><span class="line"><span class="cl"> * Excute soft interrupt in real mode
+</span></span><span class="line"><span class="cl"> *************************************************************/
+</span></span><span class="line"><span class="cl">int x86_int(int int_num, X86_REGS *x86_reg) {
+</span></span><span class="line"><span class="cl">    __dpmi_regs d_regs;
+</span></span><span class="line"><span class="cl">    int return_value;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    d_regs.d.edi = x86_reg-&gt;d.edi;
+</span></span><span class="line"><span class="cl">    d_regs.d.esi = x86_reg-&gt;d.esi;
+</span></span><span class="line"><span class="cl">    d_regs.d.ebp = x86_reg-&gt;d.ebp;
+</span></span><span class="line"><span class="cl">    d_regs.d.res = x86_reg-&gt;d.res;
+</span></span><span class="line"><span class="cl">    d_regs.d.ebx = x86_reg-&gt;d.ebx;
+</span></span><span class="line"><span class="cl">    d_regs.d.ecx = x86_reg-&gt;d.ecx;
+</span></span><span class="line"><span class="cl">    d_regs.d.edx = x86_reg-&gt;d.edx;
+</span></span><span class="line"><span class="cl">    d_regs.d.eax = x86_reg-&gt;d.eax;
+</span></span><span class="line"><span class="cl">    d_regs.x.flags = x86_reg-&gt;x.flags;
+</span></span><span class="line"><span class="cl">    d_regs.x.es = x86_reg-&gt;x.es;
+</span></span><span class="line"><span class="cl">    d_regs.x.ds = x86_reg-&gt;x.ds;
+</span></span><span class="line"><span class="cl">    d_regs.x.fs = x86_reg-&gt;x.fs;
+</span></span><span class="line"><span class="cl">    d_regs.x.gs = x86_reg-&gt;x.gs;
+</span></span><span class="line"><span class="cl">    d_regs.x.ip = x86_reg-&gt;x.ip;
+</span></span><span class="line"><span class="cl">    d_regs.x.cs = x86_reg-&gt;x.cs;
+</span></span><span class="line"><span class="cl">    d_regs.x.sp = x86_reg-&gt;x.sp;
+</span></span><span class="line"><span class="cl">    d_regs.x.ss = x86_reg-&gt;x.ss;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    return_value = __dpmi_int(int_num, &amp;d_regs);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;d.edi = d_regs.d.edi;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;d.esi = d_regs.d.esi;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;d.ebp = d_regs.d.ebp;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;d.res = d_regs.d.res;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;d.ebx = d_regs.d.ebx;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;d.ecx = d_regs.d.ecx;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;d.edx = d_regs.d.edx;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;d.eax = d_regs.d.eax;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;x.flags = d_regs.x.flags;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;x.es = d_regs.x.es;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;x.ds = d_regs.x.ds;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;x.fs = d_regs.x.fs;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;x.gs = d_regs.x.gs;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;x.ip = d_regs.x.ip;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;x.cs = d_regs.x.cs;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;x.sp = d_regs.x.sp;
+</span></span><span class="line"><span class="cl">    x86_reg-&gt;x.ss = d_regs.x.ss;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    return return_value;
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">/**********************************
+</span></span><span class="line"><span class="cl"> * Read Configuration WORD if PCI
+</span></span><span class="line"><span class="cl"> **********************************/
+</span></span><span class="line"><span class="cl">UWORD ReadConfigWORD(WORD pciAddr, int reg) {
+</span></span><span class="line"><span class="cl">    X86_REGS inregs;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    inregs.x.ax = 0xB109;    // Read Configuration word
+</span></span><span class="line"><span class="cl">    inregs.x.bx = pciAddr;
+</span></span><span class="line"><span class="cl">    inregs.x.di = reg;       // Register number
+</span></span><span class="line"><span class="cl">    x86_int(0x1A, &amp;inregs);
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    return inregs.d.ecx;     // the value
+</span></span><span class="line"><span class="cl">}
+</span></span><span class="line"><span class="cl">// main program
+</span></span><span class="line"><span class="cl">int main(void) {
+</span></span><span class="line"><span class="cl">    UWORD pciAddr;
+</span></span><span class="line"><span class="cl">    UWORD subClass;
+</span></span><span class="line"><span class="cl">    int ehciCount = 0, ohciCount = 0, uhciCount = 0;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    for (pciAddr = 0; pciAddr &lt; 0xffff; pciAddr++) {
+</span></span><span class="line"><span class="cl">        if (ReadConfigWORD(pciAddr, 0) != 0xFFFF) {
+</span></span><span class="line"><span class="cl">            // Read Class Code
+</span></span><span class="line"><span class="cl">            if (ReadConfigWORD(pciAddr, 0x000a ) == 0x0c03) {  // Usb Host Controller
+</span></span><span class="line"><span class="cl">                // Read SubClass Code
+</span></span><span class="line"><span class="cl">                subClass = ReadConfigWORD(pciAddr, 0x0008);
+</span></span><span class="line"><span class="cl">                if ((subClass &amp; 0xff00) == 0x2000) {  // uhci
+</span></span><span class="line"><span class="cl">                    ehciCount++;
+</span></span><span class="line"><span class="cl">                } else if ((subClass &amp; 0xff00) == 0x1000) {  // ohci
+</span></span><span class="line"><span class="cl">                    ohciCount++;
+</span></span><span class="line"><span class="cl">                } else if ((subClass &amp; 0xff00) == 0x00) {    // uhci
+</span></span><span class="line"><span class="cl">                    uhciCount++;
+</span></span><span class="line"><span class="cl">                }
+</span></span><span class="line"><span class="cl">            }
+</span></span><span class="line"><span class="cl">        }
+</span></span><span class="line"><span class="cl">    }
+</span></span><span class="line"><span class="cl">    printf(&#34;There are %d ohci device(s).\n&#34;, ohciCount);
+</span></span><span class="line"><span class="cl">    printf(&#34;There are %d ehci device(s).\n&#34;, ehciCount);
+</span></span><span class="line"><span class="cl">    printf(&#34;There are %d uhci device(s).\n&#34;, uhciCount);
+</span></span><span class="line"><span class="cl">    return 0;
+</span></span><span class="line"><span class="cl">}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>程序非常简单，所有概念在以前的博文中均有过介绍，其中的子程序大多是以前程序范例中使用过的，所以在这里就不做更多的解释了，程序中，我们仅仅列出了设备的数量，但很显然，用这种方法，我们可以从配置空间里读出基地址等信息，这些在以后的文章中会用到。</p>
+</blockquote>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        0001-01-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/dos/2008-05-21cs5536%E4%B8%8A%E7%9A%84i2c%E6%80%BB%E7%BA%BF%E7%9A%84%E5%BA%94%E7%94%A8/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"></span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/dos/2008-06-11usb%E7%B3%BB%E5%88%97%E4%B9%8B%E4%BA%8C%E8%AF%BB%E5%8F%96usb%E8%AE%BE%E5%A4%87%E7%9A%84%E6%8F%8F%E8%BF%B0%E7%AC%A6/">
+            <span class="next-text nav-default"></span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/dos/2008-05-23usb%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%80%E5%88%97%E5%87%BA%E4%BD%A0%E7%9A%84usb%E8%AE%BE%E5%A4%87/" class="leancloud_visitors" data-flag-title="">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

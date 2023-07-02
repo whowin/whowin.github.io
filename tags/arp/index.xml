@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>arp on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/arp/</link>
+    <description>Recent content in arp on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 12 Jan 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/arp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>接收arp请求并发送回应的实例</title>
+      <link>https://whowin.gitee.io/post/blog/network/0007-recv-arp-request-and-reply/</link>
+      <pubDate>Thu, 12 Jan 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0007-recv-arp-request-and-reply/</guid>
+      <description>&lt;p&gt;ARP协议在网络编程中有着重要的地位，是一个工作在数据链路层的协议，本文简单介绍了ARP协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释；阅读本文需要有一定的网络编程基础，了解OSI的网络模型，本文对初学者有一定的难度。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>如何用C语言操作arp cache</title>
+      <link>https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/</link>
+      <pubDate>Thu, 12 Jan 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/</guid>
+      <description>&lt;p&gt;arp cache中存放着局域网内IP地址和MAC地址的对应关系，对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0，阅读本文需要有基本的socket编程和ioctl的知识，并对ARP协议有所了解，本文对网络编程的初学者难度不大。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
