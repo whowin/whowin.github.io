@@ -50,7 +50,7 @@
 <meta itemprop="name" content="远程开机：一个简单的嵌入式项目开发">
 <meta itemprop="description" content="本文通过一个简单的需求介绍了在一个 ARM 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 Linux 开发的过程。本文并不会详细介绍网络唤醒的原理以及 Magic Packet。"><meta itemprop="datePublished" content="2022-08-18T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-08-18T16:43:29+08:00" />
-<meta itemprop="wordCount" content="8369">
+<meta itemprop="wordCount" content="8575">
 <meta itemprop="keywords" content="openwrt,嵌入式,网络唤醒,远程开机,wake on lan,magic packet," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="远程开机：一个简单的嵌入式项目开发"/>
 <meta name="twitter:description" content="本文通过一个简单的需求介绍了在一个 ARM 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 Linux 开发的过程。本文并不会详细介绍网络唤醒的原理以及 Magic Packet。"/>
@@ -1078,105 +1078,213 @@
 </li>
 </ul>
 <hr>
+<ul>
+<li><strong>内网穿透</strong>
+<ul>
+<li>做到现在这样，我们已经完成了大部分工作，下面唯一要做的是如何从外网上访问到这台 <em>openwrt</em> 的设备，这就是前面说过的 <strong>内网穿透</strong>；</li>
+<li>搞内网穿透是需要在互联网上有一台服务器(<em>Virtual Private Server</em>)的，可以是那种很便宜性能很弱的Virtual Private Server，因为我们不干别的事，就是转发一下数据而已；</li>
+<li>我自己使用的是一台俄罗斯的 <em>Virtual Private Server</em>，价格只有 <strong>US$13.04/年</strong>，512M内存，5G的SSD，运行 <em>ubuntu 20.04</em>，虽然配置低，但是用起来感觉还是不错的，我很乐意推荐给大家：
+<ul>
+<li><a href="https://justhost.ru/?ref=149230">俄罗斯Virtual Private Server</a></li>
+</ul>
+</li>
+<li>前面说过我使用的内网穿透的工具是一个开源项目，叫做 <em>frp</em>，项目地址如下：
+<ul>
+<li>
+<p><a href="https://github.com/fatedier/frp">frp内网穿透项目</a></p>
+</li>
+<li>
+<p>该项目有中文文档，大家可以按照文档下载适当的 <em>release</em>，其服务器软件 <em>frps</em> 运行在服务器(Virtual Private Server)上，客户端 <em>frpc</em> 运行在 <em>openwrt</em> 上；</p>
+</li>
+<li>
+<p>通常服务器端软件都是 64 位的 X86 架构，比较容易搞定；</p>
+</li>
+<li>
+<p>要注意的是，要看清楚运行 <em>openwrt</em> 的设备是什么架构，是 32 位的还是 64 位的，比如本文中的设备 <em>CPU</em> 为 <em>S805</em>，就是一个 32 位的 <em>arm</em> 架构，否则你下载的客户端软件可能无法运行；</p>
+</li>
+<li>
+<p>这个软件的设置还是要费一些功夫，请认真阅读该项目的文档，并参考其范例；这里我给出我的实例</p>
+<blockquote>
+<p>服务器端配置文件：<em>frps.ini</em>，其中的 <em>xxx.xxx.xxx.xxx</em> 请按照实际情况设置，<em>frp_log_path</em> 请指向实际存放 <em>frp</em> 日志的目录</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[common]
+</span></span><span class="line"><span class="cl">bind_addr = xxx.xxx.xxx.xxx
+</span></span><span class="line"><span class="cl">bind_port = 57000
+</span></span><span class="line"><span class="cl">bind_udp_port = 57001
+</span></span><span class="line"><span class="cl">kcp_bind_port = 57000
+</span></span><span class="line"><span class="cl">proxy_bind_addr = xxx.xxx.xxx.xxx
+</span></span><span class="line"><span class="cl">vhost_http_port = 58080
+</span></span><span class="line"><span class="cl">vhost_https_port = 58443
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">log_file = /frp_log_path/frps.log
+</span></span><span class="line"><span class="cl">log_level = info
+</span></span><span class="line"><span class="cl">log_max_days = 3
+</span></span><span class="line"><span class="cl">disable_log_color = false
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">detailed_errors_to_client = true
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">authentication_method = token
+</span></span><span class="line"><span class="cl">authenticate_heartbeats = false
+</span></span><span class="line"><span class="cl">authenticate_new_work_conns = false
+</span></span><span class="line"><span class="cl">token = skyline.admin
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">oidc_client_id =
+</span></span><span class="line"><span class="cl">oidc_client_secret = 
+</span></span><span class="line"><span class="cl">oidc_audience = 
+</span></span><span class="line"><span class="cl">oidc_token_endpoint_url = 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">allow_ports = 58000-59000,50000-53000
+</span></span><span class="line"><span class="cl">max_pool_count = 15
+</span></span><span class="line"><span class="cl">max_ports_per_client = 0
+</span></span><span class="line"><span class="cl">tls_only = false
+</span></span><span class="line"><span class="cl">subdomain_host = frps.com
+</span></span><span class="line"><span class="cl">tcp_mux = true
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>客户端配置文件：<em>frpc.ini</em>，其中的 <em>xxx.xxx.xxx.xxx</em> 请按照实际情况设置；<em>openwrt.aaa.com</em> 是一个 A 记录指向 <em>Virtual Private Server</em> 的域名(子域名)，也要根据实际情况进行设置</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[common]
+</span></span><span class="line"><span class="cl">server_addr=xxx.xxx.xxx.xxx
+</span></span><span class="line"><span class="cl">server_port=57000
+</span></span><span class="line"><span class="cl">log_file=/tmp/frpc.log
+</span></span><span class="line"><span class="cl">log_level=info
+</span></span><span class="line"><span class="cl">log_max_days=3
+</span></span><span class="line"><span class="cl">disable_log_color=false
+</span></span><span class="line"><span class="cl">token=skyline.admin
+</span></span><span class="line"><span class="cl">pool_count=5
+</span></span><span class="line"><span class="cl">tcp_mux=true
+</span></span><span class="line"><span class="cl">user=whowin
+</span></span><span class="line"><span class="cl">login_fail_exit=false
+</span></span><span class="line"><span class="cl">protocol=tcp
+</span></span><span class="line"><span class="cl">tls_enable=falset
+</span></span><span class="line"><span class="cl">dns_server=8.8.8.8
+</span></span><span class="line"><span class="cl">admin_addr=127.0.0.1
+</span></span><span class="line"><span class="cl">admin_port=7400
+</span></span><span class="line"><span class="cl">admin_user=skyline
+</span></span><span class="line"><span class="cl">admin_pwd=admin
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[ssh]
+</span></span><span class="line"><span class="cl">type=tcp
+</span></span><span class="line"><span class="cl">local_ip=192.168.2.100
+</span></span><span class="line"><span class="cl">local_port=22
+</span></span><span class="line"><span class="cl">use_encryption=false
+</span></span><span class="line"><span class="cl">use_compression=false
+</span></span><span class="line"><span class="cl">custom_domain=openwrt.aaa.com
+</span></span><span class="line"><span class="cl">remote_port=52998
+</span></span><span class="line"><span class="cl">health_check_type=tcp
+</span></span><span class="line"><span class="cl">health_check_timeout_s=3
+</span></span><span class="line"><span class="cl">health_check_max_failed=10
+</span></span><span class="line"><span class="cl">health_check_interval_s=30
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[openwrt_web]
+</span></span><span class="line"><span class="cl">type=http
+</span></span><span class="line"><span class="cl">local_ip=192.168.2.100
+</span></span><span class="line"><span class="cl">local_port=80
+</span></span><span class="line"><span class="cl">use_encryption=false
+</span></span><span class="line"><span class="cl">use_compression=true
+</span></span><span class="line"><span class="cl">custom_domains=openwrt.aaa.com
+</span></span><span class="line"><span class="cl">header_X-From-Where=frp           
+</span></span><span class="line"><span class="cl">health_check_type=http    
+</span></span><span class="line"><span class="cl">health_check_url=/        
+</span></span><span class="line"><span class="cl">health_check_interval_s=90 
+</span></span><span class="line"><span class="cl">health_check_max_failed=3
+</span></span><span class="line"><span class="cl">health_check_timeout_s=3
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <!--
-* **内网穿透**
-  - 做到现在这样，我们已经完成了大部分工作，下面唯一要做的是如何从外网上访问到这台 *openwrt* 的设备，这就是前面说过的 **内网穿透**；
-  - 搞内网穿透是需要在互联网上有一台服务器(*Virtual Private Server*)的，可以是那种很便宜性能很弱的Virtual Private Server，因为我们不干别的事，就是转发一下数据而已；
-  - 我自己使用的是一台俄罗斯的 *Virtual Private Server*，价格只有 **US$13.04/年**，512M内存，5G的SSD，运行 *ubuntu 20.04*，虽然配置低，但是用起来感觉还是不错的，我很乐意推荐给大家：
-    + [俄罗斯Virtual Private Server](https://justhost.ru/?ref=149230)
-  - 前面说过我使用的内网穿透的工具是一个开源项目，叫做 *frp*，项目地址如下：
-    + [frp内网穿透项目](https://github.com/fatedier/frp)
-    + 该项目有中文文档，大家可以按照文档下载适当的 *release*，其服务器软件 *frps* 运行在服务器(Virtual Private Server)上，客户端 *frpc* 运行在 *openwrt* 上；
-    + 通常服务器端软件都是 64 位的 X86 架构，比较容易搞定；
-    + 要注意的是，要看清楚运行 *openwrt* 的设备是什么架构，是 32 位的还是 64 位的，比如本文中的设备 *CPU* 为 *S805*，就是一个 32 位的 *arm* 架构，否则你下载的客户端软件可能无法运行；
-    + 这个软件的设置还是要费一些功夫，请认真阅读该项目的文档，并参考其范例；这里我给出我的实例
-
-      > 服务器端配置文件：*frps.ini*，其中的 *xxx.xxx.xxx.xxx* 请按照实际情况设置，*frp_log_path* 请指向实际存放 *frp* 日志的目录
-
-      ```
-      [common]
-      bind_addr = xxx.xxx.xxx.xxx
-      bind_port = 57000
-      bind_udp_port = 57001
-      kcp_bind_port = 57000
-      proxy_bind_addr = xxx.xxx.xxx.xxx
-      vhost_http_port = 58080
-      vhost_https_port = 58443
-
-      log_file = /frp_log_path/frps.log
-      log_level = info
-      log_max_days = 3
-      disable_log_color = false
-
-      detailed_errors_to_client = true
-
-      authentication_method = token
-      authenticate_heartbeats = false
-      authenticate_new_work_conns = false
-      token = skyline.admin
-
-      oidc_client_id =
-      oidc_client_secret = 
-      oidc_audience = 
-      oidc_token_endpoint_url = 
-
-      allow_ports = 58000-59000,50000-53000
-      max_pool_count = 15
-      max_ports_per_client = 0
-      tls_only = false
-      subdomain_host = frps.com
-      tcp_mux = true
-      ```
-      > 客户端配置文件：*frpc.ini*，其中的 *xxx.xxx.xxx.xxx* 请按照实际情况设置；*openwrt.aaa.com* 是一个 A 记录指向 *Virtual Private Server* 的域名(子域名)，也要根据实际情况进行设置
-
-      ```
-      [common]
-      server_addr=xxx.xxx.xxx.xxx
-      server_port=57000
-      log_file=/tmp/frpc.log
-      log_level=info
-      log_max_days=3
-      disable_log_color=false
-      token=skyline.admin
-      pool_count=5
-      tcp_mux=true
-      user=whowin
-      login_fail_exit=false
-      protocol=tcp
-      tls_enable=falset
-      dns_server=8.8.8.8
-      admin_addr=127.0.0.1
-      admin_port=7400
-      admin_user=skyline
-      admin_pwd=admin
-
-      [ssh]
-      type=tcp
-      local_ip=192.168.2.100
-      local_port=22
-      use_encryption=false
-      use_compression=false
-      custom_domain=openwrt.aaa.com
-      remote_port=52998
-      health_check_type=tcp
-      health_check_timeout_s=3
-      health_check_max_failed=10
-      health_check_interval_s=30
-
-      [openwrt_web]
-      type=http
-      local_ip=192.168.2.100
-      local_port=80
-      use_encryption=false
-      use_compression=true
-      custom_domains=openwrt.aaa.com
-      header_X-From-Where=frp           
-      health_check_type=http    
-      health_check_url=/        
-      health_check_interval_s=90 
-      health_check_max_failed=3
-      health_check_timeout_s=3
-      ```
   - 启动 *Virtual Private Server* 上的 *frps*，*path_to* 指向实际路径
     ```
     /path_to/frps -c /path_to/frps.ini &
