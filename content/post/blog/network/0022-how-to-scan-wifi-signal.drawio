@@ -1,0 +1,75 @@
+<mxfile host="65bd71144e">
+    <diagram id="bbzPnFjIaCtCvtmcsxtM" name="第 1 页">
+        <mxGraphModel dx="614" dy="433" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#ffffff" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="23" value="" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;strokeColor=none;fontSize=16;fontColor=#000000;fillColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="20" width="850" height="840" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#000000;" parent="1" source="2" target="3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;调用成功&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;labelBackgroundColor=none;fontStyle=1" parent="4" vertex="1" connectable="0">
+                    <mxGeometry x="-0.32" y="1" relative="1" as="geometry">
+                        <mxPoint y="9" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="2" value="&lt;font style=&quot;font-size: 13px;&quot;&gt;struct iwreq wrq;&lt;br&gt;wrq.ifr_name = wireless interface name;&lt;br&gt;wrq.u.data.pointer = point to buffer&lt;br&gt;wrq.u.data.length = buffer length&lt;br&gt;wrq.u.flags = 0&lt;br&gt;ioctl(socket, SIOCGIWSCAN, &amp;amp;wrq);&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="306" y="40" width="240" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#000000;fontSize=16;fontColor=#000000;" parent="1" source="3" target="6" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="&lt;font style=&quot;font-size: 13px;&quot;&gt;wrq.u.data.pointer 指向返回的数据&lt;br&gt;wrq.u.data.length&amp;nbsp; 返回数据的长度&lt;br&gt;wrq.u.data.flags&amp;nbsp; &amp;nbsp; 1&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;strokeColor=#000000;fillColor=#FFFFFF;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="306" y="200" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#000000;fontSize=16;fontColor=#000000;" parent="1" source="6" target="17" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="&lt;span style=&quot;font-size: 13px;&quot;&gt;struct iw_event *wevt;&lt;br&gt;wevt = wrq.u.data.pointer;(第1个event)&lt;br&gt;wevt-&amp;gt;len 为该event的长度&lt;br&gt;wevt-&amp;gt;cmd 为该event的类别&lt;br&gt;(char *)wevt+wevt-&amp;gt;len 指向下一个event&lt;br&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;strokeColor=#000000;fillColor=#FFFFFF;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="306" y="320" width="240" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;调用ioctl获取wifi信号扫描结果&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=13;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="616" y="75" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;数据总长度及指针&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=13;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="616" y="215" width="150" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;当前event的指针、长度、类别&lt;br&gt;及下一个event的指针&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=13;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="626" y="340" width="240" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="&lt;span style=&quot;font-size: 13px;&quot;&gt;wevt-&amp;gt;u 指向struct sockaddr ap_addr&lt;br&gt;u.ap_addr.sa_data &lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;前6个字节为MAC地址&lt;br&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;strokeColor=#000000;fillColor=#FFFFFF;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="680" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="SIOCGIWAP" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="640" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="&lt;span style=&quot;font-size: 13px;&quot;&gt;wevt-&amp;gt;u 指向struct iw_freq freq&lt;br&gt;u.freq.flags&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;0-由驱动程序决定频率&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;1-指定固定的频率&lt;br&gt;u.freq.e&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;表示以10为底的幂&lt;br&gt;u.freq.m&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;频率部分的位数&lt;br&gt;u.freq.m x (10^u.freq.e)&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;为工作频率(Hz)&lt;br&gt;当结果大于1000时，为工作频率&lt;br&gt;否则为占用的信道号&lt;br&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;strokeColor=#000000;fillColor=#FFFFFF;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="680" width="240" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="SIOCGIWFREQ" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="640" width="140" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="&lt;span style=&quot;font-size: 13px;&quot;&gt;struct iw_essid {&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;uint16_t len;&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;uint16_t flags;&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#9;&lt;/span&gt;char __attribute__((aligned(8)))essid;&lt;br&gt;};&lt;br&gt;struct iw_essid *wessid;&lt;br&gt;wessid=(struct iw_essid *)wevt-&amp;gt;u.data;&lt;br&gt;wessid-&amp;gt;len 为essid的长度&lt;br&gt;&amp;amp;wessid-&amp;gt;essid 为指向essid的指针&lt;br&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;strokeColor=#000000;fillColor=#FFFFFF;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="680" width="250" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="SIOCGIWESSID" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="640" width="140" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#000000;fontSize=16;fontColor=#000000;" parent="1" source="17" target="11" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.446;entryY=-0.015;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#000000;fontSize=16;fontColor=#000000;" parent="1" source="17" target="13" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#000000;fontSize=16;fontColor=#000000;" parent="1" source="17" target="15" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="wevt-&amp;gt;cmd" style="rhombus;whiteSpace=wrap;html=1;labelBackgroundColor=none;strokeColor=#000000;fontSize=16;fontColor=#000000;fillColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="364" y="459" width="125" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

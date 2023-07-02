@@ -54,7 +54,7 @@
 #define TTL_LEN             4
 #define RDLENGTH_LEN        2
 
-#define BUF_SIZE            1024                    // buffer size for receiving
+#define BUF_SIZE            512                     // buffer size for receiving
 #define MAX_NAME_SIZE       256                     // max. lengen of a name
 
 #define RECV_TIMEOUT        5                       // timeout when receiving data from dns server
@@ -95,6 +95,7 @@ int parse_name(uint8_t *msg, uint8_t *p_name, char *name, int len) {
     char *pname = name;
     uint8_t *p = p_name;
 
+    // calculate how many bytes that name occupied in RR
     if ((*p & 0xc0) != 0xc0) {
         while (*p != 0) {
             if ((*p & 0xc0) == 0xc0) {
@@ -107,6 +108,7 @@ int parse_name(uint8_t *msg, uint8_t *p_name, char *name, int len) {
         }
     } else ret = 2;
 
+    // parse the name
     p = p_name;
     while (*p != 0) {
         if ((*p & 0xc0) == 0xc0) {
@@ -171,12 +173,12 @@ int recv_response_from_dns(int sockfd){
 
     struct dnshdr *dns_hdr = (struct dnshdr *)buf;      // point to DNS header
     uint16_t flags = ntohs(dns_hdr->flags);             // get flags field from response
-    if ((flags & 0x8000) == 0) {                        // QR=0 request. QR=1 response
+    if ((flags & FLAGS_QR_MASK) == 0) {                 // QR=0 request. QR=1 response
         // It is not a response message
         printf("It is not a reponse message.\n");
         goto quit;
     }
-    if ((flags & 0x7800) > 0) {                         // Opcode=0 standard response
+    if ((flags & FLAGS_OPCODE_MASK) > 0) {              // Opcode=0 standard response
         printf("It is not a standard reponse message.\n");
         goto quit;
     }

@@ -40,7 +40,7 @@ postid: 110001
 ----------------
 ## 2. 需求
 * 家里放了一台服务器，差不多我所有的东西都在服务器上，不管在家里还是其它地方，都需要连接这台服务器才能做事情；
-* 这台服务器白天开着，晚上就关了(省点电:))；每天起床以后要想着按一下服务器的电源开关，每天睡觉前要记得把服务器关了；
+* 这台服务器白天开着，晚上就关了(省点电)；每天起床以后要想着按一下服务器的电源开关，每天睡觉前要记得把服务器关了；
 * 晚上忘记关服务器，通常不会有什么问题；但有时早上没有打开服务器，可能就要有麻烦了；
 * 尴尬的时候就是早上没有打开服务器，然后外出，然后刚好需要登录服务器，这才想起来服务器没开；
 * 所以呐，我需要有个机制，可以 **远程打开我的服务器**，这样我就不会再出现尴尬了；
@@ -242,7 +242,7 @@ postid: 110001
     + 其中 */home/whowin* 为我的 *HOME* 目录，你要更改为你的 *HOME* 目录；
     + 其实这个文件就是修改了环境变量 *PATH*，然后增加了一个环境变量 *STAGING_DIR*，这些设置都是为了能够正常使用这个工具链；
     + 将这个文件设置为可执行，然后把这个文件拷贝到 */bin/* 下
-      ```
+      ```bash
       cd ~
       vi a5.sh
       (编辑内容并存盘)
@@ -252,7 +252,7 @@ postid: 110001
       ```
     + 放到 */bin/* 目录下只是为了用起来方便，并没有特别的含义；
     + 下面我们可以试一下这个工具链
-      ```
+      ```bash
       source /bin/a5.sh
       arm-openwrt-linux-gcc -v
       ```
@@ -266,7 +266,7 @@ postid: 110001
   - 有了工具链就可以编程了，编程的过程要在**开发机**上完成，不是在 *openwrt* 下，但是用这个源程序编译出来的可执行文件是要在 *openwrt* 下运行的；
   - 下面是这个项目中需要在 *openwrt* 下运行的程序 *wakeOnLan* 的源程序
 
-    ```
+    ```C
     /******************************************************************************
       File Name: wakeOnLan.c
       Description:  向局域网中的计算机发出远程唤醒的指令
@@ -453,12 +453,12 @@ postid: 110001
   - 这个程序的调试主要是确保程序能够正确地发出 *magic packet*，需要在局域网上找另一台机器进行数据包的监听，这台监听的机器既可以运行 *windows* 也可以运行 *Linux*，最好是使用准备远程唤醒机器作为监听的机器，我们以一台运行 *ubuntu* 的机器为例来完成调试
   - 使用 *ubuntu* 下的工具 *tcpdump* 来进行数据包的监听，*tcpdump* 必须在 *root* 权限下运行；
   - 首先在监听机器上运行 *tcpdump*
-    ```
+    ```bash
     sudo tcpdump -vv -x udp port 7
     ```
   - 这行命令的意思就是监听 *udp* 端口 7 的数据包，*-vv* 的意思是显示详细的信息，*-x* 的意思是按照 16 进制显示，这两个参数也可以写成 *-vvx*
   - 在 *openwrt* 上运行 *wakeOnLan*
-    ```
+    ```bash
     ./wakeOnLan 192.168.2.255 00:e0:2b:69:00:03
     ```
   - 其中的广播 IP 和 *MAC* 地址请按照实际情况填写
@@ -584,21 +584,22 @@ postid: 110001
       health_check_max_failed=3
       health_check_timeout_s=3
       ```
+
   - 启动 *Virtual Private Server* 上的 *frps*，*path_to* 指向实际路径
-    ```
+    ```bash
     /path_to/frps -c /path_to/frps.ini &
     ```
   - 启动 *openwrt* 上的 *frpc*，*path_to* 指向实际路径
-    ```
+    ```bash
     /path_to/frpc -c /path_to/frpc.ini &
     ```
   - 如遇问题，强烈建议认真查看 *frps.log* 和 *frpc.log*；
   - 正常情况下，现在你已经可以在互联网上通过 *frp* 访问你家里的 *openwrt* 了，像这样：
-    ```
+    ```bash
     ssh root@xxx.xxx.xxx.xxx -p 52998
     ```
   - 其中：*xxx.xxx.xxx.xxx* 为 *Virtual Private Server* 的 IP 地址，*52998* 是在 *frpc.ini* 中设置的端口号，也可以设置一个域名指向 *Virtual Private Server* 的 IP，比如设置 *server.aaa.com* 的 A 记录指向 *Virtual Private Server*，则可以这样登录 *openwrt*：
-    ```
+    ```bash
     ssh root@server.aaa.com -p 52998
     ```
   - 同样，按照上面的设置，如果要访问 *openwrt* 的 *web* 界面，在浏览器上输入：*openwrt.aaa.com:58080* 即可，*58080* 是在 *frps.ini* 中设置的一个端口号；
@@ -658,29 +659,25 @@ postid: 110001
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-
-<!-- 用于实际发布 -->
-[img01]:/images/110001/money_maker.png
-[img02]:/images/110001/money_maker_board.jpg
-[img03]:/images/110001/openwrt_version.png
-[img04]:/images/110001/toolschain_test.png
-[img05]:/images/110001/wake_on_lan_architecture.png
-[img06]:/images/110001/login_openwrt_first.png
-[img07]:/images/110001/web_openwrt_1.png
-[img08]:/images/110001/web_openwrt_2.png
-[img09]:/images/110001/openwrt_fixed_ip_config.png
-[img10]:/images/110001/openwrt_fixed_ip_web_1.png
-[img11]:/images/110001/openwrt_fixed_ip_web_2.png
-[img12]:/images/110001/openwrt_fixed_ip_web_3.png
-[img13]:/images/110001/openwrt_fixed_ip_router.png
-[img14]:/images/110001/openwrt_run_wakeonlan.png
-[img15]:/images/110001/listen_magic_packet.png
-[img16]:/images/110001/connectbot_setting.jpg
-[img17]:/images/110001/connectbot_login_openwrt.jpg
-[img18]:/images/110001/connectbot_run_wakeonlan.jpg
-[img19]:/images/110001/luci_wake_on_lan.png
-<!-- -->
-
+[img01]:https://whowin.gitee.io/images/110001/money_maker.png
+[img02]:https://whowin.gitee.io/images/110001/money_maker_board.jpg
+[img03]:https://whowin.gitee.io/images/110001/openwrt_version.png
+[img04]:https://whowin.gitee.io/images/110001/toolschain_test.png
+[img05]:https://whowin.gitee.io/images/110001/wake_on_lan_architecture.png
+[img06]:https://whowin.gitee.io/images/110001/login_openwrt_first.png
+[img07]:https://whowin.gitee.io/images/110001/web_openwrt_1.png
+[img08]:https://whowin.gitee.io/images/110001/web_openwrt_2.png
+[img09]:https://whowin.gitee.io/images/110001/openwrt_fixed_ip_config.png
+[img10]:https://whowin.gitee.io/images/110001/openwrt_fixed_ip_web_1.png
+[img11]:https://whowin.gitee.io/images/110001/openwrt_fixed_ip_web_2.png
+[img12]:https://whowin.gitee.io/images/110001/openwrt_fixed_ip_web_3.png
+[img13]:https://whowin.gitee.io/images/110001/openwrt_fixed_ip_router.png
+[img14]:https://whowin.gitee.io/images/110001/openwrt_run_wakeonlan.png
+[img15]:https://whowin.gitee.io/images/110001/listen_magic_packet.png
+[img16]:https://whowin.gitee.io/images/110001/connectbot_setting.jpg
+[img17]:https://whowin.gitee.io/images/110001/connectbot_login_openwrt.jpg
+[img18]:https://whowin.gitee.io/images/110001/connectbot_run_wakeonlan.jpg
+[img19]:https://whowin.gitee.io/images/110001/luci_wake_on_lan.png
