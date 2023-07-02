@@ -50,7 +50,7 @@
 <meta itemprop="name" content="远程开机：一个简单的嵌入式项目开发">
 <meta itemprop="description" content="本文通过一个简单的需求介绍了在一个 ARM 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 Linux 开发的过程。本文并不会详细介绍网络唤醒的原理以及 Magic Packet。"><meta itemprop="datePublished" content="2022-08-18T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-08-18T16:43:29+08:00" />
-<meta itemprop="wordCount" content="7739">
+<meta itemprop="wordCount" content="7988">
 <meta itemprop="keywords" content="openwrt,嵌入式,网络唤醒,远程开机,wake on lan,magic packet," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="远程开机：一个简单的嵌入式项目开发"/>
 <meta name="twitter:description" content="本文通过一个简单的需求介绍了在一个 ARM 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 Linux 开发的过程。本文并不会详细介绍网络唤醒的原理以及 Magic Packet。"/>
@@ -221,7 +221,8 @@
 </ul>
 <hr>
 <ul>
-<li><strong>Magic Packet</strong>
+<li>
+<p><strong>Magic Packet</strong></p>
 <ul>
 <li>远程唤醒其实是网卡的一个功能，在 <em>PCI 2.2</em> 之后，信号线上多了一个 <em>PME</em> 信号，主机关闭电源后进入休眠状态，可以继续为网卡供电，网卡在收到一个叫做 <em>Magic Packet</em> 的数据包后，检测出该数据包是发给自己的，则会在 <em>PCI</em> 上发出 <em>PME</em> 信号，从而控制电脑启动，这个功能被称为 <strong>网络唤醒</strong></li>
 <li>网络唤醒其实并不复杂，在局域网中，从一台电脑以广播的形式发送 <em>Magic Packet</em>，那么在 <em>Magic Packet</em> 中指定的 <em>MAC</em> 地址对应的电脑就会被唤醒；</li>
@@ -254,14 +255,21 @@
 <li>要注意的是，<em>Magic Packet</em> 只对有线网卡有效，所以，服务器要使用网线连接到路由器上；</li>
 </ul>
 </li>
+<li>
+<p><strong>内网穿透</strong></p>
+<ul>
+<li>在这个项目里，<strong>内网穿透</strong>指的是：使用一定的技术手段让我们可以从互联网上直接访问到家里的一台设备上，这台设备通过普通家用宽带连接互联网，家用宽带可能没有公网 IP；</li>
+<li>如果家里的宽带有公网 IP，穿透内网并不是一个很困难的事，大致需要三个步骤：
+<ol>
+<li>在家里路由器上设置一个 <em>NAT</em> 让外网的访问直接转发到局域网内某个指定设备的指定端口上；</li>
+<li>局域网中的一个设备(或者路由器本身)向某个有权限的公网服务器发送心跳包，使这个服务器可以知道家里宽带的公网 IP；</li>
+<li>互联网上的终端设备通过服务器获知家里宽带的公网 IP，直接访问即可；</li>
+</ol>
+</li>
+</ul>
+</li>
 </ul>
 <!--
-* **内网穿透**
-  - 在这个项目里，**内网穿透**指的是：使用一定的技术手段让我们可以从互联网上直接访问到家里的一台设备上，这台设备通过普通家用宽带连接互联网，家用宽带可能没有公网 IP；
-  - 如果家里的宽带有公网 IP，穿透内网并不是一个很困难的事，大致需要三个步骤：
-    1. 在家里路由器上设置一个 *NAT* 让外网的访问直接转发到局域网内某个指定设备的指定端口上；
-    2. 局域网中的一个设备(或者路由器本身)向某个有权限的公网服务器发送心跳包，使这个服务器可以知道家里宽带的公网 IP；
-    3. 互联网上的终端设备通过服务器获知家里宽带的公网 IP，直接访问即可；
   - 如果家里的宽带没有公网 IP(大多数宽带应该是这样的)，穿透内网就要麻烦一些，通常需要使用**反向代理**来实现，这需要一个公网服务器；
     + 公网服务器上安装有支持反向代理的服务器端软件，比如 *sshd*；
     + 局域网的设备上装有反向代理的客户端软件，比如 *ssh*，通过向公网服务器发送反向代理的指令可以建立一个反向代理隧道(*tunnel*)，*tunnel* 建立起来以后，访问公网服务器的某个指定端口将被映射到访问局域网中某个 IP 地址下的某个端口，从而实现内网穿透；
