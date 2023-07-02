@@ -50,7 +50,7 @@
 <meta itemprop="name" content="远程开机：一个简单的嵌入式项目开发">
 <meta itemprop="description" content="本文通过一个简单的需求介绍了在一个 ARM 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 Linux 开发的过程。本文并不会详细介绍网络唤醒的原理以及 Magic Packet。"><meta itemprop="datePublished" content="2022-08-18T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-08-18T16:43:29+08:00" />
-<meta itemprop="wordCount" content="8575">
+<meta itemprop="wordCount" content="8910">
 <meta itemprop="keywords" content="openwrt,嵌入式,网络唤醒,远程开机,wake on lan,magic packet," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="远程开机：一个简单的嵌入式项目开发"/>
 <meta name="twitter:description" content="本文通过一个简单的需求介绍了在一个 ARM 设备上开发一个程序实现远程打开服务器的过程，通过这个实例大致介绍了一个简单的嵌入式 Linux 开发的过程。本文并不会详细介绍网络唤醒的原理以及 Magic Packet。"/>
@@ -1081,14 +1081,20 @@
 <ul>
 <li><strong>内网穿透</strong>
 <ul>
-<li>做到现在这样，我们已经完成了大部分工作，下面唯一要做的是如何从外网上访问到这台 <em>openwrt</em> 的设备，这就是前面说过的 <strong>内网穿透</strong>；</li>
-<li>搞内网穿透是需要在互联网上有一台服务器(<em>Virtual Private Server</em>)的，可以是那种很便宜性能很弱的Virtual Private Server，因为我们不干别的事，就是转发一下数据而已；</li>
-<li>我自己使用的是一台俄罗斯的 <em>Virtual Private Server</em>，价格只有 <strong>US$13.04/年</strong>，512M内存，5G的SSD，运行 <em>ubuntu 20.04</em>，虽然配置低，但是用起来感觉还是不错的，我很乐意推荐给大家：
+<li>
+<p>做到现在这样，我们已经完成了大部分工作，下面唯一要做的是如何从外网上访问到这台 <em>openwrt</em> 的设备，这就是前面说过的 <strong>内网穿透</strong>；</p>
+</li>
+<li>
+<p>搞内网穿透是需要在互联网上有一台服务器(<em>Virtual Private Server</em>)的，可以是那种很便宜性能很弱的Virtual Private Server，因为我们不干别的事，就是转发一下数据而已；</p>
+</li>
+<li>
+<p>我自己使用的是一台俄罗斯的 <em>Virtual Private Server</em>，价格只有 <strong>US$13.04/年</strong>，512M内存，5G的SSD，运行 <em>ubuntu 20.04</em>，虽然配置低，但是用起来感觉还是不错的，我很乐意推荐给大家：</p>
 <ul>
 <li><a href="https://justhost.ru/?ref=149230">俄罗斯Virtual Private Server</a></li>
 </ul>
 </li>
-<li>前面说过我使用的内网穿透的工具是一个开源项目，叫做 <em>frp</em>，项目地址如下：
+<li>
+<p>前面说过我使用的内网穿透的工具是一个开源项目，叫做 <em>frp</em>，项目地址如下：</p>
 <ul>
 <li>
 <p><a href="https://github.com/fatedier/frp">frp内网穿透项目</a></p>
@@ -1281,30 +1287,62 @@
 </div></li>
 </ul>
 </li>
+<li>
+<p>启动 <em>Virtual Private Server</em> 上的 <em>frps</em>，<em>path_to</em> 指向实际路径</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">/path_to/frps -c /path_to/frps.ini <span class="p">&amp;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>启动 <em>openwrt</em> 上的 <em>frpc</em>，<em>path_to</em> 指向实际路径</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">/path_to/frpc -c /path_to/frpc.ini <span class="p">&amp;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>如遇问题，强烈建议认真查看 <em>frps.log</em> 和 <em>frpc.log</em>；</p>
+</li>
+<li>
+<p>正常情况下，现在你已经可以在互联网上通过 <em>frp</em> 访问你家里的 <em>openwrt</em> 了，像这样：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ssh root@xxx.xxx.xxx.xxx -p <span class="m">52998</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>其中：<em>xxx.xxx.xxx.xxx</em> 为 <em>Virtual Private Server</em> 的 IP 地址，<em>52998</em> 是在 <em>frpc.ini</em> 中设置的端口号，也可以设置一个域名指向 <em>Virtual Private Server</em> 的 IP，比如设置 <em>server.aaa.com</em> 的 A 记录指向 <em>Virtual Private Server</em>，则可以这样登录 <em>openwrt</em>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ssh root@server.aaa.com -p <span class="m">52998</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>同样，按照上面的设置，如果要访问 <em>openwrt</em> 的 <em>web</em> 界面，在浏览器上输入：<em>openwrt.aaa.com:58080</em> 即可，<em>58080</em> 是在 <em>frps.ini</em> 中设置的一个端口号；</p>
+</li>
+<li>
+<p>特别要注意的是，要在 <em>Virtual Private Server</em> 上设置好防火墙，放开可能用到的端口，否则 <em>frp</em> 将无法正常工作</p>
+</li>
 </ul>
 </li>
 </ul>
-<!--
-  - 启动 *Virtual Private Server* 上的 *frps*，*path_to* 指向实际路径
-    ```
-    /path_to/frps -c /path_to/frps.ini &
-    ```
-  - 启动 *openwrt* 上的 *frpc*，*path_to* 指向实际路径
-    ```
-    /path_to/frpc -c /path_to/frpc.ini &
-    ```
-  - 如遇问题，强烈建议认真查看 *frps.log* 和 *frpc.log*；
-  - 正常情况下，现在你已经可以在互联网上通过 *frp* 访问你家里的 *openwrt* 了，像这样：
-    ```
-    ssh root@xxx.xxx.xxx.xxx -p 52998
-    ```
-  - 其中：*xxx.xxx.xxx.xxx* 为 *Virtual Private Server* 的 IP 地址，*52998* 是在 *frpc.ini* 中设置的端口号，也可以设置一个域名指向 *Virtual Private Server* 的 IP，比如设置 *server.aaa.com* 的 A 记录指向 *Virtual Private Server*，则可以这样登录 *openwrt*：
-    ```
-    ssh root@server.aaa.com -p 52998
-    ```
-  - 同样，按照上面的设置，如果要访问 *openwrt* 的 *web* 界面，在浏览器上输入：*openwrt.aaa.com:58080* 即可，*58080* 是在 *frps.ini* 中设置的一个端口号；
-  - 特别要注意的是，要在 *Virtual Private Server* 上设置好防火墙，放开可能用到的端口，否则 *frp* 将无法正常工作
--->
 <hr>
 <ul>
 <li><strong>远程开机测试</strong>
