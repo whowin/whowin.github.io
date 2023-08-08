@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="whowin" /><meta name="description" content="独立的TCP服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上及提供TCP服务，也提供UDP服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码，阅读本文需要掌握基本的socket变成方法，本文对初学者难度不大。
+<meta name="author" content="whowin" /><meta name="description" content="独立的 TCP 服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上既提供 TCP 服务，也提供 UDP 服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和 TCP 服务器合并成一个服务器，该服务器既可以提供 UDP 服务也可以提供 TCP 服务，本文将给出完整的源代码，阅读本文需要掌握基本的 socket 编程方法，本文对初学者难度不大。
 " /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
@@ -41,19 +41,19 @@
 
 
 <meta property="og:title" content="使用select实现的UDP/TCP组合服务器" />
-<meta property="og:description" content="独立的TCP服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上及提供TCP服务，也提供UDP服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码，阅读本文需要掌握基本的socket变成方法，本文对初学者难度不大。" />
+<meta property="og:description" content="独立的 TCP 服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上既提供 TCP 服务，也提供 UDP 服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和 TCP 服务器合并成一个服务器，该服务器既可以提供 UDP 服务也可以提供 TCP 服务，本文将给出完整的源代码，阅读本文需要掌握基本的 socket 编程方法，本文对初学者难度不大。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0010-tcp-and-udp-server-using-select/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2023-01-07T16:43:29+08:00" />
 <meta property="article:modified_time" content="2023-01-07T16:43:29+08:00" />
 
 <meta itemprop="name" content="使用select实现的UDP/TCP组合服务器">
-<meta itemprop="description" content="独立的TCP服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上及提供TCP服务，也提供UDP服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码，阅读本文需要掌握基本的socket变成方法，本文对初学者难度不大。"><meta itemprop="datePublished" content="2023-01-07T16:43:29+08:00" />
+<meta itemprop="description" content="独立的 TCP 服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上既提供 TCP 服务，也提供 UDP 服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和 TCP 服务器合并成一个服务器，该服务器既可以提供 UDP 服务也可以提供 TCP 服务，本文将给出完整的源代码，阅读本文需要掌握基本的 socket 编程方法，本文对初学者难度不大。"><meta itemprop="datePublished" content="2023-01-07T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-01-07T16:43:29+08:00" />
-<meta itemprop="wordCount" content="3187">
+<meta itemprop="wordCount" content="2914">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,udp,tcp," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用select实现的UDP/TCP组合服务器"/>
-<meta name="twitter:description" content="独立的TCP服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上及提供TCP服务，也提供UDP服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码，阅读本文需要掌握基本的socket变成方法，本文对初学者难度不大。"/>
+<meta name="twitter:description" content="独立的 TCP 服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上既提供 TCP 服务，也提供 UDP 服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和 TCP 服务器合并成一个服务器，该服务器既可以提供 UDP 服务也可以提供 TCP 服务，本文将给出完整的源代码，阅读本文需要掌握基本的 socket 编程方法，本文对初学者难度不大。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -159,7 +159,7 @@
     <li>
       <ul>
         <li><a href="#1-基本流程">1. 基本流程</a></li>
-        <li><a href="#主要函数宏和数据结构">主要函数、宏和数据结构</a></li>
+        <li><a href="#2-主要函数宏和数据结构">2. 主要函数、宏和数据结构</a></li>
         <li><a href="#3-实例">3. 实例</a></li>
         <li><a href="#4-后记">4. 后记</a></li>
       </ul>
@@ -169,17 +169,17 @@
   </div>
 </div>
     <div class="post-content">
-      <p>独立的TCP服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上及提供TCP服务，也提供UDP服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码，阅读本文需要掌握基本的socket变成方法，本文对初学者难度不大。</p>
+      <p>独立的 TCP 服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上既提供 TCP 服务，也提供 UDP 服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和 TCP 服务器合并成一个服务器，该服务器既可以提供 UDP 服务也可以提供 TCP 服务，本文将给出完整的源代码，阅读本文需要掌握基本的 socket 编程方法，本文对初学者难度不大。</p>
 <h2 id="1-基本流程">1. 基本流程</h2>
 <ul>
 <li>
-<p>本示例一共有三个程序，tcp/udp服务器：tu-server.c，tcp客户端：t-client.c和udp客户端u-client.c</p>
+<p>本示例一共有三个程序，<code>tcp/udp</code> 服务器：<code>tu-server.c</code>，<code>tcp</code> 客户端：<code>t-client.c</code> 和 <code>udp</code> 客户端： <code>u-client.c</code></p>
 </li>
 <li>
-<p>服务器端程序的基本思路是：在程序中为tcp服务和udp服务各建立一个socket，将这两个socket放入readfds中，并将参数传递给select()，当readfds中(也就是tcp或者udp socket)的某一个有数据发过来(udp)或者有客户端连接请求(时)，select()将返回，程序判断是哪个socket需要处理然后根据需要进入TCP处理程序或者UDP处理程序处理socket事件；</p>
+<p>服务器端程序的基本思路是：在程序中为 tcp 服务和 udp 服务各建立一个 socket，将这两个 socket 放入 readfds 中，并将参数传递给 <code>select()</code>，当 readfds 中(也就是 tcp 或者 udp socket)的某一个有数据发过来(udp)或者有客户端连接请求时，<code>select()</code> 将返回，程序判断是哪个 socket 需要处理然后根据需要进入 TCP 处理程序或者 UDP 处理程序处理 socket 事件；</p>
 </li>
 <li>
-<p>本例中，服务器端做了简单化处理，收到客户端信息后，并不作处理，对TCP客户端，回应&quot;Hello TCP Client&quot;，对UDP客户端，则回应&quot;Hello UDP Client&quot;；</p>
+<p>本例中，服务器端做了简单化处理，收到客户端信息后，并不作处理，对 TCP 客户端，回应 &ldquo;Hello TCP Client&rdquo;，对UDP客户端，则回应 &ldquo;Hello UDP Client&rdquo;；</p>
 </li>
 <li>
 <p>服务器端程序流程</p>
@@ -283,7 +283,7 @@
 <li><strong>处理TCP客户端发出的请求</strong></li>
 </ol>
 <blockquote>
-<p>如果是TCP客户端发出请求，则接受客户端的连接请求，接收客户端发来的信息，然后回应&quot;Hello TCP Client&quot;，然后退出，回到步骤5；</p>
+<p>如果是 TCP 客户端发出请求，则接受客户端的连接请求，接收客户端发来的信息，然后回应 &ldquo;Hello TCP Client&rdquo;，然后退出，回到步骤 5；</p>
 </blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -335,7 +335,7 @@
 <li><strong>处理UDP客户端发来的消息</strong></li>
 </ol>
 <blockquote>
-<p>如果是UDP客户端发来消息，则接收客户端发来的信息，然后回应&quot;Hello UDP Client&quot;，回到步骤5</p>
+<p>如果是 UDP 客户端发来消息，则接收客户端发来的信息，然后回应 &ldquo;Hello UDP Client&rdquo;，回到步骤5</p>
 </blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -377,7 +377,7 @@
 </div>
 </div></li>
 <li>
-<p>tcp客户端程序流程</p>
+<p>tcp 客户端程序流程</p>
 <ol>
 <li><strong>建立一个TCP socket</strong></li>
 </ol>
@@ -560,12 +560,12 @@
 </div>
 </div></li>
 </ul>
-<h2 id="主要函数宏和数据结构">主要函数、宏和数据结构</h2>
+<h2 id="2-主要函数宏和数据结构">2. 主要函数、宏和数据结构</h2>
 <ul>
 <li>
 <p><strong>select()函数</strong></p>
 <ul>
-<li>select()函数用于监视文件描述符的变化情况——可读、可写或是异常。</li>
+<li><code>select()</code> 函数用于监视文件描述符的变化情况——可读、可写或是异常。</li>
 <li>函数定义
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -590,7 +590,7 @@
 <li>
 <p><strong>struct timeval结构</strong></p>
 <ul>
-<li>该结构用于指定select函数的超时时间</li>
+<li>该结构用于指定 select 函数的超时时间</li>
 <li>定义
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -607,22 +607,22 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>如果希望select()等待5秒后返回，则要设置struct timeval timeout={5, 0};</li>
+<li>如果希望 <code>select()</code> 等待5秒后返回，则要设置 <code>struct timeval timeout={5, 0}</code>;</li>
 </ul>
 </li>
 <li>
 <p><strong>fd_set</strong></p>
 <ul>
-<li>文件描述符集，该结构定义在头文件sys/select.h中</li>
-<li>本质上，fd_set是一个long int的数组，其中的每一位表示一个文件描述符，在x86-64中，long int长度为8个字节，64位，所以fd_set[0]可以表示文件描述符fd=0-63，fd_set[1]可以表示文件描述符fd=64-127；</li>
+<li>文件描述符集，该结构定义在头文件 <code>sys/select.h</code> 中</li>
+<li>本质上，fd_set 是一个 <code>long int</code> 的数组，其中的每一位表示一个文件描述符，在 <code>x86-64</code> 中，<code>long int</code> 长度为 8 个字节，64 位，所以 <code>fd_set[0]</code> 可以表示文件描述符 <code>fd=0-63</code>，<code>fd_set[1]</code> 可以表示文件描述符 <code>fd=64-127</code>；</li>
 <li>fd_set是一个文件描述符的集合，当fd_set中的某一位为1，表示这个集合中包含有这个fd</li>
 </ul>
 </li>
 <li>
 <p><strong>宏FD_ZERO</strong></p>
 <ul>
-<li>该宏定义在头文件sys/select.h中</li>
-<li>该宏可以将一个fd_set全部清空，下面的例子将fds清空
+<li>该宏定义在头文件 <code>sys/select.h</code> 中</li>
+<li>该宏可以将一个 fd_set 全部清空，下面的例子将 fds 清空
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -630,7 +630,7 @@
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">fd_set</span> <span class="n">fds</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="n">FD_SET</span><span class="p">(</span><span class="n">fds</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">FD_ZERO</span><span class="p">(</span><span class="n">fds</span><span class="p">);</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -639,8 +639,8 @@
 <li>
 <p><strong>宏FD_SET</strong></p>
 <ul>
-<li>该宏定义在头文件sys/select.h中</li>
-<li>将指定的文件描述符fd加入到某一个文件描述符集fd_set中，下面的例子将文件描述符fd加入到文件描述符集fds中
+<li>该宏定义在头文件 <code>sys/select.h</code> 中</li>
+<li>将指定的文件描述符 fd 加入到某一个文件描述符集 fd_set 中，下面的例子将文件描述符 fd 加入到文件描述符集 fds 中
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -657,8 +657,8 @@
 <li>
 <p><strong>宏FD_ISSET</strong></p>
 <ul>
-<li>该宏定义在头文件sys/select.h中</li>
-<li>检查一个文件描述符集fds中是否有文件描述符fd，下面例子中检查文件描述符集fds中是否存在文件描述符fd
+<li>该宏定义在头文件 <code>sys/select.h</code> 中</li>
+<li>检查一个文件描述符集 fds 中是否有文件描述符 fd，下面例子中检查文件描述符集 fds 中是否存在文件描述符 fd；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -693,10 +693,10 @@
 <h2 id="3-实例">3. 实例</h2>
 <ul>
 <li>
-<p>本示例一共有三个程序，tcp/udp服务器：tu-server.c，tcp客户端：t-client.c和udp客户端u-client.c</p>
+<p>本示例一共有三个程序，<code>tcp/udp</code> 服务器：<code>tu-server.c</code>，tcp 客户端：<code>t-client.c</code> 和 udp 客户端：<code>u-client.c</code></p>
 </li>
 <li>
-<p>本示例演示了如何使用select机制在一个服务器程序里既提供TCP服务，又提供UDP服务；有些服务(比如聊天)，可以既允许UDP接入，也允许TCP接入的，这种情况下，这样一种机制就显得比较实用；</p>
+<p>本示例演示了如何使用 <code>select</code> 机制在一个服务器程序里既提供 TCP 服务，又提供 UDP 服务；有些服务(比如聊天)，可以既允许 UDP 接入，也允许 TCP 接入的，这种情况下，这样一种机制就显得比较实用；</p>
 </li>
 <li>
 <p>服务器端程序：<a href="https://whowin.gitee.io/sourcecodes/180010/tu-server.c">tu-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
@@ -727,7 +727,7 @@
 </div>
 </div></li>
 <li>
-<p>假定服务器IP为192.168.2.112，在另一台机器上启动nc模拟客户端，测试TCP</p>
+<p>假定服务器 IP 为 <code>192.168.2.112</code>，在另一台机器上启动 nc 模拟客户端，测试 TCP</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -740,7 +740,7 @@
 </div>
 </div></li>
 <li>
-<p>退出TCP测试，重新启动nc，测试UDP</p>
+<p>退出 TCP 测试，重新启动 nc，测试 UDP</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -751,7 +751,7 @@
 </div>
 </div></li>
 <li>
-<p>有关nc命令的使用方法，可以参考另一篇文章<a href="https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/">《如何在Linux命令行下发送和接收UDP数据包》</a></p>
+<p>有关 nc 命令的使用方法，可以参考另一篇文章<a href="https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/">《如何在Linux命令行下发送和接收UDP数据包》</a></p>
 </li>
 <li>
 <p>在服务器端的运行截屏</p>
@@ -761,14 +761,14 @@
 <hr>
 <ul>
 <li>
-<p>TCP测试客户端的截屏</p>
+<p>TCP 测试客户端的截屏</p>
 <p><img src="https://whowin.gitee.io/images/180010/tcpclient_test.png" alt="screenshot of tcp client test"></p>
 </li>
 </ul>
 <hr>
 <ul>
 <li>
-<p>UDP测试客户端的截屏</p>
+<p>UDP 测试客户端的截屏</p>
 <p><img src="https://whowin.gitee.io/images/180010/udpclient_test.png" alt="screenshot of udp client test"></p>
 </li>
 </ul>
@@ -777,10 +777,10 @@
 <hr>
 <ul>
 <li>
-<p>TCP客户端程序：<a href="https://whowin.gitee.io/sourcecodes/180010/t-client.c">t-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>TCP 客户端程序：<a href="https://whowin.gitee.io/sourcecodes/180010/t-client.c">t-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
-<p>UDP客户端程序：<a href="https://whowin.gitee.io/sourcecodes/180010/u-client.c">u-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>UDP 客户端程序：<a href="https://whowin.gitee.io/sourcecodes/180010/u-client.c">u-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>客户端程序编译</p>
@@ -799,7 +799,7 @@
 <p>程序运行</p>
 <ul>
 <li>
-<p>在服务器上(192.168.2.112)上运行服务器端程序</p>
+<p>在服务器上(<code>192.168.2.112</code>)上运行服务器端程序</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -838,8 +838,8 @@
 </ul>
 <h2 id="4-后记">4. 后记</h2>
 <ul>
-<li>服务器端对TCP连接的处理是在是太简陋了，因为TCP连接建立后，产生一个新的socket，本例中为conn_fd，通常的做法应该是把conn_fd也加入到rset中，这样就可以处理多个TCP连接了，同时在处理TCP连接时也不会让程序阻塞；</li>
-<li>服务器端对TCP连接的处理，也可以使用多线程的方式，即accept一个连接请求后，生成新的conn_fd，建立一个线程，专门处理这个connection，也不失为一个办法，但相对要复杂一些。</li>
+<li>服务器端对 TCP 连接的处理是在是太简陋了，因为 TCP 连接建立后，产生一个新的 socket，本例中为 conn_fd，通常的做法应该是把 conn_fd 也加入到 rset 中，这样就可以处理多个 TCP 连接了，同时在处理 TCP 连接时也不会让程序阻塞；</li>
+<li>服务器端对 TCP 连接的处理，也可以使用多线程的方式，即 accept 一个连接请求后，生成新的 conn_fd，建立一个线程，专门处理这个 connection，也不失为一个办法，但相对要复杂一些。</li>
 </ul>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>

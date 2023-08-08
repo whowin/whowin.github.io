@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="whowin" /><meta name="description" content="本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助
+<meta name="author" content="whowin" /><meta name="description" content="Ubuntu 桌面是 Linux 发行版中比较流行的桌面；Ubuntu 是开放源代码的自由软件，用户可以从 Ubuntu 官网上免费下载 Ubuntu 的安装包；本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，谨此希望对准备使用 Ubuntu 桌面的朋友们有所帮助；本文适合 Linux 的初学者。
 " /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
@@ -41,19 +41,19 @@
 
 
 <meta property="og:title" content="安装一个好用的Ubuntu桌面" />
-<meta property="og:description" content="本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助" />
+<meta property="og:description" content="Ubuntu 桌面是 Linux 发行版中比较流行的桌面；Ubuntu 是开放源代码的自由软件，用户可以从 Ubuntu 官网上免费下载 Ubuntu 的安装包；本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，谨此希望对准备使用 Ubuntu 桌面的朋友们有所帮助；本文适合 Linux 的初学者。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/linux/0007-ubuntu-desktop/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2022-05-06T16:43:29+08:00" />
 <meta property="article:modified_time" content="2022-05-06T16:43:29+08:00" />
 
 <meta itemprop="name" content="安装一个好用的Ubuntu桌面">
-<meta itemprop="description" content="本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助"><meta itemprop="datePublished" content="2022-05-06T16:43:29+08:00" />
+<meta itemprop="description" content="Ubuntu 桌面是 Linux 发行版中比较流行的桌面；Ubuntu 是开放源代码的自由软件，用户可以从 Ubuntu 官网上免费下载 Ubuntu 的安装包；本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，谨此希望对准备使用 Ubuntu 桌面的朋友们有所帮助；本文适合 Linux 的初学者。"><meta itemprop="datePublished" content="2022-05-06T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-05-06T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4726">
+<meta itemprop="wordCount" content="4828">
 <meta itemprop="keywords" content="Ubuntu,Desktop," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="安装一个好用的Ubuntu桌面"/>
-<meta name="twitter:description" content="本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助"/>
+<meta name="twitter:description" content="Ubuntu 桌面是 Linux 发行版中比较流行的桌面；Ubuntu 是开放源代码的自由软件，用户可以从 Ubuntu 官网上免费下载 Ubuntu 的安装包；本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，谨此希望对准备使用 Ubuntu 桌面的朋友们有所帮助；本文适合 Linux 的初学者。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -178,34 +178,34 @@
   </div>
 </div>
     <div class="post-content">
-      <p>本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，仅此希望对准备使用 Ubuntu 桌面的朋友们有所帮助</p>
+      <p>Ubuntu 桌面是 Linux 发行版中比较流行的桌面；Ubuntu 是开放源代码的自由软件，用户可以从 Ubuntu 官网上免费下载 Ubuntu 的安装包；本文只是记录了安装一个 Ubuntu 桌面及其应用环境的全过程，本文正是在这个环境中写成，谨此希望对准备使用 Ubuntu 桌面的朋友们有所帮助；本文适合 Linux 的初学者。</p>
 <h2 id="1-导言">1. 导言</h2>
 <ul>
-<li>手里一台 Lenovo T430，CPU: <em>i5-3320M</em>，<em>8G DDR3</em> 内存，<em>500G</em> 机械硬盘，废弃许久，准备重新启用</li>
-<li>我平常的工作方式是一台ubuntu的服务器，所有内容都在这台服务器上，桌面有一个windows，以备不时之需，其它的都是Ubuntu，我不喜欢去哪儿都背个电脑，也不喜欢笔记本的小屏幕，所以我常去的地方都有一个Ubuntu的终端；</li>
-<li>这次在笔记本上装Ubuntu，我特意做了记录，希望能够给也想使用 Ubuntu 桌面的朋友们做个参考；</li>
-<li>使用 Ubuntu 最大的乐趣就在满满的掌控欲，一切尽在掌握中，绝大多数问题都能找到原因并找出解决方案；</li>
-<li>尽管 Ubuntu 已经发布了 Ubuntu 22.04 LTS，但我习惯使用次新版的稳定版，所以我选择 Ubuntu 20.04 LTS</li>
-<li>目前工作主要是使用 <em>vscode</em> 远程连接服务器工作，文档主要是用 <em>markdown</em>，有时也会使用思维导图和流程图，这些都会使用 <em>vscode</em> 实现；对桌面的其它要求包括：
+<li>手里一台 Lenovo T430，CPU: <em>i5-3320M</em>，<em>8G DDR3</em> 内存，<em>500G</em> 机械硬盘，废弃许久，准备重新启用；</li>
+<li>我平常的工作方式是一台 <code>Ubuntu</code> 的服务器，所有内容都在这台服务器上，桌面有一个 <code>windows</code>，以备不时之需，其它的都是 <code>Ubuntu</code>，我不喜欢去哪儿都背个电脑，也不喜欢笔记本的小屏幕，所以我常去的地方都有一个 <code>Ubuntu</code> 的终端；</li>
+<li>这次在笔记本上装 <code>Ubuntu</code>，我特意做了记录，希望能够给也想使用 <code>Ubuntu</code> 桌面的朋友们做个参考；</li>
+<li>使用 <code>Ubuntu</code> 最大的乐趣就在满满的掌控欲，一切尽在掌握中，绝大多数问题都能找到原因并找出解决方案；</li>
+<li>尽管 <code>Ubuntu</code> 已经发布了 <code>Ubuntu 22.04 LTS</code>，但我习惯使用次新版的稳定版，所以我选择 <code>Ubuntu 20.04 LTS</code>；</li>
+<li>目前工作主要是使用 <code>vscode</code> 远程连接服务器工作，文档主要是用 <code>markdown</code>，有时也会使用思维导图和流程图，这些都会使用 <code>vscode</code> 实现；对桌面的其它要求包括：
 <ul>
-<li>阅读 windows 下的所有格式的文档，使用 <em>wps</em> 实现；</li>
-<li>阅读 pdf 文档(包括在 <em>vscode</em> 下阅读 <em>pdf</em> 文档)，使用 <em>wps</em> 和 <em>vscode</em> 的 <em>pdf</em> 扩展解决；</li>
-<li>进行简单的图片处理，使用 <em>gimp</em> 实现；</li>
-<li>能够对屏幕做任意窗口的截屏(Ubuntu 自带功能)；</li>
+<li>阅读 <code>windows</code> 下的所有格式的文档，使用 <code>wps</code> 实现；</li>
+<li>阅读 pdf 文档(包括在 <code>vscode</code> 下阅读 pdf 文档)，使用 <code>wps</code> 和 <code>vscode</code> 的 <code>pdf</code> 扩展解决；</li>
+<li>进行简单的图片处理，使用 <code>gimp</code> 实现；</li>
+<li>能够对屏幕做任意窗口的截屏(<code>Ubuntu</code> 自带功能)；</li>
 <li>搜狗拼音，根据习惯选装；</li>
-<li>翻译词典，使用有道词典实现</li>
+<li>翻译词典，使用有道词典实现；</li>
 </ul>
 </li>
-<li>并不建议在 Ubuntu 下安装微信，尽管可以安装，但不好用，而且很耗费资源；我们使用 Ubuntu 桌面的其中一个原因就是节省资源，安装一个不好用的微信显得与初衷不符；</li>
-<li>但是手机与电脑之间的文件交换还是很有必要的，我们通过安装一个开源软件 <em>qrcp</em>，很好地解决了这个问题。</li>
+<li>并不建议在 <code>Ubuntu</code> 下安装微信，尽管可以安装，但不好用，而且很耗费资源；我们使用 <code>Ubuntu</code> 桌面的其中一个原因就是节省资源，安装一个不好用的微信显得与初衷不符；</li>
+<li>但是手机与电脑之间的文件交换还是很有必要的，我们通过安装一个开源软件 <code>qrcp</code>，很好地解决了这个问题。</li>
 </ul>
 <h2 id="2-在-ubuntu-下制作一个-ubuntu-2004-的安装-u-盘">2. 在 Ubuntu 下制作一个 Ubuntu 20.04 的安装 U 盘</h2>
 <ul>
 <li>
-<p>你需要有一个正常的Ubuntu系统，运行在虚拟机上的也可以，任何版本的都可以，但最好是官方仍然支持的版本</p>
+<p>你需要有一个正常的 <code>Ubuntu</code> 系统，运行在虚拟机上的也可以，任何版本的都可以，但最好是官方仍然支持的版本；</p>
 </li>
 <li>
-<p>在 Ubuntu 下做一个 Ubuntu 的安装 U 盘还是非常简单的</p>
+<p>在 <code>Ubuntu</code> 下做一个 <code>Ubuntu</code> 的安装 U 盘还是非常简单的；</p>
 <ol>
 <li>下载一个 Ubuntu 20.04 的 iso 镜像
 <ul>
@@ -217,7 +217,7 @@
 <li>插上 U 盘</li>
 </ol>
 <blockquote>
-<p>正常情况下，Ubuntu 会自动识别出 U 盘</p>
+<p>正常情况下，Ubuntu 会自动识别出 U 盘；</p>
 </blockquote>
 <ol start="3">
 <li>找到 U 盘的设备名</li>
@@ -227,325 +227,273 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo fdisk -l
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo fdisk -l
 </span></span></code></pre></td></tr></table>
 </div>
 </div><blockquote>
-<p><em>fdisk -l</em> 会列出所有的存储设备，包括你刚刚插上的 U 盘</p>
+<p><code>fdisk -l</code> 会列出所有的存储设备，包括你刚刚插上的 U 盘；运行 <code>fdisk -l</code> 需要 root 权限；</p>
 </blockquote>
 <ol start="4">
 <li>将 iso 的镜像写入 U 盘</li>
 </ol>
 <blockquote>
-<p>假定 iso 文件放在当前用户 HOME 目录下的 Downloads 目录下，也就是 <em>~/Downloads/</em>(或者 <em>$HOME/Downloads/</em>) 下，文件名为：<em>ubuntu-20.04.4-desktop-amd64.iso</em>；U 盘的设备名(fdisk -l列出的)为：<em>/dev/sdd</em>；则下面命令会把 iso 镜像写入 U 盘</p>
+<p>假定 iso 文件放在当前用户 <code>HOME</code> 目录下的 <code>Downloads</code> 目录下，也就是 <code>~/Downloads/</code>(或者 <code>$HOME/Downloads/</code>) 下，文件名为：<code>ubuntu-20.04.4-desktop-amd64.iso</code>；U 盘的设备名(<code>fdisk -l</code> 列出的)为：<code>/dev/sdd</code>；则下面命令会把 iso 镜像写入 U 盘：</p>
 </blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo dd if=~/Downloads/ubuntu-20.04.4-desktop-amd64.iso of=/dev/sdd
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo dd <span class="k">if</span><span class="o">=</span>~/Downloads/ubuntu-20.04.4-desktop-amd64.iso <span class="nv">of</span><span class="o">=</span>/dev/sdd
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
-<p>等到命令执行完毕(可能时间会比较长)，Ubuntu 的安装 U 盘就做好了</p>
+<p>等到命令执行完毕(可能时间会比较长)，<code>Ubuntu</code> 的安装 U 盘就做好了。</p>
 </li>
 </ul>
 <h2 id="3-使用-u-盘安装-ubuntu-2004">3. 使用 U 盘安装 Ubuntu 20.04</h2>
 <ul>
-<li>
-<p>这个过程没有什么可说的，Ubuntu 的安装还是很友好的，并没有什么难度</p>
-</li>
-<li>
-<p>安装完毕，已经有桌面了</p>
-</li>
-<li>
-<p>先做一些简单的设置，以便用起来顺手些</p>
+<li>这个过程没有什么可说的，Ubuntu 的安装还是很友好的，并没有什么难度；</li>
+<li>安装完毕，已经有桌面了；</li>
+<li>先做一些简单的设置，以便用起来顺手些；
 <ul>
 <li>
-<p>设置屏幕分辨率以适应你的屏幕，这个比较容易，不予赘述</p>
+<p>设置屏幕分辨率以适应你的屏幕，这个比较容易，不予赘述；</p>
 </li>
 <li>
-<p>将系统语言设为 <strong>汉语</strong></p>
+<p>将系统语言设为 <strong>汉语</strong>；</p>
 <blockquote>
-<p><em>设置 &ndash;&gt; region &amp; language &ndash;&gt; language &ndash;&gt; <strong>汉语</strong> &ndash;&gt; Select &ndash;&gt; Restart</em></p>
+<p>设置 &ndash;&gt; region &amp; language &ndash;&gt; language &ndash;&gt; <strong>汉语</strong> &ndash;&gt; Select &ndash;&gt; Restart</p>
 </blockquote>
-<p><img src="/images/100007/select-language-region-language.png" alt="Region &amp; Language"></p>
-<ul>
-<li><strong>图1：在 Region &amp; Language 中选择 Language</strong></li>
-</ul>
-<p><img src="/images/100007/select-language.png" alt="在语言中选择汉语"></p>
-<ul>
-<li><strong>图2：在 Select Language 中选择 汉语</strong></li>
-</ul>
-<p><img src="/images/100007/select-language-restart.png" alt="Region &amp; Language中选择Restart"></p>
-<ul>
-<li><strong>图3：在 Region &amp; Language 中选择 Restart</strong></li>
-</ul>
-<blockquote>
-</blockquote>
+<p><img src="https://whowin.gitee.io/images/100007/select-language-region-language.png" alt="Region &amp; Language"></p>
+  <center><b>图1：在 Region & Language 中选择 Language</b></center>
+<p><img src="https://whowin.gitee.io/images/100007/select-language.png" alt="在语言中选择汉语"></p>
+  <center><b>图2：在 Select Language 中选择 汉语</b></center>
+<p><img src="https://whowin.gitee.io/images/100007/select-language-restart.png" alt="Region &amp; Language中选择Restart"></p>
+  <center><b>图3：在 Region & Language 中选择 Restart</b></center>
 </li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
 <li>
 <p><strong>安装语言支持</strong></p>
 <blockquote>
-<p><em>设置 &ndash;&gt; region &amp; language &ndash;&gt; Manage Installed Language &ndash;&gt; 安装 &ndash;&gt; 应用到整个系统 &ndash;&gt; Close</em></p>
+<p>设置 &ndash;&gt; region &amp; language &ndash;&gt; Manage Installed Language &ndash;&gt; 安装 &ndash;&gt; 应用到整个系统 &ndash;&gt; Close</p>
 </blockquote>
-<p><img src="/images/100007/region-language-1.png" alt="Region &amp; Language"></p>
-<ul>
-<li><strong>图4：在 Region &amp; Language 中选择 Manage Installed Language</strong></li>
-</ul>
-<p><img src="/images/100007/install-language-support.png" alt="安装语言支持"></p>
-<ul>
-<li><strong>图5：安装语言支持</strong></li>
-</ul>
-<p><img src="/images/100007/apply-whole-system.png" alt="应用到整个系统"></p>
-<ul>
-<li><strong>图6：应用到整个系统</strong></li>
-</ul>
-<blockquote>
-</blockquote>
+<p><img src="https://whowin.gitee.io/images/100007/region-language-1.png" alt="Region &amp; Language"></p>
+  <center><b>图4：在 Region & Language 中选择 Manage Installed Language</b></center>
+<p><img src="https://whowin.gitee.io/images/100007/install-language-support.png" alt="安装语言支持"></p>
+  <center><b>图5：安装语言支持</b></center>
+<p><img src="https://whowin.gitee.io/images/100007/apply-whole-system.png" alt="应用到整个系统"></p>
+  <center><b>图6：应用到整个系统</b></center>
 </li>
+</ul>
+<hr>
+<ul>
 <li>
 <p><strong>设置输入法为拼音，以便能够输入汉字</strong></p>
 <ul>
 <li>
 <p>此时再进入设置界面应该就全部显示汉字了，像下图一样，如果没有全部显示汉字可以重启一下</p>
-<p><img src="/images/100007/region-language-2.png" alt="设置界面全部显示为中文"></p>
-<ul>
-<li><strong>图7：设置界面全部显示中文</strong></li>
-</ul>
-<blockquote>
-</blockquote>
+<p><img src="https://whowin.gitee.io/images/100007/region-language-2.png" alt="设置界面全部显示为中文"></p>
+<center><b>图7：设置界面全部显示中文</b></center>
 </li>
 <li>
 <p><strong>特别建议</strong>：建议保留 HOME 目录下的英文文件名</p>
 <blockquote>
-<p>系统语言修改为中文后，当系统启动时，会提示是否将 HOME 目录下的默认目录改为中文，建议<strong>仍然保留英文目录</strong>，因为在以后的操作中，目录名为中文会带来很多麻烦；但这个不是必须的，使用中文做目录名不会有任何问题</p>
+<p>系统语言修改为中文后，当系统启动时，会提示是否将 <code>HOME</code> 目录下的默认目录改为中文，建议 <strong>仍然保留英文目录</strong>，因为在以后的操作中，目录名为中文会带来很多麻烦；但这个不是必须的，使用中文做目录名不会有任何问题；</p>
 </blockquote>
-<p><img src="/images/100007/keep-old-names.png" alt="建议保留英文目录名"></p>
-<ul>
-<li><strong>图8：建议保留英文目录名</strong></li>
-</ul>
+<p><img src="https://whowin.gitee.io/images/100007/keep-old-names.png" alt="建议保留英文目录名"></p>
+<center><b>图8：建议保留英文目录名</b></center>
 </li>
 </ul>
 <blockquote>
+<p>设置 &ndash;&gt; 区域与语言 &ndash;&gt; + &ndash;&gt; 汉语 &ndash;&gt; 中文(智能拼音) &ndash;&gt; 添加</p>
 </blockquote>
-<blockquote>
-<p><em>设置 &ndash;&gt; 区域与语言 &ndash;&gt; + &ndash;&gt; 汉语 &ndash;&gt; 中文(智能拼音) &ndash;&gt; 添加</em></p>
-</blockquote>
-<p><img src="/images/100007/region-language-3.png" alt="区域和语言中选择+"></p>
-<ul>
-<li><strong>图9：在区域与语言中选择 +</strong></li>
-</ul>
-<p><img src="/images/100007/add-input-source.png" alt="选择汉语"></p>
-<ul>
-<li><strong>图10：在添加输入源中选择汉语</strong></li>
-</ul>
-<p><img src="/images/100007/add-pinyin.png" alt="选择拼音"></p>
-<ul>
-<li><strong>图11：在汉语中选择中文(智能拼音)</strong></li>
-</ul>
+<p><img src="https://whowin.gitee.io/images/100007/region-language-3.png" alt="区域和语言中选择+"></p>
+  <center><b>图9：在区域与语言中选择 +</b></center>
+<p><img src="https://whowin.gitee.io/images/100007/add-input-source.png" alt="选择汉语"></p>
+  <center><b>图10：在添加输入源中选择汉语</b></center>
+<p><img src="https://whowin.gitee.io/images/100007/add-pinyin.png" alt="选择拼音"></p>
+  <center><b>图11：在汉语中选择中文(智能拼音)</b></center>
 </li>
 </ul>
-<blockquote>
-</blockquote>
+<hr>
 <ul>
 <li><strong>将 Dock 移到底部并修改图标大小</strong>
 <ul>
 <li>
-<p>Ubuntu 把快捷图标栏称作 <strong>Dock</strong>，Dock 就是下图红框里的图标，Ubuntu 默认放在左边</p>
-<p><img src="/images/100007/dock.png" alt="Dock"></p>
+<p><code>Ubuntu</code> 把快捷图标栏称作 <strong>Dock</strong>，<code>Dock</code> 就是下图红框里的图标，<code>Ubuntu</code> 默认放在左边；</p>
+<p><img src="https://whowin.gitee.io/images/100007/dock.png" alt="Dock"></p>
+<center><b>图12：Ubuntu 的 Dock</b></center>
+</li>
+<li>
+<p>可以把 <code>Dock</code> 移到屏幕的底部，这样和 <code>windows</code> 有点像；</p>
+<blockquote>
+<p>设置 &ndash;&gt; 外观 &ndash;&gt; Dock &ndash;&gt; 屏幕上的位置 <strong>底部</strong></p>
+</blockquote>
+<p><img src="https://whowin.gitee.io/images/100007/dock-on-bottom.png" alt="把Dock移到底部"></p>
+<center><b>图13：把 Dock 移到底部</b></center>
+</li>
+<li>
+<p>将图标大小设置为 <strong>32</strong>，看上起顺眼一些，见上图；</p>
+</li>
+</ul>
+</li>
+</ul>
 <ul>
-<li><strong>图12：Ubuntu的Dock</strong></li>
-</ul>
-<blockquote>
-</blockquote>
-</li>
-<li>
-<p>可以把 Dock 移到屏幕的底部，这样和 windows 有点像</p>
-<blockquote>
-<p><em>设置 &ndash;&gt; 外观 &ndash;&gt; Dock &ndash;&gt; 屏幕上的位置 <strong>底部</strong></em></p>
-</blockquote>
-<p><img src="/images/100007/dock-on-bottom.png" alt="把Dock移到底部"></p>
-<ul>
-<li><strong>图13：把 Dock 移到底部</strong></li>
-</ul>
-<blockquote>
-</blockquote>
-</li>
-<li>
-<p>将图标大小设置为 <strong>32</strong>，看上起顺眼一些，见上图</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>在安装 <em>chromium</em> 浏览器之前，<em>Firefox</em> 浏览器是唯一的选择，后面的下载工作主要靠 <em>Firefox</em></p>
-</li>
+<li>在安装 <code>chromium</code> 浏览器之前，<code>Firefox</code> 浏览器是唯一的选择，后面的下载工作主要靠 <code>Firefox</code></li>
 </ul>
 <h2 id="4-安装-qv2ray">4. 安装 Qv2ray</h2>
 <ul>
 <li>
-<p>v2ray 是一个科学上网工具，在 Linux 下工作，为了能访问 google、github 等，科学上网是必要的</p>
+<p><code>v2ray</code> 是一个上网工具，用于访问<code>google、github</code> 等，在 <code>Linux</code> 下工作，访问 <code>google、github</code> 网站是必要的；</p>
 </li>
 <li>
-<p>Qv2ray 是一个用 qt 开发的 v2ray 客户端软件，开源的，使用它只是出于习惯，你可以有别的选择</p>
+<p><code>Qv2ray</code> 是一个用 qt 开发的 <code>v2ray</code> 客户端软件，开源的，使用它只是出于习惯，你可以有别的选择；</p>
 </li>
 <li>
-<p>安装 Qv2ray 有两个步骤，第一步是安装 v2ray-core，第二步才是安装 Qv2ray；Qv2ray 只是给 v2ray-core 加了个好用的壳</p>
+<p>安装 <code>Qv2ray</code> 有两个步骤，第一步是安装 <code>v2ray-core</code>，第二步才是安装 <code>Qv2ray</code>；<code>Qv2ray</code> 只是给 <code>v2ray-core</code> 加了个好用的壳</p>
 </li>
 <li>
-<p>安装 v2ray-core</p>
+<p>安装 <code>v2ray-core</code></p>
 <ul>
 <li><a href="https://github.com/v2fly/v2ray-core/">v2ray-core: https://github.com/v2fly/v2ray-core/</a></li>
-<li>下载 release 4.45.0，文件名：v2ray-linux-64.zip，通常使用 <em>Firefox</em> 下载会放在 <em>~/Downloads/</em> 目录下</li>
-<li>解压到目录 <em>~/v2ray-linux-64/</em> 下备用
+<li>下载 <code>release 4.45.0</code>，文件名：<code>v2ray-linux-64.zip</code>，通常使用 <code>Firefox</code> 下载会放在 <code>~/Downloads/</code> 目录下；</li>
+<li>解压到目录 <code>~/v2ray-linux-64/</code> 下备用；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">unzip ~/Downloads/v2ray-linux-64.zip -d ~/v2ray-linux-64
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">unzip ~/Downloads/v2ray-linux-64.zip -d ~/v2ray-linux-64
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 </ul>
 </li>
 <li>
-<p>安装 Qv2ray</p>
+<p><strong>安装 Qv2ray</strong></p>
 <ul>
 <li><a href="https://github.com/Qv2ray/Qv2ray">Qv2ray: https://github.com/Qv2ray/Qv2ray</a></li>
-<li>下载最新版本的文件，目前是：<em>Qv2ray-v2.7.0-linux-x64.AppImage</em>，通常使用 <em>Firefox</em> 下载会放在 <em>~/Downloads/</em> 目录下</li>
-<li>将下载的文件放在目录 <em>~/qv2ray</em> 中
+<li>下载最新版本的文件，目前是：<code>Qv2ray-v2.7.0-linux-x64.AppImage</code>，通常使用 <code>Firefox</code> 下载会放在 <code>~/Downloads/</code> 目录下；</li>
+<li>将下载的文件放在目录 <code>~/qv2ray</code> 中
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">mkdir -p ~/qv2ray
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir -p ~/qv2ray
 </span></span><span class="line"><span class="cl">mv ~/Downloads/Qv2ray-v2.7.0-linux-x64.AppImage ~/qv2ray/
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>文件 <em>Qv2ray-v2.7.0-linux-x64.AppImage</em> 属性设为可执行
+<li>文件 <code>Qv2ray-v2.7.0-linux-x64.AppImage</code> 属性设为可执行
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">chmod +x ~/qv2ray/Qv2ray-v2.7.0-linux-x64.AppImage
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">chmod +x ~/qv2ray/Qv2ray-v2.7.0-linux-x64.AppImage
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 </ul>
 </li>
 <li>
-<p>运行并设置 qv2ray</p>
+<p><strong>运行并设置 qv2ray</strong></p>
 <ul>
 <li>
-<p>从桌面打开目录，找到 <em>~/qv2ray</em> 目录，双击文件 <em>Qv2ray-v2.7.0-linux-x64.AppImage</em> 运行</p>
-<p><img src="/images/100007/qv2ray-doubleclick.png" alt="运行qv2ray"></p>
-<ul>
-<li><strong>图14：双击图标运行qvray</strong></li>
-</ul>
-<blockquote>
-</blockquote>
+<p>从桌面打开目录，找到 <code>~/qv2ray</code> 目录，双击文件 <code>Qv2ray-v2.7.0-linux-x64.AppImage</code> 运行</p>
+<p><img src="https://whowin.gitee.io/images/100007/qv2ray-doubleclick.png" alt="运行qv2ray"></p>
+<center><b>图14：双击图标运行 qvray</b></center>
 </li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
 <li>
-<p><em>qv2ray</em> 主界面</p>
-<p><img src="/images/100007/qv2ray-new-connection.png" alt="qv2ray主界面"></p>
-<ul>
-<li><strong>图15：Qv2ray 主界面</strong></li>
-</ul>
-<blockquote>
-</blockquote>
+<p><code>qv2ray</code> 主界面</p>
+<p><img src="https://whowin.gitee.io/images/100007/qv2ray-new-connection.png" alt="qv2ray主界面"></p>
+<center><b>图15：Qv2ray 主界面</b></center>
 </li>
+</ul>
+<hr>
+<ul>
 <li>
 <p>内核设置</p>
 <blockquote>
-<p><em>首选项 &ndash;&gt; 内核设置 &ndash;&gt; V2Ray资源目录</em></p>
+<p>首选项 &ndash;&gt; 内核设置 &ndash;&gt; V2Ray资源目录</p>
 </blockquote>
-<p><img src="/images/100007/qv2ray-core-settings.png" alt="qv2ray内核设置"></p>
-<ul>
-<li><strong>图16：Qv2ray 内核设置</strong></li>
+<p><img src="https://whowin.gitee.io/images/100007/qv2ray-core-settings.png" alt="qv2ray内核设置"></p>
+  <center><b>图16：Qv2ray 内核设置</b></center>
+</li>
 </ul>
-<blockquote>
-</blockquote>
-<blockquote>
-<p>如上图，你看到的目录应该是：<em>~/.config/q2ray/vcore</em>，这个目录其实并不存在，我们需要自己建这个目录并把 <em>v2ray-core</em> 放到这个目录下</p>
-</blockquote>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">mkdir -p ~/.config/qv2ray/vcore
-</span></span><span class="line"><span class="cl">mv ~/v2ray-linux-64/* ~/.config/qv2ray/vcore/
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>除此之外没有必须的设置，建议做如下设置：</p>
+<hr>
+<pre><code>&gt; 如上图，你看到的目录应该是：`~/.config/q2ray/vcore`，这个目录其实并不存在，我们需要自己建这个目录并把 `v2ray-core` 放到这个目录下
+
+  ```bash
+  mkdir -p ~/.config/qv2ray/vcore
+  mv ~/v2ray-linux-64/* ~/.config/qv2ray/vcore/
+  ```
+</code></pre>
+<ul>
+<li>除此之外没有必须的设置，建议做如下设置：
 <ul>
 <li>
-<p><em>首选项 &ndash;&gt; 常规设置 &ndash;&gt; 登录时启动 &ndash;&gt; <strong>√ 已启用</strong></em></p>
+<p>首选项 &ndash;&gt; 常规设置 &ndash;&gt; 登录时启动 &ndash;&gt; <strong>√ 已启用</strong></p>
 </li>
 <li>
-<p><em>首选项 &ndash;&gt; 常规设置 &ndash;&gt; 自动连接 &ndash;&gt; <strong>记忆上次连接</strong></em></p>
-<p><img src="/images/100007/qv2ray-regular-settings.png" alt="qv2ray常规设置"></p>
-<ul>
-<li><strong>图17：Qv2ray 常规设置</strong></li>
-</ul>
-<blockquote>
-</blockquote>
+<p>首选项 &ndash;&gt; 常规设置 &ndash;&gt; 自动连接 &ndash;&gt; <strong>记忆上次连接</strong></p>
+<p><img src="https://whowin.gitee.io/images/100007/qv2ray-regular-settings.png" alt="qv2ray常规设置"></p>
+<center><b>图17：Qv2ray 常规设置</b></center>
 </li>
 </ul>
 </li>
+</ul>
+<hr>
+<ul>
 <li>
 <p>建议其它的设置都不动</p>
 </li>
 <li>
-<p>如果你有相应的科学上网的账号，这时可以新建一个连接，并设置一个订阅地址，然后用这个新建的连接更新订阅</p>
-<p><img src="/images/100007/qv2ray-subscribe-setting.png" alt="订阅地址设置"></p>
-<ul>
-<li><strong>图18：Qv2ray 订阅地址设置</strong></li>
-</ul>
-<blockquote>
-</blockquote>
+<p>如果你有相应的账号，这时可以新建一个连接，并设置一个订阅地址，然后用这个新建的连接更新订阅</p>
+<p><img src="https://whowin.gitee.io/images/100007/qv2ray-subscribe-setting.png" alt="订阅地址设置"></p>
+<center><b>图18：Qv2ray 订阅地址设置</b></center>
 </li>
 </ul>
-</li>
-</ul>
+<hr>
 <h2 id="5-安装-chromium-浏览器">5. 安装 chromium 浏览器</h2>
 <ul>
-<li>如果你喜欢使用 <em>Firefox</em> 浏览器，不一定非要安装 <em>Chromium</em></li>
-<li>没有安装 <em>chrome</em>，而是选择安装 <em>chromium</em>，是因为在 Ubuntu 的软件中心中是没有 <em>Chrome</em> 的，但是有 <em>Chromium</em>；所以，安装 <em>Chromium</em> 很容易，但是安装 <em>Chrome</em> 就要大费周折了</li>
-<li>安装 <em>Chromium</em>
+<li>如果你喜欢使用 <code>Firefox</code> 浏览器，不一定非要安装 <code>Chromium</code></li>
+<li>没有安装 <code>chrome</code>，而是选择安装 <code>chromium</code>，是因为在 <code>Ubuntu</code> 的软件中心中是没有 <code>Chrome</code> 的，但是有 <code>Chromium</code>；所以，安装 <code>Chromium</code> 很容易，但是安装 <code>Chrome</code> 就要大费周折了</li>
+<li>安装 <code>Chromium</code>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install chromium-browser
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt install chromium-browser
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>将 <em>Chromium</em> 的快捷方式放到桌面上
+<li>将 <code>Chromium</code> 的快捷方式放到桌面上
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cp /usr/share/applications/chromium-browser.desktop ~/Desktop/
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cp /usr/share/applications/chromium-browser.desktop ~/Desktop/
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>在 <em>/usr/share/applications/</em> 目录下放着所有应用程序的快捷方式，我们只需要把你需要摆在桌面上的快捷方式拷贝到 <em>~/Desktop/</em> 即可，这就是上面这条命令的作用</li>
-<li>经过上面一步后，你就可以在桌面上看到 chromium 的图标了，但是双击还是不能启动，需要你在图标上用鼠标点右键，然后选择 <strong>允许启动</strong>，然后再双击就可以启动了</li>
+<li>在 <code>/usr/share/applications/</code> 目录下放着所有应用程序的快捷方式，我们只需要把你需要摆在桌面上的快捷方式拷贝到 <code>~/Desktop/</code> 即可，这就是上面这条命令的作用</li>
+<li>经过上面一步后，你就可以在桌面上看到 <code>chromium</code> 的图标了，但是双击还是不能启动，需要你在图标上用鼠标点右键，然后选择 <strong>允许启动</strong>，然后再双击就可以启动了</li>
 <li>后面安装的软件都有可能做这个步骤，再不做解释</li>
 </ul>
 </li>
@@ -556,18 +504,18 @@
 <p><a href="https://code.visualstudio.com/">VSCODE 官网</a></p>
 </li>
 <li>
-<p><em>vscode</em> 已经加入到 Ubuntu 软件中心，所以安装起来非常方便</p>
+<p><code>vscode</code> 已经加入到 <code>Ubuntu</code> 软件中心，所以安装起来非常方便</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install code
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt install code
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
-<p>安装 vscode 本地扩展应根据自己的工作状况，我在本地安装如下扩展(还有一些扩展已在远端安装)</p>
+<p>安装 <code>vscode</code> 本地扩展应根据自己的工作状况，我在本地安装如下扩展(还有一些扩展已在远端安装)</p>
 <ul>
 <li>Remote-SSH</li>
 <li>Remote-Development</li>
@@ -577,13 +525,13 @@
 </ul>
 </li>
 <li>
-<p>将 vscode 图标放到桌面，记得将将图标设置为 <strong>允许启动</strong></p>
+<p>将 <code>vscode</code> 图标放到桌面，记得将将图标设置为 <strong>允许启动</strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cp /usr/share/applications/code.desktop ~/Desktop/
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cp /usr/share/applications/code.desktop ~/Desktop/
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -591,7 +539,7 @@
 <h2 id="7-安装搜狗拼音">7. 安装搜狗拼音</h2>
 <ul>
 <li>
-<p>如果你能够适应 Ubuntu 自带的输入法，不必安装新的输入法，目前能够在 Ubuntu 下运行的输入法并不多，搜狗算一个</p>
+<p>如果你能够适应 <code>Ubuntu</code> 自带的输入法，不必安装新的输入法，目前能够在 <code>Ubuntu</code> 下运行的输入法并不多，搜狗算一个</p>
 </li>
 <li>
 <p><a href="https://pinyin.sogou.com/linux">搜狗输入法 for Linux</a></p>
@@ -600,33 +548,32 @@
 <p><a href="https://pinyin.sogou.com/linux/guide">ubuntu安装指南</a></p>
 </li>
 <li>
-<p>从官网下载搜狗拼音输入法的 deb 包，目前的文件是：sogoupinyin_4.0.1.2123_amd64.deb</p>
+<p>从官网下载搜狗拼音输入法的 deb 包，目前的文件是：<code>sogoupinyin_4.0.1.2123_amd64.deb</code></p>
 </li>
 <li>
-<p>搜狗输入法使用 fcitx 输入法系统，但 Ubuntu 默认的输入法系统中，没有fcitx，需要先安装：</p>
+<p>搜狗输入法使用 <code>fcitx</code> 输入法系统，但 <code>Ubuntu</code> 默认的输入法系统中，没有 <code>fcitx</code>，需要先安装：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install fcitx
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt install fcitx
 </span></span><span class="line"><span class="cl">sudo apt autoremove
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
-<p>输入法系统选择 <em>fcitx</em></p>
+<p>输入法系统选择 `fcitx</p>
 <blockquote>
-<p><em>设置 &ndash;&gt; 区域与语言 &ndash;&gt; 管理已安装的语言 &ndash;&gt; 键盘输入法系统 &ndash;&gt; 选择 fcitx &ndash;&gt; 应用到全局</em></p>
+<p>设置 &ndash;&gt; 区域与语言 &ndash;&gt; 管理已安装的语言 &ndash;&gt; 键盘输入法系统 &ndash;&gt; 选择 fcitx &ndash;&gt; 应用到全局</p>
 </blockquote>
-<p><img src="/images/100007/sogou-fcitx.png" alt="选择 fcxtx 输入法系统"></p>
-<ul>
-<li><strong>图19：选择 fcxtx 输入法系统</strong></li>
-</ul>
-<blockquote>
-</blockquote>
+<p><img src="https://whowin.gitee.io/images/100007/sogou-fcitx.png" alt="选择 fcxtx 输入法系统"></p>
+  <center><b>图19：选择 fcxtx 输入法系统</b></center>
 </li>
+</ul>
+<hr>
+<ul>
 <li>
 <p>设置 <em>fcitx</em> 开机自启动</p>
 <div class="highlight"><div class="chroma">
@@ -634,32 +581,30 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo cp /usr/share/applications/fcitx.desktop /etc/xdg/autostart/
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo cp /usr/share/applications/fcitx.desktop /etc/xdg/autostart/
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
-<p>卸载系统 <em>ibus</em> 输入法框架</p>
+<p>卸载系统 <code>ibus</code> 输入法框架</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt purge ibus
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt purge ibus
 </span></span></code></pre></td></tr></table>
 </div>
 </div><blockquote>
-<p><strong>特别提醒：</strong> 在卸载完 <em>ibus</em> 以后，再次进入 <em>设置 &ndash;&gt; 区域与语言 &ndash;&gt; 管理已安装的语言</em> 时，会提示 <strong>语言支持没有安装完整</strong>，此时<strong>一定</strong>要选择 <strong>稍后提醒</strong>，否则会重新把 <em>ibus</em> 装上，以后会有麻烦</p>
+<p><strong>特别提醒：</strong> 在卸载完 <code>ibus</code> 以后，再次进入： <code>设置 --&gt; 区域与语言 --&gt; 管理已安装的语言</code> 时，会提示 <strong>语言支持没有安装完整</strong>，此时 <strong>一定</strong> 要选择 <strong>稍后提醒</strong>，否则会重新把 <code>ibus</code> 装上，以后会有麻烦；</p>
 </blockquote>
-<p><img src="/images/100007/not-install-language-support.png" alt="不要安装语言支持"></p>
-<ul>
-<li><strong>图20：不要安装语言支持</strong></li>
-</ul>
-<blockquote>
-</blockquote>
+<p><img src="https://whowin.gitee.io/images/100007/not-install-language-support.png" alt="不要安装语言支持"></p>
+  <center><b>图20：不要安装语言支持</b></center>
 </li>
-<li>
-<p>安装搜狗拼音输入法以及依赖</p>
+</ul>
+<hr>
+<ul>
+<li>安装搜狗拼音输入法以及依赖
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -667,31 +612,29 @@
 </span><span class="lnt">3
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo dpkg -i sogoupinyin_4.0.1.2123_amd64.deb
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo dpkg -i sogoupinyin_4.0.1.2123_amd64.deb
 </span></span><span class="line"><span class="cl">sudo apt install libqt5qml5 libqt5quick5 libqt5quickwidgets5 qml-module-qtquick2
 </span></span><span class="line"><span class="cl">sudo apt install libgsettings-qt1
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>
-<p>重新启动 Ubuntu</p>
-</li>
+<li>重新启动 <code>Ubuntu</code></li>
 </ul>
 <h2 id="8-安装向日葵">8. 安装向日葵</h2>
 <ul>
-<li>安装 <a href="https://sunlogin.oray.com/">向日葵</a> 是考虑到可能需要远程控制运行 <em>windows</em> 的设备，在 <em>teamviewer</em> 收费以后，<a href="https://sunlogin.oray.com/">向日葵</a> 算是比较好用的一个选择，比 anydesk 似乎好用些</li>
-<li>在 <em>Ubuntu</em> 下控制 <em>windows</em>，没有什么更好的办法，远程桌面比较简单；也可以试试 <em>ssh</em>，不过稍有些麻烦，后面会提到</li>
+<li>安装 <a href="https://sunlogin.oray.com/">向日葵</a> 是考虑到可能需要远程控制运行 <code>windows</code> 的设备，在 <code>teamviewer</code> 收费以后，<a href="https://sunlogin.oray.com/">向日葵</a> 算是比较好用的一个选择，比 <code>anydesk</code> 似乎好用些；</li>
+<li>在 <code>Ubuntu</code> 下控制 <code>windows</code>，没有什么更好的办法，远程桌面比较简单；也可以试试 <code>ssh</code>，不过稍有些麻烦，后面会提到；</li>
 <li><a href="https://sunlogin.oray.com/">向日葵官网</a></li>
 <li><a href="https://service.oray.com/question/8364.html">安装说明</a></li>
 <li><a href="https://sunlogin.oray.com/download">下载地址</a></li>
-<li>当前下载文件名：SunloginClient_11.0.1.44968_amd64.deb</li>
+<li>当前下载文件名：<code>SunloginClient_11.0.1.44968_amd64.deb</code></li>
 <li>安装，可以按照说明去安装，不过我更喜欢用命令行
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo dpkg -i SunloginClient_11.0.1.44968_amd64.deb
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo dpkg -i SunloginClient_11.0.1.44968_amd64.deb
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -701,7 +644,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cp /usr/share/applications/sunlogin.desktop ~/Desktop/
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cp /usr/share/applications/sunlogin.desktop ~/Desktop/
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -710,24 +653,24 @@
 <ul>
 <li><a href="https://dict.youdao.com/">有道词典官网</a></li>
 <li><a href="http://cidian.youdao.com/multi.html#linuxAll">linux版下载页面</a></li>
-<li>当前下载文件名：youdao-dict_6.0.0-ubuntu-amd64.deb</li>
+<li>当前下载文件名：<code>youdao-dict_6.0.0-ubuntu-amd64.deb</code></li>
 <li>安装
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo dpkg -i youdao-dict_6.0.0-ubuntu-amd64.deb
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo dpkg -i youdao-dict_6.0.0-ubuntu-amd64.deb
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>这一步安装会执行失败，因为依赖问题，<em>dpkg</em> 是不能自动解决依赖问题的，所以我们要先解决依赖问题
+<li>这一步安装会执行失败，因为依赖问题，<code>dpkg</code> 是不能自动解决依赖问题的，所以我们要先解决依赖问题
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install -f -y
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt install -f -y
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -737,7 +680,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo dpkg -i youdao-dict_6.0.0-ubuntu-amd64.deb
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo dpkg -i youdao-dict_6.0.0-ubuntu-amd64.deb
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -747,7 +690,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cp /usr/share/applications/youdao-dict.desktop ~/Desktop/
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cp /usr/share/applications/youdao-dict.desktop ~/Desktop/
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -756,14 +699,14 @@
 <ul>
 <li><a href="https://www.wps.cn/">wps官网</a></li>
 <li><a href="https://linux.wps.cn/">linux版wps下载页面</a></li>
-<li>当前下载文件：wps-office_11.1.0.10976_amd64.deb</li>
+<li>当前下载文件：<code>wps-office_11.1.0.10976_amd64.deb</code></li>
 <li>安装
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo dpkg -i wps-office_11.1.0.10976_amd64.deb
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo dpkg -i wps-office_11.1.0.10976_amd64.deb
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -773,7 +716,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cp /usr/share/applications/wps-office-* ~/Desktop/
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cp /usr/share/applications/wps-office-* ~/Desktop/
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -782,13 +725,13 @@
 <ul>
 <li><a href="https://www.gimp.org/">gimp官网</a> - 一个类似 photoshop 的软件</li>
 <li><a href="https://mdnice.com/writing/c4815f6d995a4fec99749a72c473cb8e">【GIMP教程】基础入门</a></li>
-<li>gimp 已经被收录到 Ubuntu 的软件中心中，所以安装非常容易
+<li><code>gimp</code> 已经被收录到 <code>Ubuntu</code> 的软件中心中，所以安装非常容易
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install gimp
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt install gimp
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -798,17 +741,17 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cp /usr/share/applications/gimp.desktop ~/Desktop/
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cp /usr/share/applications/gimp.desktop ~/Desktop/
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 </ul>
 <h2 id="12-安装-qrcp">12. 安装 qrcp</h2>
 <ul>
-<li>qrcp 是一个可以方便地和手机互传文件的工具；这个工具可以在屏幕上显示一个二维码，手机通过扫描二维码来完成与电脑之间的文件互传；前面提到过，不建议在 Ubuntu 下安装微信，这个工具可以代替一部分微信的作用</li>
+<li><code>qrcp</code> 是一个可以方便地和手机互传文件的工具；这个工具可以在屏幕上显示一个二维码，手机通过扫描二维码来完成与电脑之间的文件互传；前面提到过，不建议在 <code>Ubuntu</code> 下安装微信，这个工具可以代替一部分微信的作用</li>
 <li><a href="https://github.com/claudiodangelis/qrcp">qrcp项目</a></li>
 <li><a href="https://github.com/claudiodangelis/qrcp/releases">qrcp当前最新版本0.9.1</a></li>
-<li>下载release文件： qrcp_0.9.1_linux_x86_64.tar.gz
+<li>下载release文件： <code>qrcp_0.9.1_linux_x86_64.tar.gz</code>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -817,41 +760,41 @@
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd ~
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> ~
 </span></span><span class="line"><span class="cl">mkdir qrcp
 </span></span><span class="line"><span class="cl">tar -zxvf ~/Downloads/qrcp_0.9.1_linux_x86_64.tar.gz -C ./qrcp
 </span></span><span class="line"><span class="cl">sudo mv ./qrcp/qrcp /usr/local/bin
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>Ubuntu 接收手机发送的文件
+<li><code>Ubuntu</code> 接收手机发送的文件
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">qrcp receive
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">qrcp receive
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>Ubuntu 发送文件到手机
+<li><code>Ubuntu</code> 发送文件到手机
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">qrcp send -k [ 文件名 ]
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">qrcp send -k <span class="o">[</span> 文件名 <span class="o">]</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><blockquote>
-<p><em>-k</em> 的含义是保持 server 不退出，否则 server 会马上退出导致传输失败</p>
+<p><code>-k</code> 的含义是保持 <code>server</code> 不退出，否则 <code>server</code> 会马上退出导致传输失败</p>
 </blockquote>
 </li>
 </ul>
 <h2 id="13-安装-filezilla">13. 安装 FileZilla</h2>
 <ul>
-<li>这是一个好用的 <em>ftp、sftp</em> 的开源软件，我喜欢用它在各种 <em>linux/windows</em> 之间传递文件</li>
-<li><em>FileZilla</em> 既有客户端也有服务器版本，我只用它的客户端</li>
+<li>这是一个好用的 <code>ftp、sftp</code> 的开源软件，我喜欢用它在各种 <code>linux/windows</code> 之间传递文件；</li>
+<li><code>FileZilla</code> 既有客户端也有服务器版本，我只用它的客户端；</li>
 <li><a href="https://filezilla-project.org/">FileZilla官网</a></li>
 <li>安装
 <div class="highlight"><div class="chroma">
@@ -859,7 +802,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install filezilla
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt install filezilla
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -869,7 +812,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cp /usr/share/applications/filezilla.desktop ~/Desktop/
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cp /usr/share/applications/filezilla.desktop ~/Desktop/
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -877,66 +820,66 @@
 <h2 id="14-其它">14. 其它</h2>
 <ul>
 <li>
-<p>把 <em>terminal</em> 放到桌面上，记得把桌面图标设置为 <strong>允许启动</strong></p>
+<p>把 <code>terminal</code> 放到桌面上，记得把桌面图标设置为 <strong>允许启动</strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cp /usr/share/applications/org.gnome.Terminal.desktop ~/Desktop/
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cp /usr/share/applications/org.gnome.Terminal.desktop ~/Desktop/
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
-<p>把 <em>截图工具</em> 放到桌面上，记得把桌面图标设置为 <strong>允许启动</strong></p>
+<p>把 <code>截图工具</code> 放到桌面上，记得把桌面图标设置为 <strong>允许启动</strong></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cp /usr/share/applications/org.gnome.Screenshot.desktop ~/Desktop/
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cp /usr/share/applications/org.gnome.Screenshot.desktop ~/Desktop/
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 <li>
-<p><em>vi</em> 无法使用</p>
+<p><code>vi</code> 无法使用</p>
 <ul>
-<li>Ubuntu 默认会只安装 <em>vi</em>，不会装 <em>vim</em>，但是你启动 <em>vi</em> 后，会发现根本没法用，几乎所有的按键都不对</li>
-<li>这是因为尽管安装了 <em>vi</em>，但是并没有配置文件，解决这个问题最简单的办法是安装一个 <em>vim</em>
+<li><code>Ubuntu</code> 默认会只安装 <code>vi</code>，不会装 <code>vim</code>，但是你启动 <code>vi</code> 后，会发现根本没法用，几乎所有的按键都不对；</li>
+<li>这是因为尽管安装了 <code>vi</code>，但是并没有配置文件，解决这个问题最简单的办法是安装一个 <code>vim</code>；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install vim
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt install vim
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>如果你就是不想装 <em>vim</em>，也不要紧，把配置文件拷贝到适当的地方就可以了
+<li>如果你就是不想装 <code>vim</code>，也不要紧，把配置文件拷贝到适当的地方就可以了；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span><span class="lnt">2
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cp /etc/vim/vimrc ~/.vimrc
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cp /etc/vim/vimrc ~/.vimrc
 </span></span><span class="line"><span class="cl">cp /etc/vim/vimrc /root/.vimrc
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>之所以在 <em>/root</em> 目录下也拷贝了一份 <em>vi</em> 的配置，是为了保证你在 <em>sudo vi</em> 的时候也是正常的</li>
+<li>之所以在 <code>/root</code> 目录下也拷贝了一份 <code>vi</code> 的配置，是为了保证你在 <code>sudo vi</code> 的时候也是正常的。</li>
 </ul>
 </li>
 </ul>
 <h2 id="15-后记">15. 后记</h2>
 <ul>
-<li>至此，整个的环境到这里就安装完成了，希望能给你带来一点帮助</li>
-<li>你现在看到的这篇文章就是在这个环境下使用 <em>vscode</em> 远程完成的，实际的文章放在服务器上，图片是在本机使用 <em>Ubuntu</em> 截图工具获取的，然后用 FileZilla* 传到服务器</li>
-<li>我使用的所有软件都是在 <em>Ubuntu</em> 和 <em>windows</em> 上均可以使用的开源软件，<em>Qv2ray、chromium、vscode、搜狗拼音、向日葵、有道词典、wps、gimp、qrcp和FileZilla</em>，只有 <em>gimp</em> 和 <em>qrcp</em> 在我的 <em>windows</em> 桌面上没有，其它在两种桌面都是一样的，这样可以在不同的桌面保持相同的使用习惯</li>
-<li>通常情况下，我的所有 <em>Linux</em> 机器的 <em>sshd</em> 都是开着的，<em>windows</em> 上也会安装一个 <em>openssh</em>，然后打开 <em>sshd</em> 服务；这样各个机器之间就无需各种各样的通信协议去完成共享了
+<li>至此，整个的环境到这里就安装完成了，希望能给你带来一点帮助；</li>
+<li>你现在看到的这篇文章就是在这个环境下使用 <code>vscode</code> 远程完成的，实际的文章放在服务器上，图片是在本机使用 <code>Ubuntu</code> 截图工具获取的，然后用 <code>FileZilla</code> 传到服务器；</li>
+<li>我使用的所有软件都是在 <code>Ubuntu</code> 和 <code>windows</code> 上均可以使用的开源软件，<code>Qv2ray、chromium、vscode、搜狗拼音、向日葵、有道词典、wps、gimp、qrcp 和 FileZilla</code>，只有 <code>gimp</code> 和 <code>qrcp</code> 在我的 <code>windows</code> 桌面上没有，其它在两种桌面都是一样的，这样可以在不同的桌面保持相同的使用习惯；</li>
+<li>通常情况下，我的所有 <code>Linux</code> 机器的 <code>sshd</code> 都是开着的，<code>windows</code> 上也会安装一个 <code>openssh</code>，然后打开 <code>sshd</code> 服务；这样各个机器之间就无需各种各样的通信协议去完成共享了；
 <ul>
 <li>
-<p>Linux 之间使用 ssh 共享不必多说；如果你安装一个 sshfs，还可以方便地把一个远程设备的目录映射到本地</p>
+<p><code>Linux</code> 之间使用 <code>ssh</code> 共享不必多说；如果你安装一个 <code>sshfs</code>，还可以方便地把一个远程设备的目录映射到本地</p>
 <ul>
 <li>安装 sshfs
 <div class="highlight"><div class="chroma">
@@ -944,7 +887,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install sshfs
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt install sshfs
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -954,7 +897,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo sshfs [username]@[remote host]:[remote directory] [local mountpoint]
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo sshfs <span class="o">[</span>username<span class="o">]</span>@<span class="o">[</span>remote host<span class="o">]</span>:<span class="o">[</span>remote directory<span class="o">]</span> <span class="o">[</span><span class="nb">local</span> mountpoint<span class="o">]</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -964,20 +907,20 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo fusermount [local mountpoint]
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo fusermount <span class="o">[</span><span class="nb">local</span> mountpoint<span class="o">]</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 </ul>
 </li>
 <li>
-<p><em>Linux</em> 访问 <em>windows</em> 的 <em>sshd</em> 是没有问题的；但是用 <em>sshfs</em> 挂载 <em>windows</em> 下的文件夹始终没有搞定；所以实际在 <em>Ubuntu</em> 下向 <em>windows</em> 传文件时，都是使用 <em>sftp</em>，也就是 <em>FileZilla</em></p>
+<p><code>Linux</code> 访问 <code>windows</code> 的 <code>sshd</code> 是没有问题的；但是用 <code>sshfs</code> 挂载 <code>windows</code> 下的文件夹始终没有搞定；所以实际在 <code>Ubuntu</code> 下向 <code>windows</code> 传文件时，都是使用 <code>sftp</code>，也就是 <code>FileZilla</code></p>
 </li>
 <li>
-<p>实际上 <em>sshfs</em> 也有 <em>windows</em> 版本，而且还有不少，下面是我使用过的</p>
+<p>实际上 <code>sshfs</code> 也有 <code>windows</code> 版本，而且还有不少，下面是我使用过的</p>
 <ul>
 <li><a href="https://github.com/evsar3/sshfs-win-manager">sshfs-win-manager</a></li>
-<li>用这个软件在 <em>windows</em> 上挂载 <em>Linux</em> 下的目录还是很方便的</li>
+<li>用这个软件在 <code>windows</code> 上挂载 <code>Linux</code> 下的目录还是很方便的。</li>
 </ul>
 </li>
 </ul>
@@ -986,9 +929,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
-<!-- blog上使用的图片 -->
-<!-- -->
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">

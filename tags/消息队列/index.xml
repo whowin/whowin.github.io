@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>消息队列 on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/</link>
+    <description>Recent content in 消息队列 on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 05 Aug 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>IPC之三：使用 System V 消息队列进行进程间通信的实例</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/</link>
+      <pubDate>Sat, 05 Aug 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/</guid>
+      <description>&lt;p&gt;IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，本文针对 System V 消息队列，并给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -6,7 +6,34 @@
     <description>Recent content in Linux on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 26 Jun 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 05 Aug 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>IPC之三：使用 System V 消息队列进行进程间通信的实例</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/</link>
+      <pubDate>Sat, 05 Aug 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/</guid>
+      <description>&lt;p&gt;IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，本文针对 System V 消息队列，并给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>IPC之二：使用命名管道(FIFO)进行进程间通信的例子</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/</link>
+      <pubDate>Wed, 02 Aug 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/</guid>
+      <description>&lt;p&gt;IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍命名管道(FIFO)，命名管道可以完成同一台计算机上的进程之间的通信，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>IPC之一：使用匿名管道进行父子进程间通信的例子</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/</link>
+      <pubDate>Fri, 28 Jul 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/</guid>
+      <description>&lt;p&gt;IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍匿名管道(又称管道、半双工管道)，尽管很多人在编程中使用过管道，但一些特殊的用法还是鲜有文章涉及，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>使用ioctl扫描wifi信号获取AP的essid、mac地址等属性</title>
       <link>https://whowin.gitee.io/post/blog/network/0022-how-to-scan-wifi-signal/</link>
@@ -121,7 +148,7 @@
       <pubDate>Sat, 07 Jan 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/network/0010-tcp-and-udp-server-using-select/</guid>
-      <description>&lt;p&gt;独立的TCP服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上及提供TCP服务，也提供UDP服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码，阅读本文需要掌握基本的socket变成方法，本文对初学者难度不大。&lt;/p&gt;</description>
+      <description>&lt;p&gt;独立的 TCP 服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上既提供 TCP 服务，也提供 UDP 服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和 TCP 服务器合并成一个服务器，该服务器既可以提供 UDP 服务也可以提供 TCP 服务，本文将给出完整的源代码，阅读本文需要掌握基本的 socket 编程方法，本文对初学者难度不大。&lt;/p&gt;</description>
     </item>
     
     <item>
