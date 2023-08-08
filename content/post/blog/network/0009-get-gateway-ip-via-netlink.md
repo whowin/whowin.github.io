@@ -110,16 +110,16 @@ postid: 180009
     ![netlink信息][img01]
 
   ------------
-  - netlink报头的结构为(struct nlmsghdr)，在头文件 <linux/netlink.h> 中定义，在下一节中会介绍了这个结构；
+  - netlink报头的结构为(struct nlmsghdr)，在头文件 ```<linux/netlink.h>``` 中定义，在下一节中会介绍了这个结构；
   - 这个字节流只能使用一组标准的以NLMSG_开头的宏进行存取(netlink的手册中是这样说的)，这组宏定义在头文件linux/netlink.h中，可以使用在线手册```man 3 netlink```了解更多的信息，本文在后面章节也会简要介绍这些宏；
-  - payload对不同的netlink协议和信息类型而言，其信息结构和长度都是不一样的，本文仅讨论NETLINK_ROUTE协议下的信息类型为RTM_GETROUTE下的消息结构，这个类型的payload结构为(struct rtmsg)，定义在头文件 <linux/rtnetlink.h> 中，这个结构也会在下一节介绍；详细信息可以查阅 ```man 7 rtnetlink``` ；
+  - payload对不同的netlink协议和信息类型而言，其信息结构和长度都是不一样的，本文仅讨论NETLINK_ROUTE协议下的信息类型为RTM_GETROUTE下的消息结构，这个类型的payload结构为(struct rtmsg)，定义在头文件 ```<linux/rtnetlink.h>``` 中，这个结构也会在下一节介绍；详细信息可以查阅 ```man 7 rtnetlink``` ；
   - 使用rtnetlink与内核通信时，需要首先建立一个rtnetlink，然后向这个rtnetlink发送一个请求消息，请求中说明想要的操作，然后从这个rtnetlink上接收内核的回应，解析回应信息获得结果；
   - 在多部分消息中(一个字节流中包含多个netlink报头和相关payload)，第一个报头和后面所有的报头都会设置NLM_F_MULTI标志，最后一个报头的类型为NLMSG_DONE，表示多部分消息结束；有关NLM_F_MULTI和NLMSG_DONE的含义，下一节会做介绍。
 
 ## 2. rtnetlink常用数据结构
 > netlink编程涉及的各种结构非常多，这里仅介绍几个与本文讨论的话题相关的结构，但仍然会占很大的篇幅，这几个结构在第5、6节会大量用到，所以必须先介绍一下，**可以先大致看一下**，在阅读相应章节遇到具体结构时再回来仔细看。
 
-1. **struct sockaddr_nl** - 定义在头文件 <linux/netlink.h> 中
+1. **struct sockaddr_nl** - 定义在头文件 ```<linux/netlink.h>``` 中
   ```C
   struct sockaddr_nl {
       __kernel_sa_family_t  nl_family;  /* AF_NETLINK  */
@@ -134,7 +134,7 @@ postid: 180009
   - nl_pid是当前进程的ID，可以使用getpid()获得；
   - nl_groups表示加入到那个多播组中，前面说过netlink最多允许32个多播组，这个字段每个bit代表一个多播组，为1表示加入这个多播组。
 
-2. **struct nlmsghdr** - 定义在头文件 <linux/netlink.h> 中
+2. **struct nlmsghdr** - 定义在头文件 ```<linux/netlink.h>``` 中
   - 这个结构是netlink报头的定义
     ```C
     struct nlmsghdr {
@@ -146,7 +146,7 @@ postid: 180009
     };
     ```
   - nlmsg_len: netlink报文的长度，按4字节对齐；包括(struct nlmsghdr)的长度和后面payload的长度；
-  - nlmsg_type: netlink报文的类型，不同的类型对应的netlink报文的结构也会不同，这些类型定义在头文件 <linux/rtnetlink.h> 中开头为"RTM_"的常数，本例中在发送netlink请求时类型为：RTM_GETROUTE，含义为从内核获取路由表，常用的常数有：
+  - nlmsg_type: netlink报文的类型，不同的类型对应的netlink报文的结构也会不同，这些类型定义在头文件 ```<linux/rtnetlink.h>``` 中开头为"RTM_"的常数，本例中在发送netlink请求时类型为：RTM_GETROUTE，含义为从内核获取路由表，常用的常数有：
     ```C
     NLMSG_NOOP      1       无用，可忽略
     NLMSG_ERROR     2       出现错误
@@ -156,7 +156,7 @@ postid: 180009
     RTM_NEWROUTE    24      新路由
     RTM_GETROUTE    26      从内核中获取路由表，发送netlink包请求时填写
     ```
-  - nl_flags: 附加标志，在 <linux/netlink.h> 中定义，每一位代表一个标志，与本文相关的定义如下：
+  - nl_flags: 附加标志，在 ```<linux/netlink.h>``` 中定义，每一位代表一个标志，与本文相关的定义如下：
     ```
     NLM_F_REQUEST   0x01    这是一个请求信息
     NLM_F_MULTI     0x02    分片信息包的一部分，直到收到NLMSG_DONE结束
@@ -204,7 +204,7 @@ postid: 180009
     };
     ```
   - RT_TABLE_UNSPEC表示是一个不明路由表；RT_TABLE_DEFAULT表示是一个默认路由表；RT_TABLE_MAIN表示是一个主路由表；RT_TABLE_LOCAL表示是一个本地路由表；在本例中，我们要得到的就是一个主路由表(RT_TABLE_MAIN)
-  - rtm_protocol是路由协议，在<linux/rtnetlink.h>中有定义：
+  - rtm_protocol是路由协议，在 ```<linux/rtnetlink.h>``` 中有定义：
     ```C
     #define RTPROT_UNSPEC     0     不明
     #define RTPROT_REDIRECT   1     当前的IPv4下没有使用
@@ -212,8 +212,8 @@ postid: 180009
     #define RTPROT_BOOT       3     路由在启动时设置
     #define RTPROT_STATIC     4     路由由管理员设置
     ```
-  - 在头文件<linux/rtnetlink.h>中专门有说明，当 rtm_protocol>RTPROT_STATIC 时，Linux内核将不予理会，只能作为用户信息；在本例中，我们得到的路由表应该是由内核或者管理员设置的，当然也可以是在启动中由某个启动例程设置，所以 **RTPROT_KERNEL**、**RTPROT_BOOT**或者**RTPROT_STATIC** 都是可能的；
-  - rtm_scope的值也是定义在<linux/rtnetlink.h>中，在这个头文件中说rtm_scope更像是一个到达目的地址的距离，它有下面几个可能的值：
+  - 在头文件 ```<linux/rtnetlink.h>``` 中专门有说明，当 rtm_protocol>RTPROT_STATIC 时，Linux内核将不予理会，只能作为用户信息；在本例中，我们得到的路由表应该是由内核或者管理员设置的，当然也可以是在启动中由某个启动例程设置，所以 **RTPROT_KERNEL**、**RTPROT_BOOT**或者**RTPROT_STATIC** 都是可能的；
+  - rtm_scope的值也是定义在 ```<linux/rtnetlink.h>``` 中，在这个头文件中说rtm_scope更像是一个到达目的地址的距离，它有下面几个可能的值：
     ```C
     enum rt_scope_t {
         RT_SCOPE_UNIVERSE=0,      /* global route */
@@ -225,7 +225,7 @@ postid: 180009
     };
     ```
   - 其实这个值没有什么意义，本例中会返回RT_SCOPE_UNIVERSE，表示是一个全球路由；
-  - rtm_type表示当前路由的类型(rtm_table表示路由表类型，和这个字段是不同的)，在<linux/rtnetlink.h>中定义：
+  - rtm_type表示当前路由的类型(rtm_table表示路由表类型，和这个字段是不同的)，在 ```<linux/rtnetlink.h>``` 中定义：
     ```C
     enum {
         RTN_UNSPEC,
@@ -246,7 +246,7 @@ postid: 180009
     };
     ```
   - 本例中，我们要获取的是gateway IP，所以内核返回的rtm_type为1(RTN_UNICAST)
-  - rtm_flags在本例中没有作用，其可能的值在<linux/rtnetlink.h>中定义：
+  - rtm_flags在本例中没有作用，其可能的值在 ```<linux/rtnetlink.h>``` 中定义：
     ```C
     #define RTM_F_NOTIFY        0x100     /* Notify user of route change */
     #define RTM_F_CLONED        0x200     /* This route is cloned */
@@ -256,7 +256,7 @@ postid: 180009
     #define RTM_F_FIB_MATCH     0x2000    /* return full fib lookup match */
     ```
 
-4. **struct rtattr** - 定义在头文件<linux/rtnetlink.h>中
+4. **struct rtattr** - 定义在头文件 ```<linux/rtnetlink.h>``` 中
   - 一个或多个(struct rtattr) + data将跟在(struct rtmsg)后面，data里表达着一个路由中的一项属性；
     ```C
     struct rtattr {
@@ -264,7 +264,7 @@ postid: 180009
         unsigned short  rta_type;
     };
     ```
-  - rta_len字段表示(struct rtattr) + data的总长度，rta_type表示data中的数据类型，在<linux/rtnetlink.h>中定义：
+  - rta_len字段表示(struct rtattr) + data的总长度，rta_type表示data中的数据类型，在 ```<linux/rtnetlink.h>``` 中定义：
     ```C
     enum rtattr_type_t {
         RTA_UNSPEC,
@@ -281,7 +281,7 @@ postid: 180009
         __RTA_MAX
     };
     ```
-  - 本例中只会用到前面几个定义，如果需要查看全部的rta_type的值，可以去<linux/rtnetlink.h>中去查找，以下仅就本文中用到的值做一下解释；
+  - 本例中只会用到前面几个定义，如果需要查看全部的rta_type的值，可以去 ```<linux/rtnetlink.h>``` 中去查找，以下仅就本文中用到的值做一下解释；
   - **RTA_UNSPEC** 表示data数据可以忽略；
   - **RTA_DST** 表示data中的数据为一个目的地址IP，data中数据结构为(struct in_addr)，一个32位16进制数字表示的IP地址；
   - **RTA_SRC** 表示data中的数据为一个源地址IP，data中数据结构为(struct in_addr)，一个32位16进制数字表示的IP地址；
@@ -295,7 +295,7 @@ postid: 180009
   - 本例中我们会遇到的rta_type有：RTA_DST、RTA_OIF、RTA_GATEWAY、RTA_PRIORITY、RTA_PREFSRC和RTA_TABLE。
 
 ## 3. netlink编程中常用的宏定义
-> 按照netlink手册中的要求，对(struct nlmsghdr)的访问要使用一组标准的宏来完成，本节将简单介绍这组宏，也可以使用在线手册 ```man 3 netlink``` 来更多地了解这组宏；这些宏定义在头文件<linux/netlink.h>中，必要时可以查看代码理解其意义。
+> 按照netlink手册中的要求，对(struct nlmsghdr)的访问要使用一组标准的宏来完成，本节将简单介绍这组宏，也可以使用在线手册 ```man 3 netlink``` 来更多地了解这组宏；这些宏定义在头文件 ```<linux/netlink.h>``` 中，必要时可以查看代码理解其意义。
 
 
 > 这些宏这样看上去会很枯燥，但在第5、6节和源代码中均会大量出现，可以先大致看一下，等看到相关章节遇到具体的宏时在回来仔细阅读。
@@ -336,7 +336,7 @@ postid: 180009
   - 举例来说，当len=0时，该宏将返回payload的长度，这也是这个宏的一种常用的方式。
 
 ## 4. rtnetlink编程中常用的宏
-> 在头文件<linux/rtnetlink.h>中定义了一组操作(struct rtmsg)的宏，以RTM_开头，只有两个；还定义了一组操作(struct rtattr)的宏，以RTA_开头，在这里简单介绍一下；使用在线手册 ```man rtnetlink``` 可以了解关于操作(struct rtattr)的宏的更详细的信息。
+> 在头文件 ```<linux/rtnetlink.h>``` 中定义了一组操作(struct rtmsg)的宏，以RTM_开头，只有两个；还定义了一组操作(struct rtattr)的宏，以RTA_开头，在这里简单介绍一下；使用在线手册 ```man rtnetlink``` 可以了解关于操作(struct rtattr)的宏的更详细的信息。
 
 
 > 这些宏这样看上去会很枯燥，但在第5、6节和源代码中均会大量出现，可以先大致看一下，等看到相关章节遇到具体的宏时在回来仔细阅读。

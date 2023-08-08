@@ -26,13 +26,13 @@ draft: false
 postid: 180010
 ---
 
-独立的TCP服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上及提供TCP服务，也提供UDP服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和TCP服务器合并成一个服务器，该服务器既可以提供UDP服务也可以提供TCP服务，本文将给出完整的源代码，阅读本文需要掌握基本的socket变成方法，本文对初学者难度不大。
+独立的 TCP 服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上既提供 TCP 服务，也提供 UDP 服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和 TCP 服务器合并成一个服务器，该服务器既可以提供 UDP 服务也可以提供 TCP 服务，本文将给出完整的源代码，阅读本文需要掌握基本的 socket 编程方法，本文对初学者难度不大。
 <!--more-->
 
 ## 1. 基本流程
-* 本示例一共有三个程序，tcp/udp服务器：tu-server.c，tcp客户端：t-client.c和udp客户端u-client.c
-* 服务器端程序的基本思路是：在程序中为tcp服务和udp服务各建立一个socket，将这两个socket放入readfds中，并将参数传递给select()，当readfds中(也就是tcp或者udp socket)的某一个有数据发过来(udp)或者有客户端连接请求(时)，select()将返回，程序判断是哪个socket需要处理然后根据需要进入TCP处理程序或者UDP处理程序处理socket事件；
-* 本例中，服务器端做了简单化处理，收到客户端信息后，并不作处理，对TCP客户端，回应"Hello TCP Client"，对UDP客户端，则回应"Hello UDP Client"；
+* 本示例一共有三个程序，```tcp/udp``` 服务器：```tu-server.c```，```tcp``` 客户端：```t-client.c``` 和 ```udp``` 客户端： ```u-client.c```
+* 服务器端程序的基本思路是：在程序中为 tcp 服务和 udp 服务各建立一个 socket，将这两个 socket 放入 readfds 中，并将参数传递给 ```select()```，当 readfds 中(也就是 tcp 或者 udp socket)的某一个有数据发过来(udp)或者有客户端连接请求时，```select()``` 将返回，程序判断是哪个 socket 需要处理然后根据需要进入 TCP 处理程序或者 UDP 处理程序处理 socket 事件；
+* 本例中，服务器端做了简单化处理，收到客户端信息后，并不作处理，对 TCP 客户端，回应 "Hello TCP Client"，对UDP客户端，则回应 "Hello UDP Client"；
 * 服务器端程序流程
   1. **建立一个用于侦听TCP连接请求的TCP socket**
     ```C
@@ -75,7 +75,7 @@ postid: 180010
     ```
     
   7. **处理TCP客户端发出的请求**
-    > 如果是TCP客户端发出请求，则接受客户端的连接请求，接收客户端发来的信息，然后回应"Hello TCP Client"，然后退出，回到步骤5；
+    > 如果是 TCP 客户端发出请求，则接受客户端的连接请求，接收客户端发来的信息，然后回应 "Hello TCP Client"，然后退出，回到步骤 5；
 
     ```C
     #define BUF_SIZE        1024
@@ -100,7 +100,7 @@ postid: 180010
     }
     ```
   8. **处理UDP客户端发来的消息**
-    > 如果是UDP客户端发来消息，则接收客户端发来的信息，然后回应"Hello UDP Client"，回到步骤5
+    > 如果是 UDP 客户端发来消息，则接收客户端发来的信息，然后回应 "Hello UDP Client"，回到步骤5
 
     ```C
     #define BUF_SIZE        1024
@@ -121,7 +121,7 @@ postid: 180010
     }
     ```
 
-* tcp客户端程序流程
+* tcp 客户端程序流程
   1. **建立一个TCP socket**
     ```C
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -202,9 +202,9 @@ postid: 180010
     close(sockfd);
     ```
 
-## 主要函数、宏和数据结构
+## 2. 主要函数、宏和数据结构
 * **select()函数**
-  - select()函数用于监视文件描述符的变化情况——可读、可写或是异常。
+  - ```select()``` 函数用于监视文件描述符的变化情况——可读、可写或是异常。
   - 函数定义
     ```C
     int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
@@ -217,7 +217,7 @@ postid: 180010
     5. timeout：等待select返回的事件；如果timeout=NULL，则一直等待，直至select返回；如果timeout=固定值，则等待固定时间后返回；如果timeout=0，则立即返回；
 
 * **struct timeval结构**
-  - 该结构用于指定select函数的超时时间
+  - 该结构用于指定 select 函数的超时时间
   - 定义
     ```C
     struct timeval {
@@ -225,32 +225,32 @@ postid: 180010
         long    tv_usec;        /* microseconds */
     };
     ```
-  - 如果希望select()等待5秒后返回，则要设置struct timeval timeout={5, 0};
+  - 如果希望 ```select()``` 等待5秒后返回，则要设置 ```struct timeval timeout={5, 0}```;
 
 * **fd_set**
-  - 文件描述符集，该结构定义在头文件sys/select.h中
-  - 本质上，fd_set是一个long int的数组，其中的每一位表示一个文件描述符，在x86-64中，long int长度为8个字节，64位，所以fd_set[0]可以表示文件描述符fd=0-63，fd_set[1]可以表示文件描述符fd=64-127；
+  - 文件描述符集，该结构定义在头文件 ```sys/select.h``` 中
+  - 本质上，fd_set 是一个 ```long int``` 的数组，其中的每一位表示一个文件描述符，在 ```x86-64``` 中，```long int``` 长度为 8 个字节，64 位，所以 ```fd_set[0]``` 可以表示文件描述符 ```fd=0-63```，```fd_set[1]``` 可以表示文件描述符 ```fd=64-127```；
   - fd_set是一个文件描述符的集合，当fd_set中的某一位为1，表示这个集合中包含有这个fd
 
 * **宏FD_ZERO**
-  - 该宏定义在头文件sys/select.h中
-  - 该宏可以将一个fd_set全部清空，下面的例子将fds清空
+  - 该宏定义在头文件 ```sys/select.h``` 中
+  - 该宏可以将一个 fd_set 全部清空，下面的例子将 fds 清空
     ```C
     fd_set fds;
-    FD_SET(fds);
+    FD_ZERO(fds);
     ```
 
 * **宏FD_SET**
-  - 该宏定义在头文件sys/select.h中
-  - 将指定的文件描述符fd加入到某一个文件描述符集fd_set中，下面的例子将文件描述符fd加入到文件描述符集fds中
+  - 该宏定义在头文件 ```sys/select.h``` 中
+  - 将指定的文件描述符 fd 加入到某一个文件描述符集 fd_set 中，下面的例子将文件描述符 fd 加入到文件描述符集 fds 中
     ```C
     fd_set fds;
     FD_SET(FD, fds);
     ```
 
 * **宏FD_ISSET**
-  - 该宏定义在头文件sys/select.h中
-  - 检查一个文件描述符集fds中是否有文件描述符fd，下面例子中检查文件描述符集fds中是否存在文件描述符fd
+  - 该宏定义在头文件 ```sys/select.h``` 中
+  - 检查一个文件描述符集 fds 中是否有文件描述符 fd，下面例子中检查文件描述符集 fds 中是否存在文件描述符 fd；
     ```C
     fd_set fds
     ......
@@ -266,8 +266,8 @@ postid: 180010
 * 其它函数和数据结构的介绍，请参考另两篇文章[《使用C语言实现服务器/客户端的UDP通信》][article1]和[《使用C语言实现服务器/客户端的TCP通信》][article2]
 
 ## 3. 实例
-* 本示例一共有三个程序，tcp/udp服务器：tu-server.c，tcp客户端：t-client.c和udp客户端u-client.c
-* 本示例演示了如何使用select机制在一个服务器程序里既提供TCP服务，又提供UDP服务；有些服务(比如聊天)，可以既允许UDP接入，也允许TCP接入的，这种情况下，这样一种机制就显得比较实用；
+* 本示例一共有三个程序，```tcp/udp``` 服务器：```tu-server.c```，tcp 客户端：```t-client.c``` 和 udp 客户端：```u-client.c```
+* 本示例演示了如何使用 ```select``` 机制在一个服务器程序里既提供 TCP 服务，又提供 UDP 服务；有些服务(比如聊天)，可以既允许 UDP 接入，也允许 TCP 接入的，这种情况下，这样一种机制就显得比较实用；
 * 服务器端程序：[tu-server.c][src01](**点击文件名下载源程序**)
 
 * 服务器端程序的编译
@@ -280,34 +280,34 @@ postid: 180010
     ```bash
     ./tu-server
     ```
-  - 假定服务器IP为192.168.2.112，在另一台机器上启动nc模拟客户端，测试TCP
+  - 假定服务器 IP 为 ```192.168.2.112```，在另一台机器上启动 nc 模拟客户端，测试 TCP
     ```bash
     nc -n 192.168.2.112 5000
     hello server
     ```
-  - 退出TCP测试，重新启动nc，测试UDP
+  - 退出 TCP 测试，重新启动 nc，测试 UDP
     ```bash
     nc -n -u 192.168.2.112 5000
     ```
-  - 有关nc命令的使用方法，可以参考另一篇文章[《如何在Linux命令行下发送和接收UDP数据包》][article3]
+  - 有关 nc 命令的使用方法，可以参考另一篇文章[《如何在Linux命令行下发送和接收UDP数据包》][article3]
   - 在服务器端的运行截屏
 
     ![screenshot of tcp/udp server test][img01]
 
   --------------
-  - TCP测试客户端的截屏
+  - TCP 测试客户端的截屏
 
     ![screenshot of tcp client test][img02]
 
   --------------
-  - UDP测试客户端的截屏
+  - UDP 测试客户端的截屏
 
     ![screenshot of udp client test][img03]
 
 *************
-* TCP客户端程序：[t-client.c][src02](**点击文件名下载源程序**)
+* TCP 客户端程序：[t-client.c][src02](**点击文件名下载源程序**)
 
-* UDP客户端程序：[u-client.c][src03](**点击文件名下载源程序**)
+* UDP 客户端程序：[u-client.c][src03](**点击文件名下载源程序**)
 
 * 客户端程序编译
   ```bash
@@ -316,7 +316,7 @@ postid: 180010
   ```
 
 * 程序运行
-  - 在服务器上(192.168.2.112)上运行服务器端程序
+  - 在服务器上(```192.168.2.112```)上运行服务器端程序
     ```bash
     ./tu-server
     ```
@@ -335,8 +335,8 @@ postid: 180010
     ![Screenshot of client][img05]
 
 ## 4. 后记
-* 服务器端对TCP连接的处理是在是太简陋了，因为TCP连接建立后，产生一个新的socket，本例中为conn_fd，通常的做法应该是把conn_fd也加入到rset中，这样就可以处理多个TCP连接了，同时在处理TCP连接时也不会让程序阻塞；
-* 服务器端对TCP连接的处理，也可以使用多线程的方式，即accept一个连接请求后，生成新的conn_fd，建立一个线程，专门处理这个connection，也不失为一个办法，但相对要复杂一些。
+* 服务器端对 TCP 连接的处理是在是太简陋了，因为 TCP 连接建立后，产生一个新的 socket，本例中为 conn_fd，通常的做法应该是把 conn_fd 也加入到 rset 中，这样就可以处理多个 TCP 连接了，同时在处理 TCP 连接时也不会让程序阻塞；
+* 服务器端对 TCP 连接的处理，也可以使用多线程的方式，即 accept 一个连接请求后，生成新的 conn_fd，建立一个线程，专门处理这个 connection，也不失为一个办法，但相对要复杂一些。
 
 -------------
 **欢迎访问我的博客：https://whowin.cn**

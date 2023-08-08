@@ -557,7 +557,7 @@ int main() {
             extract_ap_attributes(curr_event->event, &aps);  // 从event中提取wifi信号属性
         }
 
-        // Step 05: 显示wifi信号属性
+        // Step 07: 显示wifi信号属性
         //============================
         if (aps->mac != NULL) {
             printf("\n---- WIFI signal list ----");
@@ -577,7 +577,7 @@ int main() {
                 curr_ap = curr_ap->next;
             }
         }
-        // Step 06: 释放内存
+        // Step 08: 释放内存
         //===================
         free_events_chain(events);     // 释放event链表
         events = NULL;

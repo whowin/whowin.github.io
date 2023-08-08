@@ -32,41 +32,41 @@ postid: 100003
 <!--more-->
 
 ## CSI序列
-* **CSI**(Control Sequence Introducer)序列由 ```ESC [``` 开始，后面跟若干个参数字节(可以没有)，规定范围为 ```0x30-0x3F(ASCII 0–9:;<=>?)```；再跟若干个中间字节，规定范围为 ```0x20-0x2F(ASCII 空格以及!"#$%&'()*+,-./)```；然后再跟一个结束字符(单个字符)，规定范围为 ```0x40-0x7E(ASCII @A–Z[\]^_`a–z{|}~)```
+* **CSI**(Control Sequence Introducer)序列由 `ESC [` 开始，后面跟若干个参数字节(可以没有)，规定范围为 `0x30-0x3F(ASCII 0–9:;<=>?)`；再跟若干个中间字节，规定范围为 `0x20-0x2F(ASCII 空格以及!"#$%&'()*+,-./)`；然后再跟一个结束字符(单个字符)，规定范围为 ``0x40-0x7E(ASCII @A–Z[\]^_`a–z{|}~)``
   |组成部分|字符范围|ASCII|
   |:----:|:----:|:----|
-  |参数字节|0x30–0x3F|```0–9:;<=>?```|
-  |中间字节|0x20–0x2F|```空格、!"#$%&'()*+,-./```|
-  |最终字节|0x40–0x7E|@A–Z[\]^_`a–z{|}~|
-* 常见的序列通常是把一些数字用分号分隔开，例如 1;2;3，缺少的数字视为 0(比如：1;;3被视为1;0;3)，```ESC[m``` 这样没有参数的情况相当于参数为 0；
-* 某些序列（如下表中的CUU - 光标上移一行）把0视为1，以使在缺少参数的情况下有意义；
-* 下表摘自维基百科中 [CSI序列部分](https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#CSI%E5%BA%8F%E5%88%97)
+  |参数字节|0x30–0x3F|`0–9:;<=>?`|
+  |中间字节|0x20–0x2F|`空格、!"#$%&'()*+,-./`|
+  |最终字节|0x40–0x7E|``@A–Z[\]^_`a–z{|}~``|
+* 常见的序列通常是把一些数字用分号分隔开，例如 `1;2;3`，缺少的数字视为 0(比如：`1;;3` 被视为 `1;0;3`)，`ESC[m` 这样没有参数的情况相当于参数为 0；
+* 某些序列（如下表中的 CUU - 光标上移一行）把 0 视为 1，以使在缺少参数的情况下有意义；
+* 下表摘自维基百科中 [CSI序列部分][article02]
 * 一些ANSI控制序列（不完整列表）
   |编号|代码|名称|作用|
   |:--:|:--------|:----|:----|
-  |1|CSI n A|CUU – 光标上移(Cursor Up)|光标向指定的方向移动n(默认1)格。如果光标已在屏幕边缘，则无效|
-  |2|CSI n B|CUD – 光标下移(Cursor Down)|同上|
-  |3|CSI n C|CUF – 光标前移(Cursor Forward)|同上|
-  |4|CSI n D|CUB – 光标后移(Cursor Back)|同上|
-  |5|CSI n E|CNL – 光标移到下一行(Cursor Next Line)|光标移动到下面第n(默认1)行的开头。(非ANSI.SYS)|
-  |6|CSI n F|CPL – 光标移到上一行(Cursor Previous Line)|光标移动到上面第n(默认1)行的开头。(非ANSI.SYS)|
-  |7|CSI n G|CHA – 光标水平绝对(Cursor Horizontal Absolute)|光标移动到第n(默认1)列。(非ANSI.SYS)|
-  |8|CSI n ; m H|CUP – 光标位置(Cursor Position)|光标移动到第n行、第m列。值从1开始，且默认为1(左上角)。例如CSI ;5H和CSI 1;5H含义相同；CSI 17;H、CSI 17H和CSI 17;1H三者含义相同|
-  |9|CSI n J|ED – 擦除显示(Erase in Display)|清除屏幕的部分区域。如果n是0(或缺失)，则清除从光标位置到屏幕末尾的部分。如果n是1，则清除从光标位置到屏幕开头的部分。如果n是2，则清除整个屏幕(在DOS ANSI.SYS中，光标还会向左上方移动)。如果n是3，则清除整个屏幕，并删除回滚缓存区中的所有行(这个特性是xterm添加的，其他终端应用程序也支持)|
-  |10|CSI n K|EL – 擦除行(Erase in Line)|清除行内的部分区域。如果n是0(或缺失)，清除从光标位置到该行末尾的部分。如果n是1，清除从光标位置到该行开头的部分。如果n是2，清除整行，光标位置不变|
-  |11|CSI n S|SU – 向上滚动(Scroll Up)|整页向上滚动n(默认1)行。新行添加到底部。(非ANSI.SYS)|
-  |12|CSI n T|SD – 向下滚动(Scroll Down)|整页向下滚动n（默认1）行。新行添加到顶部。(非ANSI.SYS)|
-  |13|CSI n ; m f|HVP – 水平垂直位置(Horizontal Vertical Position)|同CUP|
-  |14|CSI n m|SGR – 选择图形渲染(Select Graphic Rendition)|设置SGR参数，包括文字颜色。<br/>CSI后可以是0或者更多参数，用分号分隔。如果没有参数，则视为CSI 0 m(重置/常规)|
-  |15|CSI 5i|打开辅助端口|启用辅助串行端口，通常用于本地串行打印机|
-  |16|CSI 4i|关闭辅助端口|禁用辅助串行端口，通常用于本地串行打印机|
-  |17|CSI 6n|DSR – 设备状态报告(Device Status Report)|以ESC[n;mR(就像在键盘上输入)向应用程序报告光标位置(CPR)，其中n是行，m是列|
-  |18|CSI s|SCP – 保存光标位置(Save Cursor Position)|保存光标的当前位置|
-  |19|CSI u|RCP – 恢复光标位置(Restore Cursor Position)|恢复保存的光标位置|
+  |1|`CSI n A`|CUU – 光标上移<br/>(Cursor Up)|光标向指定的方向移动n(默认1)格。如果光标已在屏幕边缘，则无效|
+  |2|`CSI n B`|CUD – 光标下移<br/>(Cursor Down)|同上|
+  |3|`CSI n C`|CUF – 光标前移<br/>(Cursor Forward)|同上|
+  |4|`CSI n D`|CUB – 光标后移<br/>(Cursor Back)|同上|
+  |5|`CSI n E`|CNL – 光标移到下一行<br/>(Cursor Next Line)|光标移动到下面第n(默认1)行的开头。(非ANSI.SYS)|
+  |6|`CSI n F`|CPL – 光标移到上一行<br/>(Cursor Previous Line)|光标移动到上面第n(默认1)行的开头。(非ANSI.SYS)|
+  |7|`CSI n G`|CHA – 光标水平绝对<br/>(Cursor Horizontal Absolute)|光标移动到第n(默认1)列。(非ANSI.SYS)|
+  |8|`CSI n ; m H`|CUP – 光标位置<br/>(Cursor Position)|光标移动到第n行、第m列。<br/>值从1开始，且默认为1(左上角)。例如`CSI ;5H`和`CSI 1;5H`含义相同；<br/>`CSI 17;H`、`CSI 17H`和`CSI 17;1H`三者含义相同|
+  |9|`CSI n J`|ED – 擦除显示<br/>(Erase in Display)|清除屏幕的部分区域。<br/>如果n是0(或缺失)，则清除从光标位置到屏幕末尾的部分。<br/>如果n是1，则清除从光标位置到屏幕开头的部分。<br/>如果n是2，则清除整个屏幕(在DOS ANSI.SYS中，光标还会向左上方移动)。<br/>如果n是3，则清除整个屏幕，并删除回滚缓存区中的所有行(这个特性是xterm添加的，其他终端应用程序也支持)|
+  |10|`CSI n K`|EL – 擦除行<br/>(Erase in Line)|清除行内的部分区域。<br/>如果n是0(或缺失)，清除从光标位置到该行末尾的部分。<br/>如果n是1，清除从光标位置到该行开头的部分。<br/>如果n是2，清除整行，光标位置不变|
+  |11|`CSI n S`|SU – 向上滚动<br/>(Scroll Up)|整页向上滚动n(默认1)行。新行添加到底部。(非ANSI.SYS)|
+  |12|`CSI n T`|SD – 向下滚动<br/>(Scroll Down)|整页向下滚动n（默认1）行。新行添加到顶部。(非ANSI.SYS)|
+  |13|`CSI n ; m f`|HVP – 水平垂直位置<br/>(Horizontal Vertical Position)|同CUP|
+  |14|`CSI n m`|SGR – 选择图形渲染<br/>(Select Graphic Rendition)|设置SGR参数，包括文字颜色。<br/>CSI后可以是0或者更多参数，用分号分隔。<br/>如果没有参数，则视为`CSI 0 m`(重置/常规)|
+  |15|`CSI 5i`|打开辅助端口|启用辅助串行端口，通常用于本地串行打印机|
+  |16|`CSI 4i`|关闭辅助端口|禁用辅助串行端口，通常用于本地串行打印机|
+  |17|`CSI 6n`|DSR – 设备状态报告<br/>(Device Status Report)|以`ESC[n;mR`(就像在键盘上输入)向应用程序报告光标位置(CPR)，<br/>其中n是行，m是列|
+  |18|`CSI s`|SCP – 保存光标位置<br/>(Save Cursor Position)|保存光标的当前位置|
+  |19|`CSI u`|RCP – 恢复光标位置<br/>(Restore Cursor Position)|恢复保存的光标位置|
 
 ## SGR参数
-* SGR(Select Graphic Rendition)参数是ANSI转义序列中一组用于控制光标和字体的控制代码
-* 以下内容摘自维基百科中[SGR参数部分](https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#%E9%80%89%E6%8B%A9%E5%9B%BE%E5%BD%A2%E5%86%8D%E7%8E%B0%EF%BC%88SGR%EF%BC%89%E5%8F%82%E6%95%B0)
+* SGR(Select Graphic Rendition) 参数是 ANSI 转义序列中一组用于控制光标和字体的控制代码
+* 以下内容摘自维基百科中[SGR参数部分][article03]
 
   |代码|作用|备注|
   |:--:|:----|:----|
@@ -92,10 +92,10 @@ postid: 100003
   |28|关闭隐藏||
   |29|关闭划除||
   |30–37|设置前景色	参见下面的颜色表|
-  |38|设置前景色|下一个参数是5;n或2;r;g;b，见下|
+  |38|设置前景色|下一个参数是`5;n`或`2;r;g;b`，见下|
   |39|默认前景色|由具体实现定义（按照标准）|
   |40–47|设置背景色|参见下面的颜色表|
-  |48|设置背景色|下一个参数是5;n或2;r;g;b，见下|
+  |48|设置背景色|下一个参数是`5;n`或`2;r;g;b`，见下|
   |49|默认背景色|由具体实现定义（按照标准）|
   |51|Framed||
   |52|Encircled||
@@ -112,10 +112,10 @@ postid: 100003
   |100–107|设置明亮的背景色|aixterm（非标准）|
 
 ## 颜色编码
-* 以下内容摘自维基百科中[颜色部分](https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#%E9%A2%9C%E8%89%B2)
+* 以下内容摘自维基百科中[颜色部分][article04]
 * 3bit 和 4bit 色彩
   - 因为最早的终端的颜色在硬件上只有 3bits，颜色只有 8 种，所以早期的规范中只给这 8 种颜色做了命名；SRG参数的 30-37 用于选择前景色，40-47 用于选择背景色；SGR 编码中 1 表示字体加粗，但那时许多终端并不是把粗体字(SGR码为 1)当成一个字体，而是使用更明亮的色彩来实现所谓"粗体"，通常你无法把这种加亮的色彩用作背景色
-  - 例如：使用 ```ESC[30;47m``` 是白底黑字的效果，使用 ```ESC[31m``` 变成红字，使用 ```ESC[1;31m``` 会变成加亮的红字；```ESC[39;49m``` 将恢复到默认的前景、背景色(有些终端不支持)，使用 ```ESC[0m``` 关闭所有属性也可以恢复默认设置
+  - 例如：使用 `ESC[30;47m` 是白底黑字的效果，使用 `ESC[31m` 变成红字，使用 `ESC[1;31m` 会变成加亮的红字；`ESC[39;49m` 将恢复到默认的前景、背景色(有些终端不支持)，使用 `ESC[0m` 关闭所有属性也可以恢复默认设置
   - 后来随着技术的进步，终端都增加了直接设置高亮前景色和背景色的功能，前景色使用代码 90-97，背景色使用代码 100-107
   - 随着硬件的进步，开始使用 8bits 的 DAC(Digital-to-Analog Converters 数模转换器)，许多软件开始使用 24bit 的颜色编码
     |颜色名称|前景色代码|背景色代码|
@@ -139,7 +139,7 @@ postid: 100003
   - 这部分在维基百科中看会更加直观
 * 8bit 色彩
   - 随着 256 色的图形卡越来越普遍，相应的转义序列也跟着做了变更，可以从预定义的 256 种颜色中选择色彩
-    ```
+    ```plain
     ESC[38;5;⟨n⟩m ---- 选择前景色
     ESC[48;5;⟨n⟩m ---- 选择背景色
       0-  7:  标准色彩 (相当于 ESC [ 30–37 m)
@@ -148,16 +148,16 @@ postid: 100003
     232-255:  从黑到白工 24 级灰度
     ```
 * 24bit色彩
-  - 随着有着 16-24bit 种颜色的"真彩"图像卡越来越普遍，应用程序开始支持 24bit 的色彩，Xterm 等终端仿真器开始支持使用转义序列设置24位前景和背景颜色
-    ```
+  - 随着有着 16-24bit 种颜色的"真彩"图像卡越来越普遍，应用程序开始支持 24bit 的色彩，Xterm 等终端仿真器开始支持使用转义序列设置 24 位前景和背景颜色
+    ```plain
     ESC[ 38;2;⟨r⟩;⟨g⟩;⟨b⟩ m ---- 选择 RGB 前景色
     ESC[ 48;2;⟨r⟩;⟨g⟩;⟨b⟩ m ---- 选择 RGB 背景色
     ```
 
 ## OSC 序列
-* 以下内容译自wikipedia[OSC (Operating System Command) sequences](https://en.wikipedia.org/wiki/ANSI_escape_code#OSC_(Operating_System_Command)_sequences)
+* 以下内容译自wikipedia[OSC (Operating System Command) sequences][article05]
 * 在另一篇文章[《关于bash下变量PS1的完整理解》][article01]会用到这个说明
-* 大多数 OSC(Operating System Command)序列都是由 Xterm 定义的，但许多其他仿真终端也支持 OSC 序列。由于历史原因，Xterm 可以使用 BEL(ASCII 007) 结束命令，也可以使用标准 ST(ESC \) 结束命令。例如，Xterm 允许使用 **```\033]0；window title\007```** 设置窗口标题
+* 大多数 OSC(Operating System Command)序列都是由 Xterm 定义的，但许多其他仿真终端也支持 OSC 序列。由于历史原因，Xterm 可以使用 BEL(ASCII 007) 结束命令，也可以使用标准 `ST(ESC \)` 结束命令。例如，Xterm 允许使用 `\033]0；window title\007` 设置窗口标题。
 
 
 -------------
@@ -171,4 +171,8 @@ postid: 100003
 
 
 
-[article01]: ../0001-environment-variables-and-shell-variables/
+[article01]: https://whowin.gitee.io/post/blog/linux/0001-environment-variables-and-shell-variables/
+[article02]: https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#CSI%E5%BA%8F%E5%88%97
+[article03]: https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#%E9%80%89%E6%8B%A9%E5%9B%BE%E5%BD%A2%E5%86%8D%E7%8E%B0%EF%BC%88SGR%EF%BC%89%E5%8F%82%E6%95%B0
+[article04]: https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#%E9%A2%9C%E8%89%B2
+[article05]: https://en.wikipedia.org/wiki/ANSI_escape_code#OSC_(Operating_System_Command)_sequences

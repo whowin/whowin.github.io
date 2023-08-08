@@ -22,7 +22,7 @@ draft: true
 # - [How to: Raw sockets in IPv6](https://blog.apnic.net/2017/10/24/raw-sockets-ipv6/)
 #   - 本文素材取自该文
 #   - 文章中对应的 [github sourcecode](https://github.com/gih900/IPv6--DNS-Frag-Test-Rig)
-postid: 180021
+postid: 180024
 ---
 
 
