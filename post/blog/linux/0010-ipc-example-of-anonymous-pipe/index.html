@@ -50,7 +50,7 @@
 <meta itemprop="name" content="IPC之一：使用匿名管道进行父子进程间通信的例子">
 <meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍匿名管道(又称管道、半双工管道)，尽管很多人在编程中使用过管道，但一些特殊的用法还是鲜有文章涉及，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读"><meta itemprop="datePublished" content="2023-07-28T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-07-28T16:43:29+08:00" />
-<meta itemprop="wordCount" content="5325">
+<meta itemprop="wordCount" content="5484">
 <meta itemprop="keywords" content="Linux,进程间通信,pipe,匿名管道," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IPC之一：使用匿名管道进行父子进程间通信的例子"/>
 <meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍匿名管道(又称管道、半双工管道)，尽管很多人在编程中使用过管道，但一些特殊的用法还是鲜有文章涉及，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读"/>
@@ -221,7 +221,7 @@
 </li>
 <li>
 <p>下图展示了一个进程创建管道后，进程与内核的关系：</p>
-<p><img src="/images/100010/pipe-process-kernel.png" alt="process and kernel"></p>
+<p><img src="https://whowin.gitee.io/images/100010/pipe-process-kernel.png" alt="process and kernel"></p>
 </li>
 <li>
 <p>从上图中，可以看出以下几点：</p>
@@ -235,14 +235,14 @@
 </li>
 <li>
 <p>下图描述了父进程、子进程和内核的关系</p>
-<p><img src="/images/100010/pipe-parent-child-process-kernel.png" alt="parent-child processes and kernel"></p>
+<p><img src="https://whowin.gitee.io/images/100010/pipe-parent-child-process-kernel.png" alt="parent-child processes and kernel"></p>
 </li>
 <li>
 <p>从上图中，我们可以看到，父进程和子进程都可以访问管道的两个文件描述符，但是很显然，如果父进程和子进程同时向 <code>fd[1]</code> 写入数据，一定会造成混乱，而且如果父、子进程均向 <code>fd[1]</code> 写入数据，当从 <code>fd[0]</code> 读出数据时，并无法区分读到的数据是那个进程写入的；所以必须要做出抉择，这个建立的管道的数据是向那个方向流动，从父进程流向子进程？还是从子进程流向父进程？两个进程必须达成一致，否则会出现混乱；</p>
 </li>
 <li>
 <p>为了讨论方便，我们假定子进程要做一些事务，然后把结果通过管道发送给父进程，如下面图示：</p>
-<p><img src="/images/100010/data-from-child-to-parent.png" alt="Data flows from child to parent process"></p>
+<p><img src="https://whowin.gitee.io/images/100010/data-from-child-to-parent.png" alt="Data flows from child to parent process"></p>
 </li>
 <li>
 <p>至此，管道已经建立完毕，下面就是如何使用管道；前面提到过，管道的文件描述符使用 <code>inode</code>，所以可以使用低级文件 I/O 的系统调用来直接访问管道；</p>
@@ -417,7 +417,7 @@
 </div>
 </div></li>
 <li>如前所述，建立了管道以后，就可以像对待普通文件描述符一样对待管道描述符；</li>
-<li>源程序：<a href="/sourcecodes/100010/pipe.c">pipe.c</a>(<strong>点击文件名下载源程序</strong>)演示了子进程向父进程发送信息：Hello, world!</li>
+<li>源程序：<a href="https://whowin.gitee.io/sourcecodes/100010/pipe.c">pipe.c</a>(<strong>点击文件名下载源程序</strong>)演示了子进程向父进程发送信息：Hello, world!</li>
 </ul>
 <h2 id="4-在管道上使用-dup">4 在管道上使用 dup()</h2>
 <ul>
@@ -498,10 +498,10 @@
 </li>
 <li>
 <p>下图或许可以更直观地描述这种使用方法：</p>
-<p><img src="/images/100010/pipe-with-dup.png" alt="pipe with dup()"></p>
+<p><img src="https://whowin.gitee.io/images/100010/pipe-with-dup.png" alt="pipe with dup()"></p>
 </li>
 <li>
-<p>源程序：<a href="/sourcecodes/100010/pipe-dup-stdin.c">pipe-dup-stdin.c</a>(<strong>点击文件名下载源程序</strong>)演示了在管道中使用 <code>dup2()</code> 将 fd[0] 复制到 <code>STDIN</code> 的方法：</p>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/100010/pipe-dup-stdin.c">pipe-dup-stdin.c</a>(<strong>点击文件名下载源程序</strong>)演示了在管道中使用 <code>dup2()</code> 将 fd[0] 复制到 <code>STDIN</code> 的方法：</p>
 <blockquote>
 <p>子进程中把 fd[0] 复制到 <code>STDIN</code>，然后启动 <code>sort</code>，父进程向管道中写入若干个单词，每个单词以 <code>\n</code> 结尾，<code>sort</code> 从 <code>STDIN</code> 读入数据，实际上是从管道中读入数据，所以 <code>sort</code> 程序会对这些单词进行排序，并把结果写入文件 <code>sort.log</code> 中，程序运行完毕后，使用 <code>cat sort.log</code> 可以看到经过排序的单词；</p>
 </blockquote>
@@ -510,7 +510,7 @@
 <p>同样道理，也可以在子进程中把管道的输入端(<code>fd[1]</code>)复制到 <code>STDOUT</code> 上，这样，当子进程中启动的程序向 <code>STDOUT</code> 输出时，实际上是在向管道上写入数据；</p>
 </li>
 <li>
-<p>源程序：<a href="/sourcecodes/100010/pipe-dup-stdout.c">pipe-dup-stdout.c</a>(<strong>点击文件名下载源程序</strong>)演示了在管道中使用 <code>dup2()</code> 将 fd[1] 复制到 <code>STDOUT</code> 的方法：</p>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/100010/pipe-dup-stdout.c">pipe-dup-stdout.c</a>(<strong>点击文件名下载源程序</strong>)演示了在管道中使用 <code>dup2()</code> 将 fd[1] 复制到 <code>STDOUT</code> 的方法：</p>
 <blockquote>
 <p>子进程中把 <code>fd[1]</code> 复制到 <code>STDOUT</code>，然后启动 <code>uname</code>，<code>uname -r</code> 会输出一个字符串到 <code>STDOUT</code>，实际上是写入到了管道中，父进程从管道中收到了这个字符串并显示出来；</p>
 </blockquote>
@@ -587,7 +587,7 @@
 <p><code>pclose()</code> 函数对由 <code>popen()</code> 派生的进程执行 <code>wait4()</code>，当 <code>wait4()</code> 返回时，它会销毁管道和文件流；</p>
 </li>
 <li>
-<p>源程序：<a href="/sourcecodes/100010/pipe-popen.c">pipe-popen.c</a>(<strong>点击文件名下载源程序</strong>)完成与前面的例子 <a href="/sourcecodes/100010/pipe-dup-stdin.c">pipe-dup-stdin.c</a> 一样的功能，但看上去要简单的多；</p>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/100010/pipe-popen.c">pipe-popen.c</a>(<strong>点击文件名下载源程序</strong>)完成与前面的例子 <a href="https://whowin.gitee.io/sourcecodes/100010/pipe-dup-stdin.c">pipe-dup-stdin.c</a> 一样的功能，但看上去要简单的多；</p>
 </li>
 <li>
 <p>由于 <code>popen()</code> 使用 <code>shell</code> 来执行命令，因此 <code>shell</code> 扩展字符和元字符都可以使用，此外，使用 popen() 打开管道时，可以使用一些高级技术来执行命令，例如重定向，甚至输出管道；以下调用示例分别使用了扩展字符、重定向和输出管道：</p>
@@ -605,10 +605,10 @@
 </div>
 </div></li>
 <li>
-<p>源程序：<a href="/sourcecodes/100010/pipe-popen2.c">pipe-popen2.c</a>(<strong>点击文件名下载源程序</strong>)打开了两个管道，一个用于 <code>ls</code> 命令，另一个用于 <code>sort</code> 命令；</p>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/100010/pipe-popen2.c">pipe-popen2.c</a>(<strong>点击文件名下载源程序</strong>)打开了两个管道，一个用于 <code>ls</code> 命令，另一个用于 <code>sort</code> 命令；</p>
 </li>
 <li>
-<p>下面这个例子试图编写一个通用的管道程序，源程序文件：<a href="/sourcecodes/100010/pipe-popen3.c">pipe-popen3.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>下面这个例子试图编写一个通用的管道程序，源程序文件：<a href="https://whowin.gitee.io/sourcecodes/100010/pipe-popen3.c">pipe-popen3.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 <ul>
 <li>使用方法为：<code>./pipe-popen3 [command] [filename]</code></li>
 <li>该程序会首先打开文件 <code>filename</code></li>
@@ -666,7 +666,15 @@
 <li><code>pipe()</code> 调用必须在 <code>fork()</code> 调用之前进行，否则描述符将不会被子进程继承；</li>
 <li>使用匿名管道进行通信的进程都必须有一个共同的祖先，而且这个祖先必须是管道的创建者，由于管道位于内核中，不在管道创建者祖先中的进程都无法对其进行寻址，这与命名管道(FIFO)是不同；</li>
 <li>由于使用管道的一些限制，在进程间进行通讯时，管道实际上并不是一个常用的方法，但是，如果需要使用已有的 Linux 命令处理数据，或者从 Linux 命令获得结果数据，管道不失为一个好的选择；</li>
-<li>匿名管道的生命周期与创建它的进程的生命周期一致，当进程结束时，其创建的匿名管道也将被销毁。</li>
+<li>匿名管道的生命周期与创建它的进程的生命周期一致，当进程结束时，其创建的匿名管道也将被销毁；</li>
+<li>尽管在本文的所有实例中，从管道传输的数据都是字符串，但管道是可以传输二进制数据的，也就是说，可以把一个结构完整第通过管道进行传输。</li>
+<li>有关进程间通信(IPC)的的其它文章：
+<ul>
+<li><a href="https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></li>
+</ul>
+</li>
 </ul>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>

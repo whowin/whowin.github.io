@@ -6,38 +6,65 @@
     <description>Recent content in Tags on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 05 Aug 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 01 Sep 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Linux</title>
       <link>https://whowin.gitee.io/tags/linux/</link>
-      <pubDate>Sat, 05 Aug 2023 16:43:29 +0800</pubDate>
+      <pubDate>Fri, 01 Sep 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/linux/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Message queues</title>
-      <link>https://whowin.gitee.io/tags/message-queues/</link>
-      <pubDate>Sat, 05 Aug 2023 16:43:29 +0800</pubDate>
+      <title>semaphore</title>
+      <link>https://whowin.gitee.io/tags/semaphore/</link>
+      <pubDate>Fri, 01 Sep 2023 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/tags/message-queues/</guid>
+      <guid>https://whowin.gitee.io/tags/semaphore/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>system V</title>
+      <link>https://whowin.gitee.io/tags/system-v/</link>
+      <pubDate>Fri, 01 Sep 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/system-v/</guid>
       <description></description>
     </item>
     
     <item>
       <title>进程间通信</title>
       <link>https://whowin.gitee.io/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</link>
-      <pubDate>Sat, 05 Aug 2023 16:43:29 +0800</pubDate>
+      <pubDate>Fri, 01 Sep 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>信号量</title>
+      <link>https://whowin.gitee.io/tags/%E4%BF%A1%E5%8F%B7%E9%87%8F/</link>
+      <pubDate>Fri, 01 Sep 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/%E4%BF%A1%E5%8F%B7%E9%87%8F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Message queues</title>
+      <link>https://whowin.gitee.io/tags/message-queues/</link>
+      <pubDate>Sun, 20 Aug 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/message-queues/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>消息队列</title>
       <link>https://whowin.gitee.io/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/</link>
-      <pubDate>Sat, 05 Aug 2023 16:43:29 +0800</pubDate>
+      <pubDate>Sun, 20 Aug 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/</guid>
       <description></description>

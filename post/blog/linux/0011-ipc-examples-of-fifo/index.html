@@ -50,7 +50,7 @@
 <meta itemprop="name" content="IPC之二：使用命名管道(FIFO)进行进程间通信的例子">
 <meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍命名管道(FIFO)，命名管道可以完成同一台计算机上的进程之间的通信，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。"><meta itemprop="datePublished" content="2023-08-02T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-08-02T16:43:29+08:00" />
-<meta itemprop="wordCount" content="6605">
+<meta itemprop="wordCount" content="6830">
 <meta itemprop="keywords" content="Linux,进程间通信,FIFO,命名管道," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IPC之二：使用命名管道(FIFO)进行进程间通信的例子"/>
 <meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍命名管道(FIFO)，命名管道可以完成同一台计算机上的进程之间的通信，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。"/>
@@ -233,7 +233,7 @@
 </li>
 <li>
 <p>使用 <code>ls -l myfifo</code> 可以查看我们刚刚创建的 FIFO，文件权限最前面的 &ldquo;p&rdquo;，表示这个文件是个命名管道 FIFO；</p>
-<p><img src="/images/100011/screenshot-ls-fifo.png" alt="Screenshot for ls fifo"></p>
+<p><img src="https://whowin.gitee.io/images/100011/screenshot-ls-fifo.png" alt="Screenshot for ls fifo"></p>
 </li>
 <li>
 <p>使用 <code>mknod</code> 创建 FIFO 时，可以使用参数 <code>-m 权限</code> 来设置权限，比如：<code>mknod -m 0644 myfifo p</code> 命令，创建的 FIFO 只有拥有者可读写，其它用户只读；</p>
@@ -353,7 +353,7 @@
 </li>
 <li>
 <p>可以使用 shell 命令 <code>umask</code> 查看当前的 <code>umask</code></p>
-<p><img src="/images/100011/screenshot-of-umask.png" alt="Screenshot of umask"></p>
+<p><img src="https://whowin.gitee.io/images/100011/screenshot-of-umask.png" alt="Screenshot of umask"></p>
 </li>
 <li>
 <p>为了保证创建的 FIFO 文件的权限，可以在调用 <code>mknod()</code> 前临时删除 <code>umask</code></p>
@@ -467,8 +467,8 @@
 <li>
 <p>下面是一个使用 FIFO 传递消息的实例，分为两个独立的程序</p>
 <ul>
-<li>服务端源程序：<a href="/sourcecodes/100011/fifo-server.c">fifo-server.c</a>(<strong>点击文件名下载源程序</strong>)，从 FIFO 上接收数据</li>
-<li>客户端源程序：<a href="/sourcecodes/100011/fifo-client.c">fifo-client.c</a>(<strong>点击文件名下载源程序</strong>)，向 FIFO 中写入消息</li>
+<li>服务端源程序：<a href="https://whowin.gitee.io/sourcecodes/100011/fifo-server.c">fifo-server.c</a>(<strong>点击文件名下载源程序</strong>)，从 FIFO 上接收数据</li>
+<li>客户端源程序：<a href="https://whowin.gitee.io/sourcecodes/100011/fifo-client.c">fifo-client.c</a>(<strong>点击文件名下载源程序</strong>)，向 FIFO 中写入消息</li>
 <li>这个实例中使用 <code>fopen()</code> 打开 FIFO，客户端使用 <code>fputs()</code> 向 FIFO 中写入数据，服务端使用 <code>fgets()</code> 从 FIFO 中读出数据，使用 <code>fclose()</code> 关闭 FIFO；</li>
 <li>也可以使用 <code>open()/write()/read()/close()</code> 这组系统调用来进行 FIFO 的操作；</li>
 <li>这个实例使用 <code>mknod()</code> 创建 FIFO，当然也可以使用 <code>mkfifo()</code> 创建 FIFO；</li>
@@ -512,7 +512,7 @@
 </li>
 <li>
 <p><code>fifo-server</code> 的运行截图：</p>
-<p><img src="/images/100011/screenshot-fifo-server.png" alt="Screen of fifo-server"></p>
+<p><img src="https://whowin.gitee.io/images/100011/screenshot-fifo-server.png" alt="Screen of fifo-server"></p>
 </li>
 </ul>
 <hr>
@@ -592,7 +592,7 @@
 <p>写入数据时，<code>write()</code> 也会返回错误，所以，通常情况下并不一定要捕捉 SIGPIPE 信号；</p>
 </li>
 <li>
-<p>源程序：<a href="/sourcecodes/100011/fifo-sigpipe.c">fifo-sigpipe.c</a>(<strong>点击文件名下载源程序</strong>)演示了在向 FIFO 写入数据时，如何截获 SIGPIPE 信号；</p>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/100011/fifo-sigpipe.c">fifo-sigpipe.c</a>(<strong>点击文件名下载源程序</strong>)演示了在向 FIFO 写入数据时，如何截获 SIGPIPE 信号；</p>
 <ul>
 <li>编译：<code>gcc -Wall fifo-sigpipe.c -o fifo-sigpipe</code></li>
 <li>运行这个程序需要两个终端窗口，在第一个终端上运行：<code>./fifo-sigpipe</code>，程序运行后将被阻塞在 <code>open()</code> 上，在第二个终端上运行：<code>cat myfifo</code>，来模拟从 FIFO 中读取数据；</li>
@@ -610,7 +610,7 @@
 </ul>
 </li>
 <li>
-<p>源程序：<a href="/sourcecodes/100011/fifo-eof.c">fifo-eof.c</a>(<strong>点击文件名下载源程序</strong>)演示了在从 FIFO 中读数据时，如何截获 EOF；</p>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/100011/fifo-eof.c">fifo-eof.c</a>(<strong>点击文件名下载源程序</strong>)演示了在从 FIFO 中读数据时，如何截获 EOF；</p>
 <ul>
 <li>编译：<code>gcc -Wall fifo-eof.c -o fifo-eof</code></li>
 <li>运行这个程序需要两个终端窗口，在第一个终端上运行：<code>./fifo-eof</code>，程序运行后将被阻塞在 <code>open()</code> 上，在第二个终端上运行：<code>echo &quot;Hello world&quot;&gt;myfifo</code>，来模拟向 FIFO 写入数据；</li>
@@ -625,10 +625,10 @@
 <li>使用流式文件的操作函数(<code>fopen()/fread()/fwrite()/fclose()</code>等)是可以操作 FIFO 的，这个在前面的实例中已经有演示，但是与低级文件I/O的系统调用比是有一些差异的，本节将讨论已经发现的一些差异；</li>
 <li>使用流式文件的方式从 FIFO 中读出数据时，如果遇到 EOF，必须要关闭 FIFO，然后再次打开，才能继续从 FIFO 中读取数据；
 <ul>
-<li><a href="/sourcecodes/100011/fifo-server.c">fifo-server.c</a> 这个实例中，演示了流式文件方式从 FIFO 中读取数据时，遇到 EOF 需要再次打开 FIFO 的过程；</li>
+<li><a href="https://whowin.gitee.io/sourcecodes/100011/fifo-server.c">fifo-server.c</a> 这个实例中，演示了流式文件方式从 FIFO 中读取数据时，遇到 EOF 需要再次打开 FIFO 的过程；</li>
 <li>读者可以尝试修改这个程序，在遇到 EOF 后不关闭 FIFO，继续读取数据，是读不出数据的；</li>
 <li>但是使用低级文件 I/O (<code>open()/read()/write()/close()</code>)操作 FIFO，在遇到 EOF 时，则不需要关闭 FIFO；</li>
-<li><a href="/sourcecodes/100011/fifo-eof.c">fifo-eof.c</a> 这个实例中，演示了使用低级文件 I/O 从 FIFO 中读取数据时，遇到 EOF 无需关闭 FIFO 的过程；</li>
+<li><a href="https://whowin.gitee.io/sourcecodes/100011/fifo-eof.c">fifo-eof.c</a> 这个实例中，演示了使用低级文件 I/O 从 FIFO 中读取数据时，遇到 EOF 无需关闭 FIFO 的过程；</li>
 </ul>
 </li>
 <li>当使用流式文件的方式向 FIFO 中写入数据时，因为流式文件缓存的原因，写入的数据可能不会马上进入到 FIFO 中；
@@ -647,25 +647,34 @@
 </ul>
 <h2 id="8-后记">8 后记</h2>
 <ul>
-<li>本文涉及的所有观点均编有测试程序进行测试，限于篇幅，不能都列在文章中；</li>
-<li>以本文提供的四个范例已经足够衍生出很多的测试程序：
+<li>
+<p>本文涉及的所有观点均编有测试程序进行测试，限于篇幅，不能都列在文章中；</p>
+</li>
+<li>
+<p>以本文提供的四个范例已经足够衍生出很多的测试程序：</p>
 <ul>
-<li><a href="/sourcecodes/100011/fifo-server.c">fifo-server.c</a> - 是使用流式文件的方式从 FIFO 中读数据的，可以尝试将 <code>fopen()/fclose()</code> 放在循环外面，可以验证使用流式文件的方式读取 FIFO 时遇到 EOF 需要重新打开 FIFO 的观点；</li>
-<li><a href="/sourcecodes/100011/fifo-server.c">fifo-server.c</a> - 可以将这个程序改成使用低级文件 I/O 读取 FIFO 的方式，以比较流式文件的操作函数和低级文件 I/O 的操作函数之间的差异；</li>
-<li><a href="/sourcecodes/100011/fifo-client.c">fifo-client.c</a> - 可以加一个循环，使程序每隔 5 秒向 FIFO 写入一次数据，同时去掉 <code>fflush()</code>，可以验证流式文件的缓存对 FIFO 写入的影响；</li>
-<li><a href="/sourcecodes/100011/fifo-client.c">fifo-client.c</a> - 可以将其改成使用低级文件 I/O 写入 FIFO 的方式，以比较流式文件的操作函数和低级文件 I/O 的操作函数之间的差异；</li>
-<li><a href="/sourcecodes/100011/fifo-sigpipe.c">fifo-sigpipe.c</a> - 可以将其改为使用流式文件方式向 FIFO 写入数据，验证一下在读出端关闭时，<code>fputs()</code> 仍然返回成功的情况，同时体会一下如何在流式文件方式下捕捉 SIGPIPE 信号；</li>
+<li><a href="https://whowin.gitee.io/sourcecodes/100011/fifo-server.c">fifo-server.c</a> - 是使用流式文件的方式从 FIFO 中读数据的，可以尝试将 <code>fopen()/fclose()</code> 放在循环外面，可以验证使用流式文件的方式读取 FIFO 时遇到 EOF 需要重新打开 FIFO 的观点；</li>
+<li><a href="https://whowin.gitee.io/sourcecodes/100011/fifo-server.c">fifo-server.c</a> - 可以将这个程序改成使用低级文件 I/O 读取 FIFO 的方式，以比较流式文件的操作函数和低级文件 I/O 的操作函数之间的差异；</li>
+<li><a href="https://whowin.gitee.io/sourcecodes/100011/fifo-client.c">fifo-client.c</a> - 可以加一个循环，使程序每隔 5 秒向 FIFO 写入一次数据，同时去掉 <code>fflush()</code>，可以验证流式文件的缓存对 FIFO 写入的影响；</li>
+<li><a href="https://whowin.gitee.io/sourcecodes/100011/fifo-client.c">fifo-client.c</a> - 可以将其改成使用低级文件 I/O 写入 FIFO 的方式，以比较流式文件的操作函数和低级文件 I/O 的操作函数之间的差异；</li>
+<li><a href="https://whowin.gitee.io/sourcecodes/100011/fifo-sigpipe.c">fifo-sigpipe.c</a> - 可以将其改为使用流式文件方式向 FIFO 写入数据，验证一下在读出端关闭时，<code>fputs()</code> 仍然返回成功的情况，同时体会一下如何在流式文件方式下捕捉 SIGPIPE 信号；</li>
 </ul>
 </li>
-<li>本质上说，命名管道和匿名管道在内核中的实现基本是一样的，所以，命名管道其实也是半双工的，要建立一个全双工的命名管道只需建立两条管道即可；可以参考我的另一篇介绍匿名管道的文章<a href="https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/">《IPC之一：使用匿名管道进行父子进程间通信的例子》</a></li>
-<li>命名管道如果不从文件系统中删除，会一直存在下去，这点和匿名管道有很大的区别，删除一个命名管道和删除一个普通文件无异；</li>
-<li>为了让所有进程都可以访问到建立的命名管道，通常会把一个命名管道建在 <code>/tmp/</code> 下，好处有两点：
+<li>
+<p>本质上说，命名管道和匿名管道在内核中的实现基本是一样的，所以，命名管道其实也是半双工的，要建立一个全双工的命名管道只需建立两条管道即可；可以参考我的另一篇介绍匿名管道的文章<a href="https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/">《IPC之一：使用匿名管道进行父子进程间通信的例子》</a></p>
+</li>
+<li>
+<p>命名管道如果不从文件系统中删除，会一直存在下去，这点和匿名管道有很大的区别，删除一个命名管道和删除一个普通文件无异；</p>
+</li>
+<li>
+<p>为了让所有进程都可以访问到建立的命名管道，通常会把一个命名管道建在 <code>/tmp/</code> 下，好处有两点：</p>
 <ol>
 <li>这个目录的权限是 <code>0777</code>，所有的用户可进行读写；</li>
 <li>这个目录是一个内存文件系统，并不在物理磁盘上，所以重新启动后你建立的命名管道也会消失，减少了维护。</li>
 </ol>
 </li>
-<li>与匿名管道一样，Linux 下命名管道的缓冲区长度也是有限制的，最大长度为 4096 字节，定义在头文件：<code>linux/limits.h</code> 中：
+<li>
+<p>与匿名管道一样，Linux 下命名管道的缓冲区长度也是有限制的，最大长度为 4096 字节，定义在头文件：<code>linux/limits.h</code> 中：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -675,7 +684,23 @@
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>向 FIFO 中写入数据的长度不超过这个阈值，将是一个原子操作。</li>
+<li>
+<p>向 FIFO 中写入数据的长度不超过这个阈值，将是一个原子操作；</p>
+</li>
+<li>
+<p>与匿名管道不同，由于命名管道在物理文件系统上建立了一个节点，所以其生命周期不会随着使用它的所有进程的终止而终止，只要命名管道没有被删除，可以一直使用下去。</p>
+</li>
+<li>
+<p>与匿名管道一样，命名管道不仅可以传输字符串，也可以传输二进制数据的，也就是说，可以把一个结构完整第通过管道进行传输。</p>
+</li>
+<li>
+<p>有关进程间通信(IPC)的的其它文章：</p>
+<ul>
+<li><a href="https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></li>
+</ul>
+</li>
 </ul>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
