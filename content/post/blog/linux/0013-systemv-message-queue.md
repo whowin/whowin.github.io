@@ -29,7 +29,7 @@ draft: false
 postid: 100013
 ---
 
-IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，本文针对 System V 消息队列，并给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。
+IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 System V 消息队列，并给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。
 
 <!--more-->
 
@@ -63,7 +63,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 * **IPC 标识符**
     - System V 定义了三种 IPC 方法：消息队列(Message queues)、信号量(Semaphores)和共享内存(Shared Memory)，这也是 Linux 下的三种重要的 IPC 方法，我们把这些统称为"IPC 对象(IPC Object)"；
     - 每个 IPC 对象都有一个与之关联的唯一的标识符(IPC Identifier)，这个标识符在内核中用于唯一地标识一个 IPC 对象；例如，要访问特定的一个消息队列，只需要知道这个消息队列的标识符(ID)即可；
-    - 在 Ubuntu 上，这个 ID 的唯一性与 IPC 对象的类型是无关的，比如：一个消息队列的 ID 是 1234，那么，在共享内存中就不可能有 ID 为 1234 的 IPC 对象；
+    - 在 Ubuntu 上，这个 ID 的唯一性与 IPC 对象的类型是相关的，比如：一个消息队列的 ID 是 1234，那么，在共享内存中仍可能有 ID 为 1234 的 IPC 对象；
     - 在下面的描述中 IPC 标识符 ID 将被简称为 **ID**；
     - 消息队列的 ID，在 Linux 下其实就是一个 32 位整数的序列号，从 0 开始；也就是说，系统建立的第一个 IPC 对象的 ID 是 0，第二个 IPC 对象的 ID 是 1，......，以此类推；
     - 即便一个 IPC 对象被删除，其对应的 ID 号空闲出来，新建立的 IPC 对象也不会用这个空闲出来的 ID 号，而是按照序列号继续延续，也就是说，系统建立的第一个 IPC 对象的 ID 是 0，...，第三个 IPC 对象的 ID 是 2，现在删除 ID 号为 1 的 IPC 对象，再建立一个 IPC 对象时，其 ID 号是 3 而不会是 1。
@@ -115,7 +115,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
         + 当 **IPC_CREAT** 时，如果 key 对应的消息队列存在，则返回其消息队列的 ID，如果 key 对应的消息队列不存在，则建立与 key 关联的消息队列，并返回消息队列的 ID；
         + 当 **IPC_CREAT | IPC_EXCL** 时，如果 key 对应的消息队列存在，则报错返回 -1，`errno = EEXIST(File exists)`；如果 key 对应的消息队列不存在，则建立与 key 关联的消息队列，并返回消息队列的 ID；
         + 当 **IPC_EXEL** 时，如果 key 对应的消息队列存在，则返回消息队列的 ID(这点和 IPC_CREAT 一样)，如果 key 对应的消息队列不存在，则返回 -1，`errno = ENOENT(No such file or directory)`；
-        + 另外，msgflag 还可以加上所创建的消息队列的读写权限，比如：0666；
+        + 另外，msgflag 还可以加上所创建的消息队列的读写权限，要用八进制表示，比如：0666；
         + msgflag 举例：`IPC_CREAT | IPC_EXEL | 0666`
     - 当 `key = IPC_PRIVATE` 时，`msgget()` 将创建一个新的消息队列并返回该消息队列的 ID；
         + 这样生成的消息队列只有 ID，没有 key(key 为 0)，所以其它进程并不能方便地使用这个消息队列，通常只能在子进程之间使用；
@@ -128,7 +128,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
     ...
     key_t key = ftok("/tmp/", 1234);
     // check if the key exists
-    msqid = msgget(ipc_key, IPC_EXCL);
+    int msqid = msgget(ipc_key, IPC_EXCL);
     if (msqid == -1) {
         // key doesn't exist, create it
         msqid = msgget(ipc_key, IPC_CREAT | 0666);
@@ -139,7 +139,8 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
     }
     ...
     ```
-* 特别要注意的是 msgflag 参数中的读/写权限的设置，如果不显式标明，那么默认的读写权限将变成 0000，这样的一个消息队列是没有办法进行读写的；当然还可以使用 `msgctl()` 修改消息队列的读写权限，但需要更高的权限(比如root)才能做到。
+* 特别要注意的是 msgflag 参数中的读/写权限的设置，如果不显式标明，那么默认的读写权限将变成 0000，这样的一个消息队列是没有办法进行读写的；当然还可以使用 `msgctl()` 修改消息队列的读写权限，但需要更高的权限(比如root)才能做到；
+* SYSTEM V 的 IPC 并不涉及文件系统，所以其设置的读写权限是不会受到 umask 的影响的，这点和 POSIX 的 IPC 有所不同。
 
 ## 3 向消息队列中发送消息
 * **函数：msgsnd()** - 向消息队列中发送一条消息
@@ -237,31 +238,24 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 * **函数：msgctl()** - 对消息队列进行控制操作
     ```C
     struct ipc_perm {
-        __key_t __key;                  /* Key. */
-        __uid_t uid;                    /* Owner's user ID. */
-        __gid_t gid;                    /* Owner's group ID. */
-        __uid_t cuid;                   /* Creator's user ID. */
-        __gid_t cgid;                   /* Creator's group ID. */
-        __mode_t mode;                  /* Read/write permission. */
-        unsigned short int __seq;       /* Sequence number. */
-        unsigned short int __pad2;
-        __syscall_ulong_t __glibc_reserved1;
-        __syscall_ulong_t __glibc_reserved2;
+        uid_t          cuid;   /* creator user ID */
+        gid_t          cgid;   /* creator group ID */
+        uid_t          uid;    /* owner user ID */
+        gid_t          gid;    /* owner group ID */
+        unsigned short mode;   /* r/w permissions */
     };
 
     struct msqid_ds {
-        struct ipc_perm msg_perm;       /* structure describing operation permission */
-        __MSQ_PAD_TIME (msg_stime, 1);  /* time of last msgsnd command */
-        __MSQ_PAD_TIME (msg_rtime, 2);  /* time of last msgrcv command */
-        __MSQ_PAD_TIME (msg_ctime, 3);  /* time of last change */
-        __syscall_ulong_t __msg_cbytes; /* current number of bytes on queue */
-        msgqnum_t msg_qnum;             /* number of messages currently on queue */
-        msglen_t msg_qbytes;            /* max number of bytes allowed on queue */
-        __pid_t msg_lspid;              /* pid of last msgsnd() */
-        __pid_t msg_lrpid;              /* pid of last msgrcv() */
-        __syscall_ulong_t __glibc_reserved4;
-        __syscall_ulong_t __glibc_reserved5;
+        struct ipc_perm msg_perm;
+        msgqnum_t       msg_qnum;    /* no of messages on queue */
+        msglen_t        msg_qbytes;  /* bytes max on a queue */
+        pid_t           msg_lspid;   /* PID of last msgsnd(2) call */
+        pid_t           msg_lrpid;   /* PID of last msgrcv(2) call */
+        time_t          msg_stime;   /* last msgsnd(2) time */
+        time_t          msg_rtime;   /* last msgrcv(2) time */
+        time_t          msg_ctime;   /* last change time */
     };
+
 
     #include <sys/ipc.h>
     #include <sys/msg.h>
@@ -289,6 +283,10 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
     queue_ds.msg_perm.mode = 0660;
     msgctl(msqid, IPC_SET, &queue_ds);
     ```
+* 在介绍 `msgctl()` 时介绍了 `struct msqid_ds`，
+    - 这个结构是在建立一个消息队列时建立的，之后，内核将依靠这个结构维护这个消息队列；
+    - 每个消息队列都对应着一个 `struct msqid_ds`；
+    - 这个结构中，除了消息队列的读写权限，没有其它字段可以被用户程序修改。
 
 ## 6 实例：消息队列的小工具
 * 最后这个实例可以作为消息队列的一个小工具使用，这个小工具有如下功能：
@@ -337,6 +335,13 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 * **源程序**：[listmsq.c][src05](**点击文件名下载源程序**)演示了如何通过读取 `/proc/sysvipc/msg` 文件列出系统中所有的消息队列；
 * 还有一个办法可以列出所有的消息队列；因为消息队列的 ID 号的总量是有限制的(MSGMNI)，所有可以采用遍历所有消息队列的 ID 号的方法找到系统中所有的消息队列；
 * **源程序**：[traversemsq.c][src06](**点击文件名下载源程序**)演示了如何通过遍历所有可能的消息队列 ID 号找到系统中所有的消息队列；
+* 尽管在本文的所有实例中，从消息队列传输的数据都是字符串，但消息队列是可以传输二进制数据的，也就是说，可以把一个结构完整第通过消息队列进行传输；
+* 管道与消息队列在进行数据交换上是不同的，消息队列是以消息为一个基本单位，而管道是一个字节流，举个例子说明其不同：
+    > 假定进程 A 需要调用 func() 100 次，每调用 func() 一次，func() 都会将将 1 字节的运行结果发送给进程 B，所以，进程 B 一共会收到 100 字节的运行结果信息，如果使用消息队列来传递运行结果，func() 会向消息队列发送 100 个消息，而进程 B 也会接收 100 次消息；但是如果使用管道，func() 每次将 1 字节的运行结果送如管道，进程 B 可以不用马上接收，直到 func() 被调用 100 次后，进程 B 可以一次性地从管道中读出 100 个字节的运行结果；在这种情形下，显然，管道的效率更高一些。
+* 有关进程间通信(IPC)的的其它文章：
+    - [IPC之一：使用匿名管道进行父子进程间通信的例子][article01]
+    - [IPC之二：使用命名管道(FIFO)进行进程间通信的例子][article02]
+    - [IPC之四：使用 POSIX 消息队列进行进程间通信的实例][article04]
 
 
 
@@ -352,6 +357,10 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
+[article01]: https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/
+[article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
+[article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
+[article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
 
 
 [src01]: https://whowin.gitee.io/sourcecodes/100013/ipc-key.c

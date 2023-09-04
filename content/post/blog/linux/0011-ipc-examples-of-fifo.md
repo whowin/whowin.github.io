@@ -281,7 +281,14 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
     ```C
     #define PIPE_BUF        4096	/* # bytes in atomic write to a pipe */
     ```
-* 向 FIFO 中写入数据的长度不超过这个阈值，将是一个原子操作。
+* 向 FIFO 中写入数据的长度不超过这个阈值，将是一个原子操作；
+* 与匿名管道不同，由于命名管道在物理文件系统上建立了一个节点，所以其生命周期不会随着使用它的所有进程的终止而终止，只要命名管道没有被删除，可以一直使用下去。
+* 与匿名管道一样，命名管道不仅可以传输字符串，也可以传输二进制数据的，也就是说，可以把一个结构完整第通过管道进行传输。
+
+* 有关进程间通信(IPC)的的其它文章：
+    - [IPC之一：使用匿名管道进行父子进程间通信的例子][article01]
+    - [IPC之三：使用 System V 消息队列进行进程间通信的实例][article03]
+    - [IPC之四：使用 POSIX 消息队列进行进程间通信的实例][article04]
 
 
 
@@ -297,6 +304,9 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 [article01]: https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/
+[article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
+[article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
+[article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
 
 
 [src01]: https://whowin.gitee.io/sourcecodes/100011/fifo-server.c

@@ -272,9 +272,12 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 * `pipe()` 调用必须在 `fork()` 调用之前进行，否则描述符将不会被子进程继承；
 * 使用匿名管道进行通信的进程都必须有一个共同的祖先，而且这个祖先必须是管道的创建者，由于管道位于内核中，不在管道创建者祖先中的进程都无法对其进行寻址，这与命名管道(FIFO)是不同；
 * 由于使用管道的一些限制，在进程间进行通讯时，管道实际上并不是一个常用的方法，但是，如果需要使用已有的 Linux 命令处理数据，或者从 Linux 命令获得结果数据，管道不失为一个好的选择；
-* 匿名管道的生命周期与创建它的进程的生命周期一致，当进程结束时，其创建的匿名管道也将被销毁。
-
-
+* 匿名管道的生命周期与创建它的进程的生命周期一致，当进程结束时，其创建的匿名管道也将被销毁；
+* 尽管在本文的所有实例中，从管道传输的数据都是字符串，但管道是可以传输二进制数据的，也就是说，可以把一个结构完整第通过管道进行传输。
+* 有关进程间通信(IPC)的的其它文章：
+    - [IPC之二：使用命名管道(FIFO)进行进程间通信的例子][article02]
+    - [IPC之三：使用 System V 消息队列进行进程间通信的实例][article03]
+    - [IPC之四：使用 POSIX 消息队列进行进程间通信的实例][article04]
 
 
 -------------
@@ -285,6 +288,12 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 ![donation][img_sponsor_qrcode]
 
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+
+
+[article01]: https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/
+[article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
+[article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
+[article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
 
 
 [src01]: https://whowin.gitee.io/sourcecodes/100010/pipe.c
