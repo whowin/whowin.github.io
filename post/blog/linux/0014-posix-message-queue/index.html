@@ -328,10 +328,10 @@
 <p>POSIX 的消息队列实际上是建在一个虚拟文件系统下的，这个虚拟文件系统被挂载在 /dev/queue 下，在 Ubuntu 下，默认是自动挂载的；</p>
 </li>
 <li>
-<p>可以使用 <code>ls /dev/queue</code> 命令列出已有的消息队列，也可以用 <code>rm /dev/queue/&lt;mq_name&gt;</code> 命令删除一个已有的消息队列；</p>
+<p>可以使用 <code>ls /dev/mqueue</code> 命令列出已有的消息队列，也可以用 <code>rm /dev/mqueue/&lt;mq_name&gt;</code> 命令删除一个已有的消息队列；</p>
 </li>
 <li>
-<p>使用 <code>cat /dev/queue/&lt;mq_name&gt;</code> 可以列出指定消息队列的状态；</p>
+<p>使用 <code>cat /dev/mqueue/&lt;mq_name&gt;</code> 可以列出指定消息队列的状态；</p>
 </li>
 <li>
 <p>如果在你的系统上没有这个虚拟文件系统，可以用下面的命令建立一个：</p>
@@ -452,7 +452,7 @@
 <p>mqdes 就是使用 mq_open() 打开消息队列时返回的描述符。</p>
 </li>
 <li>
-<p>源程序：<a href="/sourcecodes/100014/mq-create.c">mq-create.c</a>(<strong>点击文件名下载源程序</strong>)是一个简单的命令行工具，用于创建一个新的消息队列；</p>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/100014/mq-create.c">mq-create.c</a>(<strong>点击文件名下载源程序</strong>)是一个简单的命令行工具，用于创建一个新的消息队列；</p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall mq-create.c -o mq-create -lrt</code></p>
@@ -475,7 +475,7 @@
 </li>
 <li>
 <p>下面是这个程序的运行截屏：</p>
-<p><img src="/images/100014//screenshot-of-mq-create.png" alt="screenshot of mq-create command"></p>
+<p><img src="https://whowin.gitee.io/images/100014//screenshot-of-mq-create.png" alt="screenshot of mq-create command"></p>
 </li>
 <li>
 <p>请注意，尽管我们设置了消息队列的读/写权限是 <code>0666</code>，但最后显示的消息队列的权限却是 <code>0664</code>，这是因为 umask 为 <code>0002</code>。</p>
@@ -545,7 +545,7 @@
 <p>所以，如果需要了解调用 <code>mq_setattr()</code> 之后消息队列的属性，在调用 <code>mq_setattr()</code> 之后，需要调用 <code>mq_getattr()</code>。</p>
 </li>
 <li>
-<p>源程序：<a href="/sourcecodes/100014/mq-attr.c">mq-attr.c</a>(<strong>点击文件名下载源程序</strong>)演示了 <code>mq_open()、mq_getattr()、mq_setattr() 和 mq_close()</code> 的使用方法；</p>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/100014/mq-attr.c">mq-attr.c</a>(<strong>点击文件名下载源程序</strong>)演示了 <code>mq_open()、mq_getattr()、mq_setattr() 和 mq_close()</code> 的使用方法；</p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall mq-attr.c -o mq-attr -lrt</code></p>
@@ -577,7 +577,7 @@
 </li>
 <li>
 <p>下面是运行结果的截屏：</p>
-<p><img src="/images/100014/screenshot-of-mqattr.png" alt="Screenshot of mq-attr"></p>
+<p><img src="https://whowin.gitee.io/images/100014/screenshot-of-mqattr.png" alt="Screenshot of mq-attr"></p>
 </li>
 </ul>
 <hr>
@@ -654,7 +654,7 @@
 <p>name 为消息队列名称，记着其起始字符必须是 <code>&quot;/&quot;</code>；</p>
 </li>
 <li>
-<p>源程序：<a href="/sourcecodes/100014/mq-unlink.c">mq-unlink.c</a>(<strong>点击文件名下载源程序</strong>)是一个简单的命令行工具，用于删除一个消息队列的名称；</p>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/100014/mq-unlink.c">mq-unlink.c</a>(<strong>点击文件名下载源程序</strong>)是一个简单的命令行工具，用于删除一个消息队列的名称；</p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall mq-unlink.c -o mq-unlink -lrt</code></p>
@@ -664,7 +664,7 @@
 </li>
 <li>
 <p>下面是运行截图：</p>
-<p><img src="/images/100014/screenshot-of-mq-unlink.png" alt="screenshot of mq-unlink"></p>
+<p><img src="https://whowin.gitee.io/images/100014/screenshot-of-mq-unlink.png" alt="screenshot of mq-unlink"></p>
 </li>
 </ul>
 <hr>
@@ -685,10 +685,10 @@
 </ul>
 </li>
 <li>
-<p>服务器端源程序：<a href="/sourcecodes/100014/mq-server.c">mq-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>服务器端源程序：<a href="https://whowin.gitee.io/sourcecodes/100014/mq-server.c">mq-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
-<p>客户端源程序：<a href="/sourcecodes/100014/mq-client.c">mq-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>客户端源程序：<a href="https://whowin.gitee.io/sourcecodes/100014/mq-client.c">mq-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>编译：</p>
@@ -708,7 +708,7 @@
 </li>
 <li>
 <p>下面是运行录屏，左边时服务端窗口，右边是客户端窗口：</p>
-<p><img src="/images/100014/mq-server-client.gif" alt="Recording screen for running example"></p>
+<p><img src="https://whowin.gitee.io/images/100014/mq-server-client.gif" alt="Recording screen for running example"></p>
 </li>
 </ul>
 <hr>
@@ -906,7 +906,7 @@
 <p>消息队列的异步处理机制使我们的主程序无需阻塞在消息队列上，而是专心处理其它事务，可以大大提高程序的运行效率；</p>
 </li>
 <li>
-<p>源程序：<a href="/sourcecodes/100014/mq-notify.c">mq-notify.c</a>(<strong>点击文件名下载源程序</strong>)演示了消息队列的异步通知的基本编程方法；</p>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/100014/mq-notify.c">mq-notify.c</a>(<strong>点击文件名下载源程序</strong>)演示了消息队列的异步通知的基本编程方法；</p>
 <ul>
 <li>该程序首先建立一个消息队列，然后设置消息队列异步通知；</li>
 <li>等待 1 秒钟后向消息队列中发送一条消息；</li>
@@ -921,7 +921,7 @@
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="/images/100014/screenshot-of-mq-notify.png" alt="Screenshot of mq-notify"></p>
+<p><img src="https://whowin.gitee.io/images/100014/screenshot-of-mq-notify.png" alt="Screenshot of mq-notify"></p>
 </li>
 </ul>
 <hr>

@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>IPC之六：使用 POSIX 信号量解决经典的&#39;生产者-消费者问题&#39; - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量(Semaphores)，尽管信号量被认为是 IPC 的一种方式，但实际上通常把信号量用于进程间同步或者资源互斥，和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量，本文针对 POSIX 信号量，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="IPC之六：使用 POSIX 信号量解决经典的&#39;生产者-消费者问题&#39;" />
+<meta property="og:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量(Semaphores)，尽管信号量被认为是 IPC 的一种方式，但实际上通常把信号量用于进程间同步或者资源互斥，和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量，本文针对 POSIX 信号量，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-09-06T16:43:29+08:00" />
+<meta property="article:modified_time" content="2023-09-06T16:43:29+08:00" />
+
+<meta itemprop="name" content="IPC之六：使用 POSIX 信号量解决经典的&#39;生产者-消费者问题&#39;">
+<meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量(Semaphores)，尽管信号量被认为是 IPC 的一种方式，但实际上通常把信号量用于进程间同步或者资源互斥，和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量，本文针对 POSIX 信号量，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。"><meta itemprop="datePublished" content="2023-09-06T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2023-09-06T16:43:29+08:00" />
+<meta itemprop="wordCount" content="5995">
+<meta itemprop="keywords" content="Linux,进程间通信,信号量,semaphore,POSIX," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="IPC之六：使用 POSIX 信号量解决经典的&#39;生产者-消费者问题&#39;"/>
+<meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量(Semaphores)，尽管信号量被认为是 IPC 的一种方式，但实际上通常把信号量用于进程间同步或者资源互斥，和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量，本文针对 POSIX 信号量，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">IPC之六：使用 POSIX 信号量解决经典的&#39;生产者-消费者问题&#39;</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-09-06 </span>
+        <div class="post-category">
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-posix-信号量概述">1 POSIX 信号量概述</a></li>
+        <li><a href="#2-有名信号量的名称和虚拟文件系统">2 有名信号量的名称和虚拟文件系统</a></li>
+        <li><a href="#3-有名信号量的创建打开关闭和删除">3 有名信号量的创建/打开、关闭和删除</a></li>
+        <li><a href="#4-信号量的操作">4 信号量的操作</a></li>
+        <li><a href="#5-无名信号量">5 无名信号量</a></li>
+        <li><a href="#6-实例">6 实例</a></li>
+        <li><a href="#7-posix-信号量与-system-v-信号量集的主要区别">7 POSIX 信号量与 SYSTEM V 信号量集的主要区别</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量(Semaphores)，尽管信号量被认为是 IPC 的一种方式，但实际上通常把信号量用于进程间同步或者资源互斥，和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量，本文针对 POSIX 信号量，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。</p>
+<h2 id="1-posix-信号量概述">1 POSIX 信号量概述</h2>
+<ul>
+<li>信号量与其他形式的 IPC 不同，它并不能完成一般意义上的的数据交换，也就是说，不能使用信号量将信息从一个进程传输到另一个进程；</li>
+<li>信号量通常用于进程间同步或对共享资源的访问同步，也就是说，信号量可以控制可能发生冲突的共享访问的时机；</li>
+<li>POSIX 信号量与 SYSTEM V 信号量集不同，在内核中不是以数组的形式进行管理，所以也就不再称其为 <strong>集</strong>；</li>
+<li>在阅读本文前可以参考文章<a href="/post/blog/linux/0015-systemv-semaphore-sets/">《IPC之五：使用 System V 信号量集解决经典的&rsquo;哲学家就餐问题&rsquo;》</a>，关于信号量的概念都是一致的；</li>
+<li>也可以参考文章<a href="https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/">《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》</a>，POSIX 标准下的很多定义都是类似的；</li>
+<li>以下如无特别说明，信号量均指 POSIX 信号量；</li>
+<li>使用 <code>man sem_overview</code> 可以查阅 POSIX 信号量的在线手册；</li>
+<li>POSIX 信号量分为<strong>有名信号量</strong>和<strong>无名信号量</strong>(也称匿名信号量)；</li>
+<li>在 Linux 内核 2.6 之前，Linux 只支持 POSIX 的无名信号量，内核 2.6 以后开始全面支持 POSIX 信号量；</li>
+<li>编译时需要加上 <code>-lpthread</code> 选项，以便链接到实时库 <code>libpthread</code>；</li>
+<li>POSIX 信号量提供了一组用于操作信号量的 API，这些调用均是以 <code>sem_</code> 开头：
+<ol>
+<li>打开/创建一个有名信号量
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="o">*</span><span class="nf">sem_open</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">oflag</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="o">*</span><span class="nf">sem_open</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">oflag</span><span class="p">,</span> <span class="n">mode_t</span> <span class="n">mode</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">value</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>获取信号量；信号量的值减 1，如果信号量当前值为 0，则阻塞；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_wait</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>释放信号量；也就是信号量的值加 1；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_post</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>关闭有名信号量
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_close</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>删除一个有名信号量
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_unlink</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>信号量的值减 1，如果当前信号量的值为0，则返回一个错误；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_trywait</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>信号量的值减 1，并设置一个阻塞超时时间，阻塞超时则返回；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_timedwait</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">timespec</span> <span class="o">*</span><span class="n">abs_timeout</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>创建并初始化一个无名信号量
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_init</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pshared</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">value</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>删除一个无名信号量
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_destroy</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+</li>
+</ul>
+<h2 id="2-有名信号量的名称和虚拟文件系统">2 有名信号量的名称和虚拟文件系统</h2>
+<ul>
+<li>
+<p>SYSTEM V 的信号量集是用 key 或者 ID 来标识的，是没有名称的，POSIX 的有名信号量是有名称的，使用一个唯一的信号量名称来标识一个信号量；</p>
+</li>
+<li>
+<p>和 POSIX 的消息队列(参考文章<a href="https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/">《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》</a>)一样，有名信号量的名称是一个以 &ldquo;/&rdquo; 开头的字符串，而且名称中不允许再出现第二个 &ldquo;/&quot;，这个名称字符串以 NULL 结尾；</p>
+</li>
+<li>
+<p>POSIX 有名信号量的名称最长为 <code>NAME_MAX - 4</code>，宏定义 NAME_MAX 定义在头文件 <code>&lt;linux/limits.h</code> 中，为 255；</p>
+</li>
+<li>
+<p>任何一个知道有名信号量名称且具有适当权限的进程都可以对该信号量进行操作；</p>
+</li>
+<li>
+<p>和 POSIX 的消息队列一样，POSIX 的有名信号量也是建在一个虚拟文件系统下的，是和 POSIX 的共享内存共用一个虚拟文件系统，被挂载在 <code>/dev/shm/</code> 下，在 Ubuntu 下，默认是自动挂载的；</p>
+</li>
+<li>
+<p>因为有名信号量和共享内存的虚拟文件系统被挂载在同一个目录下，为了以示区别，所有的有名信号量的名称都带有一个前缀 <code>sem.</code>，这就是为什么有名信号量的名称长度不能超过 <code>NAME_MAX - 4</code> 的原因；</p>
+</li>
+<li>
+<p>可以使用 <code>ls /dev/shm/sem.*</code> 命令列出已有的有名信号量，也可以用 <code>rm /dev/shm/&lt;sem_name&gt;</code> 命令删除一个已有的有名信号量；</p>
+</li>
+<li>
+<p>虚拟文件系统下的信号量文件是二进制存储的，无法使用 <code>cat</code> 查看，可以使用 <code>hexdump /dev/shm/&lt;sem_name&gt;</code> 查看信号量的值；</p>
+</li>
+<li>
+<p>如果在你的系统上没有这个虚拟文件系统，可以用下面的命令建立一个：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># mkdir /dev/shm</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># mount -t shm none /dev/shm</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id="3-有名信号量的创建打开关闭和删除">3 有名信号量的创建/打开、关闭和删除</h2>
+<ul>
+<li>
+<p>在使用一个有名信号量之前需要打开(或创建)该信号量，使用 sem_open()</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;fcntl.h&gt;           /* For O_* constants */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/stat.h&gt;        /* For mode constants */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;semaphore.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="o">*</span><span class="nf">sem_open</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">oflag</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">sem_t</span> <span class="o">*</span><span class="nf">sem_open</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">oflag</span><span class="p">,</span> <span class="n">mode_t</span> <span class="n">mode</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">value</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>sem_open()</code> 创建一个新的有名信号量，或者打开一个已经存在的有名信号量，调用成功则返回信号量的<strong>地址</strong>，调用失败返回 <code>SEM_FAILED</code>，且 errno 中为错误代码；</p>
+<blockquote>
+<p>这里和 POSIX 的消息队列有所不同，在创建/打开消息队列时，返回的是描述符(descriptor)，但是创建/打开有名信号量时，返回是信号量的地址(address)，二者是有区别的，消息队列由于是使用了描述符，有点类似于 socket 的描述符，是可以使用 select 来进行处理的；作为信号量而言，其本质就是一个变量，所以返回一个地址也在常理之中；</p>
+</blockquote>
+<blockquote>
+<p>另外，POSIX 的函数通常在发生错误时返回 -1，这个函数不同，发生错误时返回 <code>SEM_FAILED</code>，这个宏定义在头文件 <code>&lt;semaphore.h</code> 中，其值为 0；</p>
+</blockquote>
+</li>
+<li>
+<p><strong>name</strong> - 信号量的名称，一个以 &ldquo;/&rdquo; 开头的字符串，是这个信号量的唯一标识；</p>
+</li>
+<li>
+<p><strong>oflag</strong> - 控制操作的一些标志，可以有以下选项，这些选项可以以 or 的方式进行组合：</p>
+<ul>
+<li><strong>O_CREAT</strong> - 如果信号量不存在，则建立一个新的有名信号量，返回其地址；如果信号量存在，则返回该信号量的地址；</li>
+<li><strong>O_EXCL</strong> - 如果同时设置了 O_CREAT，则当打开的消息队列已经存在时，返回调用失败，errno=EEXIST</li>
+</ul>
+</li>
+<li>
+<p>如果在 oflag 中设置了 O_CREAT，则必须增加另外两个参数：<code>mode</code> 和 <code>value</code></p>
+</li>
+<li>
+<p>关于 oflag 中的 O_EXCL：</p>
+<ul>
+<li>当 <code>O_CREAT | O_EXCL</code> 时：信号量不存在则创建一个新的信号量(与 O_CREAT 一样)，返回其地址；如果信号量存在则返回 <code>SEM_FAILED</code>，<code>errno=EEXIST(File exists)</code></li>
+<li>当仅有 <code>O_EXCL</code> 时：如果信号量已经存在，则返回其地址(与 O_CREAT 一样)，如果信号量不存在，则返回  <code>SEM_FAILED</code>，<code>errno=ENOENT(No such file or directory)</code></li>
+</ul>
+</li>
+<li>
+<p><strong>mode</strong> - 新创建的信号量的读/写权限，与文件的读/写权限的表达方式一致，使用八进制数，比如：0660、0666，实际的读/写权限还要受到 umask 的影响，最终的结果是 <code>mode &amp; ~umask</code>；</p>
+<blockquote>
+<p>可以使用 shell 命令 <code>umask</code> 查看当前的 <code>umask</code></p>
+</blockquote>
+</li>
+<li>
+<p><strong>value</strong> - 指定该信号量的初始值；</p>
+</li>
+<li>
+<p>如果设置了 <code>O_CREAT</code>，但是信号量已经存在，则 <code>mode</code> 和 <code>value</code> 无效；</p>
+</li>
+<li>
+<p>有名信号量使用完毕后，需要关闭该信号量；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;semaphore.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_close</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>sem</strong> 就是使用 sem_open() 打开信号量时返回的信号量地址；</li>
+<li>调用成功时返回 0，失败时返回 -1，只有一种失败的可能就是 sem 不是一个合法的信号量地址；</li>
+<li>进程在终止时，已经打开的有名信号量会自动关闭。</li>
+</ul>
+</li>
+<li>
+<p>源程序：<a href="/sourcecodes/100016/sem-create.c">sem-create.c</a>(<strong>点击文件名下载源程序</strong>)是一个简单的命令行工具，用于创建一个新的有名信号量；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall sem-create.c -o sem-create -lpthread</code></p>
+</li>
+<li>
+<p>运行：<code>./sem-create -cx -v 1 /test_sem_name 0666</code></p>
+</li>
+<li>
+<p>在使用该程序时需要在命令行输入一些参数：</p>
+<ul>
+<li><strong>-c</strong> 表示使用 O_CREATE 标志，<strong>-x</strong> 表示使用 O_EXCL 标志；</li>
+<li><strong>-v</strong> 表示该信号量的初始值，如果没有设置，初始值为 0；</li>
+<li>这几个选项中，<strong>-c</strong> 和 <strong>-x</strong> 至少要有一个，也可以两个都有，写成 <strong>-cx</strong> 或者 <strong>-c -x</strong> 都可以；</li>
+<li>在这几个选项后面是信号量的名称，注意，信号量的名称必须以 <code>&quot;/&quot;</code> 开头，而且后面的字符串中不能再有 <code>&quot;/&quot;</code>；</li>
+<li>在名称后面可以跟一个消息队列的读写权限，也可以没有，如果要设置消息队列的权限，这里要使用八进制，比如 <code>0666</code>、<code>0644</code> 等；</li>
+<li>如果没有设置权限，默认权限为 <code>0660</code>；</li>
+</ul>
+</li>
+<li>
+<p>下面是这个程序的运行截屏：</p>
+<p><img src="/images/100016/screenshot-of-sem-create.png" alt="screenshot of sem-create command"></p>
+</li>
+<li>
+<p>请注意，尽管我们设置了信号量的读/写权限是 <code>0666</code>，但最后显示的信号量的权限却是 <code>0664</code>，这是因为 umask 为 <code>0002</code>。</p>
+</li>
+<li>
+<p>有名信号量的删除</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;semaphore.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_unlink</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>name</strong> 为有名信号量的名称，使用该调用的进程需要有该信号量的写权限；</li>
+<li>该调用成功时返回 0，失败时返回 -1，errno 中为错误代码。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="4-信号量的操作">4 信号量的操作</h2>
+<ul>
+<li>
+<p>对信号量的操作只有两种：</p>
+<ul>
+<li>获取信号量，也就是对信号量值减 1，也称为 P 操作；</li>
+<li>释放信号量，也就是对信号量值加 1，也称为 V 操作；</li>
+</ul>
+</li>
+<li>
+<p>获取信号量 - sem_wait()</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;semaphore.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_wait</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_trywait</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_timedwait</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">timespec</span> <span class="o">*</span><span class="n">abs_timeout</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>sem</strong> 为使用 <code>sem_open()</code> 返回的信号量的地址；</p>
+</li>
+<li>
+<p><code>sem_wait()</code> 将信号量值减 1，如果当前信号量值为 0，则产生阻塞，直到该信号量值大于 0 时再执行操作并返回；</p>
+</li>
+<li>
+<p><code>sem_trywait()</code> 与 <code>sem_wait()</code> 一样将信号量值减 1，如果当前信号量值为 0，不会阻塞，而是立即返回 -1，<code>errno=EAGAIN</code>，否则返回 0；</p>
+</li>
+<li>
+<p><code>sem_timedwait()</code> 在 <code>sem_wait()</code> 的基础上增加了一个超时时间 <code>abs_timeout</code>，当产生阻塞时，到达超时时间则返回 -1，<code>errno=ETIMEDOUT</code>，如果不会产生阻塞，则信号量值减 1 然后返回 0；</p>
+<ul>
+<li>特别要注意的时，<code>abs_timeout</code> 并不是一个时长，而是一个绝对时间，其值表示从 <code>1970-01-01 00:00:00+0000 (UTC)</code> 开始，到函数返回的秒(tv_sec)和纳秒(tv_nsec)的数值；</li>
+<li>请参考文章<a href="https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/">《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》</a>中关于 <code>mq_timedsend()</code> 和 <code>mq_timedreceive()</code> 的说明；</li>
+</ul>
+</li>
+<li>
+<p>释放信号量 - sem_post()</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;semaphore.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_post</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>sem</strong> 为使用 <code>sem_open()</code> 返回的信号量的地址；</p>
+</li>
+<li>
+<p>对信号量值加 1 是无需更多条件的，该调用只有两种可能会失败，一是 sem 不是一个合法的信号量地址，二是信号量值已经达到其允许的最大值；</p>
+</li>
+<li>
+<p>该调用成功时返回 0，失败时返回 -1，errno中为错误代码；</p>
+</li>
+</ul>
+<h2 id="5-无名信号量">5 无名信号量</h2>
+<ul>
+<li>
+<p>POSIX 无名信号量没有名称，而且要求必须存在于共享内存中，这是其与有名信号量的一个重要区别；</p>
+</li>
+<li>
+<p>对于多线程的程序，因为一个进程下的多个线程共享相同的内存空间，所以可以使用一个全局变量作为无名信号量；</p>
+</li>
+<li>
+<p>但是对于多进程的程序，就必须将信号量放在共享内存中，可以使用 shmget() 创建 SYSTEM V 共享内存段，也可以使用 shm_open() 创建 POSIX 共享内存对象；</p>
+</li>
+<li>
+<p>显然，无名信号量对共享内存的要求给多进程程序使用无名信号量带来了一些麻烦，所以，在实际编程实践中，无名信号量多用于多线程程序；</p>
+</li>
+<li>
+<p>特别要注意的是，父子进程间有不同的地址空间，在父进程中使用全局变量建立的无名信号量虽然会被子进程继承，但是它们并不是同一个信号量，所以父子进程间也是不能简单地使用全局变量作为无名信号量的；</p>
+</li>
+<li>
+<p>在使用一个无名信号量之前要首先初始化：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;semaphore.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_init</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">,</span> <span class="kt">int</span> <span class="n">pshared</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">value</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p><strong>sem</strong>：无名信号量的地址；</p>
+</li>
+<li>
+<p><strong>pshared</strong>：指示这个信号量是在线程之间共享，还是在进程之间共享；</p>
+<blockquote>
+<p>pshared = 0，表示信号量在线程之间共享，该无名信号量应该位于对所有线程可见的地址上(例如，全局变量)；</p>
+</blockquote>
+<blockquote>
+<p>pshared != 0，表示信号量在进程之间共享，该无名信号量应该位于共享内存中，任何可以访问该共享内存区域的进程都可以使用 sem_post() 和 sem_wait() 等方法对信号量进行操作；</p>
+</blockquote>
+</li>
+<li>
+<p><strong>value</strong>：无名信号量的初始值；</p>
+</li>
+<li>
+<p>调用成功返回 0，失败返回 -1，errno 为错误编码；</p>
+</li>
+<li>
+<p>特别要注意的是，初始化一个已经初始化的无名信号量可能会发生不可预知的后果。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>无名信号量的删除：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;semaphore.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">sem_destroy</span><span class="p">(</span><span class="n">sem_t</span> <span class="o">*</span><span class="n">sem</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>sem_destroy()</code> 会销毁一个由 sem 指向的无名信号量；</li>
+<li>在无名信号量所占用的共享内存被释放之前，一定要使用 <code>sem_destroy()</code> 销毁该信号量，否则有可能发生资源泄露；</li>
+<li>只有使用 sem_init() 进行过初始化的无名信号量才能被 <code>sem_destroy()</code> 销毁；</li>
+<li>如果仍然有其它进程在使用一个无名信号量，销毁该信号量将产生不可预知的后果；</li>
+<li>使用一个已经销毁的无名信号量可能产生不可预知的结果；</li>
+</ul>
+</li>
+<li>
+<p>源程序：<a href="/sourcecodes/100016/official-exam.c">official-exam.c</a>(<strong>点击文件名下载源程序</strong>)演示了初始化一个无名信号量和使用 sem_timedwait() 操作无名信号量的方法；</p>
+</li>
+<li>
+<p>这个程序是官方的例子，可以在 <code>man sem_timedwai</code> 中找到，本文未做任何删改；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall official-exam.c -o official-exam -lpthread</code></p>
+</li>
+<li>
+<p>运行：<code>./official-exam 5 8</code></p>
+</li>
+<li>
+<p>需要对该程序做一个简要的说明：</p>
+<ul>
+<li>该程序首先初始化了无名信号量，信号量的初始值为 0；</li>
+<li>然后截获了信号 <code>SIGALRM</code>，这样在后面使用 alarm() 定时器后，就可以在信号处理程序中处理这个定时器产生的 <code>SIGALRM</code> 信号；</li>
+<li>在 <code>SIGALRM</code> 信号处理程序中，执行了 <code>sem_post()</code> 将无名信号量加 1；</li>
+<li>该程序在运行时需要传递两个参数，
+<ul>
+<li>第一个 argv[1] 为定时器的时长，在这个时长后将产生 <code>SIGALRM</code> 信号；</li>
+<li>第二个 argv[2] 为 <code>sem_timedwait()</code> 的超时时长，超过这个时长后，<code>sem_timedwait()</code> 将因为超时而返回一个错误；</li>
+</ul>
+</li>
+<li>当 <code>argv[1] &gt; argv[2]</code> 时，在产生 <code>SIGALRM</code> 信号之前，<code>sem_timedwait()</code> 就超时，程序会收到 <code>sem_timedwait()</code> 返回的错误；</li>
+<li>当 <code>argv[1] &lt; argv[2]</code> 时，先产生 <code>SIGALRM</code> 信号，由于信号处理程序中将信号量加 1，所以 <code>sem_timedwait()</code> 会成功返回，不会超时，当然也不会返回错误；</li>
+<li>当 <code>argv[1] == argv[2]</code> 时，<code>SIGALRM</code> 信号和 <code>sem_timedwait()</code> 超时同时发生，尽管信号处理程序中成功地执行了 <code>sem_post()</code>，但 <code>sem_timedwait()</code> 已经超时返回，不会获得这个信号量；</li>
+<li>所以，在运行这个程序时，<code>./official-exam 5 8</code>、<code>./official-exam 8 5</code> 和 <code>./official-exam 5 5</code> 会使三种不同的运行结果；</li>
+</ul>
+</li>
+<li>
+<p>下面是这个程序的运行截屏：</p>
+<p><img src="/images/100016/screenshot-of-official-exam.png" alt="screenshot of official-exam"></p>
+</li>
+</ul>
+<hr>
+<h2 id="6-实例">6 实例</h2>
+<ul>
+<li>
+<p>在下面这个实例中，我们使用 POSIX 信号量解决一个经典的问题 - 生产者-消费者问题(Producer–consumer problem)；</p>
+</li>
+<li>
+<p>如果希望更多地了解这个问题，可以百度一下，这里仅做简要说明：</p>
+<blockquote>
+<p>有一个固定长度为 BUF_SIZE 的共享内存块，生产者(Producer)和消费者(Consumer)均可以存取这块共享内存，生产者将生产出的数据放入共享内存，消费者从共享内存中取出数据进行消费；</p>
+</blockquote>
+</li>
+<li>
+<p>生产者-消费者问题的要点：</p>
+<ul>
+<li>生产者和消费者同时只能有一位对共享内存进行操作，否则会产生竞争，所以共享内存是个临界资源；</li>
+<li>当共享内存的占用达到 BUF_SIZE 时，也就是共享内存已经占满时，生产者不能再向共享内存中放入数据；</li>
+<li>当共享内存中没有数据时，也就是共享内存块为空时，消费者不能再从共享内存中取出数据</li>
+</ul>
+</li>
+<li>
+<p>解决方案：</p>
+<ul>
+<li>
+<p>建立一个信号量 <code>sem_mutex</code>，初始值为 1，用于访问临界资源共享内存的互斥；</p>
+</li>
+<li>
+<p>建立一个信号量 <code>sem_full</code>，初始值为 BUF_SIZE：</p>
+<blockquote>
+<p>生产者放入共享内存一次数据，<code>sem_full - 1</code>，消费者取出一次数据 <code>sem_full + 1</code>，为 0 时表示共享内存已满；</p>
+</blockquote>
+</li>
+<li>
+<p>建立一个信号量 <code>sem_empty</code>，初始值为 0：</p>
+<blockquote>
+<p>生产者放入共享内存一次数据，<code>sem_full + 1</code>，消费者取出一次数据 <code>sem_full - 1</code>，为 0 时表示共享内存已空；</p>
+</blockquote>
+</li>
+<li>
+<p>生产者在 <code>sem_full</code> 为 0 时停止生产，消费者在 <code>sem_empty</code> 为 0 时停止消费。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>源程序：<a href="/sourcecodes/100016/producer-consumer.c">producer-consumer.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用信号量解决经典的‘<strong>生产者-消费者问题</strong>’；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall producer-consumer.c -o producer-consumer -lpthread</code></p>
+</li>
+<li>
+<p>运行：<code>./producer-consumer 5 8</code></p>
+</li>
+<li>
+<p>需要对该程序做一个简要的说明：</p>
+<ul>
+<li>该程序从命令行上运行时可以带两个参数，分别表示生产者的生产速度和消费者的消费速度，如果不带参数，将使用默认值；</li>
+<li>两个参数必须为 <code>1-19</code> 之间的数字，数值越大表示速度越快；</li>
+<li>当生产速度大于消费速度时，会导致生产过剩，从而使缓冲区满；</li>
+<li>当生产速度小于消费速度时，会导致生产不足，从而使缓冲区空；</li>
+<li>该程序并不是只有一个生产者和一个消费者，而是考虑到了多个生产者和消费者的情况，默认为 5 个生产者和 5 个消费者，通过调整程序中的宏定义可以改变生产者和消费者的数量；</li>
+</ul>
+</li>
+<li>
+<p>运行动图：</p>
+<p><img src="/images/100016/producer-consumer.gif" alt="GIF of running producer-consumer"></p>
+<ul>
+<li>运行了两次，第一次生产速度小于消费速度，所以会出现提示：The buffer is empty.</li>
+<li>第二次生产速度大于消费速度，所以会出现提示：The buffer is full.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="7-posix-信号量与-system-v-信号量集的主要区别">7 POSIX 信号量与 SYSTEM V 信号量集的主要区别</h2>
+<ul>
+<li>POSIX 信号量一次创建和初始化一个信号量；System V 信号量集一次可以创建一组信号量，每个信号量可以独立初始化；</li>
+<li>POSIX 信号量只能递增或递减 1；System V 信号量集可以将信号量值一次增加或减少一个任意无符号整数；</li>
+<li>POSIX 信号量提供 sem_trywait() 操作，如果该信号量值当前为 0，该调用不会阻塞而是返回一个错误，使程序可以对这个即将发生的阻塞做出恰当的处理；System V 信号量集没有提供类似功能；</li>
+<li>System V 信号量集由 key_t 值标识；POSIX 信号量可以通过一个名称(以“/”开头)来标识，也可以不命名。</li>
+</ul>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-09-06
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">进程间通信</a>
+          <a href="/tags/%E4%BF%A1%E5%8F%B7%E9%87%8F/">信号量</a>
+          <a href="/tags/semaphore/">semaphore</a>
+          <a href="/tags/posix/">POSIX</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/linux/0015-systemv-semaphore-sets/">
+            <span class="next-text nav-default">IPC之五：使用 System V 信号量集解决经典的&#39;哲学家就餐问题&#39;</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/linux/0016-posix-semaphores/" class="leancloud_visitors" data-flag-title="IPC之六：使用 POSIX 信号量解决经典的&#39;生产者-消费者问题&#39;">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
