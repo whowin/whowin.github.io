@@ -13,7 +13,7 @@
  * To compile: $ gcc -Wall sem-philo.c -o sem-philo
  * Usage: $ ./sem-philo
  *
- * Example source code for article 《IPC之五：使用 System V 信号量集进行进程间同步的实例》
+ * Example source code for article 《IPC之五：使用 System V 信号量集解决经典的'哲学家就餐问题'》
  * https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
  * 
  */
@@ -46,19 +46,8 @@ int state[PHIL_NUM];        // philosophers' state
 int phil[PHIL_NUM];         // parameters that pass to threads
 
 int semid = -1;             // identifier of semaphore set
+pthread_t thread_id[PHIL_NUM];
 
-/**************************************************************
- * Function: void sigint(int signum)
- * Description: A signal handler. 
- *              handle ctrl+c signal and exit the program
- **************************************************************/
-void sigint(int signum) {
-    printf("\nThe program terminated by user.\n");
-    if (semid >= 0) {
-        semctl(semid, 0, IPC_RMID);
-    }
-    exit(EXIT_SUCCESS);
-}
 /***************************************************************
  * Function: int sem_op(int semnum, int op)
  * Description: Operate a semaphore in the set
@@ -105,6 +94,26 @@ int sem_p(int semnum) {
 int sem_v(int semnum) {
     return sem_op(semnum, 1);
 }
+/**************************************************************
+ * Function: void sigint(int signum)
+ * Description: A signal handler. 
+ *              handle ctrl+c signal and exit the program
+ **************************************************************/
+void sigint(int signum) {
+    fprintf(stdout, "\nThe program terminated by user.\n");
+
+    for (int i = 0; i < PHIL_NUM; i++) {
+        pthread_cancel(thread_id[i]);
+        sem_v(PHIL(i));
+        pthread_join(thread_id[i], NULL);       // waiting a thread exits
+        fprintf(stdout, "The thread #%d has exited.\n", i);
+    }
+
+    if (semid >= 0) {
+        semctl(semid, 0, IPC_RMID);
+    }
+    exit(EXIT_SUCCESS);
+}
 /***********************************************************************
  * Function: void hungry_to_eating(int phnum)
  * Description: Try to set a philosopher's state from hungry to eating
@@ -150,6 +159,7 @@ void *philospher(void *num) {
             sem_p(MUTEX_IND);               // access the critical section
             hungry_to_eating(i);            // try to update the state from hungry to eating
             sem_v(MUTEX_IND);               // leave the critical section
+            sleep(0);
         }
 
         sleep(rand() % 8);                  // eat for a while
@@ -178,7 +188,7 @@ void *philospher(void *num) {
 // main program
 int main() {
     int i;
-    pthread_t thread_id[PHIL_NUM];
+    //pthread_t thread_id[PHIL_NUM];
 
     srand((uint)time(NULL));
     // initialize stste and phil arraies
@@ -199,7 +209,7 @@ int main() {
     }
     sem_v(MUTEX_IND);        // initial the mutex to start the threads
 
-    // the program can't go to the below codes in fact
+    // Acturally the program never reaches the codes below
     // because the only exit way is ctrl+c, so signal handler handles the exit
     for (i = 0; i < PHIL_NUM; i++) {
         pthread_join(thread_id[i], NULL);       // waiting a thread exits

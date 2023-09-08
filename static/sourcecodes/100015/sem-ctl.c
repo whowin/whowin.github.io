@@ -6,14 +6,14 @@
  * (C) 2023 Songqing Hua.
  * http://whowin.cn/
  *
- * .
+ * Demonstrat how to use COMMANDs of sem_ctl().
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
  * Tested on Linux 5.4.0-139-generic #156-Ubuntu SMP Fri Jan 20 17:27:18 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux.
  *
  * To compile: $ gcc -Wall sem-ctl.c -o sem-ctl
  * Usage: $ ./sem-ctl
  *
- * Example source code for article 《IPC之五：使用 System V 信号量集进行进程间同步的实例》
+ * Example source code for article 《IPC之五：使用 System V 信号量集解决经典的'哲学家就餐问题'》
  * https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
  * 
  */
@@ -25,7 +25,6 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
-//#include <linux/sem.h>
 
 int sem_stat(int semid, struct semid_ds *p_semds) {
     memset(p_semds, 0, sizeof(struct semid_ds));
