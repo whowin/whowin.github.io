@@ -50,7 +50,7 @@
 <meta itemprop="name" content="IPC之四：使用 POSIX 消息队列进行进程间通信的实例">
 <meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 POSIX 消息队列，POSIX 标准引入了一个简单的基于文件的接口，使应用程序可以轻松地与消息队列进行交互；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。"><meta itemprop="datePublished" content="2023-08-20T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-08-20T16:43:29+08:00" />
-<meta itemprop="wordCount" content="8608">
+<meta itemprop="wordCount" content="8635">
 <meta itemprop="keywords" content="Linux,进程间通信,消息队列,Message queues," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IPC之四：使用 POSIX 消息队列进行进程间通信的实例"/>
 <meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 POSIX 消息队列，POSIX 标准引入了一个简单的基于文件的接口，使应用程序可以轻松地与消息队列进行交互；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。"/>
@@ -691,6 +691,9 @@
 <p>客户端源程序：<a href="https://whowin.gitee.io/sourcecodes/100014/mq-client.c">mq-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
+<p>包含文件：<a href="/sourcecodes/100014/mq-const.h">mq-const.h</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
+<li>
 <p>编译：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -1018,6 +1021,11 @@
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
 <p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+-->
     </div>
 
     <div class="post-copyright">

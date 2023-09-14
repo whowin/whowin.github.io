@@ -177,7 +177,7 @@
 <li>信号量与其他形式的 IPC 不同，它并不能完成一般意义上的的数据交换，也就是说，不能使用信号量将信息从一个进程传输到另一个进程；</li>
 <li>信号量通常用于进程间同步或对共享资源的访问同步，也就是说，信号量可以控制可能发生冲突的共享访问的时机；</li>
 <li>POSIX 信号量与 SYSTEM V 信号量集不同，在内核中不是以数组的形式进行管理，所以也就不再称其为 <strong>集</strong>；</li>
-<li>在阅读本文前可以参考文章<a href="/post/blog/linux/0015-systemv-semaphore-sets/">《IPC之五：使用 System V 信号量集解决经典的&rsquo;哲学家就餐问题&rsquo;》</a>，关于信号量的概念都是一致的；</li>
+<li>在阅读本文前可以参考文章<a href="https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/">《IPC之五：使用 System V 信号量集解决经典的&rsquo;哲学家就餐问题&rsquo;》</a>，关于信号量的概念都是一致的；</li>
 <li>也可以参考文章<a href="https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/">《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》</a>，POSIX 标准下的很多定义都是类似的；</li>
 <li>以下如无特别说明，信号量均指 POSIX 信号量；</li>
 <li>使用 <code>man sem_overview</code> 可以查阅 POSIX 信号量的在线手册；</li>
@@ -406,7 +406,7 @@
 </ul>
 </li>
 <li>
-<p>源程序：<a href="/sourcecodes/100016/sem-create.c">sem-create.c</a>(<strong>点击文件名下载源程序</strong>)是一个简单的命令行工具，用于创建一个新的有名信号量；</p>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/100016/sem-create.c">sem-create.c</a>(<strong>点击文件名下载源程序</strong>)是一个简单的命令行工具，用于创建一个新的有名信号量；</p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall sem-create.c -o sem-create -lpthread</code></p>
@@ -427,7 +427,7 @@
 </li>
 <li>
 <p>下面是这个程序的运行截屏：</p>
-<p><img src="/images/100016/screenshot-of-sem-create.png" alt="screenshot of sem-create command"></p>
+<p><img src="https://whowin.gitee.io/images/100016/screenshot-of-sem-create.png" alt="screenshot of sem-create command"></p>
 </li>
 <li>
 <p>请注意，尽管我们设置了信号量的读/写权限是 <code>0666</code>，但最后显示的信号量的权限却是 <code>0664</code>，这是因为 umask 为 <code>0002</code>。</p>
@@ -600,7 +600,7 @@
 </ul>
 </li>
 <li>
-<p>源程序：<a href="/sourcecodes/100016/official-exam.c">official-exam.c</a>(<strong>点击文件名下载源程序</strong>)演示了初始化一个无名信号量和使用 sem_timedwait() 操作无名信号量的方法；</p>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/100016/official-exam.c">official-exam.c</a>(<strong>点击文件名下载源程序</strong>)演示了初始化一个无名信号量和使用 sem_timedwait() 操作无名信号量的方法；</p>
 </li>
 <li>
 <p>这个程序是官方的例子，可以在 <code>man sem_timedwai</code> 中找到，本文未做任何删改；</p>
@@ -631,7 +631,7 @@
 </li>
 <li>
 <p>下面是这个程序的运行截屏：</p>
-<p><img src="/images/100016/screenshot-of-official-exam.png" alt="screenshot of official-exam"></p>
+<p><img src="https://whowin.gitee.io/images/100016/screenshot-of-official-exam.png" alt="screenshot of official-exam"></p>
 </li>
 </ul>
 <hr>
@@ -678,7 +678,7 @@
 </ul>
 </li>
 <li>
-<p>源程序：<a href="/sourcecodes/100016/producer-consumer.c">producer-consumer.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用信号量解决经典的‘<strong>生产者-消费者问题</strong>’；</p>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/100016/producer-consumer.c">producer-consumer.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用信号量解决经典的‘<strong>生产者-消费者问题</strong>’；</p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall producer-consumer.c -o producer-consumer -lpthread</code></p>
@@ -698,7 +698,7 @@
 </li>
 <li>
 <p>运行动图：</p>
-<p><img src="/images/100016/producer-consumer.gif" alt="GIF of running producer-consumer"></p>
+<p><img src="https://whowin.gitee.io/images/100016/producer-consumer.gif" alt="GIF of running producer-consumer"></p>
 <ul>
 <li>运行了两次，第一次生产速度小于消费速度，所以会出现提示：The buffer is empty.</li>
 <li>第二次生产速度大于消费速度，所以会出现提示：The buffer is full.</li>
@@ -717,6 +717,13 @@
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
 <p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: 
+[article05]: 
+-->
     </div>
 
     <div class="post-copyright">
@@ -743,7 +750,11 @@
           <a href="/tags/posix/">POSIX</a>
           </div>
       <nav class="post-nav">
-        
+        <a class="prev" href="/post/blog/linux/0017-systemv-shared-memory/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">IPC之七：使用 System V 共享内存段进行进程间通信的实例</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
         <a class="next" href="/post/blog/linux/0015-systemv-semaphore-sets/">
             <span class="next-text nav-default">IPC之五：使用 System V 信号量集解决经典的&#39;哲学家就餐问题&#39;</span>
             <span class="next-text nav-mobile">下一篇</span>
