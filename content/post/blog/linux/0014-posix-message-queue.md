@@ -281,6 +281,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
     - 服务器端程序只能用 ctrl+c 退出，所以程序中截获了 ctrl+c 信号，并在处理程序中对已经打开的消息队列进行了处理。
 * 服务器端源程序：[mq-server.c][src04](**点击文件名下载源程序**)
 * 客户端源程序：[mq-client.c][src05](**点击文件名下载源程序**)
+* 包含文件：[mq-const.h][src07](**点击文件名下载源程序**)
 * 编译：
     ```bash
     gcc -Wall mq-server.c -o mq-server -lrt
@@ -449,6 +450,11 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
 [article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
 
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+-->
 
 [src01]: https://whowin.gitee.io/sourcecodes/100014/mq-attr.c
 [src02]: https://whowin.gitee.io/sourcecodes/100014/mq-create.c
@@ -456,6 +462,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [src04]: https://whowin.gitee.io/sourcecodes/100014/mq-server.c
 [src05]: https://whowin.gitee.io/sourcecodes/100014/mq-client.c
 [src06]: https://whowin.gitee.io/sourcecodes/100014/mq-notify.c
+[src07]: /sourcecodes/100014/mq-const.h
 
 [img01]: https://whowin.gitee.io/images/100014/screenshot-of-mqattr.png
 [img02]: https://whowin.gitee.io/images/100014//screenshot-of-mq-create.png

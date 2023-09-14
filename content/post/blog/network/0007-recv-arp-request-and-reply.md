@@ -262,7 +262,12 @@ ARP协议在网络编程中有着重要的地位，是一个工作在数据链�
 [img03]:https://whowin.gitee.io/images/180007/arp_payload.png
 [img04]:https://whowin.gitee.io/images/180007/screenshot_arp_server.png
 
-
+<!--gitee
 [article1]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
 [article2]:https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/
 [article3]:https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/
+-->
+
+[article1]:https://blog.csdn.net/whowin/article/details/128766145
+[article2]:https://blog.csdn.net/whowin/article/details/128891255
+[article3]:https://blog.csdn.net/whowin/article/details/129791465

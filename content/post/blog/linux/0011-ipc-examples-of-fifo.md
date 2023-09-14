@@ -308,6 +308,13 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
 [article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
 
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: 
+[article05]: 
+-->
 
 [src01]: https://whowin.gitee.io/sourcecodes/100011/fifo-server.c
 [src02]: https://whowin.gitee.io/sourcecodes/100011/fifo-client.c

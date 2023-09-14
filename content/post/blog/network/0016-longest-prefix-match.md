@@ -146,8 +146,10 @@ postid: 180016
 
 [src01]:https://whowin.gitee.io/sourcecodes/180016/rt-lookup.c
 
+<!--gitee
 [article01]:https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/
-
+-->
+[article01]:https://blog.csdn.net/whowin/article/details/129409890
 
 [img01]:https://whowin.gitee.io/images/180016/screenshot-cat-rt_tables.png
 [img02]:https://whowin.gitee.io/images/180016/screenshot-default-routing-table.png

@@ -172,8 +172,12 @@ postid: 180008
 
 [src01]:https://whowin.gitee.io/sourcecodes/180008/get-gateway-proc.c
 
+<!--gitee
 [article01]:https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/
 [article02]:https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/
+-->
+[article01]:https://blog.csdn.net/whowin/article/details/129791465
+[article02]:https://blog.csdn.net/whowin/article/details/129409890
 
 [img01]:https://whowin.gitee.io/images/180008/cat-proc-net-route.png
 [img02]:https://whowin.gitee.io/images/180008/screenshot-of-ip-route.png

@@ -358,7 +358,11 @@ postid: 180010
 [img04]:https://whowin.gitee.io/images/180010/screenshot_of_server.png
 [img05]:https://whowin.gitee.io/images/180010/screenshot_of_client.png
 
-
+<!--gitee
 [article1]:https://whowin.gitee.io/post/blog/network/0013-udp-server-client-implementation-in-c/
 [article2]:https://whowin.gitee.io/post/blog/network/0012-tcp-server-client-implementation-in-c/
 [article3]:https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/
+-->
+[article1]:https://blog.csdn.net/whowin/article/details/129728570
+[article2]:https://blog.csdn.net/whowin/article/details/129688443
+[article3]:https://blog.csdn.net/whowin/article/details/128890866

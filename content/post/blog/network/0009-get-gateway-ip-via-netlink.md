@@ -579,4 +579,7 @@ postid: 180009
 [img03]:https://whowin.gitee.io/images/180009/rtnetlink-routing-table.png
 [img04]:https://whowin.gitee.io/images/180009/route-of-routing-table.png
 
+<!--gitee
 [article1]:https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/
+-->
+[article1]:https://blog.csdn.net/whowin/article/details/129177942

@@ -188,8 +188,13 @@ TCP是一种面向连接的通信方式，一个TCP服务器难免会遇到同�
 [img01]:https://whowin.gitee.io/images/180011/screenshot_of_server.png
 [img02]:https://whowin.gitee.io/images/180011/screenshot_of_client_1.png
 
-
+<!--gitee
 [article1]:https://whowin.gitee.io/post/blog/network/0010-tcp-and-udp-server-using-select/
 [article2]:https://whowin.gitee.io/post/blog/network/0013-udp-server-client-implementation-in-c/
 [article3]:https://whowin.gitee.io/post/blog/network/0012-tcp-server-client-implementation-in-c/
 [article4]:https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/
+-->
+[article1]:https://blog.csdn.net/whowin/article/details/129410476
+[article2]:https://blog.csdn.net/whowin/article/details/129728570
+[article3]:https://blog.csdn.net/whowin/article/details/129688443
+[article4]:https://blog.csdn.net/whowin/article/details/128890866

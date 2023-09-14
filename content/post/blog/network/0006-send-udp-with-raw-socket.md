@@ -370,7 +370,14 @@ postid: 180006
 
 [src01]:https://whowin.gitee.io/sourcecodes/180006/send-raw-udp-packet.c
 
+<!--gitee
 [article01]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
 [article02]:https://whowin.gitee.io/post/blog/network/0004-checksum-of-ip-header/
 [article03]:https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/
 [article04]:https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/
+-->
+
+[article01]:https://blog.csdn.net/whowin/article/details/128766145
+[article02]:https://blog.csdn.net/whowin/article/details/128846658
+[article03]:https://blog.csdn.net/whowin/article/details/128766194
+[article04]:https://blog.csdn.net/whowin/article/details/128890866

@@ -263,4 +263,7 @@ postid: 180013
 [img02]:https://whowin.gitee.io/images/180013//screenshot_of_udpclient.png
 [img03]:https://whowin.gitee.io/images/180013/screenshot_of_udpserver.png
 
+<!--gitee
 [article1]:https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/
+-->
+[article1]:https://blog.csdn.net/whowin/article/details/128890866

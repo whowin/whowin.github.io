@@ -114,11 +114,11 @@ int main() {
         sleep((int)(random() % 5) + 1);
     }
 
-    if (i < 5) {
+    if (i < MAX_PROCESSES) {
         // child process
         printf("%d. Client process. PID=%d.\n", i + 1, getpid());
         client_process();
-    } else if (i == 5) {
+    } else if (i == MAX_PROCESSES) {
         // Parent process
         printf("Parent process. Waiting for child processes exiting.\n");
         pid_t pid_wait;

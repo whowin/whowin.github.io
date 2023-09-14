@@ -134,7 +134,10 @@ postid: 180004
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
+<!--gitee
 [article01]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
+-->
+[article01]:https://blog.csdn.net/whowin/article/details/128766145
 [article02]:https://www.thegeekstuff.com/2012/03/ip-protocol-header/
 
 [img01]:https://whowin.gitee.io/images/180004/ip_header.png

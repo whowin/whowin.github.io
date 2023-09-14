@@ -307,14 +307,21 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
 [article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
 [article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
-[article05]: /post/blog/linux/0015-systemv-semaphore-sets/
+[article05]: https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
+
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: 
+[article05]: 
+-->
+
+[src01]: https://whowin.gitee.io/sourcecodes/100016/sem-create.c
+[src02]: https://whowin.gitee.io/sourcecodes/100016/official-exam.c
+[src03]: https://whowin.gitee.io/sourcecodes/100016/producer-consumer.c
 
 
-[src01]: /sourcecodes/100016/sem-create.c
-[src02]: /sourcecodes/100016/official-exam.c
-[src03]: /sourcecodes/100016/producer-consumer.c
-
-
-[img01]: /images/100016/screenshot-of-sem-create.png
-[img02]: /images/100016/screenshot-of-official-exam.png
-[img03]: /images/100016/producer-consumer.gif
+[img01]: https://whowin.gitee.io/images/100016/screenshot-of-sem-create.png
+[img02]: https://whowin.gitee.io/images/100016/screenshot-of-official-exam.png
+[img03]: https://whowin.gitee.io/images/100016/producer-consumer.gif

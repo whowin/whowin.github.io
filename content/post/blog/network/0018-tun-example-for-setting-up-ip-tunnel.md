@@ -327,8 +327,10 @@ postid: 180018
 [src03]:https://whowin.gitee.io/sourcecodes/180018/app-client.c
 [src04]:https://whowin.gitee.io/sourcecodes/180018/app-server.c
 
+<!--gitee
 [article01]:https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/
-
+-->
+[article01]:https://blog.csdn.net/whowin/article/details/128891255
 
 [img01]:https://whowin.gitee.io/images/180018/screenshot-of-setting-up-tun0.png
 [img02]:https://whowin.gitee.io/images/180018/send-data-tun-local.png
