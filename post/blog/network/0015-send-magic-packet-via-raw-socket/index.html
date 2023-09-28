@@ -172,7 +172,7 @@
 <h2 id="1-magic-packet">1. Magic Packet</h2>
 <ul>
 <li>我比较喜欢把这个数据包称作&quot;网络唤醒包&quot;；有很多地方把它翻译成&quot;魔术包&quot;或者&quot;魔法数据包&quot;，我个人觉着太过表面，无法表达其实际的含义；本文将这个数据包称为&quot;网络唤醒包&quot;或者&quot;Magic Packet&quot;，二者具有完全相同的含义；</li>
-<li>以前写过一篇与嵌入式相关的文章<a href="https://whowin.gitee.io/post/blog/network/embedded/0001-wake-on-lan/">《远程开机：一个简单的嵌入式项目开发》</a>，在嵌入式环境下使用Magic Packet进行远程开机的小项目，有兴趣的读者可以参考；</li>
+<li>以前写过一篇与嵌入式相关的文章<a href="https://blog.csdn.net/whowin/article/details/126502495">《远程开机：一个简单的嵌入式项目开发》</a>，在嵌入式环境下使用Magic Packet进行远程开机的小项目，有兴趣的读者可以参考；</li>
 <li><code>Magic Packet</code> 就是一个指定格式的数据包，其格式为：6 个 <strong>0xff</strong>，然后16组需要被网络唤醒的电脑的 <strong>MAC</strong> 地址，比如需要被唤醒的电脑的 MAC 为：<code>00:e0:2b:69:00:03</code>，则 <code>Magic Packet</code> 为(16进制表述)：
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -199,7 +199,7 @@
 </li>
 <li>对Magic Packet也没有什么好解释的，理论上只要一个报文中存在这个Magic Packet，那么有网络唤醒功能的NIC都会相应，What is NIC? NIC就是网卡，Network Interface Controller；</li>
 <li>但是大多数的 802.11 的无线网卡是收不到 Magic Packet 的，这一点在<a href="https://en.wikipedia.org/wiki/Wake-on-LAN">wikipedia-Wake-On-Lan</a>上有明确的说明；所以不要尝试在无线网卡上做网络唤醒，但是有一个叫做<strong>WoWLAN</strong>的标准是专门支持无线网卡的网络唤醒的，以后有时间的时候试一下；</li>
-<li>通常发送Magic Packet是使用UDP广播的方式发，这方面的文章很多，有兴趣的读者可以百个度或者谷个歌去找一下，我的另一篇文章<a href="https://whowin.gitee.io/post/blog/network/embedded/0001-wake-on-lan/">《远程开机：一个简单的嵌入式项目开发》</a>也是用这种方式发的，这里就不赘述了；</li>
+<li>通常发送Magic Packet是使用UDP广播的方式发，这方面的文章很多，有兴趣的读者可以百个度或者谷个歌去找一下，我的另一篇文章<a href="https://blog.csdn.net/whowin/article/details/126502495">《远程开机：一个简单的嵌入式项目开发》</a>也是用这种方式发的，这里就不赘述了；</li>
 </ul>
 <h2 id="2-相关技术要点">2. 相关技术要点</h2>
 <blockquote>
@@ -253,7 +253,7 @@
 <li>
 <p><strong>raw socket</strong></p>
 <ul>
-<li>可以参考我的另两篇文章<a href="https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>和<a href="https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a>，这里仅做一个简单回顾；</li>
+<li>可以参考我的另两篇文章<a href="https://blog.csdn.net/whowin/article/details/128766145">《Linux下如何在数据链路层接收原始数据包》</a>和<a href="https://blog.csdn.net/whowin/article/details/128891255">《如何使用raw socket发送UDP报文》</a>，这里仅做一个简单回顾；</li>
 <li>打开一个raw socket
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -323,7 +323,7 @@
 <p>尽管我们知道目的MAC，但是这个报文必须以广播报文发出，因为此时被唤醒的机器并没有开机，所以无法通过arp获知填写的MAC地址是否在局域网内，所以如果在以太网报头的h_dest中填上了要被唤醒的机器的MAC地址，报文是无法送达的；</p>
 </li>
 <li>
-<p>关于使用ioctl获取接口索引号(Interface Index)和接口MAC的问题，请自行查找资料，或者参考文章<a href="https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a>，这篇文章中有部分内容涉及到这个问题；</p>
+<p>关于使用ioctl获取接口索引号(Interface Index)和接口MAC的问题，请自行查找资料，或者参考文章<a href="https://blog.csdn.net/whowin/article/details/128891255">《如何使用raw socket发送UDP报文》</a>，这篇文章中有部分内容涉及到这个问题；</p>
 </li>
 <li>
 <p>程序中写好了用send()或者用sendto()发送报文的代码，使用一个常量USING_SENDTO来控制，当USING_SENDTO为1时，将使用sendto()发送报文，否则使用send()发送报文；</p>
@@ -353,7 +353,7 @@
 <p>这个程序并不好调试，因为能够在数据链路层侦听的工具不多，加上使用的协议号为0x842，使得大多数工具都无法使用，<strong>wireshark应该是可以的</strong>，而且<a href="https://wiki.wireshark.org/WakeOnLAN">wireshark的wiki</a>上说，它有专门针对0x842号协议的侦听，不过我没有试过，有感兴趣的读者可以试一下；</p>
 </li>
 <li>
-<p>远程唤醒是需要硬件支持的，主板和网卡都要支持，但是目前绝大多数有线网卡都应该是支持的，但是可能要在BIOS和其它地方做一些设置，请自行搜索相关资料，并参考我的另一篇文章<a href="https://whowin.gitee.io/post/blog/network/embedded/0001-wake-on-lan/">《远程开机：一个简单的嵌入式项目开发》</a></p>
+<p>远程唤醒是需要硬件支持的，主板和网卡都要支持，但是目前绝大多数有线网卡都应该是支持的，但是可能要在BIOS和其它地方做一些设置，请自行搜索相关资料，并参考我的另一篇文章<a href="https://blog.csdn.net/whowin/article/details/126502495">《远程开机：一个简单的嵌入式项目开发》</a></p>
 </li>
 <li>
 <p>运行结果截图：</p>
@@ -364,6 +364,11 @@
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
 <p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!--gitee
+[article01]:https://whowin.gitee.io/post/blog/embedded/0001-wake-on-lan/
+[article02]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
+[article03]:https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/
+-->
     </div>
 
     <div class="post-copyright">

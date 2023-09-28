@@ -6,7 +6,16 @@
     <description>Recent content in Shared Memory on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 12 Sep 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/shared-memory/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 27 Sep 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/shared-memory/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>IPC之八：使用 POSIX 共享内存进行进程间通信的实例</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/</link>
+      <pubDate>Wed, 27 Sep 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/</guid>
+      <description>&lt;p&gt;IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍共享内存(Shared Memory)，因为没有像管道、消息队列这样的中介介入，所以通常认为共享内存是迄今为止最快的 IPC 方式；Linux 既支持 UNIX SYSTEM V 的共享内存段，也支持 POSIX 的共享内存对象，本文针对 POSIX 共享内存对象，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程和信号处理等，阅读本文还需要一些基本的内存管理知识，本文对 Linux 编程的初学者有一些难度。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>IPC之七：使用 System V 共享内存段进行进程间通信的实例</title>
       <link>https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/</link>

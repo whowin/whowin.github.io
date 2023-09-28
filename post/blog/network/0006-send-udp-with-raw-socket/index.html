@@ -174,7 +174,7 @@
       <p>使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；阅读本文需要掌握基本的IPv4下的socket编程方法，本文对初学者有一定难度。</p>
 <h2 id="1-前言">1. 前言</h2>
 <ul>
-<li>阅读本文前可以考虑先阅读一下我的另外一篇文章<a href="https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>，那篇文章中已经介绍过的一些概念，本文中将不再赘述；下面仅罗列一些曾经在<a href="https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>介绍过的技术要点；</li>
+<li>阅读本文前可以考虑先阅读一下我的另外一篇文章<a href="https://blog.csdn.net/whowin/article/details/128766145">《Linux下如何在数据链路层接收原始数据包》</a>，那篇文章中已经介绍过的一些概念，本文中将不再赘述；下面仅罗列一些曾经在<a href="https://blog.csdn.net/whowin/article/details/128766145">《Linux下如何在数据链路层接收原始数据包》</a>介绍过的技术要点；</li>
 <li>发送数据时打开raw_socket
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -637,7 +637,7 @@
 <li>
 <p>IP报头中的checksum计算</p>
 <blockquote>
-<p>在IP报头中还有一个check字段没有填，关于这个字段的计算请参考我的另外两篇文章<a href="https://whowin.gitee.io/post/blog/network/0004-checksum-of-ip-header/">《如何计算IP报头的checksum》</a>和<a href="https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/">《如何计算UDP头的checksum》</a>；checksum字段是用于错误检测的，当报文经过一个路由器时，路由器会重新计算IP报文的checksum，并与IP报头中的checksum进行比较，如果不一致，该报文将被丢弃，否则，路由器会把IP报头中ttl字段减1，然后转发这个报文；</p>
+<p>在IP报头中还有一个check字段没有填，关于这个字段的计算请参考我的另外两篇文章<a href="https://blog.csdn.net/whowin/article/details/128846658">《如何计算IP报头的checksum》</a>和<a href="https://blog.csdn.net/whowin/article/details/128766194">《如何计算UDP头的checksum》</a>；checksum字段是用于错误检测的，当报文经过一个路由器时，路由器会重新计算IP报文的checksum，并与IP报头中的checksum进行比较，如果不一致，该报文将被丢弃，否则，路由器会把IP报头中ttl字段减1，然后转发这个报文；</p>
 </blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -794,7 +794,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>在目的电脑(192.168.2.112)上启动一个监听程序，监听UDP的34562端口，因为我们的程序会向这个端口发送一个UDP报文，内容是：hello；这里我们使用netcat命令，关于这个命令的介绍，请参考我的另一篇文章<a href="https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/">《如何在Linux命令行下发送和接收UDP数据包》</a>
+<li>在目的电脑(192.168.2.112)上启动一个监听程序，监听UDP的34562端口，因为我们的程序会向这个端口发送一个UDP报文，内容是：hello；这里我们使用netcat命令，关于这个命令的介绍，请参考我的另一篇文章<a href="https://blog.csdn.net/whowin/article/details/128890866">《如何在Linux命令行下发送和接收UDP数据包》</a>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -829,6 +829,12 @@
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
 <p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!--gitee
+[article01]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
+[article02]:https://whowin.gitee.io/post/blog/network/0004-checksum-of-ip-header/
+[article03]:https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/
+[article04]:https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/
+-->
     </div>
 
     <div class="post-copyright">

@@ -50,7 +50,7 @@
 <meta itemprop="name" content="IPC之六：使用 POSIX 信号量解决经典的&#39;生产者-消费者问题&#39;">
 <meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量(Semaphores)，尽管信号量被认为是 IPC 的一种方式，但实际上通常把信号量用于进程间同步或者资源互斥，和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量，本文针对 POSIX 信号量，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。"><meta itemprop="datePublished" content="2023-09-06T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-09-06T16:43:29+08:00" />
-<meta itemprop="wordCount" content="5995">
+<meta itemprop="wordCount" content="6170">
 <meta itemprop="keywords" content="Linux,进程间通信,信号量,semaphore,POSIX," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IPC之六：使用 POSIX 信号量解决经典的&#39;生产者-消费者问题&#39;"/>
 <meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量(Semaphores)，尽管信号量被认为是 IPC 的一种方式，但实际上通常把信号量用于进程间同步或者资源互斥，和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量，本文针对 POSIX 信号量，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。"/>
@@ -308,6 +308,24 @@
 <p>虚拟文件系统下的信号量文件是二进制存储的，无法使用 <code>cat</code> 查看，可以使用 <code>hexdump /dev/shm/&lt;sem_name&gt;</code> 查看信号量的值；</p>
 </li>
 <li>
+<p>尽管 POSIX 信号量的在线手册(<code>man sem_overview</code>)中明确信号量的名称必须以 &ldquo;/&rdquo; 开头，但在具体编程实践中发现在调用 <code>sem_open</code> 创建一个新的或打开一个已经存在的信号量时，信号量名称有没有 &ldquo;/&rdquo; 似乎并没有什么区别，即：下面两个调用没有区别；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">sem_open</span><span class="p">(</span><span class="s">&#34;/semname-testing&#34;</span><span class="p">,</span> <span class="n">O_CREAT</span><span class="p">,</span> <span class="mo">0666</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sem_open</span><span class="p">(</span><span class="s">&#34;semname-testing&#34;</span><span class="p">,</span> <span class="n">O_CREAT</span><span class="p">,</span> <span class="mo">0666</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>但是，编程实践表明 POSIX 消息队列的名称是必须以 &ldquo;/&rdquo; 开头的；</p>
+</li>
+<li>
 <p>如果在你的系统上没有这个虚拟文件系统，可以用下面的命令建立一个：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -354,13 +372,13 @@
 </blockquote>
 </li>
 <li>
-<p><strong>name</strong> - 信号量的名称，一个以 &ldquo;/&rdquo; 开头的字符串，是这个信号量的唯一标识；</p>
+<p><strong>name</strong> - 信号量的名称，一个以 &ldquo;/&rdquo; 开头的字符串(实践表明可以也没有这个 &ldquo;/&quot;)，是这个信号量的唯一标识；</p>
 </li>
 <li>
 <p><strong>oflag</strong> - 控制操作的一些标志，可以有以下选项，这些选项可以以 or 的方式进行组合：</p>
 <ul>
 <li><strong>O_CREAT</strong> - 如果信号量不存在，则建立一个新的有名信号量，返回其地址；如果信号量存在，则返回该信号量的地址；</li>
-<li><strong>O_EXCL</strong> - 如果同时设置了 O_CREAT，则当打开的消息队列已经存在时，返回调用失败，errno=EEXIST</li>
+<li><strong>O_EXCL</strong> - 如果同时设置了 O_CREAT，则当打开的信号量已经存在时，返回调用失败，errno=EEXIST</li>
 </ul>
 </li>
 <li>

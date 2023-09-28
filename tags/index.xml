@@ -6,11 +6,11 @@
     <description>Recent content in Tags on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 12 Sep 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 27 Sep 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>IPC</title>
       <link>https://whowin.gitee.io/tags/ipc/</link>
-      <pubDate>Tue, 12 Sep 2023 16:43:29 +0800</pubDate>
+      <pubDate>Wed, 27 Sep 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/ipc/</guid>
       <description></description>
@@ -19,7 +19,7 @@
     <item>
       <title>Linux</title>
       <link>https://whowin.gitee.io/tags/linux/</link>
-      <pubDate>Tue, 12 Sep 2023 16:43:29 +0800</pubDate>
+      <pubDate>Wed, 27 Sep 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/linux/</guid>
       <description></description>
@@ -28,7 +28,7 @@
     <item>
       <title>POSIX</title>
       <link>https://whowin.gitee.io/tags/posix/</link>
-      <pubDate>Tue, 12 Sep 2023 16:43:29 +0800</pubDate>
+      <pubDate>Wed, 27 Sep 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/posix/</guid>
       <description></description>
@@ -37,7 +37,7 @@
     <item>
       <title>Shared Memory</title>
       <link>https://whowin.gitee.io/tags/shared-memory/</link>
-      <pubDate>Tue, 12 Sep 2023 16:43:29 +0800</pubDate>
+      <pubDate>Wed, 27 Sep 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/shared-memory/</guid>
       <description></description>
@@ -46,7 +46,7 @@
     <item>
       <title>共享内存</title>
       <link>https://whowin.gitee.io/tags/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/</link>
-      <pubDate>Tue, 12 Sep 2023 16:43:29 +0800</pubDate>
+      <pubDate>Wed, 27 Sep 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98/</guid>
       <description></description>
@@ -55,7 +55,7 @@
     <item>
       <title>进程间通信</title>
       <link>https://whowin.gitee.io/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</link>
-      <pubDate>Tue, 12 Sep 2023 16:43:29 +0800</pubDate>
+      <pubDate>Wed, 27 Sep 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</guid>
       <description></description>

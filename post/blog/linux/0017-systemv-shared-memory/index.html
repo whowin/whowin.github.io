@@ -218,15 +218,15 @@
 </li>
 <li>
 <p>可以使用命令行命令 <code>ipcs -m -l</code> 查看这些限制值；</p>
-<p><img src="/images/100017/screen-of-ipcs-m-l.png" alt="screenshot of &amp;lsquo;ipcs -m -l&amp;rsquo;"></p>
+<p><img src="https://whowin.gitee.io/images/100017/screen-of-ipcs-m-l.png" alt="screenshot of &amp;lsquo;ipcs -m -l&amp;rsquo;"></p>
 </li>
 <li>
 <p>也可以在 proc 文件系统中找到这些限制值</p>
-<p><img src="/images/100017/screenshot-max-proc.png" alt="screenshot of proc"></p>
+<p><img src="https://whowin.gitee.io/images/100017/screenshot-max-proc.png" alt="screenshot of proc"></p>
 </li>
 <li>
 <p>还可以使用命令 <code>sysctl kernel.shm{mni,all,max}</code> 查看这些限制值；</p>
-<p><img src="/images/100017/screenshot-of-sysctl.png" alt="screenshot of sysctl"></p>
+<p><img src="https://whowin.gitee.io/images/100017/screenshot-of-sysctl.png" alt="screenshot of sysctl"></p>
 </li>
 </ul>
 <hr>
@@ -470,7 +470,7 @@
 </ul>
 </li>
 <li>
-<p><strong>源程序</strong>：<a href="/sourcecodes/100017/shm-ctl.c">shm-ctl.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用 shmctl() 对共享内存段进行操作；</p>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/100017/shm-ctl.c">shm-ctl.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用 shmctl() 对共享内存段进行操作；</p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall shm-ctl.c -o shm-ctl</code></p>
@@ -492,7 +492,7 @@
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="/images/100017/screenshot-of-shm-ctl.png" alt="Screenshot of running shm-ctl"></p>
+<p><img src="https://whowin.gitee.io/images/100017/screenshot-of-shm-ctl.png" alt="Screenshot of running shm-ctl"></p>
 </li>
 </ul>
 <hr>
@@ -502,13 +502,13 @@
 <p>这个实例是一个服务端，若干个客户端使用共享内存段的例子</p>
 </li>
 <li>
-<p>服务端源程序：<a href="/sourcecodes/100017/shm-server.c">shm-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>服务端源程序：<a href="https://whowin.gitee.io/sourcecodes/100017/shm-server.c">shm-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
-<p>客户端源程序：<a href="/sourcecodes/100017/shm-client.c">shm-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>客户端源程序：<a href="https://whowin.gitee.io/sourcecodes/100017/shm-client.c">shm-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
-<p>包含文件：<a href="/sourcecodes/100017/shm-public.h">shm-public.h</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>包含文件：<a href="https://whowin.gitee.io/sourcecodes/100017/shm-public.h">shm-public.h</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>基本过程：</p>
@@ -570,7 +570,7 @@
 </li>
 <li>
 <p>运行动图：</p>
-<p><img src="/images/100017/shm-server-client.gif" alt="GIF for running shm-server and shm-client"></p>
+<p><img src="https://whowin.gitee.io/images/100017/shm-server-client.gif" alt="GIF for running shm-server and shm-client"></p>
 </li>
 </ul>
 <hr>
@@ -639,7 +639,11 @@
           <a href="/tags/shared-memory/">Shared Memory</a>
           </div>
       <nav class="post-nav">
-        
+        <a class="prev" href="/post/blog/linux/0018-posix-shared-memory/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">IPC之八：使用 POSIX 共享内存进行进程间通信的实例</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
         <a class="next" href="/post/blog/linux/0016-posix-semaphores/">
             <span class="next-text nav-default">IPC之六：使用 POSIX 信号量解决经典的&#39;生产者-消费者问题&#39;</span>
             <span class="next-text nav-mobile">下一篇</span>
