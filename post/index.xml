@@ -6,7 +6,16 @@
     <description>Recent content in Posts on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 27 Sep 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 16 Oct 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>IPC之九：使用UNIX Domain Socket进行进程间通信的实例</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/</link>
+      <pubDate>Mon, 16 Oct 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/</guid>
+      <description>&lt;p&gt;socket 编程是一种用于网络通信的编程方式，在 socket 的协议族中除了常用的 AF_INET、AF_RAW、AF_NETLINK等以外，还有一个专门用于 IPC 的协议族 AF_UNIX，IPC 是 Linux 编程中一个重要的概念，常用的 IPC 方式有管道、消息队列、共享内存等，本文主要介绍用于本地进程间通信的 UNIX Domain Socket，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程等，本文对 Linux 编程的初学者有一些难度。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>IPC之八：使用 POSIX 共享内存进行进程间通信的实例</title>
       <link>https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/</link>
