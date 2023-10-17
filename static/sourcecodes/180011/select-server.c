@@ -5,7 +5,7 @@
  * (C) 2023 Songqing Hua.
  * http://whowin.cn/
  *
- * TCP client for a combinatorial TCP and UDP server
+ * TCP servers that handle multi-client connections using select.
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
  * Tested on Linux 5.4.0-139-generic #156-Ubuntu SMP Fri Jan 20 17:27:18 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux.
  *
