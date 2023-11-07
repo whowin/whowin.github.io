@@ -6,7 +6,16 @@
     <description>Recent content in C Language on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 16 Oct 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/c-language/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 06 Nov 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/c-language/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>IPC之十：使用共享文件进行进程间通信的实例</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/</link>
+      <pubDate>Mon, 06 Nov 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/</guid>
+      <description>&lt;p&gt;IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 IPC 方式有管道、消息队列、共享内存等，但其实使用广大程序员都熟悉的文件也是可以完成 IPC 的，本文介绍如何使用共享文件实现进程间通信，本文给出了具体的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程、文件锁等概念，所以对 Linux 编程的初学者有一些难度，但对于了解 Linux 下共享文件，特别是文件锁的应用，将是非常难得的。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>IPC之九：使用UNIX Domain Socket进行进程间通信的实例</title>
       <link>https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/</link>
