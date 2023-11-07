@@ -1,5 +1,5 @@
 ---
-title: "IPC之六：网络 socket"
+title: "IPC之十：网络 socket"
 date: 2023-07-08T16:43:29+08:00
 author: whowin
 sidebar: false
