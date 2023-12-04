@@ -6,7 +6,16 @@
     <description>Recent content in Posts on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 06 Nov 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 01 Dec 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/</link>
+      <pubDate>Fri, 01 Dec 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/</guid>
+      <description>&lt;p&gt;IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，本文介绍在 Linux 下 IPC 的另外一种实现，D-Bus，D-Bus 是一种用于进程间通信的消息总线系统，它提供了一个可靠且灵活的机制，使得不同进程之间能够相互通信，本文给出了使用 D-Bus 进行基本 IPC 的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>IPC之十：使用共享文件进行进程间通信的实例</title>
       <link>https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/</link>
@@ -536,6 +545,38 @@
       
       <guid>https://whowin.gitee.io/post/blog/dos/2008-07-16%E5%88%86%E5%8C%BA%E4%BF%A1%E6%81%AF%E8%A1%A8%E7%9A%84%E7%BB%93%E6%9E%84/</guid>
       <description>分区信息表的结构 私人日志 2008-07-16 10:53:07 硬盘的0柱面、0磁头、1扇区称为主引导扇区，该扇区的内容称为主引导记录（Main Boot Record（MBR）），在M</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/</guid>
+      <description>&lt;p&gt;title: &amp;ldquo;IPC之十二：使用D-Bus异步机制处理信号的实例&amp;rdquo;
+date: 2023-11-06T16:43:29+08:00
+author: whowin
+sidebar: false
+authorbox: false
+toc: true
+pager: true
+categories:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;Linux&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;C Language&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Network&amp;rdquo;
+tags:&lt;/li&gt;
+&lt;li&gt;Linux&lt;/li&gt;
+&lt;li&gt;进程间通信&lt;/li&gt;
+&lt;li&gt;files&lt;/li&gt;
+&lt;li&gt;IPC
+draft: false
+#references:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id=&#34;--d-bus--transmit-a-data-array-in-simple-and-useful-formhttpgaiger-programmingblogspotcom201508d-bus-simple-and-useful-example-to-sendhtml&#34;&gt;- &lt;a href=&#34;http://gaiger-programming.blogspot.com/2015/08/d-bus-simple-and-useful-example-to-send.html&#34;&gt;D-Bus : Transmit a Data Array in Simple and Useful Form&lt;/a&gt;&lt;/h1&gt;
+&lt;h1 id=&#34;--里面有一个很不错异步处理信号的例子&#34;&gt;- 里面有一个很不错异步处理信号的例子&lt;/h1&gt;
+&lt;h2 id=&#34;postid-100021&#34;&gt;postid: 100021&lt;/h2&gt;
+&lt;p&gt;IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，本文介绍在 Linux 下 IPC 的另外一种实现，D-Bus，D-Bus 是一种用于进程间通信的消息总线系统，它提供了一个可靠且灵活的机制，使得不同进程之间能够相互通信，本文给出了使用 D-Bus 进行基本 IPC 的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。&lt;/p&gt;</description>
     </item>
     
   </channel>

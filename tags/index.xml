@@ -6,29 +6,38 @@
     <description>Recent content in Tags on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 06 Nov 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 01 Dec 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>files</title>
-      <link>https://whowin.gitee.io/tags/files/</link>
-      <pubDate>Mon, 06 Nov 2023 16:43:29 +0800</pubDate>
+      <title>D-Bus</title>
+      <link>https://whowin.gitee.io/tags/d-bus/</link>
+      <pubDate>Fri, 01 Dec 2023 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/tags/files/</guid>
+      <guid>https://whowin.gitee.io/tags/d-bus/</guid>
       <description></description>
     </item>
     
     <item>
       <title>IPC</title>
       <link>https://whowin.gitee.io/tags/ipc/</link>
-      <pubDate>Mon, 06 Nov 2023 16:43:29 +0800</pubDate>
+      <pubDate>Fri, 01 Dec 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/ipc/</guid>
       <description></description>
     </item>
     
     <item>
+      <title>libdbus</title>
+      <link>https://whowin.gitee.io/tags/libdbus/</link>
+      <pubDate>Fri, 01 Dec 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/libdbus/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Linux</title>
       <link>https://whowin.gitee.io/tags/linux/</link>
-      <pubDate>Mon, 06 Nov 2023 16:43:29 +0800</pubDate>
+      <pubDate>Fri, 01 Dec 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/linux/</guid>
       <description></description>
@@ -37,9 +46,18 @@
     <item>
       <title>进程间通信</title>
       <link>https://whowin.gitee.io/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</link>
-      <pubDate>Mon, 06 Nov 2023 16:43:29 +0800</pubDate>
+      <pubDate>Fri, 01 Dec 2023 16:43:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>files</title>
+      <link>https://whowin.gitee.io/tags/files/</link>
+      <pubDate>Mon, 06 Nov 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/tags/files/</guid>
       <description></description>
     </item>
     

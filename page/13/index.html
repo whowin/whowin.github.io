@@ -134,115 +134,42 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0007-recv-arp-request-and-reply/">接收arp请求并发送回应的实例</a></h1>
+    <h1 class="post-title"><a class="post-link" href="/post/blog/linux/0022-dbus-asyn-process-signal/"></a></h1>
     <div class="post-meta">
-      <span class="post-time"> 2023-01-12 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
+      <span class="post-time"> 0001-01-01 </span>
+      
     </div>
   </header>
   
   <div class="post-content">
     <div class="post-summary">
-      <p>ARP协议在网络编程中有着重要的地位，是一个工作在数据链路层的协议，本文简单介绍了ARP协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释；阅读本文需要有一定的网络编程基础，了解OSI的网络模型，本文对初学者有一定的难度。</p>
+      <p>title: &ldquo;IPC之十二：使用D-Bus异步机制处理信号的实例&rdquo;
+date: 2023-11-06T16:43:29+08:00
+author: whowin
+sidebar: false
+authorbox: false
+toc: true
+pager: true
+categories:</p>
+<ul>
+<li>&ldquo;Linux&rdquo;</li>
+<li>&ldquo;C Language&rdquo;</li>
+<li>&ldquo;Network&rdquo;
+tags:</li>
+<li>Linux</li>
+<li>进程间通信</li>
+<li>files</li>
+<li>IPC
+draft: false
+#references:</li>
+</ul>
+<h1 id="--d-bus--transmit-a-data-array-in-simple-and-useful-formhttpgaiger-programmingblogspotcom201508d-bus-simple-and-useful-example-to-sendhtml">- <a href="http://gaiger-programming.blogspot.com/2015/08/d-bus-simple-and-useful-example-to-send.html">D-Bus : Transmit a Data Array in Simple and Useful Form</a></h1>
+<h1 id="--里面有一个很不错异步处理信号的例子">- 里面有一个很不错异步处理信号的例子</h1>
+<h2 id="postid-100021">postid: 100021</h2>
+<p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，本文介绍在 Linux 下 IPC 的另外一种实现，D-Bus，D-Bus 是一种用于进程间通信的消息总线系统，它提供了一个可靠且灵活的机制，使得不同进程之间能够相互通信，本文给出了使用 D-Bus 进行基本 IPC 的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。</p>
     </div>
     <div class="read-more">
-      <a href="/post/blog/network/0007-recv-arp-request-and-reply/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0014-handling-arp-cache/">如何用C语言操作arp cache</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-01-12 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>arp cache中存放着局域网内IP地址和MAC地址的对应关系，对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0，阅读本文需要有基本的socket编程和ioctl的知识，并对ARP协议有所了解，本文对网络编程的初学者难度不大。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0014-handling-arp-cache/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0011-handling-multiple-clients-on-server-with-select/">TCP服务器如何使用select处理多客户连接</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-01-09 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>TCP是一种面向连接的通信方式，一个TCP服务器难免会遇到同时处理多个用户的连接请求的问题，本文用一个简化的实例说明如何在一个TCP服务器程序中，使用select处理同时出现的多个客户连接，文章给出了程序源代码，阅读本文应该具备了基本的socket编程知识，熟悉基本的服务器/客户端模型架构；本文对初学者难度不大。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0011-handling-multiple-clients-on-server-with-select/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0010-tcp-and-udp-server-using-select/">使用select实现的UDP/TCP组合服务器</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-01-07 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>独立的 TCP 服务器和UDP服务器，可以找到很多例子，但如果一个服务希望在同一个端口上既提供 TCP 服务，也提供 UDP 服务，写两个服务端显然不是一个好的办法，也不利于以后的维护，本文将把UDP服务器和 TCP 服务器合并成一个服务器，该服务器既可以提供 UDP 服务也可以提供 TCP 服务，本文将给出完整的源代码，阅读本文需要掌握基本的 socket 编程方法，本文对初学者难度不大。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0010-tcp-and-udp-server-using-select/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0012-tcp-server-client-implementation-in-c/">使用C语言实现服务器/客户端的TCP通信</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-01-06 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>本文力求使用简单的描述说明一个服务器/客户端TCP通信的基本程序框架，使读者在这个框架下可以构建更加复杂的服务，文中给出了服务器端和客户端的实例源程序，本文适合网络编程的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0012-tcp-server-client-implementation-in-c/" class="read-more-link">阅读更多</a>
+      <a href="/post/blog/linux/0022-dbus-asyn-process-signal/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
@@ -250,14 +177,11 @@
     </section>
   
   <nav class="pagination">
-    <a class="prev" href="/page/4/">
+    <a class="prev" href="/page/12/">
         <i class="iconfont icon-left"></i>
         <span class="prev-text">上一页</span>
       </a>
-    <a class="next" href="/page/6/">
-        <span class="next-text">下一页</span>
-        <i class="iconfont icon-right"></i>
-      </a>
+    
   </nav>
         </div>
         
