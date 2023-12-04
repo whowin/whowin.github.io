@@ -203,6 +203,6 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 I
 [article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
 [article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
 
-[src01]: /sourcecodes/100020/ipc-files.c
+[src01]: https://whowin.gitee.io/sourcecodes/100020/ipc-files.c
 
-[img01]: /images/100020/ipc-files.gif
+[img01]: https://whowin.gitee.io/images/100020/ipc-files.gif
