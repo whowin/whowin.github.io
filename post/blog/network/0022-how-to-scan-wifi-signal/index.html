@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用ioctl扫描wifi信号获取AP的essid、mac地址等属性">
 <meta itemprop="description" content="使用 wifi 是一件再平常不过的是事情，有很多 wifi 工具可以帮助你扫描附近的 wifi 信号，测试信号强度等，但如何通过编程来操作 wifi 却鲜有文章涉及；本文立足实践，不使用任何第三方库，仅使用 ioctl 扫描附近的 wifi 信号，并获取这些 AP 的 ESSID、MAC 地址、占用信道和工作频率，本文将给出完整的源程序，今后还会写一些文章讨论如果编程获取 wifi 信号的其它属性(比如：信号强度、加密方式等)的方法，敬请关注；本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；阅读本文并不需要对 IEEE802.11 协议有所了解。"><meta itemprop="datePublished" content="2023-06-26T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-06-26T16:43:29+08:00" />
-<meta itemprop="wordCount" content="8360">
+<meta itemprop="wordCount" content="8372">
 <meta itemprop="keywords" content="Linux,网络编程,802.11,wifi,无线网络,ioctl," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用ioctl扫描wifi信号获取AP的essid、mac地址等属性"/>
 <meta name="twitter:description" content="使用 wifi 是一件再平常不过的是事情，有很多 wifi 工具可以帮助你扫描附近的 wifi 信号，测试信号强度等，但如何通过编程来操作 wifi 却鲜有文章涉及；本文立足实践，不使用任何第三方库，仅使用 ioctl 扫描附近的 wifi 信号，并获取这些 AP 的 ESSID、MAC 地址、占用信道和工作频率，本文将给出完整的源程序，今后还会写一些文章讨论如果编程获取 wifi 信号的其它属性(比如：信号强度、加密方式等)的方法，敬请关注；本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；阅读本文并不需要对 IEEE802.11 协议有所了解。"/>
@@ -179,6 +179,7 @@
         </li>
         <li><a href="#4-完整的-wifi-信号扫描程序">4 完整的 wifi 信号扫描程序</a></li>
         <li><a href="#5-后记">5 后记</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -1323,6 +1324,7 @@
 <li>对 wifi 信号的操作，扫描仅仅是一个基本的操作，还有其它操作，比如：连接 wifi、共享 wifi、配置wifi等；</li>
 <li>实际上，对 wifi 进行编程的文章和资料并不多，希望这篇文章能给你带来一些启发和帮助。</li>
 </ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

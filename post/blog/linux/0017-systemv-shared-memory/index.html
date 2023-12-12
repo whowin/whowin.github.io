@@ -50,7 +50,7 @@
 <meta itemprop="name" content="IPC之七：使用 System V 共享内存段进行进程间通信的实例">
 <meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍共享内存(Shared Memory)，因为没有像管道、消息队列这样的中介介入，所以通常认为共享内存是迄今为止最快的 IPC 方式；Linux 既支持 UNIX SYSTEM V 的共享内存，也支持 POSIX 的共享内存，本文针对 System V 共享内存段，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程和信号处理等，阅读本文还需要一些基本的内存管理知识，本文对 Linux 编程的初学者有一些难度。"><meta itemprop="datePublished" content="2023-09-12T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-09-12T16:43:29+08:00" />
-<meta itemprop="wordCount" content="5983">
+<meta itemprop="wordCount" content="5996">
 <meta itemprop="keywords" content="Linux,进程间通信,IPC,POSIX,共享内存,Shared Memory," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IPC之七：使用 System V 共享内存段进行进程间通信的实例"/>
 <meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍共享内存(Shared Memory)，因为没有像管道、消息队列这样的中介介入，所以通常认为共享内存是迄今为止最快的 IPC 方式；Linux 既支持 UNIX SYSTEM V 的共享内存，也支持 POSIX 的共享内存，本文针对 System V 共享内存段，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程和信号处理等，阅读本文还需要一些基本的内存管理知识，本文对 Linux 编程的初学者有一些难度。"/>
@@ -163,6 +163,7 @@
         <li><a href="#4-共享内存的控制操作">4 共享内存的控制操作</a></li>
         <li><a href="#5-实例">5 实例</a></li>
         <li><a href="#6-操作共享内存段的命令行命令">6 操作共享内存段的命令行命令</a></li>
+        <li><a href="#欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -601,6 +602,7 @@
 <p><code>ipcmk -M &lt;shm size&gt; -p &lt;perm&gt;</code> - 创建一个新的大小为 <code>&lt;shm size&gt;</code> 共享内存段，其读写权限为指定的 <code>&lt;perm&gt;</code>。</p>
 </li>
 </ul>
+<h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

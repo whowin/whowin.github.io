@@ -66,7 +66,7 @@ DBusHandlerResult signal_start(DBusConnection *connection, DBusMessage *message,
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     }
     if (!dbus_message_has_path(message, OBJECT_PATH_NAME)) {
-        printf("Client(%d): Wrong object path(%s).\n", getpid(), dbus_message_get_path(message));
+        printf("signal_start(%d): Wrong object path(%s).\n", getpid(), dbus_message_get_path(message));
         /*
         printf("The interface is %s\n", dbus_message_get_interface(message));
         printf("The member is %s\n", dbus_message_get_member(message));
@@ -119,7 +119,7 @@ DBusHandlerResult signal_quit(DBusConnection *connection, DBusMessage *message, 
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     }
     if (!dbus_message_has_path(message, OBJECT_PATH_NAME)) {
-        printf("Client(%d): Wrong object path(%s).\n", getpid(), dbus_message_get_path(message));
+        printf("signal_quit(%d): Wrong object path(%s).\n", getpid(), dbus_message_get_path(message));
         /*
         printf("The interface is %s\n", dbus_message_get_interface(message));
         printf("The member is %s\n", dbus_message_get_member(message));

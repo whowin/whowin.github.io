@@ -50,7 +50,7 @@
 <meta itemprop="name" content="IPC之八：使用 POSIX 共享内存进行进程间通信的实例">
 <meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍共享内存(Shared Memory)，因为没有像管道、消息队列这样的中介介入，所以通常认为共享内存是迄今为止最快的 IPC 方式；Linux 既支持 UNIX SYSTEM V 的共享内存段，也支持 POSIX 的共享内存对象，本文针对 POSIX 共享内存对象，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程和信号处理等，阅读本文还需要一些基本的内存管理知识，本文对 Linux 编程的初学者有一些难度。"><meta itemprop="datePublished" content="2023-09-27T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-09-27T16:43:29+08:00" />
-<meta itemprop="wordCount" content="6343">
+<meta itemprop="wordCount" content="6356">
 <meta itemprop="keywords" content="Linux,进程间通信,IPC,POSIX,共享内存,Shared Memory," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IPC之八：使用 POSIX 共享内存进行进程间通信的实例"/>
 <meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍共享内存(Shared Memory)，因为没有像管道、消息队列这样的中介介入，所以通常认为共享内存是迄今为止最快的 IPC 方式；Linux 既支持 UNIX SYSTEM V 的共享内存段，也支持 POSIX 的共享内存对象，本文针对 POSIX 共享内存对象，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程和信号处理等，阅读本文还需要一些基本的内存管理知识，本文对 Linux 编程的初学者有一些难度。"/>
@@ -164,6 +164,7 @@
         <li><a href="#6-共享内存对象的关闭和删除">6 共享内存对象的关闭和删除</a></li>
         <li><a href="#7-实例">7 实例</a></li>
         <li><a href="#8-system-v-共享内存与-posix-共享内存的主要区别">8 System V 共享内存与 POSIX 共享内存的主要区别</a></li>
+        <li><a href="#欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -722,6 +723,7 @@
 </ul>
 </li>
 </ol>
+<h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

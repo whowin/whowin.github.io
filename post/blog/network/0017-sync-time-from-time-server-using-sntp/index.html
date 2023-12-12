@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用SNTP协议从时间服务器同步时间">
 <meta itemprop="description" content="在互联网上校准时间，是几乎连接在互联网上的每台计算机都要去做的事情，而且很多是在后台完成的，并不需要人工干预；互联网上有很多时间服务器可以发布精确的时间，计算机客户端使用NTP(Network Time Protocol)协议与这些时间服务器进行时间同步，使本机得到精确时间，本文简要描述了NTP协议的原理，对NTP协议的时间同步精度做了简要分析，并具体实现了SNTP(Simple Network Time Protocol)下的客户端，本文附有完整的C语言SNTP客户端的源程序。阅读本文只需掌握基本的socket编程即可，本文对网络编程的初学者难度不大。"><meta itemprop="datePublished" content="2023-02-13T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-13T16:43:29+08:00" />
-<meta itemprop="wordCount" content="6068">
+<meta itemprop="wordCount" content="6080">
 <meta itemprop="keywords" content="Linux,网络编程,NTP,SNTP," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用SNTP协议从时间服务器同步时间"/>
 <meta name="twitter:description" content="在互联网上校准时间，是几乎连接在互联网上的每台计算机都要去做的事情，而且很多是在后台完成的，并不需要人工干预；互联网上有很多时间服务器可以发布精确的时间，计算机客户端使用NTP(Network Time Protocol)协议与这些时间服务器进行时间同步，使本机得到精确时间，本文简要描述了NTP协议的原理，对NTP协议的时间同步精度做了简要分析，并具体实现了SNTP(Simple Network Time Protocol)下的客户端，本文附有完整的C语言SNTP客户端的源程序。阅读本文只需掌握基本的socket编程即可，本文对网络编程的初学者难度不大。"/>
@@ -164,6 +164,7 @@
         <li><a href="#4-sntpntp协议的消息结构">4. SNTP(NTP)协议的消息结构</a></li>
         <li><a href="#5-sntp时间同步的精度分析">5. SNTP时间同步的精度分析</a></li>
         <li><a href="#4sntp客户端实例">4、SNTP客户端实例</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -618,6 +619,7 @@ $$</p>
 <p>在源程序中，列出了几个时间服务器，可以通过百度或者谷歌找更多的时间服务器进行尝试。</p>
 </li>
 </ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

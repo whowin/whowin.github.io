@@ -50,7 +50,7 @@
 <meta itemprop="name" content="如何用C语言操作arp cache">
 <meta itemprop="description" content="arp cache中存放着局域网内IP地址和MAC地址的对应关系，对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0，阅读本文需要有基本的socket编程和ioctl的知识，并对ARP协议有所了解，本文对网络编程的初学者难度不大。"><meta itemprop="datePublished" content="2023-01-12T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-01-12T16:43:29+08:00" />
-<meta itemprop="wordCount" content="3911">
+<meta itemprop="wordCount" content="3923">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,arp,ioctl," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="如何用C语言操作arp cache"/>
 <meta name="twitter:description" content="arp cache中存放着局域网内IP地址和MAC地址的对应关系，对socket通信是至关重要的，arp cache由Linux内核进行维护，本文介绍如何用ioctl获取arp cache记录，添加新记录到arp cache中，删除arp cache中记录，每一种操作均给出了完整的源程序，本文程序在ubuntu 20.4中编译运行成功，gcc版本9.4.0，阅读本文需要有基本的socket编程和ioctl的知识，并对ARP协议有所了解，本文对网络编程的初学者难度不大。"/>
@@ -164,6 +164,7 @@
         <li><a href="#4-从procnetarp文件中获取完整arp-cache">4. 从/proc/net/arp文件中获取完整arp cache</a></li>
         <li><a href="#5-在arp-cache中添加一条静态记录的实例">5. 在arp cache中添加一条静态记录的实例</a></li>
         <li><a href="#6-在arp-cache中删除一条记录的实例">6. 在arp cache中删除一条记录的实例</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -543,6 +544,7 @@
 <p><img src="https://whowin.gitee.io/images/180014/screenshot_of_arp_del.png" alt="screenshot of arp_del"></p>
 </li>
 </ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

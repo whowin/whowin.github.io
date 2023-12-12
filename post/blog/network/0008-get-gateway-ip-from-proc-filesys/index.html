@@ -50,7 +50,7 @@
 <meta itemprop="name" content="从proc文件系统中获取gateway的IP地址">
 <meta itemprop="description" content="在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有ip route或者route -n，route -n是通过读取proc文件系统下的文件来从内核获取路由表的，但ip route是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序，本文对初学者基本没有难度。"><meta itemprop="datePublished" content="2023-02-05T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-05T16:43:29+08:00" />
-<meta itemprop="wordCount" content="2793">
+<meta itemprop="wordCount" content="2805">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,proc文件系统," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="从proc文件系统中获取gateway的IP地址"/>
 <meta name="twitter:description" content="在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有ip route或者route -n，route -n是通过读取proc文件系统下的文件来从内核获取路由表的，但ip route是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序，本文对初学者基本没有难度。"/>
@@ -162,6 +162,7 @@
         <li><a href="#2-从proc文件系统中获取gateway的ip">2. 从proc文件系统中获取gateway的IP</a></li>
         <li><a href="#3-ip-route和route--n是如何获取路由表的">3. ip route和route -n是如何获取路由表的</a></li>
         <li><a href="#4-从proc文件系统中获取gateway的ip地址">4. 从proc文件系统中获取gateway的IP地址</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -424,6 +425,7 @@
 <p><img src="https://whowin.gitee.io/images/180008/screenshot-get-gateway-proc.png" alt="screenshot of executing get-gateway-proc"></p>
 </li>
 </ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

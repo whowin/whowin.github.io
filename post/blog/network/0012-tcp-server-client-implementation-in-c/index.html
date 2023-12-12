@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用C语言实现服务器/客户端的TCP通信">
 <meta itemprop="description" content="本文力求使用简单的描述说明一个服务器/客户端TCP通信的基本程序框架，使读者在这个框架下可以构建更加复杂的服务，文中给出了服务器端和客户端的实例源程序，本文适合网络编程的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0"><meta itemprop="datePublished" content="2023-01-06T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-01-06T16:43:29+08:00" />
-<meta itemprop="wordCount" content="5603">
+<meta itemprop="wordCount" content="5615">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,TCP," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用C语言实现服务器/客户端的TCP通信"/>
 <meta name="twitter:description" content="本文力求使用简单的描述说明一个服务器/客户端TCP通信的基本程序框架，使读者在这个框架下可以构建更加复杂的服务，文中给出了服务器端和客户端的实例源程序，本文适合网络编程的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0"/>
@@ -163,6 +163,7 @@
         <li><a href="#3-tcp编程常用的函数和数据结构">3. TCP编程常用的函数和数据结构</a></li>
         <li><a href="#4-服务器客户端tcp通信的实例">4. 服务器/客户端TCP通信的实例</a></li>
         <li><a href="#5-后记">5. 后记</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -803,6 +804,7 @@
 <li>对于一个socket还有很多模式可以设置，通常使用fcntl()和setsockopt()进行设置，这些在本文中也没有讨论；</li>
 <li>对于服务器端程序，一定会遇到多个客户端同时向服务器端发送连接请求的情况，有多种方法处理这种情况，比如：多线程、select、epoll等；</li>
 </ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

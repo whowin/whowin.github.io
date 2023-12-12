@@ -50,7 +50,7 @@
 <meta itemprop="name" content="用C语言实现的一个DNS客户端">
 <meta itemprop="description" content="DNS可以帮助我们把域名映射到一个IP地址上，或者查询一个IP地址下有那些域名，使用域名访问一个网站或者服务器是一件很平常的事情，很少有人关心域名变成IP地址的实际过程，本文将使用C语言实现一个基本的DNS解析器，通过与DNS服务器的通信完成将一个域名转换成IP地址的过程，本文将提供完整的源程序；阅读本文需要有一定的网络编程基础，熟悉基本的socket编程并对DNS有一些了解，本文对网络编程的初学者难度较大。"><meta itemprop="datePublished" content="2023-03-28T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-03-28T16:43:29+08:00" />
-<meta itemprop="wordCount" content="6871">
+<meta itemprop="wordCount" content="6883">
 <meta itemprop="keywords" content="Linux,DNS,网络编程,dns resolver,“dns client&#34;,UDP," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="用C语言实现的一个DNS客户端"/>
 <meta name="twitter:description" content="DNS可以帮助我们把域名映射到一个IP地址上，或者查询一个IP地址下有那些域名，使用域名访问一个网站或者服务器是一件很平常的事情，很少有人关心域名变成IP地址的实际过程，本文将使用C语言实现一个基本的DNS解析器，通过与DNS服务器的通信完成将一个域名转换成IP地址的过程，本文将提供完整的源程序；阅读本文需要有一定的网络编程基础，熟悉基本的socket编程并对DNS有一些了解，本文对网络编程的初学者难度较大。"/>
@@ -162,6 +162,7 @@
         <li><a href="#2-dns协议">2. DNS协议</a></li>
         <li><a href="#3-实现一个dns客户端">3. 实现一个DNS客户端</a></li>
         <li><a href="#4-后记">4. 后记</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -985,6 +986,7 @@
 <li>DNS协议的在rfc 1035中定义的反向查询(Inverse Queries)，但是该功能是可选的(Optional)，也就是说DNS服务器可以不具备反向查询的功能，所以使用这个功能可能无法达到预期结果；</li>
 <li>但是DNS协议在rfc 1035中定义了一个域 <strong>IN-ADDR.ARPA</strong>，利用这个域的查询可以达到和反向查询类似的功能，所以在实际应用中，如果需要做DNS反向查询，通常都是采用 IN-ADDR.PARA 域来完成，更详细的信息请查阅 <a href="https://www.ietf.org/rfc/rfc1035.txt">rfc 1035</a> 第3.5节。</li>
 </ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

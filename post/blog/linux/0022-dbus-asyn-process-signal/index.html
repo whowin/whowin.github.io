@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>IPC之十二：使用libdbus异步发送/接收信号的实例 - whowin - 发表我个人原创作品的技术博客</title>
+  <title>IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例 - whowin - 发表我个人原创作品的技术博客</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -40,19 +40,19 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:title" content="IPC之十二：使用libdbus异步发送/接收信号的实例" />
+<meta property="og:title" content="IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例" />
 <meta property="og:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，前面的文章里介绍了 D-Bus 的基本概念以及调用远程方法的实例，本文介绍 D-Bus 的异步处理机制，以及信号处理的基本方法，本文给出了异步处理 D-Bus 的实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/" /><meta property="article:section" content="post" />
 <meta property="article:published_time" content="2023-12-06T16:43:29+08:00" />
 <meta property="article:modified_time" content="2023-12-06T16:43:29+08:00" />
 
-<meta itemprop="name" content="IPC之十二：使用libdbus异步发送/接收信号的实例">
+<meta itemprop="name" content="IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例">
 <meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，前面的文章里介绍了 D-Bus 的基本概念以及调用远程方法的实例，本文介绍 D-Bus 的异步处理机制，以及信号处理的基本方法，本文给出了异步处理 D-Bus 的实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"><meta itemprop="datePublished" content="2023-12-06T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-12-06T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4352">
+<meta itemprop="wordCount" content="4365">
 <meta itemprop="keywords" content="Linux,进程间通信,D-Bus,libdbus,IPC," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="IPC之十二：使用libdbus异步发送/接收信号的实例"/>
+<meta name="twitter:title" content="IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例"/>
 <meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，前面的文章里介绍了 D-Bus 的基本概念以及调用远程方法的实例，本文介绍 D-Bus 的异步处理机制，以及信号处理的基本方法，本文给出了异步处理 D-Bus 的实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"/>
 
 <!--[if lte IE 9]>
@@ -138,7 +138,7 @@
           <article class="post">
     
     <header class="post-header">
-      <h1 class="post-title">IPC之十二：使用libdbus异步发送/接收信号的实例</h1>
+      <h1 class="post-title">IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例</h1>
 
       <div class="post-meta">
         <span class="post-time"> 2023-12-06 </span>
@@ -161,6 +161,7 @@
         <li><a href="#1-d-bus-的信号signal">1 D-Bus 的信号(Signal)</a></li>
         <li><a href="#2-libdbus-的异步处理机制">2 libdbus 的异步处理机制</a></li>
         <li><a href="#3-使用-libdbus-异步接收信号的实例">3 使用 libdbus 异步接收信号的实例</a></li>
+        <li><a href="#欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -486,7 +487,7 @@
 <h2 id="3-使用-libdbus-异步接收信号的实例">3 使用 libdbus 异步接收信号的实例</h2>
 <ul>
 <li>
-<p><strong>源程序</strong>：<a href="/sourcecodes/100022/dbus-signals.c">dbus-signals.c</a>(<strong>点击文件名下载源程序</strong>)演示了使用 libdbus 对信号进行发送和接收，以及如何异步接收信号；</p>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/100022/dbus-signals.c">dbus-signals.c</a>(<strong>点击文件名下载源程序</strong>)演示了使用 libdbus 对信号进行发送和接收，以及如何异步接收信号；</p>
 </li>
 <li>
 <p>该程序是一个多进程程序，建立了一个服务端进程和三个客户端进程；</p>
@@ -514,7 +515,7 @@
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="/images/100022/screenshot-of-dbus-signals.png" alt="Screenshot of running dbus-signals"></p>
+<p><img src="https://whowin.gitee.io/images/100022/screenshot-of-dbus-signals.png" alt="Screenshot of running dbus-signals"></p>
 </li>
 <li>
 <p>程序运行后，客户端进程的两个过滤器都显示了 &ldquo;Wrong object path&rdquo; 的信息，这条信息是 D-Bus 为客户端连接分配了名称后发送过来的通知信号，虽然我们没有订阅，但 D-Bus 会强行推送过来；</p>
@@ -526,6 +527,7 @@
 <p>如果你多次运行这个程序你会发现，信号总是首先到达 <code>signal_quit()</code> 过滤器，然后才到达 <code>signal_start()</code> 过滤器，这是因为我们先添加的 <code>signal_quit()</code> 过滤器，如果你改动一下程序，先添加 <code>signal_start()</code> 过滤器，再添加 <code>signal_quit()</code> 过滤器，你会看到信号到达的顺序也会发生变化。</p>
 </li>
 </ul>
+<h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
@@ -556,7 +558,11 @@
           <a href="/tags/ipc/">IPC</a>
           </div>
       <nav class="post-nav">
-        
+        <a class="prev" href="/post/blog/linux/0023-dbus-resolve-hostname/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
         <a class="next" href="/post/blog/linux/0021-ipc-using-dbus/">
             <span class="next-text nav-default">IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例</span>
             <span class="next-text nav-mobile">下一篇</span>
@@ -568,7 +574,7 @@
         </div>
         
 
-  <span id="/post/blog/linux/0022-dbus-asyn-process-signal/" class="leancloud_visitors" data-flag-title="IPC之十二：使用libdbus异步发送/接收信号的实例">
+  <span id="/post/blog/linux/0022-dbus-asyn-process-signal/" class="leancloud_visitors" data-flag-title="IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例">
 		<span class="post-meta-item-text">文章阅读量 </span>
 		<span class="leancloud-visitors-count">0</span>
 		<p></p>

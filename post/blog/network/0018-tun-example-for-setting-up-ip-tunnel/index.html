@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用tun虚拟网络接口建立IP隧道的实例">
 <meta itemprop="description" content="通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；阅读本文需要具备在Linux下使用C语言进行IPv4下socket编程的基本能力，本文对网络编程的初学者难度较大。"><meta itemprop="datePublished" content="2023-03-07T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-03-07T16:43:29+08:00" />
-<meta itemprop="wordCount" content="6946">
+<meta itemprop="wordCount" content="6958">
 <meta itemprop="keywords" content="Linux,网络编程,IP tunnel,IP隧道," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用tun虚拟网络接口建立IP隧道的实例"/>
 <meta name="twitter:description" content="通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；阅读本文需要具备在Linux下使用C语言进行IPv4下socket编程的基本能力，本文对网络编程的初学者难度较大。"/>
@@ -163,6 +163,7 @@
         <li><a href="#3-使用tun设备的基本数据流向">3. 使用tun设备的基本数据流向</a></li>
         <li><a href="#4-使用tun设备搭建一个简单的ip隧道">4. 使用tun设备搭建一个简单的IP隧道</a></li>
         <li><a href="#5-后记">5. 后记</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -681,6 +682,7 @@
 <li>建立隧道也不一定非得使用TCP/IP协议，比如可以使用ICMP协议建立一个ICMP隧道，当你的电脑只能ping通你的服务器，其它的所有协议都无法通过防火墙的情况下，使用ICMP协议建立一个ICMP隧道，然后可以在这个隧道里跑其它协议；</li>
 <li>虚拟网络接口的用途很多，现在的虚拟机、容器等大多使用了虚拟网络接口，希望这篇文章可以让你对虚拟网络接口有个初步的认识。</li>
 </ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

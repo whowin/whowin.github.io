@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用raw socket发送magic packet">
 <meta itemprop="description" content="Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。阅读本文需要有较好的网络编程基础，本文对网络编程的初学者有一定难度。"><meta itemprop="datePublished" content="2023-02-09T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-09T16:43:29+08:00" />
-<meta itemprop="wordCount" content="3316">
+<meta itemprop="wordCount" content="3328">
 <meta itemprop="keywords" content="Linux,raw Socket,网络编程," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用raw socket发送magic packet"/>
 <meta name="twitter:description" content="Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。阅读本文需要有较好的网络编程基础，本文对网络编程的初学者有一定难度。"/>
@@ -161,6 +161,7 @@
         <li><a href="#1-magic-packet">1. Magic Packet</a></li>
         <li><a href="#2-相关技术要点">2. 相关技术要点</a></li>
         <li><a href="#3-在数据链路层发送magic-packet">3. 在数据链路层发送Magic Packet</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -360,6 +361,7 @@
 <p><img src="https://whowin.gitee.io/images/180015/screenshot-magic-packet.png" alt="Screenshot magic_packet"></p>
 </li>
 </ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

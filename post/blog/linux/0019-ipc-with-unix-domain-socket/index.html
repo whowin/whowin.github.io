@@ -50,7 +50,7 @@
 <meta itemprop="name" content="IPC之九：使用UNIX Domain Socket进行进程间通信的实例">
 <meta itemprop="description" content="socket 编程是一种用于网络通信的编程方式，在 socket 的协议族中除了常用的 AF_INET、AF_RAW、AF_NETLINK等以外，还有一个专门用于 IPC 的协议族 AF_UNIX，IPC 是 Linux 编程中一个重要的概念，常用的 IPC 方式有管道、消息队列、共享内存等，本文主要介绍用于本地进程间通信的 UNIX Domain Socket，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程等，本文对 Linux 编程的初学者有一些难度。"><meta itemprop="datePublished" content="2023-10-16T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-10-16T16:43:29+08:00" />
-<meta itemprop="wordCount" content="6812">
+<meta itemprop="wordCount" content="6825">
 <meta itemprop="keywords" content="Linux,进程间通信,pipe,socket,AF_UNIX," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IPC之九：使用UNIX Domain Socket进行进程间通信的实例"/>
 <meta name="twitter:description" content="socket 编程是一种用于网络通信的编程方式，在 socket 的协议族中除了常用的 AF_INET、AF_RAW、AF_NETLINK等以外，还有一个专门用于 IPC 的协议族 AF_UNIX，IPC 是 Linux 编程中一个重要的概念，常用的 IPC 方式有管道、消息队列、共享内存等，本文主要介绍用于本地进程间通信的 UNIX Domain Socket，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程等，本文对 Linux 编程的初学者有一些难度。"/>
@@ -163,6 +163,7 @@
         <li><a href="#3-unix-socket-的抽象命名空间">3 UNIX socket 的抽象命名空间</a></li>
         <li><a href="#4-顺序数据包sock_seqpacket">4 顺序数据包(SOCK_SEQPACKET)</a></li>
         <li><a href="#5-匿名-unix-socket-的使用">5 匿名 UNIX Socket 的使用</a></li>
+        <li><a href="#欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -791,6 +792,7 @@
 <p><img src="https://whowin.gitee.io/images/100019/screenshot-of-socketpair.png" alt="screenshot of running socketpair"></p>
 </li>
 </ul>
+<h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

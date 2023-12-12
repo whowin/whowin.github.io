@@ -50,7 +50,7 @@
 <meta itemprop="name" content="简单的路由表查找程序">
 <meta itemprop="description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。本文对网络编程的初学者难度不大。"><meta itemprop="datePublished" content="2023-02-10T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-10T16:43:29+08:00" />
-<meta itemprop="wordCount" content="3727">
+<meta itemprop="wordCount" content="3739">
 <meta itemprop="keywords" content="Linux,routing table,网络编程,最长前缀匹配,longest prefix match," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="简单的路由表查找程序"/>
 <meta name="twitter:description" content="在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。本文对网络编程的初学者难度不大。"/>
@@ -162,6 +162,7 @@
         <li><a href="#3-路由查找过程">3. 路由查找过程</a></li>
         <li><a href="#4-最长前缀匹配longest-prefix-match算法">4. 最长前缀匹配(Longest Prefix Match)算法</a></li>
         <li><a href="#5-最长前缀匹配的具体实现">5. 最长前缀匹配的具体实现</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -346,6 +347,7 @@
 <p>实际的路由表要比我们这个复杂的多，路由决策的因素也不仅仅是所谓的&rsquo;最长前缀匹配&rsquo;。</p>
 </li>
 </ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

@@ -50,7 +50,7 @@
 <meta itemprop="name" content="IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例">
 <meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，本文介绍在 Linux 下 IPC 的另外一种实现，D-Bus，D-Bus 是一种用于进程间通信的消息总线系统，它提供了一个可靠且灵活的机制，使得不同进程之间能够相互通信，本文给出了使用 D-Bus 进行基本 IPC 的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"><meta itemprop="datePublished" content="2023-12-01T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-12-01T16:43:29+08:00" />
-<meta itemprop="wordCount" content="9022">
+<meta itemprop="wordCount" content="9035">
 <meta itemprop="keywords" content="Linux,进程间通信,D-Bus,IPC,libdbus," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例"/>
 <meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，本文介绍在 Linux 下 IPC 的另外一种实现，D-Bus，D-Bus 是一种用于进程间通信的消息总线系统，它提供了一个可靠且灵活的机制，使得不同进程之间能够相互通信，本文给出了使用 D-Bus 进行基本 IPC 的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"/>
@@ -163,6 +163,7 @@
         <li><a href="#3-d-bus-编程实例">3 D-Bus 编程实例</a></li>
         <li><a href="#4-libdbus-数据结构及函数调用介绍">4 libdbus 数据结构及函数调用介绍</a></li>
         <li><a href="#5-其他">5 其他</a></li>
+        <li><a href="#欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -1029,6 +1030,7 @@
 <li>很多系统服务均提供一系列的 D-Bus API，比如：域名解析、蓝牙等，这使得应用程序可以方便地调用系统服务的 API，给编写应用程序带来很多方便；</li>
 <li>D-Bus 也有一些命令行工具，通过命令行可以向 D-Bus 发送消息，查看 D-Bus 连接树等，这些将在后续的文章中介绍。</li>
 </ul>
+<h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
@@ -1061,7 +1063,7 @@
       <nav class="post-nav">
         <a class="prev" href="/post/blog/linux/0022-dbus-asyn-process-signal/">
             <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">IPC之十二：使用libdbus异步发送/接收信号的实例</span>
+            <span class="prev-text nav-default">IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例</span>
             <span class="prev-text nav-mobile">上一篇</span>
           </a>
         <a class="next" href="/post/blog/linux/0020-ipc-using-files/">

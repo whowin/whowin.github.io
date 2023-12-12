@@ -50,7 +50,7 @@
 <meta itemprop="name" content="IPC之十：使用共享文件进行进程间通信的实例">
 <meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 IPC 方式有管道、消息队列、共享内存等，但其实使用广大程序员都熟悉的文件也是可以完成 IPC 的，本文介绍如何使用共享文件实现进程间通信，本文给出了具体的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程、文件锁等概念，所以对 Linux 编程的初学者有一些难度，但对于了解 Linux 下共享文件，特别是文件锁的应用，将是非常难得的。"><meta itemprop="datePublished" content="2023-11-06T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-11-06T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4033">
+<meta itemprop="wordCount" content="4046">
 <meta itemprop="keywords" content="Linux,进程间通信,files,IPC," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IPC之十：使用共享文件进行进程间通信的实例"/>
 <meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 IPC 方式有管道、消息队列、共享内存等，但其实使用广大程序员都熟悉的文件也是可以完成 IPC 的，本文介绍如何使用共享文件实现进程间通信，本文给出了具体的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程、文件锁等概念，所以对 Linux 编程的初学者有一些难度，但对于了解 Linux 下共享文件，特别是文件锁的应用，将是非常难得的。"/>
@@ -161,6 +161,7 @@
         <li><a href="#1-使用共享文件实现ipc的基本概念">1 使用共享文件实现IPC的基本概念</a></li>
         <li><a href="#2-文件锁及其操作">2 文件锁及其操作</a></li>
         <li><a href="#3-实例">3 实例</a></li>
+        <li><a href="#欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -477,6 +478,7 @@
 <p><img src="https://whowin.gitee.io/images/100020/ipc-files.gif" alt="screenshot of running ipc-files"></p>
 </li>
 </ul>
+<h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

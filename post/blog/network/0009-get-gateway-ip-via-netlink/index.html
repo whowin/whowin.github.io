@@ -50,7 +50,7 @@
 <meta itemprop="name" content="linux下使用netlink获取gateway的IP地址">
 <meta itemprop="description" content="要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，阅读本文需要对linux下编程有一定了解，熟悉IPv4的socket编程；本文对网络编程的初学者有较大难度。"><meta itemprop="datePublished" content="2023-02-04T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-02-04T16:43:29+08:00" />
-<meta itemprop="wordCount" content="10900">
+<meta itemprop="wordCount" content="10912">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,netlink,rtnetlink," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="linux下使用netlink获取gateway的IP地址"/>
 <meta name="twitter:description" content="要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，阅读本文需要对linux下编程有一定了解，熟悉IPv4的socket编程；本文对网络编程的初学者有较大难度。"/>
@@ -165,6 +165,7 @@
         <li><a href="#5-使用rtnetlink发送请求">5. 使用rtnetlink发送请求</a></li>
         <li><a href="#6-接收和解析内核返回的路由表">6. 接收和解析内核返回的路由表</a></li>
         <li><a href="#7-完整源代码">7. 完整源代码</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -1161,6 +1162,7 @@
 <p>获取gateway IP地址的方法不止本文介绍的这一种方法，其实我认为netlink的方法尽管看上去比较&quot;高级&rdquo;，但也十分复杂和繁琐，最好的方法我认为是从proc文件系统中获取，想要了解这种方法的读者可以参考我的另一篇文章<a href="https://blog.csdn.net/whowin/article/details/129177942">《从proc文件系统中获取gateway的IP地址》</a>。</p>
 </li>
 </ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>

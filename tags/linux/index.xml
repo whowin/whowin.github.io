@@ -6,9 +6,18 @@
     <description>Recent content in Linux on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 06 Dec 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 10 Dec 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>IPC之十二：使用libdbus异步发送/接收信号的实例</title>
+      <title>IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/</link>
+      <pubDate>Sun, 10 Dec 2023 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/</guid>
+      <description>&lt;p&gt;前面两篇有关 D-Bus 的文章介绍了使用 libdbus 库进行进程间的方法调用和信号的传输，实际上 D-Bus 的更强大的地方是其建立了与大量系统服务之间建立了有效的对话规范，使得应用程序可以使用标准的方式调用系统服务的方法，访问系统服务中的一些开放的属性，本文将使用 libdbus 库调用系统服务中的方法从而实现域名解析，本文给出了实现该功能的实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例</title>
       <link>https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/</link>
       <pubDate>Wed, 06 Dec 2023 16:43:29 +0800</pubDate>
       

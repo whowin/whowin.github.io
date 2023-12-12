@@ -50,7 +50,7 @@
 <meta itemprop="name" content="如何使用raw socket发送UDP报文">
 <meta itemprop="description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；阅读本文需要掌握基本的IPv4下的socket编程方法，本文对初学者有一定难度。"><meta itemprop="datePublished" content="2022-12-27T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2022-12-27T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4986">
+<meta itemprop="wordCount" content="4998">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,数据链路层编程,raw socket," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="如何使用raw socket发送UDP报文"/>
 <meta name="twitter:description" content="使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；阅读本文需要掌握基本的IPv4下的socket编程方法，本文对初学者有一定难度。"/>
@@ -164,6 +164,7 @@
         <li><a href="#4-发送数据">4. 发送数据</a></li>
         <li><a href="#5-完整的源程序">5. 完整的源程序</a></li>
         <li><a href="#6-结束语">6. 结束语</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
       </ul>
     </li>
   </ul>
@@ -825,6 +826,7 @@
 <li>可以修改一下程序，尝试使用你的默认网关的MAC地址代替目的MAC地址，正常情况下报文也是可以送达的；</li>
 <li>如果你可以在互联网上找到一台服务器，可以尝试向局域网外发送数据，同样，建议你将目的MAC地址填上默认网关的MAC地址，特别要注意的是要确认服务器上的防火墙放开了你在程序中设置的目的端口号，在服务器上启动netcat命令监听目的端口，在你自己的机器上运行程序，正常情况下，报文是可以送达的。</li>
 </ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
