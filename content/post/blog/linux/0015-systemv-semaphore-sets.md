@@ -364,8 +364,19 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 * `ipcrm -s <ID>` - 删除指定 ID 的信号量集；
 * `ipcrm --all=sem` - 删除所有的信号量集
 
-* `ipcmk -S <num>` - 创建一个新的信号量集，其中包含 <num> 个信号量，其读写权限为默认的 0644；
-* `ipcmk -S <num> -p <perm>` - 创建一个新的信号量集，其中包含 <num> 个信号量，其读写权限为指定的 <perm>。
+* `ipcmk -S <num>` - 创建一个新的信号量集，其中包含 `<num>` 个信号量，其读写权限为默认的 0644；
+* `ipcmk -S <num> -p <perm>` - 创建一个新的信号量集，其中包含 `<num>` 个信号量，其读写权限为指定的 `<perm>`。
+
+
+## 8 有关进程间通信(IPC)的的其它文章：
+* [IPC之一：使用匿名管道进行父子进程间通信的例子][article01]
+* [IPC之二：使用命名管道(FIFO)进行进程间通信的例子][article02]
+* [IPC之三：使用 System V 消息队列进行进程间通信的实例][article03]
+* [IPC之四：使用 POSIX 消息队列进行进程间通信的实例][article04]
+* [IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘][article05]
+
+
+## **欢迎订阅 [『进程间通信专栏』](https://blog.csdn.net/whowin/category_12404164.html)**
 
 
 -------------
@@ -381,13 +392,22 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article01]: https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/
 [article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
 [article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
-[article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue
+[article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
+[article05]: https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
+[article06]: https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/
+[article07]: https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
+[article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
+[article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
+[article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
+[article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
+[article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
 
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
 [article02]: https://blog.csdn.net/whowin/article/details/132171930
 [article03]: https://blog.csdn.net/whowin/article/details/132172172
-[article04]: 
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
 -->
 
 [src01]: https://whowin.gitee.io/sourcecodes/100015/sem-ctl.c

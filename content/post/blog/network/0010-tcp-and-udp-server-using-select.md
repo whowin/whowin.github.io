@@ -338,6 +338,10 @@ postid: 180010
 * 服务器端对 TCP 连接的处理是在是太简陋了，因为 TCP 连接建立后，产生一个新的 socket，本例中为 conn_fd，通常的做法应该是把 conn_fd 也加入到 rset 中，这样就可以处理多个 TCP 连接了，同时在处理 TCP 连接时也不会让程序阻塞；
 * 服务器端对 TCP 连接的处理，也可以使用多线程的方式，即 accept 一个连接请求后，生成新的 conn_fd，建立一个线程，专门处理这个 connection，也不失为一个办法，但相对要复杂一些。
 
+
+## **欢迎订阅 [『网络编程专栏』](https://blog.csdn.net/whowin/category_12180345.html)**
+
+
 -------------
 **欢迎访问我的博客：https://whowin.cn**
 

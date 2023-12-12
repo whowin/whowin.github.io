@@ -252,6 +252,8 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 * `ipcmk -M <shm size> -p <perm>` - 创建一个新的大小为 `<shm size>` 共享内存段，其读写权限为指定的 `<perm>`。
 
 
+## **欢迎订阅 [『进程间通信专栏』](https://blog.csdn.net/whowin/category_12404164.html)**
+
 
 -------------
 **欢迎访问我的博客：https://whowin.cn**
@@ -269,6 +271,12 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
 [article05]: https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
 [article06]: https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/
+[article07]: https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
+[article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
+[article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
+[article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
+[article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
+[article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
 
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311

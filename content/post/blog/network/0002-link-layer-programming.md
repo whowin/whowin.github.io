@@ -505,6 +505,9 @@ postid: 180002
     <center><b>图6：收到的 UDP 数据包</b></center>
 
 
+## **欢迎订阅 [『网络编程专栏』](https://blog.csdn.net/whowin/category_12180345.html)**
+
+
 -------------
 **欢迎访问我的博客：https://whowin.cn**
 

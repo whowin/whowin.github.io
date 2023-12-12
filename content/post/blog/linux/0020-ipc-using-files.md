@@ -181,6 +181,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 I
 
 
 
+## **欢迎订阅 [『进程间通信专栏』](https://blog.csdn.net/whowin/category_12404164.html)**
 
 
 
@@ -202,6 +203,10 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 I
 [article07]: https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
 [article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
 [article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
+[article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
+[article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
+[article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
+
 
 [src01]: https://whowin.gitee.io/sourcecodes/100020/ipc-files.c
 

@@ -275,9 +275,14 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 * 匿名管道的生命周期与创建它的进程的生命周期一致，当进程结束时，其创建的匿名管道也将被销毁；
 * 尽管在本文的所有实例中，从管道传输的数据都是字符串，但管道是可以传输二进制数据的，也就是说，可以把一个结构完整第通过管道进行传输。
 * 有关进程间通信(IPC)的的其它文章：
+    - [IPC之一：使用匿名管道进行父子进程间通信的例子][article01]
     - [IPC之二：使用命名管道(FIFO)进行进程间通信的例子][article02]
     - [IPC之三：使用 System V 消息队列进行进程间通信的实例][article03]
     - [IPC之四：使用 POSIX 消息队列进行进程间通信的实例][article04]
+    - [IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘][article05]
+
+
+## **欢迎订阅 [『进程间通信专栏』](https://blog.csdn.net/whowin/category_12404164.html)**
 
 
 -------------
@@ -294,13 +299,21 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
 [article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
 [article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
+[article05]: https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
+[article06]: https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/
+[article07]: https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
+[article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
+[article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
+[article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
+[article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
+[article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
 
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
 [article02]: https://blog.csdn.net/whowin/article/details/132171930
 [article03]: https://blog.csdn.net/whowin/article/details/132172172
-[article04]: 
-[article05]: 
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
 -->
 
 [src01]: https://whowin.gitee.io/sourcecodes/100010/pipe.c

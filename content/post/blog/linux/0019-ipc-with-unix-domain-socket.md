@@ -340,6 +340,8 @@ socket 编程是一种用于网络通信的编程方式，在 socket 的协议�
     ![screenshot of running socketpair][img05]
 
 
+## **欢迎订阅 [『进程间通信专栏』](https://blog.csdn.net/whowin/category_12404164.html)**
+
 
 -------------
 **欢迎访问我的博客：https://whowin.cn**
@@ -359,6 +361,10 @@ socket 编程是一种用于网络通信的编程方式，在 socket 的协议�
 [article06]: https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/
 [article07]: https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
 [article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
+[article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
+[article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
+[article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
+[article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
 
 
 [src01]: https://whowin.gitee.io/sourcecodes/100019/sendto-recvfrom.c

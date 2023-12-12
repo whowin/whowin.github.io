@@ -158,7 +158,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
     int mq_close(mqd_t mqdes);
     ```
 * mqdes 就是使用 mq_open() 打开消息队列时返回的描述符。   
-* **源程序**：[mq-create.c][src02](**点击文件名下载源程序**)是一个简单的命令行工具，用于创建一个新的消息队列；
+* 源程序：[mq-create.c][src02](**点击文件名下载源程序**)是一个简单的命令行工具，用于创建一个新的消息队列；
 * 编译：`gcc -Wall mq-create.c -o mq-create -lrt`
 * 运行：`./mq-create -cx -m 8 -s 512 /test_mq_name 0660`
 * 在使用该程序时需要在命令行输入一些参数：
@@ -202,7 +202,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 * 调用 `mq_setattr()` 时，将使用参数 newattr 中的值设置消息队列的属性，但实际上只能设置 mq_flags 字段，而且该字段只能设置为 O_NONBLOCK 或者 0，其它字段将被忽略；
 * 在调用 `mq_setattr()` 时，如果参数 oldattr 不为 NULL，则在调用成功后，oldattr 中将返回消息队列的属性，但是返回的是调用 `mq_setattr()` 之前消息队列的属性；
 * 所以，如果需要了解调用 `mq_setattr()` 之后消息队列的属性，在调用 `mq_setattr()` 之后，需要调用 `mq_getattr()`。
-* **源程序**：[mq-attr.c][src01](**点击文件名下载源程序**)演示了 `mq_open()、mq_getattr()、mq_setattr() 和 mq_close()` 的使用方法；
+* 源程序：[mq-attr.c][src01](**点击文件名下载源程序**)演示了 `mq_open()、mq_getattr()、mq_setattr() 和 mq_close()` 的使用方法；
 * 编译：`gcc -Wall mq-attr.c -o mq-attr -lrt`
 * 运行：`./mq-attr`
     - 该程序首先建立一个新的消息队列，消息队列的名称与当前进程 pid 相关，所以每次运行都会建立一个新的消息队列；
@@ -279,9 +279,9 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
     - 每个客户端子进程循环向服务端发送 5 条消息，并接收 5 次回应，每次发送消息间隔一个不大于 6 秒的随机数；
     - 客户端父进程等待 5 个子进程全部运行完毕后退出；
     - 服务器端程序只能用 ctrl+c 退出，所以程序中截获了 ctrl+c 信号，并在处理程序中对已经打开的消息队列进行了处理。
-* **服务器端源程序**：[mq-server.c][src04](**点击文件名下载源程序**)
-* **客户端源程序**：[mq-client.c][src05](**点击文件名下载源程序**)
-* **包含文件**：[mq-const.h][src07](**点击文件名下载源程序**)
+* 服务器端源程序：[mq-server.c][src04](**点击文件名下载源程序**)
+* 客户端源程序：[mq-client.c][src05](**点击文件名下载源程序**)
+* 包含文件：[mq-const.h][src07](**点击文件名下载源程序**)
 * 编译：
     ```bash
     gcc -Wall mq-server.c -o mq-server -lrt
@@ -380,7 +380,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
     - 一个消息队列只能注册一个异步通知，当注册多个时，只有注册的第一个有效；
     - 只有消息队列为空，收到第一条消息时，才会收到通知，消息队列不空时，即便有消息进来也不会触发通知；
 * 消息队列的异步处理机制使我们的主程序无需阻塞在消息队列上，而是专心处理其它事务，可以大大提高程序的运行效率；
-* **源程序**：[mq-notify.c][src06](**点击文件名下载源程序**)演示了消息队列的异步通知的基本编程方法；
+* 源程序：[mq-notify.c][src06](**点击文件名下载源程序**)演示了消息队列的异步通知的基本编程方法；
     - 该程序首先建立一个消息队列，然后设置消息队列异步通知；
     - 等待 1 秒钟后向消息队列中发送一条消息；
     - 触发异步通知，通知处理函数成功收到消息；
@@ -433,7 +433,15 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 
 * 消息队列具有内核级持久性，需要使用专门的函数或实用程序来删除，终止进程不会删除消息队列；匿名管道在创建它的进程终止时将自动被删除，删除一个命名管道与删除一个普通文件完全一样，不需要专门的函数。
 
+## 13 有关进程间通信(IPC)的的其它文章：
+* [IPC之一：使用匿名管道进行父子进程间通信的例子][article01]
+* [IPC之二：使用命名管道(FIFO)进行进程间通信的例子][article02]
+* [IPC之三：使用 System V 消息队列进行进程间通信的实例][article03]
+* [IPC之四：使用 POSIX 消息队列进行进程间通信的实例][article04]
+* [IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘][article05]
 
+
+## **欢迎订阅 [『进程间通信专栏』](https://blog.csdn.net/whowin/category_12404164.html)**
 
 
 -------------
@@ -449,11 +457,22 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article01]: https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/
 [article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
 [article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
+[article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
+[article05]: https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
+[article06]: https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/
+[article07]: https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
+[article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
+[article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
+[article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
+[article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
+[article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
 
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
 [article02]: https://blog.csdn.net/whowin/article/details/132171930
 [article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
 -->
 
 [src01]: https://whowin.gitee.io/sourcecodes/100014/mq-attr.c
@@ -462,7 +481,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [src04]: https://whowin.gitee.io/sourcecodes/100014/mq-server.c
 [src05]: https://whowin.gitee.io/sourcecodes/100014/mq-client.c
 [src06]: https://whowin.gitee.io/sourcecodes/100014/mq-notify.c
-[src07]: https://whowin.gitee.io/sourcecodes/100014/mq-const.h
+[src07]: /sourcecodes/100014/mq-const.h
 
 [img01]: https://whowin.gitee.io/images/100014/screenshot-of-mqattr.png
 [img02]: https://whowin.gitee.io/images/100014//screenshot-of-mq-create.png

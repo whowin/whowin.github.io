@@ -124,6 +124,9 @@ postid: 180004
 * 计算结果为全1，表明这个IP报头完好无损。
 
 
+## **欢迎订阅 [『网络编程专栏』](https://blog.csdn.net/whowin/category_12180345.html)**
+
+
 -------------
 **欢迎访问我的博客：https://whowin.cn**
 
