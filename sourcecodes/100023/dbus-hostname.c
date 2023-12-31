@@ -73,7 +73,6 @@ int main(int argc, char **argv) {
     //=============================
     dbus_error_init(&dbus_error);
     conn = dbus_bus_get(DBUS_BUS_SYSTEM, &dbus_error);
-    //conn = dbus_bus_get(DBUS_BUS_SESSION, &dbus_error);
     if (dbus_error_is_set(&dbus_error)) {
         print_dbus_error(&dbus_error, "dbus_bus_get()");
         exit(EXIT_FAILURE);

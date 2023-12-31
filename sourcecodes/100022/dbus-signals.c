@@ -186,8 +186,9 @@ void dbus_client(int num) {
         return;
     }
     
-    while (dbus_connection_read_write_dispatch(conn, -1)) {
+    while (dbus_connection_read_write_dispatch(conn, 0)) {
         // loop
+        sleep(1);
         if (quit) break;
     }
     

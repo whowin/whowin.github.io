@@ -50,7 +50,7 @@
 <meta itemprop="name" content="IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例">
 <meta itemprop="description" content="前面两篇有关 D-Bus 的文章介绍了使用 libdbus 库进行进程间的方法调用和信号的传输，实际上 D-Bus 的更强大的地方是其建立了与大量系统服务之间建立了有效的对话规范，使得应用程序可以使用标准的方式调用系统服务的方法，访问系统服务中的一些开放的属性，本文将使用 libdbus 库调用系统服务中的方法从而实现域名解析，本文给出了实现该功能的实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"><meta itemprop="datePublished" content="2023-12-10T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-12-10T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4852">
+<meta itemprop="wordCount" content="4865">
 <meta itemprop="keywords" content="Linux,进程间通信,D-Bus,libdbus,IPC,域名解析,systemd-resolved," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例"/>
 <meta name="twitter:description" content="前面两篇有关 D-Bus 的文章介绍了使用 libdbus 库进行进程间的方法调用和信号的传输，实际上 D-Bus 的更强大的地方是其建立了与大量系统服务之间建立了有效的对话规范，使得应用程序可以使用标准的方式调用系统服务的方法，访问系统服务中的一些开放的属性，本文将使用 libdbus 库调用系统服务中的方法从而实现域名解析，本文给出了实现该功能的实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"/>
@@ -743,7 +743,7 @@ do {
 <h2 id="4-域名解析实例">4 域名解析实例</h2>
 <ul>
 <li>
-<p><strong>源程序</strong>：<a href="/sourcecodes/100023/dbus-hostname.c">dbus-hostname.c</a>(<strong>点击文件名下载源程序</strong>)演示了使用 libdbus 请求系统服务 <code>systemd-resolved</code> 实现域名解析的过程；</p>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/100023/dbus-hostname.c">dbus-hostname.c</a>(<strong>点击文件名下载源程序，建议使用UTF-8字符集</strong>)演示了使用 libdbus 请求系统服务 <code>systemd-resolved</code> 实现域名解析的过程；</p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall -g dbus-hostname.c -o dbus-hostname `pkg-config --libs --cflags dbus-1` </code></p>
@@ -795,7 +795,11 @@ do {
           <a href="/tags/systemd-resolved/">systemd-resolved</a>
           </div>
       <nav class="post-nav">
-        
+        <a class="prev" href="/post/blog/linux/0024-select-recv-message/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">IPC之十四：使用libdbus通过select()接收D-Bus消息的实例</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
         <a class="next" href="/post/blog/linux/0022-dbus-asyn-process-signal/">
             <span class="next-text nav-default">IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例</span>
             <span class="next-text nav-mobile">下一篇</span>
@@ -857,7 +861,7 @@ do {
   <span class="copyright-year">
     &copy; 
     2022 - 
-    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
   </span>
 </div>
 

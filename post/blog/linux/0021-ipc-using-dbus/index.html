@@ -50,7 +50,7 @@
 <meta itemprop="name" content="IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例">
 <meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，本文介绍在 Linux 下 IPC 的另外一种实现，D-Bus，D-Bus 是一种用于进程间通信的消息总线系统，它提供了一个可靠且灵活的机制，使得不同进程之间能够相互通信，本文给出了使用 D-Bus 进行基本 IPC 的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"><meta itemprop="datePublished" content="2023-12-01T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-12-01T16:43:29+08:00" />
-<meta itemprop="wordCount" content="9035">
+<meta itemprop="wordCount" content="9080">
 <meta itemprop="keywords" content="Linux,进程间通信,D-Bus,IPC,libdbus," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例"/>
 <meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，本文介绍在 Linux 下 IPC 的另外一种实现，D-Bus，D-Bus 是一种用于进程间通信的消息总线系统，它提供了一个可靠且灵活的机制，使得不同进程之间能够相互通信，本文给出了使用 D-Bus 进行基本 IPC 的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"/>
@@ -145,7 +145,6 @@
         <div class="post-category">
             <a href="/categories/linux/"> Linux </a>
             <a href="/categories/c-language/"> C Language </a>
-            <a href="/categories/network/"> Network </a>
             </div>
         
       </div>
@@ -405,7 +404,13 @@
 <h2 id="3-d-bus-编程实例">3 D-Bus 编程实例</h2>
 <ul>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/100021/dbus-objects.c">dbus-objects.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用 libdbus 库实现多个客户端进程向服务端进程请求服务的通信过程；</p>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/100021/dbus-objects.c">dbus-objects.c</a>(<strong>点击文件名下载源程序，建议使用UTF-8字符集</strong>)演示了如何使用 libdbus 库实现多个客户端进程向服务端进程请求服务的通信过程；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall -g dbus-objects.c -o dbus-objects `pkg-config --libs --cflags dbus-1` </code></p>
+</li>
+<li>
+<p>运行：<code>./dbus-objects</code></p>
 </li>
 <li>
 <p>该程序是个多进程的程序，建立了一个服务端进程，运行函数：<code>dbus_server()</code>，建立多个客户端进程，运行函数：<code>dbus_clien()</code>，运行起来以后，相当于运行着一个服务器端程序和若干个客户端程序；</p>
@@ -494,7 +499,7 @@
 <p>编译：<code>gcc -Wall -g dbus-methods.c -o dbus-methods `pkg-config --libs --cflags dbus-1` </code></p>
 </li>
 <li>
-<p>运行：<code>./dbus-objects</code></p>
+<p>运行：<code>./dbus-methods</code></p>
 </li>
 <li>
 <p>运行截图：</p>
@@ -1035,6 +1040,18 @@
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
 <p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
+[article06]: https://blog.csdn.net/whowin/article/details/134939609
+[article07]: https://blog.csdn.net/whowin/article/details/135015196
+[article08]: https://blog.csdn.net/whowin/article/details/135074991
+[article09]: https://blog.csdn.net/whowin/article/details/135143545
+[article10]: https://blog.csdn.net/whowin/article/details/135212050
+-->
     </div>
 
     <div class="post-copyright">
@@ -1127,7 +1144,7 @@
   <span class="copyright-year">
     &copy; 
     2022 - 
-    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
   </span>
 </div>
 

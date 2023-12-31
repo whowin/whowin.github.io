@@ -134,6 +134,50 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/linux/0015-systemv-semaphore-sets/">IPC之五：使用 System V 信号量集解决经典的&#39;哲学家就餐问题&#39;</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-09-01 </span>
+      <div class="post-category">
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量集(Semaphore Sets)，尽管信号量集被认为是 IPC 的一种方式，但实际上通常把信号量集用于进程间同步或者资源访问互斥，信号量集和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量集，本文仅针对 SYSTEM V 信号量集；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/linux/0015-systemv-semaphore-sets/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/linux/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-08-20 </span>
+      <div class="post-category">
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 POSIX 消息队列，POSIX 标准引入了一个简单的基于文件的接口，使应用程序可以轻松地与消息队列进行交互；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/linux/0014-posix-message-queue/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/linux/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-08-05 </span>
@@ -198,52 +242,6 @@
   </div>
 </article>
 
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0022-how-to-scan-wifi-signal/">使用ioctl扫描wifi信号获取AP的essid、mac地址等属性</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-06-26 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>使用 wifi 是一件再平常不过的是事情，有很多 wifi 工具可以帮助你扫描附近的 wifi 信号，测试信号强度等，但如何通过编程来操作 wifi 却鲜有文章涉及；本文立足实践，不使用任何第三方库，仅使用 ioctl 扫描附近的 wifi 信号，并获取这些 AP 的 ESSID、MAC 地址、占用信道和工作频率，本文将给出完整的源程序，今后还会写一些文章讨论如果编程获取 wifi 信号的其它属性(比如：信号强度、加密方式等)的方法，敬请关注；本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；阅读本文并不需要对 IEEE802.11 协议有所了解。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0022-how-to-scan-wifi-signal/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0019-dns-client-in-c/">用C语言实现的一个DNS客户端</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-03-28 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>DNS可以帮助我们把域名映射到一个IP地址上，或者查询一个IP地址下有那些域名，使用域名访问一个网站或者服务器是一件很平常的事情，很少有人关心域名变成IP地址的实际过程，本文将使用C语言实现一个基本的DNS解析器，通过与DNS服务器的通信完成将一个域名转换成IP地址的过程，本文将提供完整的源程序；阅读本文需要有一定的网络编程基础，熟悉基本的socket编程并对DNS有一些了解，本文对网络编程的初学者难度较大。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0019-dns-client-in-c/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
     </section>
   
   <nav class="pagination">
@@ -286,7 +284,7 @@
   <span class="copyright-year">
     &copy; 
     2022 - 
-    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
   </span>
 </div>
 

@@ -3,104 +3,132 @@
   
   <url>
     <loc>https://whowin.gitee.io/categories/c-language/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/categories/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/tags/d-bus/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/tags/ipc/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <loc>https://whowin.gitee.io/post/blog/linux/0025-resolve-arbitrary-dns-record/</loc>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/tags/libdbus/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/tags/linux/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/categories/linux/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/categories/network/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/post/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/tags/systemd-resolved/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/tags/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/</loc>
-    <lastmod>2023-12-10T16:43:29+08:00</lastmod>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://whowin.gitee.io/tags/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90/</loc>
+    <lastmod>2023-12-28T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/dbuswatch/</loc>
+    <lastmod>2023-12-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/linux/0024-select-recv-message/</loc>
+    <lastmod>2023-12-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/tags/select/</loc>
+    <lastmod>2023-12-25T16:43:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/</loc>
     <lastmod>2023-12-10T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -543,13 +571,6 @@
   <url>
     <loc>https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/</loc>
     <lastmod>2023-01-12T16:43:29+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://whowin.gitee.io/tags/select/</loc>
-    <lastmod>2023-01-09T16:43:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>

@@ -50,7 +50,7 @@
 <meta itemprop="name" content="IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例">
 <meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，前面的文章里介绍了 D-Bus 的基本概念以及调用远程方法的实例，本文介绍 D-Bus 的异步处理机制，以及信号处理的基本方法，本文给出了异步处理 D-Bus 的实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"><meta itemprop="datePublished" content="2023-12-06T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-12-06T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4365">
+<meta itemprop="wordCount" content="4378">
 <meta itemprop="keywords" content="Linux,进程间通信,D-Bus,libdbus,IPC," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例"/>
 <meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，前面的文章里介绍了 D-Bus 的基本概念以及调用远程方法的实例，本文介绍 D-Bus 的异步处理机制，以及信号处理的基本方法，本文给出了异步处理 D-Bus 的实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"/>
@@ -145,7 +145,6 @@
         <div class="post-category">
             <a href="/categories/linux/"> Linux </a>
             <a href="/categories/c-language/"> C Language </a>
-            <a href="/categories/network/"> Network </a>
             </div>
         
       </div>
@@ -487,7 +486,7 @@
 <h2 id="3-使用-libdbus-异步接收信号的实例">3 使用 libdbus 异步接收信号的实例</h2>
 <ul>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/100022/dbus-signals.c">dbus-signals.c</a>(<strong>点击文件名下载源程序</strong>)演示了使用 libdbus 对信号进行发送和接收，以及如何异步接收信号；</p>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/100022/dbus-signals.c">dbus-signals.c</a>(<strong>点击文件名下载源程序，建议使用UTF-8字符集</strong>)演示了使用 libdbus 对信号进行发送和接收，以及如何异步接收信号；</p>
 </li>
 <li>
 <p>该程序是一个多进程程序，建立了一个服务端进程和三个客户端进程；</p>
@@ -624,7 +623,7 @@
   <span class="copyright-year">
     &copy; 
     2022 - 
-    2023<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
   </span>
 </div>
 
