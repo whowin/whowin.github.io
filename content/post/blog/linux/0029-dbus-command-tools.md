@@ -25,7 +25,7 @@ draft: true
 # - [dbus-monitor](https://dbus.freedesktop.org/doc/dbus-monitor.1.html)
 # 
 
-postid: 100024
+postid: 100029
 ---
 
 
@@ -54,6 +54,7 @@ IPC 是 Linux 编程中一个重要的概念，D-Bus 是 IPC 的一种重要实�
 
 
 
+## **欢迎订阅 [『进程间通信专栏』](https://blog.csdn.net/whowin/category_12404164.html)**
 
 -------------
 **欢迎访问我的博客：https://whowin.cn**

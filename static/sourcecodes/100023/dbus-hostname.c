@@ -4,7 +4,7 @@
  * email: hengch@163.com
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Example of using libdbus to realize the DNS client via calling system service
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -14,7 +14,6 @@
  * Usage: $ ./dbus-hostname
  *
  * Example source code for article 《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》
- * https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/
  * 
  */
 #include <stdio.h>
@@ -73,7 +72,6 @@ int main(int argc, char **argv) {
     //=============================
     dbus_error_init(&dbus_error);
     conn = dbus_bus_get(DBUS_BUS_SYSTEM, &dbus_error);
-    //conn = dbus_bus_get(DBUS_BUS_SESSION, &dbus_error);
     if (dbus_error_is_set(&dbus_error)) {
         print_dbus_error(&dbus_error, "dbus_bus_get()");
         exit(EXIT_FAILURE);

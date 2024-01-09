@@ -4,7 +4,7 @@
  * email: hengch@163.com
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * A simple command line tool for creating a new named POSIX semaphore.
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -14,7 +14,6 @@
  * Usage: $ ./sem-create [-cx] [-v value] sem-name [octal-perms]
  *
  * Example source code for article 《IPC之六：使用 POSIX 信号量解决经典的'生产者消费者问题'》
- * https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/
  * 
  */
 #include <stdio.h>

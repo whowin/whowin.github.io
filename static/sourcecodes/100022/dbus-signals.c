@@ -4,7 +4,7 @@
  * email: hengch@163.com
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Example of using libdbus to realize the client receiving server signals
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -14,7 +14,6 @@
  * Usage: $ ./dbus-signals
  *
  * Example source code for article 《IPC之十二：使用libdbus异步发送/接收信号的实例》
- * https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
  * 
  */
 #include <stdio.h>
@@ -186,8 +185,9 @@ void dbus_client(int num) {
         return;
     }
     
-    while (dbus_connection_read_write_dispatch(conn, -1)) {
+    while (dbus_connection_read_write_dispatch(conn, 0)) {
         // loop
+        sleep(1);
         if (quit) break;
     }
     

@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Route lookup simulator under Linux
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ sudo ./rt-lookup
  * 
  * Example source code for article 《简单的路由表查找程序》
- * https://whowin.gitee.io/post/blog/network/0016-longest-prefix-match/
  *
  */
 #include <stdio.h>

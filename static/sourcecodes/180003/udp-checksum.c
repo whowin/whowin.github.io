@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * how to calculat checksum of udp header under linux
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ ./udp-checksum
  * 
  * Example source code for article 《如何计算UDP头的checksum》
- * https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/
  *
  */
 #include <stdio.h>

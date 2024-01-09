@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * TCP client for a combinatorial TCP and UDP server
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ ./tcp-udp-server
  * 
  * Example source code for article 《使用select实现的UDP/TCP组合服务器》
- * https://whowin.gitee.io/post/blog/network/0010-tcp-and-udp-server-using-select/
  *
  */
 #include <stdio.h>

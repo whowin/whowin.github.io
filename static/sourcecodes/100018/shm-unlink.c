@@ -4,7 +4,7 @@
  * email: hengch@163.com
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Check if the existing mapping is still effective after executing shm_unlink().
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -14,7 +14,6 @@
  * Usage: $ ./shm-unlink <shm name>
  *
  * Example source code for article 《IPC之八：使用 POSIX 共享内存进行进程间通信的实例》
- * https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
  * 
  */
 #include <stdio.h>

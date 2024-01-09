@@ -366,6 +366,17 @@ socket 编程是一种用于网络通信的编程方式，在 socket 的协议�
 [article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
 [article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
 
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
+[article06]: https://blog.csdn.net/whowin/article/details/134939609
+[article07]: https://blog.csdn.net/whowin/article/details/135015196
+[article08]: https://blog.csdn.net/whowin/article/details/135074991
+[article09]: https://blog.csdn.net/whowin/article/details/135143545
+-->
 
 [src01]: https://whowin.gitee.io/sourcecodes/100019/sendto-recvfrom.c
 [src02]: https://whowin.gitee.io/sourcecodes/100019/sendmsg-recvmsg.c

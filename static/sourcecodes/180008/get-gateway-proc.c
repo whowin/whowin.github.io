@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Get gateway IP address from proc file system under linux
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ sudo ./get-gateway-proc
  * 
  * Example source code for article 《从proc文件系统中获取gateway的IP地址》
- * https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/
  *
  */
 #include <stdio.h>

@@ -9,7 +9,6 @@ pager: true
 categories:
   - "Linux"
   - "C Language"
-  - "Network"
 tags:
   - Linux
   - 进程间通信
@@ -197,7 +196,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系
 * 尽管我们向 D-Bus 订阅了我们感兴趣的信号，但其实有时也会一些不符合订阅条件的信号到来，所以，在程序中还是要做一些判断，以确保收到的是我们期望的信号，如果不是，返回 `DBUS_HANDLER_RESULT_NOT_YET_HANDLED`，让其它过滤器去处理。
 
 ## 3 使用 libdbus 异步接收信号的实例
-* **源程序**：[dbus-signals.c][src01](**点击文件名下载源程序**)演示了使用 libdbus 对信号进行发送和接收，以及如何异步接收信号；
+* **源程序**：[dbus-signals.c][src01](**点击文件名下载源程序，建议使用UTF-8字符集**)演示了使用 libdbus 对信号进行发送和接收，以及如何异步接收信号；
 * 该程序是一个多进程程序，建立了一个服务端进程和三个客户端进程；
 * 服务端进程在启动后发送出一个内容为 "start" 的信号，暂停 5 秒后，再发出一个内容为 "quit" 的信号，然后退出进程；
 * 服务端在发送信号时，其对象路径、接口名称和信号名称均相同；
@@ -241,6 +240,21 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系
 [article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
 [article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
 [article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
+
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
+[article06]: https://blog.csdn.net/whowin/article/details/134939609
+[article07]: https://blog.csdn.net/whowin/article/details/135015196
+[article08]: https://blog.csdn.net/whowin/article/details/135074991
+[article09]: https://blog.csdn.net/whowin/article/details/135143545
+[article10]: https://blog.csdn.net/whowin/article/details/135212050
+[article11]: https://blog.csdn.net/whowin/article/details/135281195
+[article12]: https://blog.csdn.net/whowin/article/details/135332257
+-->
 
 
 [dbus_webpage]: https://www.freedesktop.org/wiki/Software/dbus/

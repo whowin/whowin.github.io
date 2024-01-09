@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * This is an example of how to receive a message from a message queue.
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ ./msg-recv [msgtype]
  *
  * Example source code for article 《IPC之三：使用 System V 消息队列进行进程间通信的实例》
- * https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
  * 
  */
 #include <stdio.h>

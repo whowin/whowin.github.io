@@ -9,7 +9,6 @@ pager: true
 categories:
   - "Linux"
   - "C Language"
-  - "Network"
 tags:
   - Linux
   - 进程间通信
@@ -207,6 +206,18 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 I
 [article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
 [article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
 
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
+[article06]: https://blog.csdn.net/whowin/article/details/134939609
+[article07]: https://blog.csdn.net/whowin/article/details/135015196
+[article08]: https://blog.csdn.net/whowin/article/details/135074991
+[article09]: https://blog.csdn.net/whowin/article/details/135143545
+[article10]: https://blog.csdn.net/whowin/article/details/135212050
+-->
 
 [src01]: https://whowin.gitee.io/sourcecodes/100020/ipc-files.c
 

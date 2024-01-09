@@ -299,7 +299,7 @@ dbus_bool_t dbus_message_iter_next(DBusMessageIter *iter);
     ```
 
 ## 4 域名解析实例
-* **源程序**：[dbus-hostname.c][src01](**点击文件名下载源程序**)演示了使用 libdbus 请求系统服务 `systemd-resolved` 实现域名解析的过程；
+* **源程序**：[dbus-hostname.c][src01](**点击文件名下载源程序，建议使用UTF-8字符集**)演示了使用 libdbus 请求系统服务 `systemd-resolved` 实现域名解析的过程；
 * 编译：```gcc -Wall -g dbus-hostname.c -o dbus-hostname `pkg-config --libs --cflags dbus-1` ```
 * 有关 `pkg-config --libs --cflags dbus-1` 可以参阅文章 [《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》][article11] 中的简要说明；
 * 该程序的使用方法：`./dbus-hostname <主机名> [地址族]`，主机名一定要有，地址族可以是 `AF_INET` 或者 `AF_INET6`，前者仅解析 IPv4 的 IP 地址，后者仅解析 IPv6 的 IP 地址，如果地址族没有填，则地址族设置为 `AF_UNSPEC`，其含义文中有介绍； 
@@ -337,6 +337,23 @@ dbus_bool_t dbus_message_iter_next(DBusMessageIter *iter);
 [article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
 [article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
 [article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
+[article13]: https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/
+
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
+[article06]: https://blog.csdn.net/whowin/article/details/134939609
+[article07]: https://blog.csdn.net/whowin/article/details/135015196
+[article08]: https://blog.csdn.net/whowin/article/details/135074991
+[article09]: https://blog.csdn.net/whowin/article/details/135143545
+[article10]: https://blog.csdn.net/whowin/article/details/135212050
+[article11]: https://blog.csdn.net/whowin/article/details/135281195
+[article12]: https://blog.csdn.net/whowin/article/details/135332257
+[article13]: https://blog.csdn.net/whowin/article/details/135332658
+-->
 
 
 [dbus_webpage]: https://www.freedesktop.org/wiki/Software/dbus/
@@ -344,10 +361,10 @@ dbus_bool_t dbus_message_iter_next(DBusMessageIter *iter);
 [dbus_specification]: https://dbus.freedesktop.org/doc/dbus-specification.html
 [systemd-resolved_api]: https://www.freedesktop.org/software/systemd/man/latest/org.freedesktop.resolve1.html
 
-[src01]: /sourcecodes/100023/dbus-hostname.c
+[src01]: https://whowin.gitee.io/sourcecodes/100023/dbus-hostname.c
 
 
-[img01]: /images/100023/screenshot-of-systemctl.png
-[img02]: /images/100023/screen-of-dbus-hostname.png
+[img01]: https://whowin.gitee.io/images/100023/screenshot-of-systemctl.png
+[img02]: https://whowin.gitee.io/images/100023/screen-of-dbus-hostname.png
 
 

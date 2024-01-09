@@ -337,6 +337,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article03]: https://blog.csdn.net/whowin/article/details/132172172
 [article04]: https://blog.csdn.net/whowin/article/details/134869490
 [article05]: https://blog.csdn.net/whowin/article/details/134869636
+[article06]: https://blog.csdn.net/whowin/article/details/134939609
 -->
 
 [src01]: https://whowin.gitee.io/sourcecodes/100016/sem-create.c

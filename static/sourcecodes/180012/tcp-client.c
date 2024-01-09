@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Normal TCP client program under C/S architecture
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ ./tcp-client
  * 
  * Example source code for article 《使用C语言实现服务器/客户端的TCP通信》
- * https://whowin.gitee.io/post/blog/network/0012-tcp-server-client-implementation-in-c/
  *
  */
 #include <stdio.h>

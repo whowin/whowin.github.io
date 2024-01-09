@@ -9,7 +9,6 @@ pager: true
 categories:
   - "Linux"
   - "C Language"
-  - "Network"
 tags:
   - Linux
   - 进程间通信
@@ -165,7 +164,10 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系
 
 
 ## 3 D-Bus 编程实例
-* **源程序**：[dbus-objects.c][src01](**点击文件名下载源程序**)演示了如何使用 libdbus 库实现多个客户端进程向服务端进程请求服务的通信过程；
+* **源程序**：[dbus-objects.c][src01](**点击文件名下载源程序，建议使用UTF-8字符集**)演示了如何使用 libdbus 库实现多个客户端进程向服务端进程请求服务的通信过程；
+* 编译：```gcc -Wall -g dbus-objects.c -o dbus-objects `pkg-config --libs --cflags dbus-1` ```
+* 运行：`./dbus-objects`
+
 * 该程序是个多进程的程序，建立了一个服务端进程，运行函数：`dbus_server()`，建立多个客户端进程，运行函数：`dbus_clien()`，运行起来以后，相当于运行着一个服务器端程序和若干个客户端程序；
 * 客户端进程的数量由常量 `CLIENT_NUM` 控制，默认情况下是 3 个客户端进程；
 * 服务端进程提供了三种调用方法的服务，其接口名称和方法名称一样，但分别部署在三个对象上：
@@ -204,7 +206,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系
 
 * **源程序**：[dbus-methods.c][src02](**点击文件名下载源程序**)与 dbus-objects.c 完成一样的任务，但是是在一个对象下的三个调用方法；
 * 编译：```gcc -Wall -g dbus-methods.c -o dbus-methods `pkg-config --libs --cflags dbus-1` ```
-* 运行：`./dbus-objects`
+* 运行：`./dbus-methods`
 * 运行截图：
 
     ![Screenshot of dbus-methods][img04]
@@ -499,6 +501,20 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系
 [article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
 [article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
 [article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
+
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
+[article06]: https://blog.csdn.net/whowin/article/details/134939609
+[article07]: https://blog.csdn.net/whowin/article/details/135015196
+[article08]: https://blog.csdn.net/whowin/article/details/135074991
+[article09]: https://blog.csdn.net/whowin/article/details/135143545
+[article10]: https://blog.csdn.net/whowin/article/details/135212050
+[article11]: https://blog.csdn.net/whowin/article/details/135281195
+-->
 
 
 [dbus_webpage]: https://www.freedesktop.org/wiki/Software/dbus/

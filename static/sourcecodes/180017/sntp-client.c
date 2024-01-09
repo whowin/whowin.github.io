@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * SNTP client.
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -18,7 +18,6 @@
  *      time.edu.cn
  * 
  * Example source code for article 《使用SNTP协议从时间服务器同步时间》
- * https://whowin.gitee.io/post/blog/network/0017-sync-time-from-time-server-using-sntp/
  * 
  */
 #include <stdio.h>

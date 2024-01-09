@@ -4,7 +4,7 @@
  * email: hengch@163.com
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Demonstrate how to use shmctl().
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -14,7 +14,6 @@
  * Usage: $ ./shm-ctl
  *
  * Example source code for article 《IPC之七：使用 System V 共享内存段进行进程间通信的实例》
- * https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
  * 
  */
 
