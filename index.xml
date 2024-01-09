@@ -6,7 +6,16 @@
     <description>Recent content on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 28 Dec 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 08 Jan 2024 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>IPC之十六：D-Bus的标准接口和服务接口的具体实现</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0026-standard-and-service-interfaces/</link>
+      <pubDate>Mon, 08 Jan 2024 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0026-standard-and-service-interfaces/</guid>
+      <description>&lt;p&gt;D-Bus的规范中提供了一系列的标准接口，绝大多数有D-Bus接口的系统调用都会实现这些标准接口，这些标准接口中包括D-Bus的自省(Introspection)机制，自省机制可以让我们通过一个标准接口了解一个D-Bus服务的各种方法的调用方法，本文将介绍D-Bus的这些标准接口及实现方式，同时也会介绍如何在D-Bus上提供自有服务，本文附有完整的实例和完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>IPC之十五：使用libdbus通过D-Bus请求系统调用实现任意DNS记录解析的实例</title>
       <link>https://whowin.gitee.io/post/blog/linux/0025-resolve-arbitrary-dns-record/</link>

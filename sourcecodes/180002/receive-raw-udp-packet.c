@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Receive raw udp packet using raw socket under linux
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ sudo ./receive-raw-udp-packet
  * 
  * Example source code for article 《Linux下如何在数据链路层接收原始数据包》
- * https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
  *
  */
 #include <stdio.h>

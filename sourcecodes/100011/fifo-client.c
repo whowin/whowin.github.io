@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Writing data into the FIFO as if it is a stream file.
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ ./fifo-client
  *
  * Example source code for article 《IPC之二：使用命名管道(FIFO)进行进程间通信的例子》
- * https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
  * 
  */
 #include <stdio.h>

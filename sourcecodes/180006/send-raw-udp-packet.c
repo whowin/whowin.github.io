@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * how to send raw UDP packet with raw socket under linux
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ sudo ./send-raw-udp-packet
  * 
  * Example source code for article 《如何使用raw socket发送UDP报文》
- * https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/
  *
  */
 #include <stdio.h>

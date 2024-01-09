@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * TCP servers that handle multi-client connections using select.
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ ./select-server
  * 
  * Example source code for article 《TCP服务器如何使用select处理多客户连接》
- * https://whowin.gitee.io/post/blog/network/0011-handling-multiple-clients-on-server-with-select/
  *
  */
 #include <stdio.h>

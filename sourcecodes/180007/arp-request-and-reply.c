@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Receive an arp request and send a reply under linux
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ sudo ./arp-request-and-reply
  * 
  * Example source code for article 《接收arp请求并发送回应的实例》
- * https://whowin.gitee.io/post/blog/network/0007-recv-arp-request-and-reply/
  *
  */
 #include <stdio.h>

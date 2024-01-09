@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * DNS resolver example
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ ./dnstest www.baidu.com
  * 
  * Example source code for article 《用C语言实现的一个DNS客户端》
- * https://whowin.gitee.io/post/blog/network/0019-dns-client-in-c/
  *
  */
 #include <stdio.h>

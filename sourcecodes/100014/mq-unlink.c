@@ -4,7 +4,7 @@
  * email: hengch@163.com
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Demonstrate how to remove the specified message queue name.
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -14,7 +14,6 @@
  * Usage: $ ./mq-unlink mq-name
  *
  * Example source code for article 《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》
- * https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
  * 
  */
 #include <stdio.h>

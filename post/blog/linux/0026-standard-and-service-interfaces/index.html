@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>IPC之十六：D-Bus的标准接口和服务接口的具体实现 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="D-Bus的规范中提供了一系列的标准接口，绝大多数有D-Bus接口的系统调用都会实现这些标准接口，这些标准接口中包括D-Bus的自省(Introspection)机制，自省机制可以让我们通过一个标准接口了解一个D-Bus服务的各种方法的调用方法，本文将介绍D-Bus的这些标准接口及实现方式，同时也会介绍如何在D-Bus上提供自有服务，本文附有完整的实例和完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/linux/0026-standard-and-service-interfaces/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="IPC之十六：D-Bus的标准接口和服务接口的具体实现" />
+<meta property="og:description" content="D-Bus的规范中提供了一系列的标准接口，绝大多数有D-Bus接口的系统调用都会实现这些标准接口，这些标准接口中包括D-Bus的自省(Introspection)机制，自省机制可以让我们通过一个标准接口了解一个D-Bus服务的各种方法的调用方法，本文将介绍D-Bus的这些标准接口及实现方式，同时也会介绍如何在D-Bus上提供自有服务，本文附有完整的实例和完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/linux/0026-standard-and-service-interfaces/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2024-01-08T16:43:29+08:00" />
+<meta property="article:modified_time" content="2024-01-08T16:43:29+08:00" />
+
+<meta itemprop="name" content="IPC之十六：D-Bus的标准接口和服务接口的具体实现">
+<meta itemprop="description" content="D-Bus的规范中提供了一系列的标准接口，绝大多数有D-Bus接口的系统调用都会实现这些标准接口，这些标准接口中包括D-Bus的自省(Introspection)机制，自省机制可以让我们通过一个标准接口了解一个D-Bus服务的各种方法的调用方法，本文将介绍D-Bus的这些标准接口及实现方式，同时也会介绍如何在D-Bus上提供自有服务，本文附有完整的实例和完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"><meta itemprop="datePublished" content="2024-01-08T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2024-01-08T16:43:29+08:00" />
+<meta itemprop="wordCount" content="5192">
+<meta itemprop="keywords" content="Linux,进程间通信,D-Bus,libdbus,IPC,introspection,内省机制," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="IPC之十六：D-Bus的标准接口和服务接口的具体实现"/>
+<meta name="twitter:description" content="D-Bus的规范中提供了一系列的标准接口，绝大多数有D-Bus接口的系统调用都会实现这些标准接口，这些标准接口中包括D-Bus的自省(Introspection)机制，自省机制可以让我们通过一个标准接口了解一个D-Bus服务的各种方法的调用方法，本文将介绍D-Bus的这些标准接口及实现方式，同时也会介绍如何在D-Bus上提供自有服务，本文附有完整的实例和完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">IPC之十六：D-Bus的标准接口和服务接口的具体实现</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2024-01-08 </span>
+        <div class="post-category">
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-d-bus-基本概念">1 D-Bus 基本概念</a></li>
+        <li><a href="#2-d-bus-的标准接口">2 D-Bus 的标准接口</a></li>
+        <li><a href="#3-d-bus-注册服务的基本方法">3 D-Bus 注册服务的基本方法</a></li>
+        <li><a href="#4-实例">4 实例</a></li>
+        <li><a href="#欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>D-Bus的规范中提供了一系列的标准接口，绝大多数有D-Bus接口的系统调用都会实现这些标准接口，这些标准接口中包括D-Bus的自省(Introspection)机制，自省机制可以让我们通过一个标准接口了解一个D-Bus服务的各种方法的调用方法，本文将介绍D-Bus的这些标准接口及实现方式，同时也会介绍如何在D-Bus上提供自有服务，本文附有完整的实例和完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。</p>
+<h2 id="1-d-bus-基本概念">1 D-Bus 基本概念</h2>
+<ul>
+<li>
+<p>在阅读本文前，建议先阅读有关 D-Bus 的其它文章，以便对 D-Bus 有个基本了解，本文将不再讨论以下文章已经介绍过的内容，这些文章包括：</p>
+<ul>
+<li><a href="https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/">IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/">IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/">IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/linux/0024-select-recv-message/">IPC之十四：使用libdbus通过select()接收D-Bus消息的实例</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/linux/0025-resolve-arbitrary-dns-record/">IPC之十五：使用libdbus通过D-Bus请求系统调用实现任意DNS记录解析的实例</a></li>
+</ul>
+</li>
+<li>
+<p>在文章 <a href="https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a> 中，我们介绍了 D-Bus 大多数的基本数据类型以及数组(ARRAY)和结构(STRUCT)；</p>
+</li>
+<li>
+<p>数组和结构在 <a href="https://dbus.freedesktop.org/doc/dbus-specification.html">D-Bus Specification</a> 中被归类在容器类型(Container Type)中，容器类型中还有两个数据类型：<code>VARIANT</code> 和 <code>DICT_ENTRY</code>，本节将介绍这两种类型，其它数据类型的介绍请参考 <a href="https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a>；</p>
+</li>
+<li>
+<p><font size=5>容器类型：<code>VARIANT</code></font></p>
+<ul>
+<li><code>VARIANT</code> 类型的编码是 &lsquo;v&rsquo;；</li>
+<li><code>VARIANT</code> 类型可以包含一个(只能一个)完整的类型，举例来说，可以是：&ldquo;i&rdquo;(整数)、&ldquo;ai&rdquo;(整数数组)、&quot;(ii)&quot;(两个整数组成的结构)，但是不能是 &ldquo;ii&rdquo;(两个整数)；</li>
+<li>在当输入或输出参数的数据类型不确定时，便可以使用 <code>VARIANT</code> 类型；</li>
+</ul>
+</li>
+<li>
+<p><font size=5>容器类型：<code>DICT_ENTRY</code></font></p>
+<ul>
+<li><code>DICT_ENTRY</code> 类型的编码为 &rsquo;e&rsquo;，实际应用中常以 &ldquo;{}&rdquo; 来表示一个 <code>DICT_ENTRY</code> 类型，和 <code>STRUCT</code> 类型用 &ldquo;[]&rdquo; 表示类似</li>
+<li><code>DICT_ENTRY</code> 类型其实就是 <code>key-value</code> 对，实际上就是一个由两个字段组成的结构(STRUCT)，其第一个字段必须是键(Key)，其类型必须是 D-Bus 的基本类型，不能是容器类型，第二个字段是键值(Value)，理论上可以是任意类型；</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-d-bus-的标准接口">2 D-Bus 的标准接口</h2>
+<ul>
+<li>
+<p><a href="https://dbus.freedesktop.org/doc/dbus-specification.html">D-Bus Specification</a> 中定义了一些标准接口(Standard Interface)，有 D-Bus 接口的系统调用都会实现这些标准接口，本节将介绍这些标准接口；</p>
+</li>
+<li>
+<p><font size=5>接口：<code>org.freedesktop.DBus.Peer</code></font></p>
+<ul>
+<li>这个接口下提供两个方法，<code>Ping</code> 和 <code>GetMachineId</code>，定义如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">org.freedesktop.DBus.Peer.Ping()
+</span></span><span class="line"><span class="cl">org.freedesktop.DBus.Peer.GetMachineId(out STRING machine_uuid)
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>调用 <code>Ping</code> 方法没有任何参数，服务端也只需要回复一个空信息(没有参数)即可，不需要添加任何参数；</li>
+<li>调用 <code>GetMachineId</code> 方法也没有任何参数，服务端要回复一个字符串参数给客户端，这个字符串应该为当前电脑的 UUID，在 Linux 上，可以使用 <code>/var/lib/dbus/machine-id</code> 或者 <code>/etc/machine-id</code> 文件中的值；</li>
+<li>当使用 <code>dbus_connection_register_object_path()</code> 向 D-Bus 注册一个对象路径的消息处理程序时，这两个方法在 D-Bus 中会自动实现，无需自己编程实现；</li>
+</ul>
+</li>
+<li>
+<p><font size=5>接口：<code>org.freedesktop.DBus.Introspectable</code></font></p>
+<ul>
+<li>这个接口下只有一个方法：<code>Introspect</code>，定义如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">org.freedesktop.DBus.Introspectable.Introspect(out STRING xml_data)
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>调用 <code>Introspect</code> 方法没有任何参数，服务端要返回一个 xml 的字符串，这个字符串定义了对象下所有实现的方法(Method)、属性(Property)和信号(Signal);</li>
+<li>这个方法就是 D-Bus 的内省(Introspection)机制，一个对象的实例在实现了这个接口后，客户调用这个接口可以了解这个对象中各个接口的调用方法，调用参数和返回参数；</li>
+<li>在 <a href="https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a> 和 <a href="https://whowin.gitee.io/post/blog/linux/0025-resolve-arbitrary-dns-record/">《IPC之十五：使用libdbus通过D-Bus请求系统调用实现任意DNS记录解析的实例》</a> 都调用了 <code>systemd-resolved</code> 系统调用的 D-Bus 接口，下面命令调用了<code>systemd-resolved</code> 系统调用中内省(Introspection)接口，可以直观地看一下返回的 XML 数据；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-Bash" data-lang="Bash"><span class="line"><span class="cl">$ dbus-send --print-reply --system <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>&gt; --dest<span class="o">=</span>org.freedesktop.resolve1 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>&gt; /org/freedesktop/resolve1 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>&gt; org.freedesktop.DBus.Introspectable.Introspect
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li><code>dbus-send</code> 是一个非常有用的 D-Bus 命令行工具，使用 <code>man dbus-send</code> 在线手册可以了解其详细使用方法；</li>
+<li>这条命令的含义是，在系统总线(<code>--system</code>)上请求一个接口上的方法，总线名称：<code>org.freedesktop.resolve1</code>(<code>--dest</code>)，对象路径：<code>/org/freedesktop/resolve1</code>，接口：<code>org.freedesktop.DBus.Introspectable</code>，方法：Introspect，注意，接口和方法用 &ldquo;.&rdquo; 连接；</li>
+<li><code>--print-reply</code> 表示需要打印服务端的回复信息；</li>
+<li>返回的数据是 XML 格式，在 <a href="https://dbus.freedesktop.org/doc/dbus-specification.html">D-Bus Specification</a> 中，对格式有明确的描述，在刚刚执行的命令中，有两个曾经在前面的文章中使用过的接口，把对这两个方法的定义放在这里；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&lt;node&gt;
+</span></span><span class="line"><span class="cl">    ......
+</span></span><span class="line"><span class="cl">    &lt;interface name=&#34;org.freedesktop.resolve1.Manager&#34;&gt;
+</span></span><span class="line"><span class="cl">        ......
+</span></span><span class="line"><span class="cl">        &lt;method name=&#34;ResolveHostname&#34;&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;i&#34; direction=&#34;in&#34;/&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;s&#34; direction=&#34;in&#34;/&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;i&#34; direction=&#34;in&#34;/&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;t&#34; direction=&#34;in&#34;/&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;a(iiay)&#34; direction=&#34;out&#34;/&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;s&#34; direction=&#34;out&#34;/&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;t&#34; direction=&#34;out&#34;/&gt;
+</span></span><span class="line"><span class="cl">        &lt;/method&gt;
+</span></span><span class="line"><span class="cl">        ......
+</span></span><span class="line"><span class="cl">        &lt;method name=&#34;ResolveRecord&#34;&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;i&#34; direction=&#34;in&#34;/&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;s&#34; direction=&#34;in&#34;/&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;q&#34; direction=&#34;in&#34;/&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;q&#34; direction=&#34;in&#34;/&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;t&#34; direction=&#34;in&#34;/&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;a(iqqay)&#34; direction=&#34;out&#34;/&gt;
+</span></span><span class="line"><span class="cl">            &lt;arg type=&#34;t&#34; direction=&#34;out&#34;/&gt;
+</span></span><span class="line"><span class="cl">        &lt;/method&gt;
+</span></span><span class="line"><span class="cl">        ......
+</span></span><span class="line"><span class="cl">    &lt;/interface&gt;
+</span></span><span class="line"><span class="cl">    ......
+</span></span><span class="line"><span class="cl">&lt;/node&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>其实这个格式很容易理解，不需要更多的解释，&ldquo;in&rdquo; 表示输入参数，&ldquo;out&rdquo; 表示输出参数，<code>type</code> 后面的字母是 D-Bus 的数据类型定义，在文章 <a href="https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a> 中有介绍；</li>
+<li>本文的实例中将实现该接口；</li>
+</ul>
+</li>
+<li>
+<p><font size=5>接口：<code>org.freedesktop.DBus.Properties</code></font></p>
+<ul>
+<li>
+<p>这个接口下有三个方法：<code>Get</code>、<code>Set</code> 和 <code>GetAll</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">org.freedesktop.DBus.Properties.Get(in STRING interface_name,
+</span></span><span class="line"><span class="cl">                                    in STRING property_name,
+</span></span><span class="line"><span class="cl">                                    out VARIANT value);
+</span></span><span class="line"><span class="cl">org.freedesktop.DBus.Properties.Set(in STRING interface_name,
+</span></span><span class="line"><span class="cl">                                    in STRING property_name,
+</span></span><span class="line"><span class="cl">                                    in VARIANT value);
+</span></span><span class="line"><span class="cl">org.freedesktop.DBus.Properties.GetAll(in STRING interface_name,
+</span></span><span class="line"><span class="cl">                                       out ARRAY of DICT_ENTRY&lt;STRING,VARIANT&gt; props);
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在一个对象实例中，每个接口下可以有一些属性(Properties/Attributes)，这些属性可以是只读的，也可以是可读/写的，这个接口用于操作这些属性；</p>
+</li>
+<li>
+<p>方法 Get 用于获取单个属性的值，输入参数 interface_name 表示接口名称，property_name表示属性名称，两个参数都是字符串，输出参数为属性值，由于并不清楚该属性值的数据类型，所以其输出参数的数据类型为 <code>VARIANT</code>；</p>
+</li>
+<li>
+<p>方法 Set 用于设置单个属性的值，这个方法其实就是 Get 方法的逆操作；</p>
+</li>
+<li>
+<p>方法 GetAll 可以获取某个接口中的所有属性的值，它的输入参数只有一个，interface_name，表示接口名称，因为并不知道会有多少个属性返回，所以输出参数 props 是一个数组，数组中是 <code>DICT_ENTRY</code>，其中的键值对表示属性名称和属性值；</p>
+</li>
+<li>
+<p>这个接口下还有一个信号：<code>PropertiesChanged</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">org.freedesktop.DBus.Properties.PropertiesChanged(STRING interface_name,
+</span></span><span class="line"><span class="cl">                                                  ARRAY of DICT_ENTRY&lt;STRING, VARIANT&gt; changed_properties,
+</span></span><span class="line"><span class="cl">                                                  ARRAY&lt;STRING&gt; invalidated_properties);
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>当一个或者多个属性发生变化时，可以发出这个信号通知连接的客户端；</p>
+</li>
+<li>
+<p><code>interface_name</code> 为接口名称，changed_properties 为一个 <code>Key-Value</code> 对的数组，每一组 <code>Key-Value</code> 记录着一个变化的属性名称和新的属性值，<code>invalidated_properties</code> 是一个字符串数组，记录已经无效的属性名称；</p>
+</li>
+<li>
+<p>本文的实例中将实现 Get 和 GetAll 两个方法</p>
+</li>
+</ul>
+</li>
+<li>
+<p><font size=5>接口：<code>org.freedesktop.DBus.ObjectManager</code></font></p>
+<ul>
+<li>这个接口下有一个方法：<code>GetManagedObjects</code>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">org.freedesktop.DBus.ObjectManager.GetManagedObjects(out ARRAY of DICT_ENTRY&lt;OBJPATH, ARRAY 
+</span></span><span class="line"><span class="cl">                                                               of DICT_ENTRY&lt;STRING, ARRAY 
+</span></span><span class="line"><span class="cl">                                                               of DICT_ENTRY&lt;STRING, VARIANT&gt;&gt;&gt; objpath_interfaces_and_properties);        
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>这个方法没有输入参数，输出参数是整个 Objects 树；</li>
+<li>本文实例中并没有实现这个方法；</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="3-d-bus-注册服务的基本方法">3 D-Bus 注册服务的基本方法</h2>
+<ul>
+<li>
+<p>在文章 <a href="https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中的实例，已经可以在 D-Bus 上为客户端提供方法调用的服务，大致的流程如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="n">dbus_connection_read_write_dispatch</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DBusMessage</span> <span class="o">*</span><span class="n">message</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">message</span> <span class="o">=</span> <span class="n">dbus_connection_pop_message</span><span class="p">(</span><span class="n">conn</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">message</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">ret</span> <span class="o">=</span> <span class="n">dbus_message_get_type</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">!=</span> <span class="n">DBUS_MESSAGE_TYPE_METHOD_CALL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">dbus_message_unref</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">dbus_message_is_method_call</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">INTERFACE_NAME</span><span class="p">,</span> <span class="n">METHOD_NAME</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">print_dbus_error</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dbus_error</span><span class="p">,</span> <span class="s">&#34;Server: dbus_message_is_method_call&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">dbus_message_unref</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// codes for providing the service
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>作为简单的范例，提供一种客户端调用服务端方法的服务当然是可以的，但是在 D-Bus 的编程规范中，发布一个服务应该向 D-Bus 注册一个对象路径(Object Path)的处理程序，其具体步骤如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">DBusHandlerResult</span> <span class="nf">server_message_handler</span><span class="p">(</span><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">conn</span><span class="p">,</span> <span class="n">DBusMessage</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">DBusObjectPathVTable</span> <span class="n">server_vtable</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">message_function</span> <span class="o">=</span> <span class="n">server_message_handler</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DBusConnection</span> <span class="o">*</span><span class="n">conn</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DBusError</span> <span class="n">err</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">dbus_error_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">err</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">conn</span> <span class="o">=</span> <span class="n">dbus_bus_get</span><span class="p">(</span><span class="n">DBUS_BUS_SESSION</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">err</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dbus_bus_request_name</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">SERVER_BUS_NAME</span><span class="p">,</span> <span class="n">DBUS_NAME_FLAG_REPLACE_EXISTING</span> <span class="p">,</span> <span class="o">&amp;</span><span class="n">err</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// registers the object
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">dbus_connection_register_object_path</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">OBJECT_PATH_NAME</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">server_vtable</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Failed to register an object pth.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>重点是 <code>dbus_connection_register_object_path()</code>，在以前的文章中没有介绍过，其定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">dbus_bool_t</span> <span class="nf">dbus_connection_register_object_path</span><span class="p">(</span><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">connection</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                                 <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                                 <span class="k">const</span> <span class="n">DBusObjectPathVTable</span> <span class="o">*</span><span class="n">vtable</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                                 <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>connection</code> 是 <code>dbus_bus_get()</code> 获得的连接；</li>
+<li><code>path</code> 是要在 D-Bus 上注册的对象路径(Object Path)，连接(connection)和对象路径(object path)的概念在以前的文章里都有过介绍；</li>
+<li>参数 <code>vtable</code> 是这个函数的重点，这个参数的数据类型是 <code>DBusObjectPathVTable</code>，这是一个结构，其定义如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">DBusObjectPathVTable</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DBusObjectPathUnregisterFunction</span>   <span class="n">unregister_function</span><span class="p">;</span> <span class="cm">/**&lt; Function to unregister this handler */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DBusObjectPathMessageFunction</span>      <span class="n">message_function</span><span class="p">;</span> <span class="cm">/**&lt; Function to handle messages */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span> <span class="n">dbus_internal_pad1</span><span class="p">)</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">);</span> <span class="cm">/**&lt; Reserved for future expansion */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span> <span class="n">dbus_internal_pad2</span><span class="p">)</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">);</span> <span class="cm">/**&lt; Reserved for future expansion */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span> <span class="n">dbus_internal_pad3</span><span class="p">)</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">);</span> <span class="cm">/**&lt; Reserved for future expansion */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span> <span class="n">dbus_internal_pad4</span><span class="p">)</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">);</span> <span class="cm">/**&lt; Reserved for future expansion */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>可以看到这个结构中有用的只有两个字段，<code>message_function</code> 和 <code>unregister_function</code>；</li>
+<li><code>message_function</code> 是一个消息处理函数，准备注册的对象下的消息将全部由这个函数处理，<code>unregister_function</code> 用于在取消注册时需要执行的函数，通常用于释放 <code>message_function</code> 可能占用的资源；</li>
+<li>在本文的实例中，我们并没有用到 <code>unregister_function</code> 这个字段，因为取消注册时，我们并不需要释放资源；</li>
+<li><code>user_data</code> 是在调用 <code>message_function</code> 时传递给这个函数的用户数据，可以是结构、数组或者字符串等任意数据；</li>
+<li>再看看 <code>message_function</code> 是如何定义的，<code>message_function</code> 的类型为 <code>DBusObjectPathMessageFunction</code>，其定义如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="nf">DBusHandlerResult</span><span class="p">(</span><span class="o">*</span> <span class="n">DBusObjectPathMessageFunction</span><span class="p">)</span> <span class="p">(</span><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">connection</span><span class="p">,</span> <span class="n">DBusMessage</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>所以，这个函数要写成下面的样子：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">DBusHandlerResult</span> <span class="nf">server_message_handler</span><span class="p">(</span><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">connection</span><span class="p">,</span> <span class="n">DBusMessage</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">user_data</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Codes for processing messages
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>这里面的 <code>user_data</code> 就是在注册对象路径时定义的 <code>user_data</code>，D-Bus 在调用这个函数时会把 <code>connection</code>、收到的消息 <code>message</code> 以及 <code>user_data </code>传递给函数；</li>
+</ul>
+</li>
+<li>
+<p>注册好对象路径的消息处理函数后，还需要在主程序中建立一个主循环才可以让这个处理函数发挥作用：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="n">dbus_connection_read_write_dispatch</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// main loop
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>只有运行这个主循环，D-Bus 才会去分发消息，前面注册的消息处理程序才会被调用；</p>
+</li>
+<li>
+<p>以前文章实例中在调用 <code>dbus_connection_read_write_dispatch()</code>，都是以阻塞方式，即把超时时间设为 -1，上面的代码片段将超时设置为 100 ms，这是通常的做法，因为通常情况下，程序除了处理消息外还需要处理别的事务，在主循环里可以处理其它事务，而在 <code>message_function</code> 中处理消息；</p>
+</li>
+</ul>
+<hr>
+<h2 id="4-实例">4 实例</h2>
+<ul>
+<li>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/100026/dbus-service.c">dbus-service.c</a> (<strong>点击文件名下载源程序，建议使用UTF-8字符集</strong>)演示了 D-Bus 标准接口和服务接口的实现方法；</p>
+</li>
+<li>
+<p>该程序实现了两个标准接口中的三个方法，加上 D-Bus 自动实现的两个方法，一共实现了三个标准接口下的五个方法，分别是：</p>
+<ol>
+<li>标准接口 <code>org.freedesktop.DBus.Introspectable</code> 下的 <code>Introspect</code> 方法(D-bus 内省机制)；</li>
+<li>标准接口 <code>org.freedesktop.DBus.Properties</code> 下的 <code>Get</code> 方法；</li>
+<li>标准接口 <code>org.freedesktop.DBus.Properties</code> 下的 <code>GetAll</code> 方法；</li>
+<li>标准接口 <code>org.freedesktop.DBus.Peer</code> 下的 <code>Ping</code> 方法；</li>
+<li>标准接口 <code>org.freedesktop.DBus.Peer</code> 下的 <code>GetMachineId</code> 方法；</li>
+</ol>
+</li>
+<li>
+<p>该程序在自定义的接口(<code>cn.whowin.TestInterface</code>)上实现了三个方法：</p>
+<ol>
+<li><code>Hello</code> 方法：请求参数为一个字符串，该方法在请求参数前面加上 &ldquo;Hello &ldquo;，并作为参数回复给客户端；</li>
+<li><code>EmitSignal</code> 方法：收到请求后，该方法将广播一个 &ldquo;OnEmitSignal&rdquo; 信号给订阅该信号的客户端；</li>
+<li><code>quit</code> 方法：收到该请求后，服务程序回复给客户端一个空消息(没有参数)，并主动退出程序；</li>
+</ol>
+</li>
+<li>
+<p>该程序在自定义的接口(<code>cn.whowin.TestInterface</code>)上实现了两个只读属性：<code>Version</code> 和 <code>Author</code>，可以使用标准接口的 <code>Get</code> 或 <code>GetAll</code> 获取属性值；</p>
+</li>
+<li>
+<p>该程序在自定义的接口(<code>cn.whowin.TestInterface</code>)上实现了一个信号：<code>OnEmitSignal</code>，在收到 <code>EmitSignal</code> 请求后将发送该信号；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall -g dbus-service.c -o dbus-service `pkg-config --libs --cflags dbus-1` </code></p>
+</li>
+<li>
+<p>有关 <code>pkg-config --libs --cflags dbus-1</code> 可以参阅文章 <a href="https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中的简要说明；</p>
+</li>
+<li>
+<p>运行：<code>./dbus-service</code></p>
+</li>
+<li>
+<p>测试方法如下，启动两个终端，一个终端上运行 <code>dbus-service</code> 程序，在另一个终端上输入如下命令可以测试本程序的各个方法和属性：</p>
+<ul>
+<li>标准接口测试：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ dbus-send --print-reply --session --dest<span class="o">=</span>cn.whowin.TestDbus /cn/whowin/TestObject org.freedesktop.DBus.Introspectable.Introspect
+</span></span><span class="line"><span class="cl">$ dbus-send --print-reply --session --dest<span class="o">=</span>cn.whowin.TestDbus /cn/whowin/TestObject org.freedesktop.DBus.Properties.Get string:<span class="s2">&#34;cn.whowin.TestInterface&#34;</span> string:<span class="s2">&#34;Version&#34;</span>
+</span></span><span class="line"><span class="cl">$ dbus-send --print-reply --session --dest<span class="o">=</span>cn.whowin.TestDbus /cn/whowin/TestObject org.freedesktop.DBus.Properties.Get string:<span class="s2">&#34;cn.whowin.TestInterface&#34;</span> string:<span class="s2">&#34;Author&#34;</span>
+</span></span><span class="line"><span class="cl">$ dbus-send --print-reply --session --dest<span class="o">=</span>cn.whowin.TestDbus /cn/whowin/TestObject org.freedesktop.DBus.Properties.GetAll
+</span></span><span class="line"><span class="cl">$ dbus-send --print-reply --session --dest<span class="o">=</span>cn.whowin.TestDbus /cn/whowin/TestObject org.freedesktop.DBus.Peer.Ping
+</span></span><span class="line"><span class="cl">$ dbus-send --print-reply --session --dest<span class="o">=</span>cn.whowin.TestDbus /cn/whowin/TestObject org.freedesktop.DBus.Peer.GetMachineId
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>自定义接口测试：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ dbus-send --print-reply --session --dest<span class="o">=</span>cn.whowin.TestDbus /cn/whowin/TestObject cn.whowin.TestInterface.Hello string:<span class="s2">&#34;whowin&#34;</span>
+</span></span><span class="line"><span class="cl">$ dbus-send --print-reply --session --dest<span class="o">=</span>cn.whowin.TestDbus /cn/whowin/TestObject cn.whowin.TestInterface.EmitSignal
+</span></span><span class="line"><span class="cl">$ dbus-send --print-reply --session --dest<span class="o">=</span>cn.whowin.TestDbus /cn/whowin/TestObject cn.whowin.TestInterface.Quit
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>在自定义接口中，有一个 <code>EmitSignal</code> 方法，服务端收到该方法的请求时，会广播出一个 <code>OnEmitSignal</code> 信号，测试方法如下：</p>
+<ul>
+<li>在 1 号终端上运行服务端程序：<code>$ ./dbus-service</code></li>
+<li>在 2 号终端上订阅自定义接口上的信号：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ dbus-monitor <span class="s2">&#34;type=&#39;signal&#39;,sender=&#39;cn.whowin.TestDbus&#39;,interface=&#39;cn.whowin.TestInterface&#39;&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>在 3 号终端上请求服务端的 <code>EmitSignal</code> 方法：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ dbus-send --print-reply --session --dest<span class="o">=</span>cn.whowin.TestDbus /cn/whowin/TestObject cn.whowin.TestInterface.EmitSignal
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>在 2 号终端上可以看到收到了 <code>OnEmitSignal</code> 信号；</li>
+</ul>
+</li>
+<li>
+<p>使用 <code>gdbus</code> 命令测试内省(Introspection)机制</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">$ gdbus introspect --session --dest cn.whowin.TestDbus --object-path /cn/whowin/TestObject
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>标准接口测试运行动图：</p>
+<p><img src="/images/100026/dbus-service.gif" alt="GIF of testing for gbus-service"></p>
+</li>
+</ul>
+<h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2024-01-08
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">进程间通信</a>
+          <a href="/tags/d-bus/">D-Bus</a>
+          <a href="/tags/libdbus/">libdbus</a>
+          <a href="/tags/ipc/">IPC</a>
+          <a href="/tags/introspection/">introspection</a>
+          <a href="/tags/%E5%86%85%E7%9C%81%E6%9C%BA%E5%88%B6/">内省机制</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/linux/0025-resolve-arbitrary-dns-record/">
+            <span class="next-text nav-default">IPC之十五：使用libdbus通过D-Bus请求系统调用实现任意DNS记录解析的实例</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/linux/0026-standard-and-service-interfaces/" class="leancloud_visitors" data-flag-title="IPC之十六：D-Bus的标准接口和服务接口的具体实现">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

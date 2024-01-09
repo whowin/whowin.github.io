@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Get ipv6 address using netlink under linux
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ ./get-ipv6-netlink
  * 
  * Example source code for article 《C语言如何获取ipv6地址》
- * https://whowin.gitee.io/post/blog/network/0001-how-to-get-ipv6-in-c/
  *
  */
 #include <asm/types.h>

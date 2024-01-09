@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Opens up two pipes using popen().
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ ./pipe-popen2
  *
  * Example source code for article 《IPC之一：使用无名管道进行父子进程间通信的例子》
- * https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/
  * 
  */
 #include <stdio.h>

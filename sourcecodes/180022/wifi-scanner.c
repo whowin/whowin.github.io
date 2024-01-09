@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * A program that uses ioctl to scan wifi signals
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ sudo ./wifi-scanner
  * 
  * Example source code for article 《使用ioctl扫描wifi信号获取AP的essid、mac地址等属性》
- * https://whowin.gitee.io/post/blog/network/0022-how-to-scan-wifi-signal/
  *
  */
 #include <stdio.h>

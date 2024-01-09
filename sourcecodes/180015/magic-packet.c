@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Send magic packet using raw socket under Linux
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ sudo ./magic-packet
  * 
  * Example source code for article 《使用raw socket发送magic packet》
- * https://whowin.gitee.io/post/blog/network/0015-send-magic-packet-via-raw-socket/
  *
  */
 #include <stdio.h>

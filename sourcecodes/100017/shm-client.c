@@ -4,7 +4,7 @@
  * email: hengch@163.com
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Demonstrate multiple client communcating with single server using System V shared memory segment.
  * This is the client part of the demonstration program.
@@ -15,7 +15,6 @@
  * Usage: $ ./shm-client
  *
  * Example source code for article 《IPC之七：使用 System V 共享内存段进行进程间通信的实例》
- * https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
  * 
  */
 #include "shm-public.h"

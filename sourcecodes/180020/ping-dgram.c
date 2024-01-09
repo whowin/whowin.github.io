@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * A simple ping program using SOCK_DGRAM under linux
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ ./ping-dgram baidu.com
  * 
  * Example source code for article 《使用SOCK_DGRAM类型的socket实现的ping程序》
- * https://whowin.gitee.io/post/blog/network/0020-implement-ping-program-with-sock-dgram/
  *
  */
 #include <stdio.h>

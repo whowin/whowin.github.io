@@ -4,7 +4,7 @@
  * email: hengch@163.com
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Solution for the dinning philosopers problem with system V semaphore set.
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -14,7 +14,6 @@
  * Usage: $ ./sem-philo
  *
  * Example source code for article 《IPC之五：使用 System V 信号量集解决经典的'哲学家就餐问题'》
- * https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
  * 
  */
 #include <stdio.h>

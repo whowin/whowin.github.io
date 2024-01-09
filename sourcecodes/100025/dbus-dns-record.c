@@ -4,7 +4,7 @@
  * email: hengch@163.com
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Example of using libdbus to realize the DNS client via calling system service
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -14,7 +14,6 @@
  * Usage: $ ./dbus-dns-record
  *
  * Example source code for article 《IPC之十五：使用libdbus通过D-Bus请求系统调用实现任意DNS记录解析的实例》
- * https://whowin.gitee.io/post/blog/linux/0025-resolve-arbitrary-dns-record/
  * 
  */
 #include <stdio.h>

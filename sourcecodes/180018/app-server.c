@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  * 
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Set up tun device and wait for connecting by client to set up an IP tunnel under Linux
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ sudo ./app-server
  *
  * Example source code for article 《使用tun虚拟网络接口建立IP隧道的实例》
- * https://whowin.gitee.io/post/blog/network/0018-tun-example-for-setting-up-ip-tunnel/
  * 
  */
 #include <stdio.h>

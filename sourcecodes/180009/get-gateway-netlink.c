@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Get gateway IP address using netlink under linux
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ sudo ./get-gateway-netlink
  * 
  * Example source code for article 《linux下使用netlink获取gateway的IP地址》
- * https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/
  *
  */
 #include <stdio.h>

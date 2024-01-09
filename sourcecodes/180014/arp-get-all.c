@@ -3,7 +3,7 @@
  * Author: Songqing Hua
  *
  * (C) 2023 Songqing Hua.
- * http://whowin.cn/
+ * https://blog.csdn.net/whowin/
  *
  * Get all ARP entries from proc file system under Linux
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
@@ -13,7 +13,6 @@
  * Usage: $ sudo ./arp-get-all
  * 
  * Example source code for article 《如何用C语言操作arp cache》
- * https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/
  *
  */
 #include <stdio.h>
