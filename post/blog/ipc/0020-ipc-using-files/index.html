@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>IPC之十：使用共享文件进行进程间通信的实例 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 IPC 方式有管道、消息队列、共享内存等，但其实使用广大程序员都熟悉的文件也是可以完成 IPC 的，本文介绍如何使用共享文件实现进程间通信，本文给出了具体的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程、文件锁等概念，所以对 Linux 编程的初学者有一些难度，但对于了解 Linux 下共享文件，特别是文件锁的应用，将是非常难得的。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/ipc/0020-ipc-using-files/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="IPC之十：使用共享文件进行进程间通信的实例" />
+<meta property="og:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 IPC 方式有管道、消息队列、共享内存等，但其实使用广大程序员都熟悉的文件也是可以完成 IPC 的，本文介绍如何使用共享文件实现进程间通信，本文给出了具体的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程、文件锁等概念，所以对 Linux 编程的初学者有一些难度，但对于了解 Linux 下共享文件，特别是文件锁的应用，将是非常难得的。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/ipc/0020-ipc-using-files/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-11-06T16:43:29+08:00" />
+<meta property="article:modified_time" content="2023-11-06T16:43:29+08:00" />
+
+<meta itemprop="name" content="IPC之十：使用共享文件进行进程间通信的实例">
+<meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 IPC 方式有管道、消息队列、共享内存等，但其实使用广大程序员都熟悉的文件也是可以完成 IPC 的，本文介绍如何使用共享文件实现进程间通信，本文给出了具体的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程、文件锁等概念，所以对 Linux 编程的初学者有一些难度，但对于了解 Linux 下共享文件，特别是文件锁的应用，将是非常难得的。"><meta itemprop="datePublished" content="2023-11-06T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2023-11-06T16:43:29+08:00" />
+<meta itemprop="wordCount" content="4046">
+<meta itemprop="keywords" content="Linux,进程间通信,IPC,files,IPC," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="IPC之十：使用共享文件进行进程间通信的实例"/>
+<meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 IPC 方式有管道、消息队列、共享内存等，但其实使用广大程序员都熟悉的文件也是可以完成 IPC 的，本文介绍如何使用共享文件实现进程间通信，本文给出了具体的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程、文件锁等概念，所以对 Linux 编程的初学者有一些难度，但对于了解 Linux 下共享文件，特别是文件锁的应用，将是非常难得的。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">IPC之十：使用共享文件进行进程间通信的实例</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-11-06 </span>
+        <div class="post-category">
+            <a href="/categories/ipc/"> IPC </a>
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-使用共享文件实现ipc的基本概念">1 使用共享文件实现IPC的基本概念</a></li>
+        <li><a href="#2-文件锁及其操作">2 文件锁及其操作</a></li>
+        <li><a href="#3-实例">3 实例</a></li>
+        <li><a href="#欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 IPC 方式有管道、消息队列、共享内存等，但其实使用广大程序员都熟悉的文件也是可以完成 IPC 的，本文介绍如何使用共享文件实现进程间通信，本文给出了具体的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程、文件锁等概念，所以对 Linux 编程的初学者有一些难度，但对于了解 Linux 下共享文件，特别是文件锁的应用，将是非常难得的。</p>
+<h2 id="1-使用共享文件实现ipc的基本概念">1 使用共享文件实现IPC的基本概念</h2>
+<ul>
+<li>
+<p>文件操作是一个程序员的必备技能，相比较 IPC 的各种方法(比如：管道、消息队列、共享内存等)，程序员显然更熟悉文件的操作；</p>
+</li>
+<li>
+<p>那么，能不能使用文件实现进程间通信呢？答案时肯定的，多个进程共享一个文件同样可以完成进程间通信；</p>
+</li>
+<li>
+<p>首先描述一个场景：</p>
+<ul>
+<li><code>Server/Client</code> 模式，一个服务端进程，三个客户端进程；</li>
+<li>进程间通信时，以每个进程的 PID 作为通信地址的唯一标识</li>
+<li>客户端只与服务端进程进行通信，客户端进程之间不进行通信；</li>
+</ul>
+</li>
+<li>
+<p>使用共享文件实现 IPC，其实就是发送方将消息写入文件，接收方再从相同的文件中读出，看起来十分简单，但在多进程环境中，并不像看起来的那么简单；</p>
+</li>
+<li>
+<p>使用共享文件进行 IPC 时，有两个比较麻烦的地方，一个是文件指针，另一个是文件锁机制；</p>
+</li>
+<li>
+<p>先说文件指针问题：</p>
+<ul>
+<li>当一个文件被打开时，其文件指针的偏移为 0，当读出 10 个字节时，其文件指针偏移将增加 10；</li>
+<li>写入文件时，会从当前文件指针处写入文件，当写入 10 个字节后，其文件指针偏移将增加 10；</li>
+<li>一般读出需要从文件头顺序读取，但是写入需要向文件的尾部写入，所以如果一个进程中对同一个共享文件既有读操作又有写操作时，文件指针将比较混乱；</li>
+<li>这种混乱还表现在可能还有其它进程对共享文件进行写操作，导致你期望的文件指针与实际有所不同；</li>
+<li>为了避免这种文件指针的混乱，通常在一个进程中对同一个共享文件仅做读操作或者仅做写操作；</li>
+<li>对于我们上面描述的 IPC 场景，服务端需要接收客户端的消息并做出回应，通常我们要使用两个共享文件，一个文件服务端仅做读操作，客户端仅做写操作，用于客户端向服务端传递消息，另一个文件服务端仅做写操作，客户端仅做读操作，用于服务端向客户端传递消息；</li>
+</ul>
+</li>
+<li>
+<p>再说文件锁机制：</p>
+<ul>
+<li>当多个进程同时对一个文件进行写操作时，很明显是会有冲突的，假定进程 1 要写入 100 个字节，进程 2 要写入 50 个字节，可能进程 1 写入完 30 个字节时，产生了进程调度，使进程 2 开始向文件写入数据，从而导致写入数据的混乱；</li>
+<li>当一个进程对文件进行写入操作时，如果有另一个进程正在读数据，也是有冲突的，假定写进程要写入 100 个字节，写入 30 个字节时，产生进程调度，读进程开始读文件，读出了刚刚写入的 30 个字节，而这 30 个字节是要写入的 100 个字节中的一部分，是不完整的数据；</li>
+<li>所以，当一个进程对一个共享文件进行写操作时，需要独占该文件，也就是同时不能有其它进程对该文件进行读写操作；</li>
+<li>当一个进程对一个文件进行读操作时，当然不能允许有其它进程进行写操作，但可以允许其它进程进行读操作；</li>
+<li>这种对文件的占有机制又叫做文件锁机制，我们在下一节会做专门的介绍；</li>
+</ul>
+</li>
+<li>
+<p>使用共享文件进行 IPC 并不是一种常用的方式，在编程实践中很少这样去做，其实际运行时是有真实的文件 I/O 发生的，也就是其通信过程会真实的写入到文件系统中，如果通信频繁、信息量大且持续时间长，有可能在磁盘上产生一个很大的物理文件；</p>
+</li>
+<li>
+<p>很显然，使用共享文件进行 IPC 的运行效率也是不高的，但仍然不失为一种 IPC 方法，而且相关的编程实践对理解 Linux 的共享文件及文件锁机制将会非常有帮助。</p>
+</li>
+</ul>
+<h2 id="2-文件锁及其操作">2 文件锁及其操作</h2>
+<ul>
+<li>
+<p><code>fcntl()</code> 函数可以对文件进行加锁操作；</p>
+</li>
+<li>
+<p><code>fcntl()</code> 可以对一个文件描述符做很多操作，在此，我们仅介绍其符合 POSIX 标准部分，与文件“锁”相关的调用方法；</p>
+</li>
+<li>
+<p>下面是 <code>fcntl()</code> 的调用方法：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;fcntl.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">fcntl</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">cmd</span><span class="p">,</span> <span class="p">...</span> <span class="cm">/* arg */</span> <span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>fcntl()</code> 是一个不定参数的调用函数，但对于 POSIX 的文件锁而言，它只有三个参数：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">fcntl</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">cmd</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">flock</span> <span class="o">*</span><span class="p">)</span><span class="n">lock</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在这个调用中，<strong>fd</strong> 是一个已经打开的文件描述符，<strong>cmd</strong> 是要执行的命令；</p>
+</li>
+<li>
+<p>POSIX 与文件锁相关的命令有三个：</p>
+<ul>
+<li><strong>F_SETLK</strong>：获取文件锁或者释放文件锁，如果文件锁已被其它进程占有会立即返回错误；</li>
+<li><strong>F_SETLKW</strong>：执行与 <code>F_SETLK</code> 相同的指令，但当文件锁被其它进程占有时，会产生阻塞，直到获得该文件锁；</li>
+<li><strong>F_GETLK</strong>：获取当前文件锁状态；</li>
+</ul>
+</li>
+<li>
+<p>其中，<code>struct flock</code> 的定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">flock</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">short</span> <span class="n">l_type</span><span class="p">;</span>   <span class="cm">/* Type of lock: F_RDLCK, F_WRLCK, F_UNLCK */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">short</span> <span class="n">l_whence</span><span class="p">;</span> <span class="cm">/* How to interpret l_start: SEEK_SET, SEEK_CUR, SEEK_END */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">off_t</span> <span class="n">l_start</span><span class="p">;</span>  <span class="cm">/* Starting offset for lock */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">off_t</span> <span class="n">l_len</span><span class="p">;</span>    <span class="cm">/* Number of bytes to lock */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pid_t</span> <span class="n">l_pid</span><span class="p">;</span>    <span class="cm">/* Process holding the lock. */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>POSIX 文件锁可以分为读文件锁和写文件锁两种；</li>
+<li>POSIX 规定文件锁可以仅锁定文件中的一部分，而不是锁定整个文件，<code>struct flock</code> 结构不仅定义了锁的类型，同时，<code>l_start</code> 和 <code>l_len</code> 两个字段还定义了文件中那一部分被这个文件锁锁定；</li>
+<li><strong>l_type</strong>：锁类型，F_RDLCK - 读文件锁，F_WRLCK - 写文件锁，F_UNLCK - 释放文件锁；</li>
+<li><strong>l_start</strong>、<strong>l_len</strong>：该文件锁仅锁定从偏移量 <code>l_start</code> 开始，长度为 <code>l_len</code> 字节的区域，<code>l_len</code> 为 0 表示从 <code>l_start</code> 开始到文件结束；</li>
+<li><strong>l_whence</strong>：<code>l_start</code> 偏移量计算的起始位置，可以有三个选项：
+<ul>
+<li><strong>SEEK_SET</strong>：从文件的开始计算 <code>l_start</code> 的偏移量，此时 <code>l_start</code> 必须是一个正整数；</li>
+<li><strong>SEEK_CUR</strong>：从当前文件指针处计算 <code>l_start</code> 的偏移量，此时，<code>l_start</code> 可以为负整数，但不能跑到文件起始位置之前；</li>
+<li><strong>SEEK_END</strong>：从文件尾部计算 <code>l_start</code> 的偏移量，此时，<code>l_start</code> 为负整数或者 0；</li>
+</ul>
+</li>
+<li><strong>l_pid</strong>：在调用 F_GETLK 获取当前文件锁状态时，如果文件锁被其它进程占用，该字段将返回占用文件锁的进程号；</li>
+</ul>
+</li>
+<li>
+<p>在大多数的应用中，无需仅锁定文件的一部分，锁定整个文件即可，也就是 <code>l_wence=SEEK_SET; l_start=0; l_len=0</code>；</p>
+</li>
+<li>
+<p>下面代码片段在文件 fd 上获取写文件锁：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">flock</span> <span class="n">lock</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">lock</span><span class="p">.</span><span class="n">l_tyepe</span> <span class="o">=</span> <span class="n">F_WRLCK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">lock</span><span class="p">.</span><span class="n">l_wence</span> <span class="o">=</span> <span class="n">SEEK_SET</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">lock</span><span class="p">.</span><span class="n">l_start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">lock</span><span class="p">.</span><span class="n">l_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">fcntl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">F_SETLKW</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">lock</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>下面代码片段释放了一个文件锁：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">flock</span> <span class="n">lock</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">lock</span><span class="p">.</span><span class="n">l_tyepe</span> <span class="o">=</span> <span class="n">F_UNLCK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">lock</span><span class="p">.</span><span class="n">l_wence</span> <span class="o">=</span> <span class="n">SEEK_SET</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">lock</span><span class="p">.</span><span class="n">l_start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">lock</span><span class="p">.</span><span class="n">l_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">fcntl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">F_SETLKW</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">lock</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>命令 <code>F_SETLK</code> 和 <code>F_SETLKW</code> 的唯一区别是一个不阻塞直接返回，另一个阻塞直到获得所请求的文件锁；</p>
+</li>
+<li>
+<p><code>man fcntl</code> 可以查看该函数的在线手册；</p>
+</li>
+</ul>
+<h2 id="3-实例">3 实例</h2>
+<ul>
+<li>
+<p>正如第 1 节中描述的场景一样，该实例建立一个服务端进程，三个客户端进程，模拟一个 <code>client/server</code> 架构的服务过程；</p>
+</li>
+<li>
+<p>正如第 1 节介绍的一样，需要使用两个共享文件实现客户端进程与服务端进程之间的通信，从服务端进程看，一个文件用于服务端读取客户端的消息，另一个文件用于服务端向客户端发送消息；</p>
+</li>
+<li>
+<p>两个共享文件由服务端进程建立，服务端进程要最先开始运行，否则客户端进程无法打开共享文件；</p>
+</li>
+<li>
+<p>整个通信过程以每个进程的进程号作为唯一地址标识，当目的进程号为 0 时表示是一条广播消息，所有进程都要接收并处理；</p>
+</li>
+<li>
+<p>客户端进程启动时，需要知道服务端进程的 PID 才可以与服务端进行通信，此时要发出一条广播消息，服务端进程收到后回应一条消息从而建立通信通道；</p>
+</li>
+<li>
+<p>客户端在空闲时循环向服务端发送一个字符串，服务端在收到后回应一个确认消息，模拟一个服务端为客户端提供服务的过程；</p>
+</li>
+<li>
+<p>服务端向多个客户端进程发送消息时使用同一个共享文件，所以每个客户端进程要具备过滤地址的功能，即：只保留发给自己的消息，丢弃发给其它客户端进程的消息；</p>
+</li>
+<li>
+<p>因为多个客户端进程都要向同一个共享文件中写入数据(即向服务端发送消息)，每次写入时应该写在文件的尾部，但对每个进程而言，当前的文件指针不一定是在文件的尾部，所以在获取了文件写入锁以后，需要将文件指针移动的文件的尾部才能写入数据；</p>
+</li>
+<li>
+<p>为了通信方便，在传送信息时，所有进程使用下面的统一结构：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ipc_msg</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">len</span><span class="p">;</span>            <span class="c1">// total length including itself
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">src_pid</span><span class="p">;</span>        <span class="c1">// source PID
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">dest_pid</span><span class="p">;</span>       <span class="c1">// destination PID
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">uint</span> <span class="n">seq_num</span><span class="p">;</span>       <span class="c1">// sequence number of the current message
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">ushort</span> <span class="n">cmd</span><span class="p">;</span>         <span class="c1">// command code
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">char</span> <span class="n">msg</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>        <span class="c1">// the auxiliary information
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>len</strong> 为整个信息的总长度，包括 len 字段自身，接收端首先接收该字段，然后确定该信息后面还需要读取的字节数，再一次性地读取完整个结构；</p>
+</li>
+<li>
+<p><strong>src_pid</strong> 为发送该信息的进程 PID；</p>
+</li>
+<li>
+<p><strong>dest-pid</strong> 为接收该信息的进程 PID，当该字段为 0 时，表示该信息为广播消息，所以，一个进程应该接收该字段为自身 PID 或者该字段为 0 的消息，并丢弃其它消息；</p>
+</li>
+<li>
+<p><strong>cmd</strong> 表示该信息的含义，目前有五个可选值：</p>
+<ol>
+<li>CMD_SERVER_ONLINE - 表示服务端在线，客户端在启动后并不知道服务端进程的 PID，所以应该周期性地广播 CMD_SERVER_STATUS 消息，服务端进程收到该广播消息后，向相应的客户端进程发送 CMD_SERVER_ONLINE 消息，客户端收到该消息便可获知服务端进程的 PID，从而建立通信通道；</li>
+<li>CMD_SERVER_OFFLINE - 表示服务端离线，当服务端准备退出时，广播该信息，客户端在收到该消息时，应主动退出；</li>
+<li>CMD_SERVER_STATUS - 客户端进程启动后广播该信息，服务端进程收到该信息应回复 CMD_SERVER_ONLINE，从而使客户端获得服务端进程的 PID；</li>
+<li>CMD_STRING - 客户端在空闲时定期向服务端进程发送一个字符串，以模拟客户端进程向服务端进程请求服务的过程，发送此消息时，字符串应放在 msg 字段中，所以这个消息的长度是不定长的，在实际的应用中，这个字符串可以是一个 json 数据，可以实现复杂的服务请求；</li>
+<li>CMD_STRING_OK - 服务端在收到客户端进程发送的 CMD_STRING 消息后，回应一个 CMD_STRING_OK 消息，模拟对客户端请求服务的响应；</li>
+</ol>
+</li>
+<li>
+<p>各个进程在向共享文件写入数据时，均要求以 <code>struct ipc_msg</code> 格式写入，分下面几个步骤完成：</p>
+<ol>
+<li>为 <code>struct ipc_msg</code> 分配内存，如果有 <code>ipc_msg.msg</code> 字段，则分配的内存要包含 <code>ipc_msg.msg</code> 字符串的长度；</li>
+<li>计算整个消息的长度，长度应包括 <code>ipc_msg.msg</code> 最后的 <code>\0</code> 字符，将消息长度填写到 <code>ipc_msg.len</code> 字段中；</li>
+<li>将当前进程的 PID 写入到 <code>ipc_msg.src_pid</code> 字段；</li>
+<li>将接收进程的 PID 写入到 <code>ipc_msg.dest_pid</code> 字段，如果是广播消息，该字段填 <code>BROADCAST_PROCESS_ID</code>；</li>
+<li>将消息序列号写入到 <code>ipc_msg.seq_num</code> 字段，</li>
+<li>根据情况填写 <code>ipc_msg.cmd</code> 字段；</li>
+<li>如果有 <code>ipc_msg.msg</code>，将字符串写入 <code>ipc_msg.msg</code> 中；</li>
+<li>将 <code>struct ipc_msg</code> 写入共享文件；</li>
+<li>释放为 <code>struct ipc_msg</code> 分配的内存；</li>
+</ol>
+</li>
+<li>
+<p>各进程在读入数据时，要遵循下面步骤：</p>
+<ol>
+<li>首先读取一个 int，此为 <code>struct ipc_msg</code> 中的 len 字段，然后根据 len 字段的值读取剩余的数据；</li>
+<li>检查 <code>dest_pid</code> 字段是否为自身的 PID 或者 <code>BROADCAST_PROCESS_ID</code>，否则丢弃该消息，转到步骤 1 读取下一个消息；</li>
+<li>根据消息内容做出回应；</li>
+</ol>
+</li>
+<li>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190020/ipc-files.c">ipc-files.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用共享文件实现进程间通信；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall -g ipc-files.c -o ipc-files</code></p>
+</li>
+<li>
+<p>运行：<code>./ipc-files</code></p>
+</li>
+<li>
+<p>运行动图：</p>
+<p><img src="https://whowin.gitee.io/images/190020/ipc-files.gif" alt="screenshot of running ipc-files"></p>
+</li>
+</ul>
+<h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
+[article06]: https://blog.csdn.net/whowin/article/details/134939609
+[article07]: https://blog.csdn.net/whowin/article/details/135015196
+[article08]: https://blog.csdn.net/whowin/article/details/135074991
+[article09]: https://blog.csdn.net/whowin/article/details/135143545
+[article10]: https://blog.csdn.net/whowin/article/details/135212050
+-->
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-11-06
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">进程间通信</a>
+          <a href="/tags/ipc/">IPC</a>
+          <a href="/tags/files/">files</a>
+          <a href="/tags/ipc/">IPC</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/ipc/0021-ipc-using-dbus/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/ipc/0019-ipc-with-unix-domain-socket/">
+            <span class="next-text nav-default">IPC之九：使用UNIX Domain Socket进行进程间通信的实例</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/ipc/0020-ipc-using-files/" class="leancloud_visitors" data-flag-title="IPC之十：使用共享文件进行进程间通信的实例">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

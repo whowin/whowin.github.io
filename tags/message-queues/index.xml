@@ -9,19 +9,19 @@
     <lastBuildDate>Sun, 20 Aug 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/message-queues/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>IPC之四：使用 POSIX 消息队列进行进程间通信的实例</title>
-      <link>https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/</link>
+      <link>https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/</link>
       <pubDate>Sun, 20 Aug 2023 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/</guid>
+      <guid>https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/</guid>
       <description>&lt;p&gt;IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 POSIX 消息队列，POSIX 标准引入了一个简单的基于文件的接口，使应用程序可以轻松地与消息队列进行交互；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>IPC之三：使用 System V 消息队列进行进程间通信的实例</title>
-      <link>https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/</link>
+      <link>https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/</link>
       <pubDate>Sat, 05 Aug 2023 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/</guid>
+      <guid>https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/</guid>
       <description>&lt;p&gt;IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 System V 消息队列，并给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。&lt;/p&gt;</description>
     </item>
     

@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>在ubuntu上检查内存使用情况的九种方法 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="在 Ubuntu 中，可以通过 GUI(图形用户界面)和命令行使用多种方法来监视系统的内存使用情况，监视 Ubuntu 服务器上的内存使用情况并不复杂；了解已使用和可用的内存量对于故障排除和优化服务器性能至关重要，因为内存对系统 I/O 速度至关重要，定期监控内存使用情况有助于诊断潜在的系统问题和优化服务器性能，还可以帮助使用者确定是否需要扩充内存；本文将简要描述在 Ubuntu 上使用命令和工具监视内存使用情况的各种方法。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/linux/0027-how-to-check-ram-usage-in-ubuntu/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="在ubuntu上检查内存使用情况的九种方法" />
+<meta property="og:description" content="在 Ubuntu 中，可以通过 GUI(图形用户界面)和命令行使用多种方法来监视系统的内存使用情况，监视 Ubuntu 服务器上的内存使用情况并不复杂；了解已使用和可用的内存量对于故障排除和优化服务器性能至关重要，因为内存对系统 I/O 速度至关重要，定期监控内存使用情况有助于诊断潜在的系统问题和优化服务器性能，还可以帮助使用者确定是否需要扩充内存；本文将简要描述在 Ubuntu 上使用命令和工具监视内存使用情况的各种方法。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/linux/0027-how-to-check-ram-usage-in-ubuntu/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2024-01-09T16:43:29+08:00" />
+<meta property="article:modified_time" content="2024-01-09T16:43:29+08:00" />
+
+<meta itemprop="name" content="在ubuntu上检查内存使用情况的九种方法">
+<meta itemprop="description" content="在 Ubuntu 中，可以通过 GUI(图形用户界面)和命令行使用多种方法来监视系统的内存使用情况，监视 Ubuntu 服务器上的内存使用情况并不复杂；了解已使用和可用的内存量对于故障排除和优化服务器性能至关重要，因为内存对系统 I/O 速度至关重要，定期监控内存使用情况有助于诊断潜在的系统问题和优化服务器性能，还可以帮助使用者确定是否需要扩充内存；本文将简要描述在 Ubuntu 上使用命令和工具监视内存使用情况的各种方法。"><meta itemprop="datePublished" content="2024-01-09T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2024-01-09T16:43:29+08:00" />
+<meta itemprop="wordCount" content="2173">
+<meta itemprop="keywords" content="Linux,ubuntu," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="在ubuntu上检查内存使用情况的九种方法"/>
+<meta name="twitter:description" content="在 Ubuntu 中，可以通过 GUI(图形用户界面)和命令行使用多种方法来监视系统的内存使用情况，监视 Ubuntu 服务器上的内存使用情况并不复杂；了解已使用和可用的内存量对于故障排除和优化服务器性能至关重要，因为内存对系统 I/O 速度至关重要，定期监控内存使用情况有助于诊断潜在的系统问题和优化服务器性能，还可以帮助使用者确定是否需要扩充内存；本文将简要描述在 Ubuntu 上使用命令和工具监视内存使用情况的各种方法。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">在ubuntu上检查内存使用情况的九种方法</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2024-01-09 </span>
+        <div class="post-category">
+            <a href="/categories/linux/"> Linux </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#方法-1使用-free-命令查看内存">方法 1：使用 <code>free</code> 命令查看内存</a></li>
+        <li><a href="#方法-2使用-top-命令查看内存">方法 2：使用 <code>top</code> 命令查看内存</a></li>
+        <li><a href="#方法-3使用-htop-命令查看内存">方法 3：使用 <code>htop</code> 命令查看内存</a></li>
+        <li><a href="#方法-4-使用-vmstat-命令查看内存">方法 4. 使用 <code>vmstat</code> 命令查看内存</a></li>
+        <li><a href="#方法-5-通过文件-procmeminfo-查看内存">方法 5. 通过文件 <code>/proc/meminfo</code> 查看内存</a></li>
+        <li><a href="#方法-6使用系统监视器查看内存">方法 6：使用系统监视器查看内存</a></li>
+        <li><a href="#方法-7-使用-glances-查看内存">方法 7. 使用 <code>glances</code> 查看内存</a></li>
+        <li><a href="#方法-8-使用-nmon-查看内存">方法 8. 使用 <code>nmon</code> 查看内存</a></li>
+        <li><a href="#方法-9-使用-smem-查看内存">方法 9. 使用 <code>smem</code> 查看内存</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
+        <li><a href="#欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>在 Ubuntu 中，可以通过 GUI(图形用户界面)和命令行使用多种方法来监视系统的内存使用情况，监视 Ubuntu 服务器上的内存使用情况并不复杂；了解已使用和可用的内存量对于故障排除和优化服务器性能至关重要，因为内存对系统 I/O 速度至关重要，定期监控内存使用情况有助于诊断潜在的系统问题和优化服务器性能，还可以帮助使用者确定是否需要扩充内存；本文将简要描述在 Ubuntu 上使用命令和工具监视内存使用情况的各种方法。</p>
+<hr>
+<h2 id="方法-1使用-free-命令查看内存">方法 1：使用 <code>free</code> 命令查看内存</h2>
+<ul>
+<li><code>free</code> 命令显示系统中可用和已使用的内存量，要使用此命令，请打开终端并键入以下命令：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">free
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>输出将显示内存总量、已用内存、可用内存和共享内存，输出还将显示缓冲区和缓存内存；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">whowin@vm448813:~$ free
+</span></span><span class="line"><span class="cl">              total        used        free      shared  buff/cache   available
+</span></span><span class="line"><span class="cl">Mem:         484936      108308       10336         248      366292      366360
+</span></span><span class="line"><span class="cl">Swap:        239696       25588      214108
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<hr>
+<h2 id="方法-2使用-top-命令查看内存">方法 2：使用 <code>top</code> 命令查看内存</h2>
+<ul>
+<li><code>top</code> 命令显示系统进程及其资源使用情况，包括内存使用情况，在终端上键入 <code>top</code> 即可启动该命令；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">top
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>输出将显示系统上运行的进程列表，包括它们的 PID、用户、CPU 使用情况和内存使用情况，内存使用情况(MiB Mem)和交换内存使用情况(MiB Swap)的单位为 MiB 或者 KiB，1 MiB 为 1024<sup>2</sup> bytes，1 KiB 为 1024 bytes；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">top - 23:07:33 up 144 days, 11:01,  1 user,  load average: 0.20, 0.07, 0.01
+</span></span><span class="line"><span class="cl">Tasks:  85 total,   1 running,  84 sleeping,   0 stopped,   0 zombie
+</span></span><span class="line"><span class="cl">%Cpu(s):  4.3 us,  3.7 sy,  0.0 ni, 87.7 id,  0.0 wa,  0.0 hi,  1.7 si,  2.7 st
+</span></span><span class="line"><span class="cl">MiB Mem :    473.6 total,     32.7 free,     92.4 used,    348.5 buff/cache
+</span></span><span class="line"><span class="cl">MiB Swap:    234.1 total,    209.1 free,     25.0 used.    370.6 avail Mem 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+</span></span><span class="line"><span class="cl">     10 root      20   0       0      0      0 I   0.7   0.0 871:36.89 rcu_sched
+</span></span><span class="line"><span class="cl">      1 root      20   0  168804   6408   4172 S   0.3   1.3  27:35.83 systemd
+</span></span><span class="line"><span class="cl">      9 root      20   0       0      0      0 S   0.3   0.0 178:24.79 ksoftirqd/0
+</span></span><span class="line"><span class="cl">  15485 root      20   0    6448    996    780 S   0.3   0.2 242:24.27 qemu-ga
+</span></span><span class="line"><span class="cl">  20887 root      20   0   12184   2264   2092 S   0.3   0.5  32:42.65 sshd
+</span></span><span class="line"><span class="cl">  21836 root      19  -1  195616 114896 114128 S   0.3  23.7 109:38.57 systemd-journal
+</span></span><span class="line"><span class="cl">1877591 root      20   0       0      0      0 I   0.3   0.0   0:21.95 kworker/0:1-events
+</span></span><span class="line"><span class="cl">      2 root      20   0       0      0      0 S   0.0   0.0   0:09.50 kthreadd
+</span></span><span class="line"><span class="cl">      3 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_gp
+</span></span><span class="line"><span class="cl">      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_par_gp
+</span></span><span class="line"><span class="cl">      6 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/0:0H-kblockd
+</span></span><span class="line"><span class="cl">      8 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 mm_percpu_wq
+</span></span><span class="line"><span class="cl">     11 root      rt   0       0      0      0 S   0.0   0.0   1:00.36 migration/0
+</span></span><span class="line"><span class="cl">     12 root     -51   0       0      0      0 S   0.0   0.0   0:00.00 idle_inject/0
+</span></span><span class="line"><span class="cl">     14 root      20   0       0      0      0 S   0.0   0.0   0:00.00 cpuhp/0
+</span></span><span class="line"><span class="cl">     15 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kdevtmpfs
+</span></span><span class="line"><span class="cl">     16 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 netns
+</span></span><span class="line"><span class="cl">     17 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tasks_kthre
+</span></span><span class="line"><span class="cl">     18 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kauditd
+</span></span><span class="line"><span class="cl">     19 root      20   0       0      0      0 S   0.0   0.0   0:37.21 khungtaskd
+</span></span><span class="line"><span class="cl">     20 root      20   0       0      0      0 S   0.0   0.0   0:00.00 oom_reaper
+</span></span><span class="line"><span class="cl">     21 root       0 -20       0      0      0 I   0.0   0.0   0:00.12 writeback
+</span></span><span class="line"><span class="cl">     22 root      20   0       0      0      0 S   0.0   0.0   0:01.04 kcompactd0
+</span></span><span class="line"><span class="cl">     23 root      25   5       0      0      0 S   0.0   0.0   0:00.00 ksmd
+</span></span><span class="line"><span class="cl">     69 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kintegrityd
+</span></span><span class="line"><span class="cl">     70 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kblockd
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<hr>
+<h2 id="方法-3使用-htop-命令查看内存">方法 3：使用 <code>htop</code> 命令查看内存</h2>
+<ul>
+<li>
+<p><code>htop</code> 命令是 <code>top</code> 命令的增强版本，它以更加人性化的方式显示系统进程及其资源使用情况；</p>
+</li>
+<li>
+<p>使用如下命令安装 <code>htop</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install htop
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>安装好后在终端上键入 <code>htop</code> 即可启动；</p>
+</li>
+<li>
+<p>输出将显示系统上运行的进程列表，包括它们的 PID、用户、CPU 使用情况和内存使用情况；</p>
+<p><img src="/images/100027/screenshot-of-htop.png" alt="Screenshot of htop"></p>
+</li>
+</ul>
+<hr>
+<h2 id="方法-4-使用-vmstat-命令查看内存">方法 4. 使用 <code>vmstat</code> 命令查看内存</h2>
+<ul>
+<li><code>vmstat</code> 是一个报告虚拟内存统计信息的工具，它提供有关进程、内存、分页、块 I/O、陷阱和 CPU 活动的信息；</li>
+<li>在终端上键入 <code>vmstat</code> 即可使用；</li>
+<li>查看 &ldquo;swpd&rdquo;(已使用的交换区)和 &ldquo;free&rdquo;(可用内存)列，了解有关内存使用情况的详细信息；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">whowin@vm448813:~$ vmstat
+</span></span><span class="line"><span class="cl">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+</span></span><span class="line"><span class="cl"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+</span></span><span class="line"><span class="cl"> 0  0  25844  18916  69112 302020    0    0     2    14    1    3  0  1 96  0  3
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<hr>
+<h2 id="方法-5-通过文件-procmeminfo-查看内存">方法 5. 通过文件 <code>/proc/meminfo</code> 查看内存</h2>
+<ul>
+<li><code>/proc/meminfo</code> 文件包含有关系统内存使用情况的详细信息，使用下面命令查看其内容：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cat /proc/meminfo
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>该命令显示系统内存的详细分类，包括总内存、可用内存、已用内存和其他与内存相关的统计信息；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">whowin@whowin-ThinkPad-T14s:~$ cat /proc/meminfo
+</span></span><span class="line"><span class="cl">MemTotal:       15090452 kB
+</span></span><span class="line"><span class="cl">MemFree:         7713808 kB
+</span></span><span class="line"><span class="cl">MemAvailable:   11334744 kB
+</span></span><span class="line"><span class="cl">Buffers:          155260 kB
+</span></span><span class="line"><span class="cl">Cached:          3976592 kB
+</span></span><span class="line"><span class="cl">SwapCached:            0 kB
+</span></span><span class="line"><span class="cl">Active:          1509760 kB
+</span></span><span class="line"><span class="cl">Inactive:        5128712 kB
+</span></span><span class="line"><span class="cl">Active(anon):       3864 kB
+</span></span><span class="line"><span class="cl">Inactive(anon):  2842564 kB
+</span></span><span class="line"><span class="cl">Active(file):    1505896 kB
+</span></span><span class="line"><span class="cl">Inactive(file):  2286148 kB
+</span></span><span class="line"><span class="cl">Unevictable:           0 kB
+</span></span><span class="line"><span class="cl">Mlocked:               0 kB
+</span></span><span class="line"><span class="cl">SwapTotal:       2097148 kB
+</span></span><span class="line"><span class="cl">SwapFree:        2097148 kB
+</span></span><span class="line"><span class="cl">Dirty:                16 kB
+</span></span><span class="line"><span class="cl">Writeback:             0 kB
+</span></span><span class="line"><span class="cl">AnonPages:       2506628 kB
+</span></span><span class="line"><span class="cl">Mapped:          1368216 kB
+</span></span><span class="line"><span class="cl">Shmem:            339912 kB
+</span></span><span class="line"><span class="cl">KReclaimable:     163640 kB
+</span></span><span class="line"><span class="cl">Slab:             349152 kB
+</span></span><span class="line"><span class="cl">SReclaimable:     163640 kB
+</span></span><span class="line"><span class="cl">SUnreclaim:       185512 kB
+</span></span><span class="line"><span class="cl">KernelStack:       22048 kB
+</span></span><span class="line"><span class="cl">PageTables:        52072 kB
+</span></span><span class="line"><span class="cl">NFS_Unstable:          0 kB
+</span></span><span class="line"><span class="cl">Bounce:                0 kB
+</span></span><span class="line"><span class="cl">WritebackTmp:          0 kB
+</span></span><span class="line"><span class="cl">CommitLimit:     9642372 kB
+</span></span><span class="line"><span class="cl">Committed_AS:   14348500 kB
+</span></span><span class="line"><span class="cl">VmallocTotal:   34359738367 kB
+</span></span><span class="line"><span class="cl">VmallocUsed:       59772 kB
+</span></span><span class="line"><span class="cl">VmallocChunk:          0 kB
+</span></span><span class="line"><span class="cl">Percpu:            17856 kB
+</span></span><span class="line"><span class="cl">HardwareCorrupted:     0 kB
+</span></span><span class="line"><span class="cl">AnonHugePages:         0 kB
+</span></span><span class="line"><span class="cl">ShmemHugePages:        0 kB
+</span></span><span class="line"><span class="cl">ShmemPmdMapped:        0 kB
+</span></span><span class="line"><span class="cl">FileHugePages:         0 kB
+</span></span><span class="line"><span class="cl">FilePmdMapped:         0 kB
+</span></span><span class="line"><span class="cl">HugePages_Total:       0
+</span></span><span class="line"><span class="cl">HugePages_Free:        0
+</span></span><span class="line"><span class="cl">HugePages_Rsvd:        0
+</span></span><span class="line"><span class="cl">HugePages_Surp:        0
+</span></span><span class="line"><span class="cl">Hugepagesize:       2048 kB
+</span></span><span class="line"><span class="cl">Hugetlb:               0 kB
+</span></span><span class="line"><span class="cl">DirectMap4k:      545488 kB
+</span></span><span class="line"><span class="cl">DirectMap2M:     9693184 kB
+</span></span><span class="line"><span class="cl">DirectMap1G:     5242880 kB
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<hr>
+<h2 id="方法-6使用系统监视器查看内存">方法 6：使用系统监视器查看内存</h2>
+<ul>
+<li>
+<p>系统监视器是一个图形工具，显示系统进程和资源使用情况；</p>
+</li>
+<li>
+<p>在桌面上点击 &ldquo;应用程序&rdquo; 菜单，再单击 &ldquo;工具&rdquo;，然后选择 &ldquo;系统监视器&rdquo;；</p>
+<p><img src="/images/100027/screenshot-of-application-menu.png" alt="Screenshot of application and utilities"></p>
+<p><img src="/images/100027/screenshot-of-system-monitor.png" alt="Screenshot of system monitor"></p>
+</li>
+<li>
+<p>在系统监视器中，点击 &ldquo;资源&rdquo; 选项卡，可以看到内存使用情况和其他资源使用信息；</p>
+<p><img src="/images/100027/screenshot-of-resources.png" alt="screenshot-of-resources"></p>
+</li>
+</ul>
+<hr>
+<h2 id="方法-7-使用-glances-查看内存">方法 7. 使用 <code>glances</code> 查看内存</h2>
+<ul>
+<li>
+<p><code>glances</code> 是一种先进的系统监控工具，可提供各种系统资源(包括内存)的全面信息；</p>
+</li>
+<li>
+<p>用下面命令安装 <code>glances</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install glances
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在终端上键入 <code>glances</code> 即可启动；</p>
+<p><img src="/images/100027/sreenshot-of-glances.png" alt="Screenshot of glances"></p>
+</li>
+</ul>
+<hr>
+<h2 id="方法-8-使用-nmon-查看内存">方法 8. 使用 <code>nmon</code> 查看内存</h2>
+<ul>
+<li>
+<p><code>nmon</code> 是另一个系统监视工具，它提供有关各种系统资源(包括内存)的信息；</p>
+</li>
+<li>
+<p>使用下面命令安装 <code>nmon</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install nmon
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>安装完成后，在终端键入 <code>nmon</code> 即可启动；</p>
+<p><img src="/images/100027/screenshot-of-nmon-1.png" alt="Screenshot of nmon"></p>
+</li>
+<li>
+<p>启动会，按 &ldquo;m&rdquo; 可查看内存使用情况；</p>
+<p><img src="/images/100027/screenshot-of-nmon-2.png" alt="Screenshot of nmon"></p>
+</li>
+</ul>
+<hr>
+<h2 id="方法-9-使用-smem-查看内存">方法 9. 使用 <code>smem</code> 查看内存</h2>
+<ul>
+<li><code>smem</code> 提供内存使用情况报告，它能够更准确地表示应用程序和进程正在使用的物理内存；</li>
+<li>使用下面命令安装 <code>smem</code>：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">sudo apt install smem
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>运行 <code>smem</code>：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-zed" data-lang="zed"><span class="line"><span class="cl"><span class="n">whowin</span><span class="err">@</span><span class="n">whowin</span><span class="o">-</span><span class="n">ThinkPad</span><span class="o">-</span><span class="n">T14s</span><span class="o">:~</span><span class="err">$</span><span class="w"> </span><span class="n">smem</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">PID</span><span class="w"> </span><span class="n">User</span><span class="w">     </span><span class="n">Command</span><span class="w">                         </span><span class="n">Swap</span><span class="w">      </span><span class="n">USS</span><span class="w">      </span><span class="n">PSS</span><span class="w">      </span><span class="n">RSS</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="err">2383</span><span class="w"> </span><span class="n">whowin</span><span class="w">   </span><span class="o">/</span><span class="nn">usr/bin/</span><span class="n">fcitx</span><span class="o">-</span><span class="n">dbus</span><span class="o">-</span><span class="n">watcher</span><span class="w">        </span><span class="err">0</span><span class="w">      </span><span class="err">224</span><span class="w">      </span><span class="err">246</span><span class="w">     </span><span class="err">1412</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="err">2436</span><span class="w"> </span><span class="n">whowin</span><span class="w">   </span><span class="o">/</span><span class="nn">usr/libexec/</span><span class="n">gnome</span><span class="o">-</span><span class="n">session</span><span class="o">-</span><span class="w">        </span><span class="err">0</span><span class="w">      </span><span class="err">480</span><span class="w">      </span><span class="err">528</span><span class="w">     </span><span class="err">5300</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="err">2623</span><span class="w"> </span><span class="n">whowin</span><span class="w">   </span><span class="o">/</span><span class="nn">usr/libexec/</span><span class="n">gsd</span><span class="o">-</span><span class="n">screensave</span><span class="w">        </span><span class="err">0</span><span class="w">      </span><span class="err">728</span><span class="w">      </span><span class="err">789</span><span class="w">     </span><span class="err">6424</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="err">2535</span><span class="w"> </span><span class="n">whowin</span><span class="w">   </span><span class="o">/</span><span class="nn">usr/libexec/</span><span class="n">xdg</span><span class="o">-</span><span class="kd">permission</span><span class="w">        </span><span class="err">0</span><span class="w">      </span><span class="err">744</span><span class="w">      </span><span class="err">801</span><span class="w">     </span><span class="err">6388</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="err">2379</span><span class="w"> </span><span class="n">whowin</span><span class="w">   </span><span class="o">/</span><span class="nn">usr/bin/</span><span class="n">dbus</span><span class="o">-</span><span class="n">daemon</span><span class="w"> </span><span class="o">--</span><span class="n">sysl</span><span class="w">        </span><span class="err">0</span><span class="w">      </span><span class="err">684</span><span class="w">      </span><span class="err">802</span><span class="w">     </span><span class="err">3796</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="err">2262</span><span class="w"> </span><span class="n">whowin</span><span class="w">   </span><span class="o">/</span><span class="nn">usr/lib/gdm3/</span><span class="n">gdm</span><span class="o">-</span><span class="n">x</span><span class="o">-</span><span class="n">session</span><span class="w">        </span><span class="err">0</span><span class="w">      </span><span class="err">760</span><span class="w">      </span><span class="err">815</span><span class="w">     </span><span class="err">6616</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="err">2410</span><span class="w"> </span><span class="n">whowin</span><span class="w">   </span><span class="o">/</span><span class="nn">usr/bin/</span><span class="n">dbus</span><span class="o">-</span><span class="n">daemon</span><span class="w"> </span><span class="o">--</span><span class="n">conf</span><span class="w">        </span><span class="err">0</span><span class="w">      </span><span class="err">692</span><span class="w">      </span><span class="err">818</span><span class="w">     </span><span class="err">4512</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="err">2601</span><span class="w"> </span><span class="n">whowin</span><span class="w">   </span><span class="o">/</span><span class="nn">usr/libexec/</span><span class="n">gsd</span><span class="o">-</span><span class="n">a11y</span><span class="o">-</span><span class="n">setti</span><span class="w">        </span><span class="err">0</span><span class="w">      </span><span class="err">772</span><span class="w">      </span><span class="err">848</span><span class="w">     </span><span class="err">7052</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="err">3532</span><span class="w"> </span><span class="n">whowin</span><span class="w">   </span><span class="o">/</span><span class="nn">snap/chromium/</span><span class="err">2724</span><span class="o">/</span><span class="nn">usr/</span><span class="n">lib</span><span class="w">        </span><span class="err">0</span><span class="w">      </span><span class="err">304</span><span class="w">      </span><span class="err">867</span><span class="w">     </span><span class="err">3096</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">......</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>USS(Unique Set Size)：唯一集大小，即进程独自占用物理内存，只计算进程独自占用的物理内存大小，不包含任何共享的部分；</li>
+<li>PSS(Proportion Set Size)：比例集大小，使用某个共享内存的所有进程均分该共享内存的大小，加上该进程独自占用的内存(USS)，即为比例集的大小；</li>
+<li>RSS(Resident Set Size)：驻留集大小，即进程所使用的非交换区的物理内存的大小，该进程独占内存(USS)，加上该进程使用的共享内存大小(非均分共享内存)，即为驻留集大小。</li>
+</ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
+<h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2024-01-09
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/ubuntu/">ubuntu</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/ipc/0026-standard-and-service-interfaces/">
+            <span class="next-text nav-default">IPC之十六：D-Bus的标准接口和服务接口的具体实现</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/linux/0027-how-to-check-ram-usage-in-ubuntu/" class="leancloud_visitors" data-flag-title="在ubuntu上检查内存使用情况的九种方法">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>IPC之三：使用 System V 消息队列进行进程间通信的实例 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 System V 消息队列，并给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="IPC之三：使用 System V 消息队列进行进程间通信的实例" />
+<meta property="og:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 System V 消息队列，并给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-08-05T16:43:29+08:00" />
+<meta property="article:modified_time" content="2023-08-05T16:43:29+08:00" />
+
+<meta itemprop="name" content="IPC之三：使用 System V 消息队列进行进程间通信的实例">
+<meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 System V 消息队列，并给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。"><meta itemprop="datePublished" content="2023-08-05T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2023-08-05T16:43:29+08:00" />
+<meta itemprop="wordCount" content="7264">
+<meta itemprop="keywords" content="Linux,进程间通信,IPC,消息队列,Message queues," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="IPC之三：使用 System V 消息队列进行进程间通信的实例"/>
+<meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 System V 消息队列，并给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">IPC之三：使用 System V 消息队列进行进程间通信的实例</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-08-05 </span>
+        <div class="post-category">
+            <a href="/categories/ipc/"> IPC </a>
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-消息队列的基本概念">1 消息队列的基本概念</a></li>
+        <li><a href="#2-创建获取消息队列-id">2 创建/获取消息队列 ID</a></li>
+        <li><a href="#3-向消息队列中发送消息">3 向消息队列中发送消息</a></li>
+        <li><a href="#4-从消息队列中读取消息">4 从消息队列中读取消息</a></li>
+        <li><a href="#5-消息队列的控制和操作">5 消息队列的控制和操作</a></li>
+        <li><a href="#6-实例消息队列的小工具">6 实例：消息队列的小工具</a></li>
+        <li><a href="#7-操作消息队列的命令行命令">7 操作消息队列的命令行命令</a></li>
+        <li><a href="#8-其它">8 其它</a></li>
+        <li><a href="#欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 System V 消息队列，并给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。</p>
+<h2 id="1-消息队列的基本概念">1 消息队列的基本概念</h2>
+<ul>
+<li>
+<p>消息队列是 Linux 下多种 IPC 方法之一，最早源自 UNIX System V，后来 POSIX 也制定了消息队列的标准；</p>
+</li>
+<li>
+<p>所以，实际上有两种不同类型的消息队列：System V 消息队列和 POSIX 消息队列，两种消息队列的功能几乎是一样的，但调用方法不同；</p>
+</li>
+<li>
+<p>Linux 既支持 Sytem V 消息队列也支持 POSIX 消息队列，<strong>本文针对 System V 消息队列</strong>；</p>
+</li>
+<li>
+<p>消息队列本质上是存放在内核空间中的一个消息链表，由内核负责维护，这个链表显然是要占用内核资源的，所以对消息队列是有一定限制的，以避免过多地占用内核资源，这些限制定义在头文件 <code>&lt;linux/msg.h&gt;</code> 中：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#define MSGMNI 32000   </span><span class="cm">/* &lt;= IPCMNI */</span><span class="cp">     </span><span class="cm">/* max # of msg queue identifiers */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define MSGMAX  8192   </span><span class="cm">/* &lt;= INT_MAX */</span><span class="cp">   </span><span class="cm">/* max size of message (bytes) */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define MSGMNB 16384   </span><span class="cm">/* &lt;= INT_MAX */</span><span class="cp">   </span><span class="cm">/* default max size of a message queue */</span><span class="cp">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>头文件中对这三个宏定义有比较详细的说明；</li>
+<li><strong>MSGMNI</strong> 是系统中消息队列数量的上限；</li>
+<li><strong>MSGMAX</strong> 是单条消息的最大字节数；这个值设置为 MSGMNB 的 1/2，以保证在消息队列中至少可以有两条消息；</li>
+<li><strong>MSGMNB</strong> 是每个消息队列所占用的最大字节数，也就是一个队列的所有消息的长度之和不能大于这个数；</li>
+</ul>
+</li>
+<li>
+<p>上述三个对消息队列做出限制的当前值可以简单地使用 <code>ipcs -q -l</code> 命令查看；</p>
+<p><img src="https://whowin.gitee.io/images/190013/screenshot-ipcs-l.png" alt="Screenshot of ipc-l command"></p>
+</li>
+<li>
+<p>上述三个对消息队列做出限制的当前值，也可以在 <code>proc</code> 文件系统中找到：</p>
+<p><img src="https://whowin.gitee.io/images/190013/screenshot-proc-msg.png" alt="Screenshot of proc file"></p>
+</li>
+<li>
+<p>使用 sysctl 命令也可以查看消息队列的限制值：</p>
+<p><img src="https://whowin.gitee.io/images/190013/screenshot-sysctl.png" alt="Screenshot of sysctl command"></p>
+</li>
+</ul>
+<hr>
+<ul>
+<li>
+<p><strong>IPC 标识符</strong></p>
+<ul>
+<li>System V 定义了三种 IPC 方法：消息队列(Message queues)、信号量(Semaphores)和共享内存(Shared Memory)，这也是 Linux 下的三种重要的 IPC 方法，我们把这些统称为&quot;IPC 对象(IPC Object)&quot;；</li>
+<li>每个 IPC 对象都有一个与之关联的唯一的标识符(IPC Identifier)，这个标识符在内核中用于唯一地标识一个 IPC 对象；例如，要访问特定的一个消息队列，只需要知道这个消息队列的标识符(ID)即可；</li>
+<li>在 Ubuntu 上，这个 ID 的唯一性与 IPC 对象的类型是相关的，比如：一个消息队列的 ID 是 1234，那么，在共享内存中仍可能有 ID 为 1234 的 IPC 对象；</li>
+<li>在下面的描述中 IPC 标识符 ID 将被简称为 <strong>ID</strong>；</li>
+<li>消息队列的 ID，在 Linux 下其实就是一个 32 位整数的序列号，从 0 开始；也就是说，系统建立的第一个 IPC 对象的 ID 是 0，第二个 IPC 对象的 ID 是 1，&hellip;&hellip;，以此类推；</li>
+<li>即便一个 IPC 对象被删除，其对应的 ID 号空闲出来，新建立的 IPC 对象也不会用这个空闲出来的 ID 号，而是按照序列号继续延续，也就是说，系统建立的第一个 IPC 对象的 ID 是 0，&hellip;，第三个 IPC 对象的 ID 是 2，现在删除 ID 号为 1 的 IPC 对象，再建立一个 IPC 对象时，其 ID 号是 3 而不会是 1。</li>
+</ul>
+</li>
+<li>
+<p><strong>IPC Key</strong></p>
+<ul>
+<li>Unix 有一个所谓“一切皆文件”的原则，但是 System V IPC 的设计上似乎与这一原则有些偏差，内核使用 “IPC 标识符 ID” 来标识一个 IPC 对象，但是我们并不能通过打开一个文件来获得与这个 “IPC 标识符 ID” 的关联；</li>
+<li>IPC 需要使用一个“IPC Key”来创建或者获取 “IPC 标识符 ID”，理论上说，这个 IPC Key 可以使用任意方法生成；</li>
+<li>同时 System V IPC 提供了一个可以生成 IPC Key 的函数调用：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">key_t</span> <span class="nf">ftok</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">pathname</span><span class="p">,</span> <span class="kt">int</span> <span class="n">proj_id</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>该调用实际上是将 pathname 在内核中的 inode 节点号、设备号以及 proj_id 三者组合到一起生成 IPC Key，这使得 IPC Key 和一个文件路径产生了联系，似乎又有点回到“一切皆文件”的原则上来；</li>
+<li>总之，System V IPC 的逻辑是：
+<ul>
+<li>用 <strong>路径 + 项目 ID(一个整数)</strong> 生成一个 IPC Key；</li>
+<li>通过 Key 生成或者获取到 <strong>IPC 标识符 ID</strong>；</li>
+<li>用 <strong>IPC 标识符 ID</strong> 对 IPC 对象进行操作；</li>
+</ul>
+</li>
+<li>举例：<code>key_t key = ftok(&quot;./tmp/&quot;, 1234);</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="2-创建获取消息队列-id">2 创建/获取消息队列 ID</h2>
+<ul>
+<li>
+<p>消息队列 ID 是操作一个消息队列的唯一标识；</p>
+</li>
+<li>
+<p>创建一个新的消息队列会为这个消息队列生成一个 ID，要操作一个已经存在的消息队列也必须首先获得该消息队列的 ID；</p>
+</li>
+<li>
+<p>下面两个函数用于创建/获取消息队列 ID；</p>
+</li>
+<li>
+<p><strong>函数：ftok()</strong> - 将路径名和项目 ID 组合转换为 IPC Key，此值将用于创建/获取一个消息队列 ID</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/ipc.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="n">key_t</span> <span class="nf">ftok</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">pathname</span><span class="p">,</span> <span class="kt">int</span> <span class="n">proj_id</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>这个函数在前面已经提到过，这里稍微详细地介绍一下；</li>
+<li>pathname 既可以是一个目录的路径，比如：<code>/tmp/</code>，也可以是一个文件的路径，比如：<code>/tmp/msgqueue.txt</code>，既可以是一个绝对路径，也可以是一个相对路径；</li>
+<li>proj_id 称为项目 ID，实际上就是个数字，在这个函数中，仅使用这个数字的低 8 位；</li>
+<li>通常认为，同一个项目的程序总是放在同一个目录下，这个目录可以指定为 pathname，但同一个目录下可能有不同的几个项目，那么可以用项目 ID 来区分，这样就可以生成不同的 Key，从而创建/获取不同的消息队列的 ID；</li>
+<li>该函数会取出 pathname 的 inode 节点号和设备号(dev_no)，然后与 proj_id 组合生成一个 key，同样的 pathname 和 proj_id 将获得相同的 key；</li>
+<li>生成 key 的组合方式为：<code>(inode &amp; 0xffff) | ((dev_no &amp; 0xff) &lt;&lt; 16) | ((proj_id &amp; 0xff) &lt;&lt; 24)</code></li>
+<li><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190013/ipc-key.c">ipc-key.c</a>(<strong>点击文件名下载源程序</strong>)验证了这种组合方式的正确性。</li>
+</ul>
+</li>
+<li>
+<p><strong>函数：msgget()</strong> - 创建新消息队列，或者获取已有消息队列的 ID</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/ipc.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/msg.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">msgget</span><span class="p">(</span><span class="n">key_t</span> <span class="n">key</span><span class="p">,</span> <span class="kt">int</span> <span class="n">msgflg</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>该系统调用用于建立一个新的消息队列，或者获取一个已经存在的消息队列的 ID；</li>
+<li>该系统调用返回的 ID 号将成为对一个消息队列操作的唯一标识；</li>
+<li>该系统调用返回与 key 参数值相关联的消息队列标识符 ID；它既可以用于获取已经存在的消息队列的标识符，也可以用于创建一个新的消息队列；</li>
+<li>msgget() 中的 key 通常使用 ftok() 生成(也可以自定义生成)，也可以设置为 IPC_PRIVATE；</li>
+<li>msgflag 的有效值有 IPC_CREAT 和 IPC_EXCL：
+<ul>
+<li>当 <strong>IPC_CREAT</strong> 时，如果 key 对应的消息队列存在，则返回其消息队列的 ID，如果 key 对应的消息队列不存在，则建立与 key 关联的消息队列，并返回消息队列的 ID；</li>
+<li>当 <strong>IPC_CREAT | IPC_EXCL</strong> 时，如果 key 对应的消息队列存在，则报错返回 -1，<code>errno = EEXIST(File exists)</code>；如果 key 对应的消息队列不存在，则建立与 key 关联的消息队列，并返回消息队列的 ID；</li>
+<li>当 <strong>IPC_EXEL</strong> 时，如果 key 对应的消息队列存在，则返回消息队列的 ID(这点和 IPC_CREAT 一样)，如果 key 对应的消息队列不存在，则返回 -1，<code>errno = ENOENT(No such file or directory)</code>；</li>
+<li>另外，msgflag 还可以加上所创建的消息队列的读写权限，要用八进制表示，比如：0666；</li>
+<li>msgflag 举例：<code>IPC_CREAT | IPC_EXEL | 0666</code></li>
+</ul>
+</li>
+<li>当 <code>key = IPC_PRIVATE</code> 时，<code>msgget()</code> 将创建一个新的消息队列并返回该消息队列的 ID；
+<ul>
+<li>这样生成的消息队列只有 ID，没有 key(key 为 0)，所以其它进程并不能方便地使用这个消息队列，通常只能在子进程之间使用；</li>
+<li>实际上，IPC_PRIVATE 的值是 0，所以我们自己生成的 key 不能是 0，否则相当于将 key 设置为 IPC_PRIVATE；</li>
+</ul>
+</li>
+<li>再次强调消息队列的生成逻辑：通过“一个路径 + 项目 ID”生成 key，通过 key 与一个消息队列 ID 相对应，通过消息队列 ID 操作消息队列。</li>
+</ul>
+</li>
+<li>
+<p>创建/获取消息队列 ID 的示例代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/ipc.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/msg.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="n">key_t</span> <span class="n">key</span> <span class="o">=</span> <span class="n">ftok</span><span class="p">(</span><span class="s">&#34;/tmp/&#34;</span><span class="p">,</span> <span class="mi">1234</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// check if the key exists
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="n">msqid</span> <span class="o">=</span> <span class="n">msgget</span><span class="p">(</span><span class="n">ipc_key</span><span class="p">,</span> <span class="n">IPC_EXCL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">msqid</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// key doesn&#39;t exist, create it
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">msqid</span> <span class="o">=</span> <span class="n">msgget</span><span class="p">(</span><span class="n">ipc_key</span><span class="p">,</span> <span class="n">IPC_CREAT</span> <span class="o">|</span> <span class="mo">0666</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">msqid</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">perror</span><span class="p">(</span><span class="s">&#34;msgget()&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>特别要注意的是 msgflag 参数中的读/写权限的设置，如果不显式标明，那么默认的读写权限将变成 0000，这样的一个消息队列是没有办法进行读写的；当然还可以使用 <code>msgctl()</code> 修改消息队列的读写权限，但需要更高的权限(比如root)才能做到；</p>
+</li>
+<li>
+<p>SYSTEM V 的 IPC 并不涉及文件系统，所以其设置的读写权限是不会受到 umask 的影响的，这点和 POSIX 的 IPC 有所不同。</p>
+</li>
+</ul>
+<h2 id="3-向消息队列中发送消息">3 向消息队列中发送消息</h2>
+<ul>
+<li>
+<p><strong>函数：msgsnd()</strong> - 向消息队列中发送一条消息</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/ipc.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/msg.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">msgsnd</span><span class="p">(</span><span class="kt">int</span> <span class="n">msqid</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">msgp</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">msgsz</span><span class="p">,</span> <span class="kt">int</span> <span class="n">msgflg</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>通过调用 <code>getget()</code> 获取了消息队列的 ID 后，就可以向这个消息队列中发送消息了；</p>
+</li>
+<li>
+<p>该系统调用向 ID 为 msgid 的消息队列中发送一条消息，调用该函数的进程必须要有该消息队列的写权限；</p>
+</li>
+<li>
+<p>该函数在调用成功时返回 0，调用失败时返回 -1，errno 中为错误代码；</p>
+</li>
+<li>
+<p>msgp 指向要发送的消息，其消息结构的具体格式如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">msgbuf</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">mtype</span><span class="p">;</span>       <span class="cm">/* message type, must be &gt; 0 */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">mtext</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>    <span class="cm">/* message data */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>mtype 字段必须是正整数值，接收进程可以根据这个字段对收到的消息进行选择；</li>
+<li>mtext 字段是一个数组(或其他结构)，其大小由 msgsnd() 调用中的 msgsz 指定；</li>
+</ul>
+</li>
+<li>
+<p>msgsz 不能是负数，但可以为 0，也就是所谓零长度的消息(即没有 mtext 字段)；</p>
+</li>
+<li>
+<p>msgflag 可以填 0 或者 IPC_NOWAIT</p>
+<ul>
+<li>msgsnd() 默认是阻塞的，当用于消息队列的内存空间不够用时，msgsnd() 会阻塞，直到有足够的空间可用；</li>
+<li>当 msgflag 设置为 IPC_NOWAIT 时，msgsnd() 在消息队列的空间不够用时也不会阻塞，会立即返回失败，errno = EAGAIN；</li>
+</ul>
+</li>
+<li>
+<p>还有以下两种情况会导致 msgsnd() 调用失败</p>
+<ol>
+<li>msgid 指向的消息队列不存在或者已经被删除，返回失败，errno = EIDRM；</li>
+<li>调用该函数时被信号处理程序中断，此时，msgsnd() 不会自动重启，返回失败，errno = EINTR；</li>
+</ol>
+</li>
+<li>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190013/msg-send.c">msg-send.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用 msgsnd() 向消息队列中发送消息；</p>
+</li>
+<li>
+<p>这个程序以当前目录的相对路径 &ldquo;./&rdquo; 建立一个 key，然后用这个 key 建立/获取一个消息队列的 ID，然后向这个消息队列中发送了三条消息；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall msg-send.c -o msg-send</code></p>
+</li>
+<li>
+<p>运行：<code>./msg-send</code></p>
+</li>
+<li>
+<p>使用命令 <code>ipcs -q</code> 可以查看消息队列情况；</p>
+</li>
+<li>
+<p>使用命令 <code>ipcrm -q [ID]</code> 可以删除指定详细队列中的消息，其中 [ID] 可以通过 <code>ipcs -q</code> 命令查到；</p>
+</li>
+<li>
+<p>运行截图，从截图中可以看出，消息队列中有三条消息：</p>
+<p><img src="https://whowin.gitee.io/images/190013/screenshot-of-msgsend.png" alt="Screenshot of msg-send"></p>
+</li>
+</ul>
+<hr>
+<h2 id="4-从消息队列中读取消息">4 从消息队列中读取消息</h2>
+<ul>
+<li>
+<p><strong>函数：msgrcv()</strong> - 从消息队列中接收一条消息</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/ipc.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/msg.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="n">ssize_t</span> <span class="nf">msgrcv</span><span class="p">(</span><span class="kt">int</span> <span class="n">msqid</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">msgp</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">msgsz</span><span class="p">,</span> <span class="kt">long</span> <span class="n">msgtyp</span><span class="p">,</span> <span class="kt">int</span> <span class="n">msgflg</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>该系统调用从 ID 为 msgid 的消息队列中接收一条消息，调用该函数的进程必须要有该消息队列的读权限；</p>
+</li>
+<li>
+<p>该系统调用从消息队列中取出一条消息放到 msgp 参数指定的缓冲区内，同时会从消息队列中删除这条消息；</p>
+</li>
+<li>
+<p>该系统调用在调用成功时，返回收到消息的长度，调用失败时，返回 -1，errno 中为错误代码；</p>
+</li>
+<li>
+<p>与 <code>msgsnd()</code> 类似，msgp 指向接收消息的缓冲区，其结构的具体格式同 <code>msgsnd()</code> 中介绍的 <code>struct msgbuf</code>，这里再重复一遍：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">msgbuf</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">mtype</span><span class="p">;</span>       <span class="cm">/* message type, must be &gt; 0 */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">mtext</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>    <span class="cm">/* message data */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>msgsz 参数为 msgp 指向的结构中 mtext 字段的长度；</p>
+</li>
+<li>
+<p>当收到消息的长度大于 msgsz 时：</p>
+<ul>
+<li>如果 msgflag 中设置了 MSG_NOERROR，则该消息将被截断，被截断的消息部分将丢失，调用返回成功；</li>
+<li>如果 msgflag 中没有设置 MSG_NOERROR，则调用失败，errno = E2BIG；</li>
+</ul>
+</li>
+<li>
+<p>msgtyp 用于选择收到的消息类别；收到的信息格式符合 <code>struct msgbuf</code>，其结构中的 mtype 表示该消息类别，msgtype 可以选择接收哪种类别的消息：</p>
+<ul>
+<li>当 <code>msgtyp = 0</code> 时，从消息队列中读取出第一条消息；</li>
+<li>当 <code>msgtyp &gt; 0</code> 时，从消息队列中读取出 <code>mtype == msgtyp</code> 的第一条消息；</li>
+<li>当 <code>msgtyp &lt; 0</code> 时，从消息队列中读取出 <code>mtype &lt;= |msgtyp|</code> 且 mtype 为最小的第一条消息；
+<blockquote>
+<p>举个例子：消息队列中有 4 条消息，第 1 条消息的 mtype = 3，第 2 条消息的 mtype = 1，第 3 条消息的 mtype = 4，第 4 条消息的 mtype = 2，当使用 <code>msgrcv(msqid, (void *)msgp, msgsz, -3, ...)</code> 从消息队列中读取消息时，msgtyp = -3，|msgtyp| = 3，那么，第 1、2、4 条消息都满足 <code>mtype &lt;= |msgtyp|</code> 的条件，但是收到的消息为第 2 条，因为第 2 条的 mtype 最小。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>
+<p>msgflag 可以有下面的值组合而成：</p>
+<ul>
+<li>IPC_NOWAIT：如果消息队列中没有请求类型(msgtyp)的消息，则立即返回。系统调用失败，errno = ENOMSG</li>
+<li>MSG_COPY：从消息队列中读取消息，但是不会破坏原消息队列，即：取出消息后，并不把这条消息从消息队列中删除；
+<ul>
+<li>该标志必须和 IPC_NOWAIT 一起使用，当消息队列中没有符合条件的消息时，会立即返回调用失败，errno = ENOMSG</li>
+<li>该标志不能与 MSG_EXCEPT 一起使用；</li>
+</ul>
+</li>
+<li>MSG_EXCEPT：当 <code>msgtyp &gt; 0</code> 时，从消息队列中读取 <code>mtype != msgtyp</code> 的第一条消息；</li>
+<li>MSG_NOERROR：如果收到消息的长度大于参数 msgsz，则将消息截断；</li>
+</ul>
+</li>
+<li>
+<p>如果消息队列中没有符合条件的消息，同时，msgflag 中没有设置 IPC_NOWAIT，则该调用将产生阻塞，直到：</p>
+<ul>
+<li>一条所需类型(mtype)的消息进入到消息队列中；</li>
+<li>该消息队列被删除，此时返回调用失败，errno = EIDRM</li>
+<li>当前进程捕获了一个信号，此时返回调用失败，errno = EINTR</li>
+</ul>
+</li>
+<li>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190013/msg-recv.c">msg-recv.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用 msgrcv() 从消息队列中读取消息；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall msg-recv.c -o msg-recv</code></p>
+</li>
+<li>
+<p>与上一个示例 msg-send 一样，该程序以当前目录的相对路径 &ldquo;./&rdquo; 建立一个 key，然后用这个 key 获取一个消息队列的 ID，如果这个消息队列不存在，程序将退出；</p>
+</li>
+<li>
+<p>运行：<code>./msg-recv [msgtype]</code></p>
+<ul>
+<li>当 [msgtype] 存在时，从消息队列中读取其消息类型为 [msgtype] 的第一条消息；</li>
+<li>当 [msgtyoe] 不存在时，默认 [msgtyoe] 为 0；</li>
+</ul>
+</li>
+<li>
+<p>这个程序可以和上一个示例 msg-send 一起使用，这时，msg-send 和 msg-recv 两个程序应该放在用一个工作目录下，并从这个目录下运行；</p>
+<ul>
+<li>msg-send 程序建立消息队列，并向这个队列中发送了三条消息，消息类型分别是 1、2 和 3；</li>
+<li>运行 msg-recv 时，可以指定只读取其中一种类型的消息，比如：<code>./msg-recv 2</code></li>
+</ul>
+</li>
+<li>
+<p>运行截图：</p>
+<p><img src="https://whowin.gitee.io/images/190013/screenshot-of-msgrecv.png" alt="Screenshot of msg-recv"></p>
+</li>
+</ul>
+<hr>
+<h2 id="5-消息队列的控制和操作">5 消息队列的控制和操作</h2>
+<ul>
+<li><strong>函数：msgctl()</strong> - 对消息队列进行控制操作
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ipc_perm</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">uid_t</span>          <span class="n">cuid</span><span class="p">;</span>   <span class="cm">/* creator user ID */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">gid_t</span>          <span class="n">cgid</span><span class="p">;</span>   <span class="cm">/* creator group ID */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">uid_t</span>          <span class="n">uid</span><span class="p">;</span>    <span class="cm">/* owner user ID */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">gid_t</span>          <span class="n">gid</span><span class="p">;</span>    <span class="cm">/* owner group ID */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">mode</span><span class="p">;</span>   <span class="cm">/* r/w permissions */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">msqid_ds</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">ipc_perm</span> <span class="n">msg_perm</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">msgqnum_t</span>       <span class="n">msg_qnum</span><span class="p">;</span>    <span class="cm">/* no of messages on queue */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">msglen_t</span>        <span class="n">msg_qbytes</span><span class="p">;</span>  <span class="cm">/* bytes max on a queue */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pid_t</span>           <span class="n">msg_lspid</span><span class="p">;</span>   <span class="cm">/* PID of last msgsnd(2) call */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pid_t</span>           <span class="n">msg_lrpid</span><span class="p">;</span>   <span class="cm">/* PID of last msgrcv(2) call */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time_t</span>          <span class="n">msg_stime</span><span class="p">;</span>   <span class="cm">/* last msgsnd(2) time */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time_t</span>          <span class="n">msg_rtime</span><span class="p">;</span>   <span class="cm">/* last msgrcv(2) time */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time_t</span>          <span class="n">msg_ctime</span><span class="p">;</span>   <span class="cm">/* last change time */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/ipc.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/msg.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">msgctl</span><span class="p">(</span><span class="kt">int</span> <span class="n">msqid</span><span class="p">,</span> <span class="kt">int</span> <span class="n">cmd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">msqid_ds</span> <span class="o">*</span><span class="n">buf</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>该系统调用对 msqid 指定的消息队列执行一个由 cmd 指定的命令，包括：获取/设置消息队列的属性，删除消息队列等；</li>
+<li>Linux 下允许的 cmd 值如下：
+<ul>
+<li>IPC_RMID - 删除一个消息队列</li>
+<li>IPC_SET  - 设置消息队列的权限结构</li>
+<li>IPC_STAT - 获取消息队列的权限结构</li>
+</ul>
+</li>
+<li>当 cmd 为 IPC_STAT 时，该调用将消息队列在内核中的属性拷贝到 buf 指向的 <code>struct msqid_ds</code> 中；</li>
+<li>当 cmd 为 IPC_SET 时，该调用将根据 buf 指向的 <code>struct msqid_ds</code> 的信息更新该消息队列在内核中的属性；
+<ul>
+<li>其实可以更新的属性有限，已知可更新的属性有：<code>msg_qbytes、msg_perm.uid、msg_perm.gid</code> 和 <code>msg_perm.mode</code> 的最后九位；</li>
+<li>这个命令的主要用途就是改变一个消息队列的读写权限，也就是修改 <code>msg_perm.mode</code> 的最后九位；</li>
+</ul>
+</li>
+<li>下面代码可以删除 ID 为 msqid 的消息队列
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">msgctl</span><span class="p">(</span><span class="n">msqid</span><span class="p">,</span> <span class="n">IPC_RMID</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>下面的代码段将 ID 为 msqid 的消息队列的读写权限改为 <code>0660</code> ：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">msqid_ds</span> <span class="n">queue_ds</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">msgctl</span><span class="p">(</span><span class="n">msqid</span><span class="p">,</span> <span class="n">IPC_STAT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">queue_ds</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">queue_ds</span><span class="p">.</span><span class="n">msg_perm</span><span class="p">.</span><span class="n">mode</span> <span class="o">=</span> <span class="mo">0660</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">msgctl</span><span class="p">(</span><span class="n">msqid</span><span class="p">,</span> <span class="n">IPC_SET</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">queue_ds</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>在介绍 <code>msgctl()</code> 时介绍了 <code>struct msqid_ds</code>，
+<ul>
+<li>这个结构是在建立一个消息队列时建立的，之后，内核将依靠这个结构维护这个消息队列；</li>
+<li>每个消息队列都对应着一个 <code>struct msqid_ds</code>；</li>
+<li>这个结构中，除了消息队列的读写权限，没有其它字段可以被用户程序修改。</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-实例消息队列的小工具">6 实例：消息队列的小工具</h2>
+<ul>
+<li>
+<p>最后这个实例可以作为消息队列的一个小工具使用，这个小工具有如下功能：</p>
+<ol>
+<li>向消息队列中发送一条新消息；</li>
+<li>从消息队列中读取一条消息；</li>
+<li>删除一个消息队列；</li>
+<li>修改消息队列的读写权限。</li>
+</ol>
+</li>
+<li>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190013/msgtool.c">msgtool.c</a>(<strong>点击文件名下载源程序</strong>)可以看作是一个消息队列的小实用工具；</p>
+<ul>
+<li>以当前路径 + &rsquo;m&rsquo; 的 ASCII 码组合成 key，该实用工具仅针对该 key 关联的消息队列进行操作；</li>
+<li>在发送消息时如果不存在与 key 关联的消息队列则建立一个新的消息队列；</li>
+<li>从消息队列中接收消息时，如果与 key 关联的消息队列不存在，则直接退出；</li>
+<li>删除消息队列时，如果与 key 关联的消息队列不存在，则直接退出；</li>
+<li>修改消息队列的读/写权限时，如果与 key 关联的消息队列不存在，则直接退出；</li>
+<li>该程序使用了上面介绍过的与消息队列相关的所有函数。</li>
+</ul>
+</li>
+<li>
+<p>编译：<code>gcc -Wall msgtool.c -o msgtool</code></p>
+</li>
+<li>
+<p>向消息队列中发送消息：<code>./msgtool s 2 &quot;Hello world!&quot;</code></p>
+</li>
+<li>
+<p>从消息队列中接收消息：<code>./msgtool r</code></p>
+</li>
+<li>
+<p>删除消息队列：<code>./msgtool d</code></p>
+</li>
+<li>
+<p>修改消息队列的读写权限：<code>./msgtool m 0666</code></p>
+</li>
+<li>
+<p>运行截屏：</p>
+<p><img src="https://whowin.gitee.io/images/190013/screenshot-of-msgtool.png" alt="Screenshot of msg-recv"></p>
+</li>
+</ul>
+<hr>
+<h2 id="7-操作消息队列的命令行命令">7 操作消息队列的命令行命令</h2>
+<ul>
+<li>
+<p><code>ipcs -q -l</code> - 显示消息队列的限制值；</p>
+</li>
+<li>
+<p><code>ipcs -q</code> - 显示现有消息队列的 key、ID 等部分属性；</p>
+</li>
+<li>
+<p><code>ipcs -q -i &lt;ID&gt;</code> - 显示指定 ID 的消息队列的属性(比 <code>ipcs -q</code> 显示的属性要多些)；</p>
+</li>
+<li>
+<p><code>ipcrm -Q &lt;key&gt;</code> - 删除指定 key 的消息队列；</p>
+</li>
+<li>
+<p><code>ipcrm -q &lt;ID&gt;</code> - 删除指定 ID 的消息队列</p>
+</li>
+<li>
+<p><code>ipcrm --all=msg</code> - 删除所有的消息队列</p>
+</li>
+<li>
+<p><code>ipcmk -Q</code> - 创建一个新的消息队列，其读写权限为默认的 0644；</p>
+</li>
+<li>
+<p><code>ipcmk -Q -p &lt;perm&gt;</code> - 创建一个新的消息队列，其读写权限为指定的 <code>&lt;perm&gt;</code>。</p>
+</li>
+</ul>
+<h2 id="8-其它">8 其它</h2>
+<ul>
+<li>
+<p>前面介绍过，消息队列的实现在内核中是使用的链表，理论上，链表并不是一个先进先出(FIFO)的结构，但是消息队列的链表并没有向用户空间开放，同时内核也没有给出完全操作消息队列链表的接口，从操作上看，消息队列仍然具有先进先出的特性；</p>
+</li>
+<li>
+<p>内核并没有提供一个列出当前系统中所有消息队列的接口，只能依靠 proc 文件系统中的 <code>/proc/sysvipc/msg</code> 文件来查看当前所有消息队列的基本属性和权限，可以使用 <code>cat /proc/sysvipc/msg</code> 来查看消息队列的状态：</p>
+<p><img src="https://whowin.gitee.io/images/190013/screenshot-of-proc-file.png" alt="Screenshot of proc filesystem"></p>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190013/listmsq.c">listmsq.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何通过读取 <code>/proc/sysvipc/msg</code> 文件列出系统中所有的消息队列；</li>
+<li>还有一个办法可以列出所有的消息队列；因为消息队列的 ID 号的总量是有限制的(MSGMNI)，所有可以采用遍历所有消息队列的 ID 号的方法找到系统中所有的消息队列；</li>
+<li><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190013/traversemsq.c">traversemsq.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何通过遍历所有可能的消息队列 ID 号找到系统中所有的消息队列；</li>
+<li>尽管在本文的所有实例中，从消息队列传输的数据都是字符串，但消息队列是可以传输二进制数据的，也就是说，可以把一个结构完整第通过消息队列进行传输；</li>
+<li>管道与消息队列在进行数据交换上是不同的，消息队列是以消息为一个基本单位，而管道是一个字节流，举个例子说明其不同：
+<blockquote>
+<p>假定进程 A 需要调用 func() 100 次，每调用 func() 一次，func() 都会将将 1 字节的运行结果发送给进程 B，所以，进程 B 一共会收到 100 字节的运行结果信息，如果使用消息队列来传递运行结果，func() 会向消息队列发送 100 个消息，而进程 B 也会接收 100 次消息；但是如果使用管道，func() 每次将 1 字节的运行结果送如管道，进程 B 可以不用马上接收，直到 func() 被调用 100 次后，进程 B 可以一次性地从管道中读出 100 个字节的运行结果；在这种情形下，显然，管道的效率更高一些。</p>
+</blockquote>
+</li>
+<li>有关进程间通信(IPC)的的其它文章：
+<ul>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/">IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
+-->
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-08-05
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">进程间通信</a>
+          <a href="/tags/ipc/">IPC</a>
+          <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a>
+          <a href="/tags/message-queues/">Message queues</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/ipc/0014-posix-message-queue/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/ipc/0011-ipc-examples-of-fifo/">
+            <span class="next-text nav-default">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/ipc/0013-systemv-message-queue/" class="leancloud_visitors" data-flag-title="IPC之三：使用 System V 消息队列进行进程间通信的实例">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

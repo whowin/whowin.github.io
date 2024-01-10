@@ -9,19 +9,19 @@
     <lastBuildDate>Thu, 28 Dec 2023 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>IPC之十五：使用libdbus通过D-Bus请求系统调用实现任意DNS记录解析的实例</title>
-      <link>https://whowin.gitee.io/post/blog/linux/0025-resolve-arbitrary-dns-record/</link>
+      <link>https://whowin.gitee.io/post/blog/ipc/0025-resolve-arbitrary-dns-record/</link>
       <pubDate>Thu, 28 Dec 2023 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/linux/0025-resolve-arbitrary-dns-record/</guid>
+      <guid>https://whowin.gitee.io/post/blog/ipc/0025-resolve-arbitrary-dns-record/</guid>
       <description>&lt;p&gt;关于D-Bus的文章中曾介绍了如何通过D-Bus调用系统服务从而实现解析出一个域名的IP地址的过程，本文我们继续调用系统调用来实现解析任意DNS记录，系统调用的方法与前一篇文章类似，只是方法名称和调用参数以及返回参数不同，本文将详细介绍systemd-resolved服务中的ResolveRecord方法，同前面几篇关于D-BUS的文章相同，本文将使用 libdbus 库实现系统服务的调用，本文给出了实现解析任意DNS记录的实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例</title>
-      <link>https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/</link>
+      <link>https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/</link>
       <pubDate>Sun, 10 Dec 2023 16:43:29 +0800</pubDate>
       
-      <guid>https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/</guid>
+      <guid>https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/</guid>
       <description>&lt;p&gt;前面两篇有关 D-Bus 的文章介绍了使用 libdbus 库进行进程间的方法调用和信号的传输，实际上 D-Bus 的更强大的地方是其建立了与大量系统服务之间建立了有效的对话规范，使得应用程序可以使用标准的方式调用系统服务的方法，访问系统服务中的一些开放的属性，本文将使用 libdbus 库调用系统服务中的方法从而实现域名解析，本文给出了实现该功能的实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。&lt;/p&gt;</description>
     </item>
     

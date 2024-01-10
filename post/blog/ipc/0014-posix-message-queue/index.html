@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>IPC之四：使用 POSIX 消息队列进行进程间通信的实例 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 POSIX 消息队列，POSIX 标准引入了一个简单的基于文件的接口，使应用程序可以轻松地与消息队列进行交互；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="IPC之四：使用 POSIX 消息队列进行进程间通信的实例" />
+<meta property="og:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 POSIX 消息队列，POSIX 标准引入了一个简单的基于文件的接口，使应用程序可以轻松地与消息队列进行交互；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-08-20T16:43:29+08:00" />
+<meta property="article:modified_time" content="2023-08-20T16:43:29+08:00" />
+
+<meta itemprop="name" content="IPC之四：使用 POSIX 消息队列进行进程间通信的实例">
+<meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 POSIX 消息队列，POSIX 标准引入了一个简单的基于文件的接口，使应用程序可以轻松地与消息队列进行交互；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。"><meta itemprop="datePublished" content="2023-08-20T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2023-08-20T16:43:29+08:00" />
+<meta itemprop="wordCount" content="8795">
+<meta itemprop="keywords" content="Linux,进程间通信,IPC,消息队列,Message queues," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="IPC之四：使用 POSIX 消息队列进行进程间通信的实例"/>
+<meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 POSIX 消息队列，POSIX 标准引入了一个简单的基于文件的接口，使应用程序可以轻松地与消息队列进行交互；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-08-20 </span>
+        <div class="post-category">
+            <a href="/categories/ipc/"> IPC </a>
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-posix-消息队列概述">1 POSIX 消息队列概述</a></li>
+        <li><a href="#2-消息队列的名称及虚拟文件系统">2 消息队列的名称及虚拟文件系统</a></li>
+        <li><a href="#3-消息队列的创建打开和关闭">3 消息队列的创建/打开和关闭</a></li>
+        <li><a href="#4-获取设置消息队列的属性">4 获取/设置消息队列的属性</a></li>
+        <li><a href="#5-向消息队列中发送消息">5 向消息队列中发送消息</a></li>
+        <li><a href="#6-从消息队列中接收消息">6 从消息队列中接收消息</a></li>
+        <li><a href="#7-删除消息队列">7 删除消息队列</a></li>
+        <li><a href="#8-消息队列的一个完整实例">8 消息队列的一个完整实例</a></li>
+        <li><a href="#9-发送接收消息时设置阻塞时间">9 发送/接收消息时设置阻塞时间</a></li>
+        <li><a href="#10-消息队列的异步通知机制">10 消息队列的异步通知机制</a></li>
+        <li><a href="#11-system-v-消息队列-vs-posix-消息队列">11 System V 消息队列 VS POSIX 消息队列</a></li>
+        <li><a href="#12-消息队列-vs-管道">12 消息队列 VS 管道</a></li>
+        <li><a href="#13-有关进程间通信ipc的的其它文章">13 有关进程间通信(IPC)的的其它文章：</a></li>
+        <li><a href="#欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 POSIX 消息队列，POSIX 标准引入了一个简单的基于文件的接口，使应用程序可以轻松地与消息队列进行交互；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。</p>
+<h2 id="1-posix-消息队列概述">1 POSIX 消息队列概述</h2>
+<ul>
+<li>
+<p>文章<a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>介绍了消息队列的基本概念及 UNIX System V 消息队列的编程方法，阅读本文前可以先阅读这篇文章；</p>
+</li>
+<li>
+<p><code>man mq_overview</code> 可以从在线手册中了解 POSIX 消息队列的更详细的信息；</p>
+</li>
+<li>
+<p>Linux 内核 2.6.6 以后支持 POSIX 消息队列，glibc 2.3.4 以后开始 支持 POSIX 消息队列；</p>
+<ul>
+<li>查看 Linux 内核版本号：<code>uname -srm</code></li>
+<li>查看 glibc 版本号：<code>ldd --version</code></li>
+</ul>
+</li>
+<li>
+<p>以下如无特别说明，消息队列均指 POSIX 消息队列；</p>
+</li>
+<li>
+<p>POSIX 消息队列提供了一组用于操作消息队列的 API，这些调用均是以 mq_ 开头：</p>
+<ol>
+<li>打开/创建一个 POSIX 消息队列
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">mqd_t</span> <span class="nf">mq_open</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">oflag</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">mqd_t</span> <span class="nf">mq_open</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">oflag</span><span class="p">,</span> <span class="n">mode_t</span> <span class="n">mode</span><span class="p">,</span> <span class="k">struct</span> <span class="n">mq_attr</span> <span class="o">*</span><span class="n">attr</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>关闭一个消息队列
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">mq_close</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>获取/设置一个消息队列的属性
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">mq_getattr</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> <span class="k">struct</span> <span class="n">mq_attr</span> <span class="o">*</span><span class="n">attr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">mq_setattr</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">mq_attr</span> <span class="o">*</span><span class="n">newattr</span><span class="p">,</span> <span class="k">struct</span> <span class="n">mq_attr</span> <span class="o">*</span><span class="n">oldattr</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>向消息队列发送一条指定优先级的消息
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">mq_send</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">msg_ptr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">msg_len</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">msg_prio</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>从消息队列中接收一条消息，并获得其优先级
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">ssize_t</span> <span class="nf">mq_receive</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">msg_ptr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">msg_len</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">msg_prio</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>删除一个消息队列
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">mq_unlink</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>尝试向消息队列中发送一条消息，设定阻塞时间，超时则返回
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">mq_timedsend</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                 <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">msg_ptr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">msg_len</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                 <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">msg_prio</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                 <span class="k">const</span> <span class="k">struct</span> <span class="n">timespec</span> <span class="o">*</span><span class="n">abs_timeout</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>尝试从消息队列中接收一条消息，设定阻塞时间，超时则返回
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">ssize_t</span> <span class="nf">mq_timedreceive</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                        <span class="kt">char</span> <span class="o">*</span><span class="n">msg_ptr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">msg_len</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">msg_prio</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                        <span class="k">const</span> <span class="k">struct</span> <span class="n">timespec</span> <span class="o">*</span><span class="n">abs_timeout</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>当有消息进入消息队列时，产生异步通知
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">mq_notify</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">sigevent</span> <span class="o">*</span><span class="n">notification</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+</li>
+<li>
+<p>使用 POSIX 消息队列 API 的程序在编译时必须加 -lrt 选项，以链接到实时库 librt；</p>
+</li>
+<li>
+<p>笔者认为与 System V 消息队列相比，POSIX 提供的消息队列的接口更加简洁，使用起来更加方便。</p>
+</li>
+</ul>
+<h2 id="2-消息队列的名称及虚拟文件系统">2 消息队列的名称及虚拟文件系统</h2>
+<ul>
+<li>
+<p>System V 消息队列是使用 key(使用 ftok() 获取)来标识的，是没有名称的，但是，POSIX 消息队列是需要命名的，使用具有唯一性的消息队列名称来标识一个消息队列；</p>
+</li>
+<li>
+<p>消息队列的名称是一个以 &ldquo;/&rdquo; 开头的字符串，而且名称中不允许再出现第二个 &ldquo;/&quot;，这个名称字符串以 NULL 结尾；</p>
+</li>
+<li>
+<p>任何一个知道消息队列名称且具有适当权限的进程都可以向队列中发送或从队列中接收消息，当然也可以执行其它操作；</p>
+</li>
+<li>
+<p>POSIX 的消息队列实际上是建在一个虚拟文件系统下的，这个虚拟文件系统被挂载在 /dev/queue 下，在 Ubuntu 下，默认是自动挂载的；</p>
+</li>
+<li>
+<p>可以使用 <code>ls /dev/mqueue</code> 命令列出已有的消息队列，也可以用 <code>rm /dev/mqueue/&lt;mq_name&gt;</code> 命令删除一个已有的消息队列；</p>
+</li>
+<li>
+<p>使用 <code>cat /dev/mqueue/&lt;mq_name&gt;</code> 可以列出指定消息队列的状态；</p>
+</li>
+<li>
+<p>如果在你的系统上没有这个虚拟文件系统，可以用下面的命令建立一个：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># mkdir /dev/mqueue</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># mount -t mqueue none /dev/mqueue</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id="3-消息队列的创建打开和关闭">3 消息队列的创建/打开和关闭</h2>
+<ul>
+<li>
+<p>在使用一个消息队列之前需要打开(或创建)消息队列，使用 mq_open()</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;fcntl.h&gt;           /* For O_* constants */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/stat.h&gt;        /* For mode constants */</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mqueue.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="n">mqd_t</span> <span class="nf">mq_open</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">oflag</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">mqd_t</span> <span class="nf">mq_open</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="kt">int</span> <span class="n">oflag</span><span class="p">,</span> <span class="n">mode_t</span> <span class="n">mode</span><span class="p">,</span> <span class="k">struct</span> <span class="n">mq_attr</span> <span class="o">*</span><span class="n">attr</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>mq_open()</code> 创建一个新的消息队列，或者打开一个已经存在的消息队列，调用成功则返回消息队列的描述符，调用失败返回 -1，且 errno 中为错误代码；</p>
+</li>
+<li>
+<p><strong>name</strong> - 消息队列的名称，一个以 &ldquo;/&rdquo; 开头的字符串，是这个消息队列的唯一标识；</p>
+</li>
+<li>
+<p><strong>oflag</strong> - 控制操作的一些标志，可以有以下选项，这些选项可以以 or 的方式进行组合：</p>
+<ul>
+<li><strong>O_RDONLY</strong> - 打开消息队列仅用于接收消息</li>
+<li><strong>O_WRONLY</strong> - 打开消息队列仅用于发送消息</li>
+<li><strong>O_RDWR</strong> - 打开消息队列用于发送/接收消息</li>
+<li><strong>O_CLOEXEC</strong> - 在执行 exec() 时，关闭此消息队列的描述符，以防止父进程将打开的消息队列的描述符泄露给子进程；</li>
+<li><strong>O_CREAT</strong> - 如果消息队列不存在，则建立一个新的消息队列，返回其描述符；如果消息队列存在，则返回消息队列的描述符；</li>
+<li><strong>O_EXCL</strong> - 如果同时设置了 O_CREAT，则当打开的消息队列已经存在时，返回调用失败，errno=EEXIST</li>
+<li><strong>O_NONBLOCK</strong> - 以非阻塞方式打开消息队列</li>
+</ul>
+</li>
+<li>
+<p>如果在 oflag 中设置了 O_CREAT，则必须增加另外两个参数：<code>mode</code> 和 <code>attr</code></p>
+</li>
+<li>
+<p>关于 oflag 中的 O_EXCL：</p>
+<ul>
+<li>当 <code>O_CREAT | O_EXCL</code> 时：消息队列不存在则创建一个新的消息队列(与 O_CREAT 一样)，返回其描述符；如果消息队列存在则返回 -1，<code>errno=EEXIST(File exists)</code></li>
+<li>当仅有 <code>O_EXCL</code> 时：如果消息队列已经存在，则返回其描述符(与 O_CREAT 一样)，如果消息队列不存在，则返回-1，<code>errno=ENOENT(No such file or directory)</code></li>
+</ul>
+</li>
+<li>
+<p><strong>mode</strong> - 新创建的消息队列的读/写权限，与文件的读/写权限的表达方式一致，使用八进制数，比如：0660、0666，实际的读/写权限还要受到 umask 的影响，最终的结果是 <code>mode &amp; ~umask</code>；</p>
+<blockquote>
+<p>可以使用 shell 命令 <code>umask</code> 查看当前的 <code>umask</code></p>
+</blockquote>
+</li>
+<li>
+<p><strong>attr</strong> - 指定该消息队列的最大消息数和一条消息的最大字节数；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">mq_attr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">mq_flags</span><span class="p">;</span>       <span class="cm">/* Flags (ignored for mq_open()) */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">mq_maxmsg</span><span class="p">;</span>      <span class="cm">/* Max. # of messages on queue */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">mq_msgsize</span><span class="p">;</span>     <span class="cm">/* Max. message size (bytes) */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">mq_curmsgs</span><span class="p">;</span>     <span class="cm">/* # of messages currently in queue
+</span></span></span><span class="line"><span class="cl"><span class="cm">                            (ignored for mq_open()) */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>在调用 <code>mq_open()</code> 时，这个结构中只有 mq_maxmsg(最大消息数)和 mq_msgsize(消息的最大长度)可以设置；</li>
+<li>如果 attr 为 NULL，则使用默认属性来创建消息队列，这些默认值可以在 proc 文件系统中找到</li>
+<li>使用命令 <code>cat /proc/sys/fs/mqueue/msg_max</code> 查看默认的最大消息数；</li>
+<li>使用命令 <code>cat /proc/sys/fs/mqueue/msgsize_max</code> 查看默认的一条消息的最大长度。</li>
+</ul>
+</li>
+<li>
+<p>消息队列使用完毕后，需要关闭该消息队列</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mqueue.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">mq_close</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>mqdes 就是使用 mq_open() 打开消息队列时返回的描述符。</p>
+</li>
+<li>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/190014/mq-create.c">mq-create.c</a>(<strong>点击文件名下载源程序</strong>)是一个简单的命令行工具，用于创建一个新的消息队列；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall mq-create.c -o mq-create -lrt</code></p>
+</li>
+<li>
+<p>运行：<code>./mq-create -cx -m 8 -s 512 /test_mq_name 0660</code></p>
+</li>
+<li>
+<p>在使用该程序时需要在命令行输入一些参数：</p>
+<ul>
+<li><strong>-c</strong> 表示使用 O_CREATE 标志，<strong>-x</strong> 表示使用 O_EXCL 标志；</li>
+<li><strong>-m</strong> 表示设置消息队列的最大消息数(mq_maxmsg)，在 -m 选项后必须跟一个数值，表示队列允许的最大消息数；</li>
+<li><strong>-s</strong> 表示设置每条消息的最大长度(mq_msgsize)，-m 选项后必须跟一个数值，表示每条消息的最大长度；</li>
+<li>这几个选项中，<strong>-c</strong> 和 <strong>-x</strong> 至少要有一个，也可以两个都有，写成 <strong>-cx</strong> 或者 <strong>-c -x</strong> 都可以；</li>
+<li><strong>-m</strong> 和 <strong>-s</strong> 可有可无，如果没有，默认的最大消息数为 10，每条消息的默认最大长度为 256 字节；</li>
+<li>在这几个选项后面是消息队列的名称，注意，消息队列的名称必须以 <code>&quot;/&quot;</code> 开头，而且后面的字符串中不能再有 <code>&quot;/&quot;</code>；</li>
+<li>在名称后面可以跟一个消息队列的读写权限，也可以没有，如果要设置消息队列的权限，这里要使用八进制，比如 <code>0666</code>、<code>0644</code> 等；</li>
+<li>如果没有设置权限，默认权限为 <code>0660</code>；</li>
+</ul>
+</li>
+<li>
+<p>下面是这个程序的运行截屏：</p>
+<p><img src="https://whowin.gitee.io/images/190014//screenshot-of-mq-create.png" alt="screenshot of mq-create command"></p>
+</li>
+<li>
+<p>请注意，尽管我们设置了消息队列的读/写权限是 <code>0666</code>，但最后显示的消息队列的权限却是 <code>0664</code>，这是因为 umask 为 <code>0002</code>。</p>
+</li>
+</ul>
+<hr>
+<h2 id="4-获取设置消息队列的属性">4 获取/设置消息队列的属性</h2>
+<ul>
+<li>
+<p>在介绍 mq_open() 时，已经接触到了消息队列的属性结构，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">mq_attr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">mq_flags</span><span class="p">;</span>       <span class="cm">/* Flags: 0 or O_NONBLOCK */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">mq_maxmsg</span><span class="p">;</span>      <span class="cm">/* Max. # of messages on queue */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">mq_msgsize</span><span class="p">;</span>     <span class="cm">/* Max. message size (bytes) */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">mq_curmsgs</span><span class="p">;</span>     <span class="cm">/* # of messages currently in queue */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>其中的 <code>mq_maxmsg</code> 和 <code>mq_msgsize</code> 前面已经介绍过其含义，另外的两项：</p>
+<ul>
+<li><strong>mq_flags</strong>：如果在调用 mq_open() 时设置了 O_NONBLOCK，则在获取属性时，该字段为 O_NONBLOCK，否则该字段为 0；</li>
+<li><strong>mq_currmsgs</strong>：在这个消息队列中目前有多少条消息；</li>
+</ul>
+</li>
+<li>
+<p>可以使用 <code>mq_getattr()</code> 来获取一个消息队列的属性；</p>
+</li>
+<li>
+<p>可以使用 <code>mq_setattr()</code> 来设置消息队列的属性，但实际作用有限；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mqueue.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">mq_getattr</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> <span class="k">struct</span> <span class="n">mq_attr</span> <span class="o">*</span><span class="n">attr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">mq_setattr</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">mq_attr</span> <span class="o">*</span><span class="n">newattr</span><span class="p">,</span> <span class="k">struct</span> <span class="n">mq_attr</span> <span class="o">*</span><span class="n">oldattr</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>这两个函数在调用成功时返回 0，调用失败时返回 -1，errno 中为错误代码；</p>
+</li>
+<li>
+<p>调用 <code>mq_setattr()</code> 时，将使用参数 newattr 中的值设置消息队列的属性，但实际上只能设置 mq_flags 字段，而且该字段只能设置为 O_NONBLOCK 或者 0，其它字段将被忽略；</p>
+</li>
+<li>
+<p>在调用 <code>mq_setattr()</code> 时，如果参数 oldattr 不为 NULL，则在调用成功后，oldattr 中将返回消息队列的属性，但是返回的是调用 <code>mq_setattr()</code> 之前消息队列的属性；</p>
+</li>
+<li>
+<p>所以，如果需要了解调用 <code>mq_setattr()</code> 之后消息队列的属性，在调用 <code>mq_setattr()</code> 之后，需要调用 <code>mq_getattr()</code>。</p>
+</li>
+<li>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/190014/mq-attr.c">mq-attr.c</a>(<strong>点击文件名下载源程序</strong>)演示了 <code>mq_open()、mq_getattr()、mq_setattr() 和 mq_close()</code> 的使用方法；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall mq-attr.c -o mq-attr -lrt</code></p>
+</li>
+<li>
+<p>运行：<code>./mq-attr</code></p>
+<ul>
+<li>该程序首先建立一个新的消息队列，消息队列的名称与当前进程 pid 相关，所以每次运行都会建立一个新的消息队列；</li>
+<li>建立消息队列时，以无阻塞方式(O_NONBLOCK)打开消息队列；</li>
+<li>使用 mq_getattr() 获取消息队列的属性，可以看到 mq_flags 字段是 O_NONBLOCK</li>
+<li>使用 mq_setattr() 设置消息队列属性时，mq_flags 字段会从 O_NONBLOCK 改为 0，但从 oldattr 返回的属性中，mq_flags 字段仍然为 O_NONBLOCK；</li>
+<li>使用 mq_getattr() 再次获取消息队列的属性，可以看到 mq_flags 字段已经变成了 0；</li>
+<li>最后使用 mq_close() 关闭该消息队列；</li>
+</ul>
+</li>
+<li>
+<p>前面介绍过消息队列的虚拟文件系统，消息队列会被建立在虚拟文件系统上，在运行完 <code>./mq-attr</code> 后，我们可以使用 ls 命令看一下虚拟文件系统的目录；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ls -l /dev/mqueue/ 
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>然后我们还可以尝试使用 rm 命令删除虚拟文件系统下的消息队列；</p>
+</li>
+<li>
+<p>下面是运行结果的截屏：</p>
+<p><img src="https://whowin.gitee.io/images/190014/screenshot-of-mqattr.png" alt="Screenshot of mq-attr"></p>
+</li>
+</ul>
+<hr>
+<h2 id="5-向消息队列中发送消息">5 向消息队列中发送消息</h2>
+<ul>
+<li>使用 mq_send() 可以向一个已经打开的、有写权限的消息队列中发送消息；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mqueue.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">mq_send</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">msg_ptr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">msg_len</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">msg_prio</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>mqdes</strong>：打开的消息队列的描述符；</li>
+<li><strong>msg_ptr</strong>：指向要发送消息的指针；</li>
+<li><strong>msg_len</strong>：发送消息的长度，这个长度必须小于消息队列属性中的 mq_msgsize 字段，可以是 0，发送一个空消息；</li>
+<li><strong>msg_prio</strong>：发送消息的优先级，0 为最低优先级；</li>
+<li>消息队列属性中的 mq_maxmsg 字段表示这个消息队列允许的最大消息数，当消息队列已经满时(消息数已经达到 mq_maxmsg 字段的值)：
+<ul>
+<li>默认情况下，<code>mq_send()</code> 将会阻塞，直到消息队列中有空闲位置；</li>
+<li>当以非阻塞方式(设置 O_NONBLOCK)打开消息队列时，<code>mq_send()</code> 会立即返回一个错误，<code>errno=EAGAIN</code></li>
+</ul>
+</li>
+<li>调用 <code>mq_send()</code> 成功时返回 0，出错时返回 -1，errno 中存放错误代码；</li>
+</ul>
+<h2 id="6-从消息队列中接收消息">6 从消息队列中接收消息</h2>
+<ul>
+<li>使用 mq_receive() 可以从一个已经打开的、有读权限的消息队列中接收消息；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mqueue.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="n">ssize_t</span> <span class="nf">mq_receive</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">msg_ptr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">msg_len</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">msg_prio</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>mqdes</strong>：打开的消息队列的描述符；</li>
+<li><strong>msg_ptr</strong>：指向接收缓冲区的指针；</li>
+<li><strong>msg_len</strong>：接收缓冲区的长度，msg_len 必须大于或等于消息队列属性中的 mq_msgmax 字段，否则接收出错，<code>errno=EMSGSIZE</code>；</li>
+<li><strong>msg_prio</strong>：当 msg_prio 不为 NULL 时，仅接收优先级为 msg_prio 的消息，当 msg_prio 为 NULL 时，接收按照优先级排列的所有消息；</li>
+<li>接收消息成功后，在消息队列中的原始消息将被删除；</li>
+<li>0 为最低优先级，该调用首先接收最高优先级的消息，同等优先级下接收消息按照先进先出的原则；</li>
+<li>调用成功，返回收到的字节数，调用失败，返回 -1，errno 中为错误代码；</li>
+<li>如果消息队列为空：
+<ul>
+<li>如果打开消息队列时设置了 O_NONBLOCK，则立即返回错误，<code>errno=EAGAIN</code></li>
+<li>如果打开消息队列时没有设置 O_NONBLOCK，则产生阻塞，直至队列中有可接收的消息；</li>
+</ul>
+</li>
+</ul>
+<h2 id="7-删除消息队列">7 删除消息队列</h2>
+<ul>
+<li>
+<p>使用 mq_unlink() 可以删除一个指定的消息队列名称，消息队列名称将被立即删除，但是消息队列并不一定立即销毁，而是要等到所有已经打开了消息队列的进程都关闭消息队列后才被销毁；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mqueue.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">mq_unlink</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">);</span>    
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>name 为消息队列名称，记着其起始字符必须是 <code>&quot;/&quot;</code>；</p>
+</li>
+<li>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/190014/mq-unlink.c">mq-unlink.c</a>(<strong>点击文件名下载源程序</strong>)是一个简单的命令行工具，用于删除一个消息队列的名称；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall mq-unlink.c -o mq-unlink -lrt</code></p>
+</li>
+<li>
+<p>运行：<code>./mq-unlink mq-name</code></p>
+</li>
+<li>
+<p>下面是运行截图：</p>
+<p><img src="https://whowin.gitee.io/images/190014/screenshot-of-mq-unlink.png" alt="screenshot of mq-unlink"></p>
+</li>
+</ul>
+<hr>
+<h2 id="8-消息队列的一个完整实例">8 消息队列的一个完整实例</h2>
+<ul>
+<li>
+<p>这个实例分为服务器端和客户端两部分，演示了服务器端使用消息队列接收多个客户端进程发送的消息，并根据客户端发送的消息建立与客户端之间的独立的消息队列通道，并向客户端发送消息；</p>
+<ul>
+<li>服务器端首先创建一个消息队列 <code>/posix-mq-server</code>，用于接收客户端程序发来的消息，然后等待接收来自客户端的消息；</li>
+<li>客户端程序首先创建 5 个子进程，每个子进程都运行相同的程序；</li>
+<li>客户端子进程创建一个与自身进程号相关的消息队列 <code>posix-mq-client-(PID)</code>，用于接收服务器端发送过来的信息；</li>
+<li>客户端子进程首先打开消息队列 <code>/posix-mq-server</code>，然后将客户端消息队列名称 <code>posix-mq-client-(PID)</code> 发送给服务器；</li>
+<li>服务器端收到客户端子进程发送过来的消息队列名称后，打开该消息队列，并将一个序列号发送给客户端；</li>
+<li>客户端子进程收到服务器端发送的序列号并显示出来；</li>
+<li>每个客户端子进程循环向服务端发送 5 条消息，并接收 5 次回应，每次发送消息间隔一个不大于 6 秒的随机数；</li>
+<li>客户端父进程等待 5 个子进程全部运行完毕后退出；</li>
+<li>服务器端程序只能用 ctrl+c 退出，所以程序中截获了 ctrl+c 信号，并在处理程序中对已经打开的消息队列进行了处理。</li>
+</ul>
+</li>
+<li>
+<p>服务器端源程序：<a href="https://whowin.gitee.io/sourcecodes/190014/mq-server.c">mq-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
+<li>
+<p>客户端源程序：<a href="https://whowin.gitee.io/sourcecodes/190014/mq-client.c">mq-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
+<li>
+<p>包含文件：<a href="https://whowin.gitee.io/sourcecodes/190014/mq-const.h">mq-const.h</a>(<strong>点击文件名下载源程序</strong>)</p>
+</li>
+<li>
+<p>编译：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall mq-server.c -o mq-server -lrt
+</span></span><span class="line"><span class="cl">gcc -Wall mq-client.c -o mq-client -lrt
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>这个实例的运行需要两个终端窗口，一个窗口中运行 <code>./mq-server</code>，另一个窗口中运行 <code>./mq-client</code>；</p>
+</li>
+<li>
+<p>下面是运行录屏，左边时服务端窗口，右边是客户端窗口：</p>
+<p><img src="https://whowin.gitee.io/images/190014/mq-server-client.gif" alt="Recording screen for running example"></p>
+</li>
+</ul>
+<hr>
+<h2 id="9-发送接收消息时设置阻塞时间">9 发送/接收消息时设置阻塞时间</h2>
+<ul>
+<li>当打开消息队列时没有设置 O_NONBLOCK 标志时，POSIX 消息队列还提供了两个可以设置阻塞时间的发送和接收调用；</li>
+<li>当消息队列已满时，如果没有设置 O_NONBLOCK，则调用 mq_send() 发送消息时会产生阻塞，此时可以考虑使用 mq_timedsend() 发送消息；</li>
+<li>如果消息队列为空，而且没有设置 O_NONBLOCK，当使用 mq_receive() 从接收消息时会产生阻塞，此时可以考虑使用 mq_timedreceive() 接收消息；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mqueue.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">mq_timedsend</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">msg_ptr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">msg_len</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">msg_prio</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                 <span class="k">const</span> <span class="k">struct</span> <span class="n">timespec</span> <span class="o">*</span><span class="n">abs_timeout</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">ssize_t</span> <span class="nf">mq_timedreceive</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">msg_ptr</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">msg_len</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">msg_prio</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                        <span class="k">const</span> <span class="k">struct</span> <span class="n">timespec</span> <span class="o">*</span><span class="n">abs_timeout</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>与 mq_send() 和 mq_receive() 相比，这两个函数仅仅是多了参数 <code>const struct timespec *abs_timeout</code>，这个是用来指定阻塞时间的；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">timespec</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time_t</span> <span class="n">tv_sec</span><span class="p">;</span>        <span class="cm">/* seconds */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span>   <span class="n">tv_nsec</span><span class="p">;</span>       <span class="cm">/* nanoseconds */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>特别要注意的时，abs_timeout 并不是一个时长，而是一个绝对时间，其值表示从 <code>1970-01-01 00:00:00+0000 (UTC)</code> 开始，到函数返回的秒(tv_sec)和纳秒(tv_nsec)的数值；</li>
+<li>在具体实践中，通常是使用 clock_gettime() 函数获取当前时间到 <code>struct timespec</code> 结构中，然后在 <code>struct timespec</code> 结构中加上希望阻塞的时长，再去调用 mq_timedsend() 或者 mq_timedreceive()；</li>
+<li>下面这段代码片段演示了 mq_timedreceive() 的基本用法：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span>   <span class="n">timespec</span> <span class="n">tm</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">clock_gettime</span><span class="p">(</span><span class="n">CLOCK_REALTIME</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">tm</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">tm</span><span class="p">.</span><span class="n">tv_sec</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&gt;</span> <span class="n">mq_timedreceive</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="mi">4096</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>  <span class="o">&amp;</span><span class="n">tm</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id="10-消息队列的异步通知机制">10 消息队列的异步通知机制</h2>
+<ul>
+<li>
+<p>Linux 的异步通知机制，不仅仅可以用于消息队列，也可以用于各类事件的通知，在线手册 <code>man sigevent</code> 可以了解更详细的信息；</p>
+</li>
+<li>
+<p>本文仅介绍用于消息队列的异步通知机制；</p>
+</li>
+<li>
+<p>当消息队列中有新消息时，异步通知机制可以按照设置启动一个线程，并在这个线程中执行指定的函数，并按照设置传递参数到这个被执行的函数；</p>
+</li>
+<li>
+<p>这些设置包含在 <code>struct sigevent</code> 中：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sigevent</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>          <span class="n">sigev_notify</span><span class="p">;</span>  <span class="cm">/* Notification method */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>          <span class="n">sigev_signo</span><span class="p">;</span>   <span class="cm">/* Notification signal */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">union</span> <span class="n">sigval</span> <span class="n">sigev_value</span><span class="p">;</span>   <span class="cm">/* Data passed with
+</span></span></span><span class="line"><span class="cl"><span class="cm">                                    notification */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span>       <span class="p">(</span><span class="o">*</span><span class="n">sigev_notify_function</span><span class="p">)</span> <span class="p">(</span><span class="k">union</span> <span class="n">sigval</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">                    <span class="cm">/* Function used for thread
+</span></span></span><span class="line"><span class="cl"><span class="cm">                        notification (SIGEV_THREAD) */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span>        <span class="o">*</span><span class="n">sigev_notify_attributes</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="cm">/* Attributes for notification thread
+</span></span></span><span class="line"><span class="cl"><span class="cm">                        (SIGEV_THREAD) */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pid_t</span>        <span class="n">sigev_notify_thread_id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                    <span class="cm">/* ID of thread to signal (SIGEV_THREAD_ID) */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>看上去还是挺复杂的一个结构，但其实解决完 <code>sigev_notify</code> 字段后，看上去就不复杂了；</p>
+</li>
+<li>
+<p><code>sigev_notify</code> 字段设置如何执行通知，该字段可以有以下四个值之一：</p>
+<ul>
+<li><strong>SIGEV_NONE</strong>：不作任何通知；</li>
+<li><strong>SIGEV_SIGNAL</strong>：向进程发出一个信号，这个信号由 <code>sigev_signo</code> 字段指定，进程中的信号处理程序负责处理这个通知；</li>
+<li><strong>SIGEV_THREAD</strong>：建立一个新线程，并运行由 <code>sigev_notify_function</code> 指定的函数，<code>sigev_value</code> 字段将作为参数传递给这个函数；</li>
+<li><strong>SIGEV_THREAD_ID</strong>：目前仅用于 POSIX 定时器，需要设置 <code>sigev_notify_thread_id</code> 字段；</li>
+</ul>
+</li>
+<li>
+<p>这里面只有当 <code>sigev_notify</code> 为 <strong>SIGEV_THREAD</strong> 时与消息队列有关，此时，只有 <code>sigev_notify_function</code>、<code>sigev_value</code> 和 <code>sigev_notify_attributes</code> 三个字段与本文有关；</p>
+</li>
+<li>
+<p>在具体实践中，通常并不需要设置线程属性，所以 <code>sigev_notify_attributes</code> 也不需要设置；</p>
+</li>
+<li>
+<p>当我们需要设置一个消息队列的异步通知时，仅需要填写 <code>struct sigevent</code> 中的三个字段：</p>
+<ul>
+<li><code>sigev_notify = SIGEV_THREAD</code></li>
+<li><code>sigev_notify_function</code> 字段填处理新消息的函数指针；</li>
+<li><code>sigev_value</code> 字段设置为传递给处理函数的参数，通常为已经打开的消息队列的描述符；</li>
+</ul>
+</li>
+<li>
+<p>看看如何把消息队列的描述符传递给处理函数，因为传递参数的字段是一个 <code>union sigval</code>，所以要先看 <code>union sigval</code> 的定义：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">union</span> <span class="n">sigval</span> <span class="p">{</span>          <span class="cm">/* Data passed with notification */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">sival_int</span><span class="p">;</span>      <span class="cm">/* Integer value */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span>   <span class="o">*</span><span class="n">sival_ptr</span><span class="p">;</span>      <span class="cm">/* Pointer value */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>因为消息队列的描述符就是个 int，所以，我们既可以使用 <code>sival_int</code> 来传递描述符，也可以把描述符的指针赋予 <code>sigval_ptr</code> 传递过去；</p>
+</li>
+<li>
+<p>对 <code>struct sigevent</code> 设置完成后，调用 <code>mq_notify()</code> 就完成了消息队列异步通知的设置；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;mqueue.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="kt">int</span> <span class="nf">mq_notify</span><span class="p">(</span><span class="n">mqd_t</span> <span class="n">mqdes</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">sigevent</span> <span class="o">*</span><span class="n">sevp</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>mq_notify()</code> 的调用仅有两个参数，一个是消息队列的描述符，另一个是前面介绍的 <code>struct sigevent</code>，所以没有更多可以解释的；</p>
+</li>
+<li>
+<p><code>mq_notify()</code> 调用成功将返回 0，错误时返回 -1，errno 中为错误码；</p>
+</li>
+<li>
+<p>关于消息队列的异步通知机制，还有以下几点要注意：</p>
+<ul>
+<li>当调用 <code>mq_notify()</code> 成功后，就会注册一个消息通知，当要取消这个消息通知时，只需要将 <code>sevp = NULL</code>，并再次调用 <code>mq_notify()</code> 即可；</li>
+<li>一个消息队列只能注册一个异步通知，当注册多个时，只有注册的第一个有效；</li>
+<li>只有消息队列为空，收到第一条消息时，才会收到通知，消息队列不空时，即便有消息进来也不会触发通知；</li>
+</ul>
+</li>
+<li>
+<p>消息队列的异步处理机制使我们的主程序无需阻塞在消息队列上，而是专心处理其它事务，可以大大提高程序的运行效率；</p>
+</li>
+<li>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/190014/mq-notify.c">mq-notify.c</a>(<strong>点击文件名下载源程序</strong>)演示了消息队列的异步通知的基本编程方法；</p>
+<ul>
+<li>该程序首先建立一个消息队列，然后设置消息队列异步通知；</li>
+<li>等待 1 秒钟后向消息队列中发送一条消息；</li>
+<li>触发异步通知，通知处理函数成功收到消息；</li>
+</ul>
+</li>
+<li>
+<p>编译：<code>gcc -Wall mq-notify.c -o mq-notify -lrt</code></p>
+</li>
+<li>
+<p>运行：<code>./mq-notify</code></p>
+</li>
+<li>
+<p>运行截图：</p>
+<p><img src="https://whowin.gitee.io/images/190014/screenshot-of-mq-notify.png" alt="Screenshot of mq-notify"></p>
+</li>
+</ul>
+<hr>
+<h2 id="11-system-v-消息队列-vs-posix-消息队列">11 System V 消息队列 VS POSIX 消息队列</h2>
+<ul>
+<li>文章<a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>介绍了 UNIX System V 消息队列的编程方法；</li>
+<li>POSIX 消息队列的功能与 System V 消息队列类似，很显然调用方法有较大的不同；</li>
+<li>POSIX 消息队列和 System V 消息队列一样，都是在内核中实现的，所以，与 System V 消息队列类似对资源的占用有一定的限制：
+<ul>
+<li>msg_max：一个消息队列中消息数量的最大值；</li>
+<li>msgsize_max：消息队列中每个消息的最大长度；</li>
+<li>queues_max：系统中消息队列数量的最大值；</li>
+</ul>
+</li>
+<li>与 System V 消息队列一样，这些最大值可以在 proc 文件系统中找到
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ cat /proc/sys/fs/mqueue/msg_max
+</span></span><span class="line"><span class="cl">$ cat /proc/sys/fs/mqueue/msgsize_max
+</span></span><span class="line"><span class="cl">$ cat /proc/sys/fs/mqueue/queues_max
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>与 System V 消息队列相比，POSIX 消息队列还是有一些优点的：
+<ul>
+<li>
+<p>POSIX 消息队列只有在使用它的所有进程均关闭该消息队列后才能被完全销毁；</p>
+<blockquote>
+<p>POSIX 消息队列的 mq_unlink() 虽然立即删除了消息队列的名称，但是并没有立即销毁这个消息队列，所有已经打开该消息队列的进程仍然可以继续使用，但是不会再有新进程打开这个消息队列，当所有进程均关闭了该消息队列后，消息队列自行销毁；</p>
+</blockquote>
+<blockquote>
+<p>System V 消息队列则不同，任何有权限的进程均可以随意删除一个消息队列，可能会导致一个进程正在读/写消息队列时，该消息队列被其它进程删除，依赖该消息队列传递消息的进程将发生不可预知的后果。</p>
+</blockquote>
+</li>
+<li>
+<p>POSIX 消息队列有一个异步通知机制，一个空消息队列中有消息进入时可以启动一个线程处理该消息；</p>
+<blockquote>
+<p>System V 消息队列没有这个机制，所以，一个需要从消息队列中读取消息的进程必须定时去队列中尝试读取消息，或者索性让程序阻塞在读取消息的函数(msgrcv())上，显然，POSIX 消息队列的异步通知机制更优越一些。</p>
+</blockquote>
+</li>
+<li>
+<p>POSIX 消息队列的消息引入了优先级，获取到的第一条消息总是最高优先级的消息；</p>
+<blockquote>
+<p>System V 消息队列中没有消息优先级的概念，但是可以使用不同的消息类别模拟出类似优先级的效果，在同一个消息类别下，后进入队列的消息不可能比先进入队列的消息先被读取到。</p>
+</blockquote>
+</li>
+<li>
+<p>在打开 POSIX 消息队列时，应用程序可以通过传递参数指定队列的属性(例如：每条消息大小或队列容量等)；</p>
+</li>
+</ul>
+</li>
+<li>System V 的消息队列使用 ID 来标识，消息队列本身没有名称；POSIX 消息队列需要为队列起一个名称，这在使用上会方便一些；</li>
+<li>总体来看，个人认为 POSIX 消息队列更易于使用；</li>
+</ul>
+<h2 id="12-消息队列-vs-管道">12 消息队列 VS 管道</h2>
+<ul>
+<li>
+<p>文章<a href="https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">《IPC之一：使用匿名管道进行父子进程间通信的例子》</a>介绍了匿名管道的编程方法；</p>
+</li>
+<li>
+<p>文章<a href="https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/">《IPC之二：使用命名管道(FIFO)进行进程间通信的例子》</a>介绍了命名管道的编程方法；</p>
+</li>
+<li>
+<p>尽管和消息队列比起来，管道显得简单而且功能较弱，但管道也是有其自身特点的；</p>
+</li>
+<li>
+<p>进程在使用管道进行数据交换时，数据在管道中的流动是一种非结构化的字节流；而消息队列中的数据是一种结构化的消息；</p>
+<blockquote>
+<p>当在消息队列中检索到一条消息时，我们只能完整地接收这条消息，不可能只接收一部分，而把另一部分留在消息队列中；但是管道则不同，当一个进程向管道中写入 100 个字节的数据时，我们可以仅从管道中读取 40 个字节，而把其余的 60 个字节留在管道中；</p>
+</blockquote>
+<blockquote>
+<p>再举一个例子，假定有一个函数需要被执行 100 次，每次需要向服务端发送 1 字节的执行结果，如果使用消息队列，那么服务端将收到 100 条消息，需要接收 100 次才能获得所有的运行结果，但是如果使用管道，可以等执行完后一次性地从管道中接收 100 个字节的消息，一次读取获得所有的运行结果，所以，在某些场景下，管道也会有优势；</p>
+</blockquote>
+</li>
+<li>
+<p>消息队列使用特殊标识符(描述符)，而不是完全的文件描述符，因此，消息队列需要一组专门的函数来发送和接收数据，而不能使用标准的文件操作函数；管道使用标准的文件描述符，所以可以使用标准的文件操作函数来进行读写；</p>
+</li>
+<li>
+<p>消息队列具有关联的元数据，允许进程指定接收消息的顺序；也就是说，消息队列不保证先入先出；但是管道是完全的先入先出；</p>
+<blockquote>
+<p>System V 消息队列的元数据中有消息类型，接收程序可以指定接收消息类型，从而过滤掉其它类型的已经在消息队列中的数据；但仍然可以保证在同样消息类型的条件下，做到先入先出；POSIX 消息队列的元数据中有消息优先级，接收程序收到的数据总是优先级高的消息在前面，仅可以保证相同优先级的消息是先入先出的。</p>
+</blockquote>
+</li>
+<li>
+<p>消息队列具有内核级持久性，需要使用专门的函数或实用程序来删除，终止进程不会删除消息队列；匿名管道在创建它的进程终止时将自动被删除，删除一个命名管道与删除一个普通文件完全一样，不需要专门的函数。</p>
+</li>
+</ul>
+<h2 id="13-有关进程间通信ipc的的其它文章">13 有关进程间通信(IPC)的的其它文章：</h2>
+<ul>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/">IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘</a></li>
+</ul>
+<h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
+-->
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-08-20
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">进程间通信</a>
+          <a href="/tags/ipc/">IPC</a>
+          <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a>
+          <a href="/tags/message-queues/">Message queues</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/ipc/0015-systemv-semaphore-sets/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">IPC之五：使用 System V 信号量集解决经典的&#39;哲学家就餐问题&#39;</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/ipc/0013-systemv-message-queue/">
+            <span class="next-text nav-default">IPC之三：使用 System V 消息队列进行进程间通信的实例</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/ipc/0014-posix-message-queue/" class="leancloud_visitors" data-flag-title="IPC之四：使用 POSIX 消息队列进行进程间通信的实例">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -134,6 +134,29 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0018-tun-example-for-setting-up-ip-tunnel/">使用tun虚拟网络接口建立IP隧道的实例</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-03-07 </span>
+      <div class="post-category">
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>通常的socket编程，面对的都是物理网卡，Linux下其实很容易创建虚拟网卡；本文简单介绍一下Linux虚拟网卡的概念，并以tun设备为例在客户端和服务器端分别建立一个实际的虚拟网卡，最终实现一个从客户端到服务器的简单的IP隧道，希望本文能对理解虚拟网卡和IP隧道有所帮助，本文将提供完整的源程序；阅读本文需要具备在Linux下使用C语言进行IPv4下socket编程的基本能力，本文对网络编程的初学者难度较大。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0018-tun-example-for-setting-up-ip-tunnel/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/network/0017-sync-time-from-time-server-using-sntp/">使用SNTP协议从时间服务器同步时间</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-02-13 </span>
@@ -220,29 +243,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/network/0008-get-gateway-ip-from-proc-filesys/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0009-get-gateway-ip-via-netlink/">linux下使用netlink获取gateway的IP地址</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-02-04 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，阅读本文需要对linux下编程有一定了解，熟悉IPv4的socket编程；本文对网络编程的初学者有较大难度。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0009-get-gateway-ip-via-netlink/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

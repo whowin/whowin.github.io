@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>IPC之五：使用 System V 信号量集解决经典的&#39;哲学家就餐问题&#39; - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量集(Semaphore Sets)，尽管信号量集被认为是 IPC 的一种方式，但实际上通常把信号量集用于进程间同步或者资源访问互斥，信号量集和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量集，本文仅针对 SYSTEM V 信号量集；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="IPC之五：使用 System V 信号量集解决经典的&#39;哲学家就餐问题&#39;" />
+<meta property="og:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量集(Semaphore Sets)，尽管信号量集被认为是 IPC 的一种方式，但实际上通常把信号量集用于进程间同步或者资源访问互斥，信号量集和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量集，本文仅针对 SYSTEM V 信号量集；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-09-01T16:43:29+08:00" />
+<meta property="article:modified_time" content="2023-09-01T16:43:29+08:00" />
+
+<meta itemprop="name" content="IPC之五：使用 System V 信号量集解决经典的&#39;哲学家就餐问题&#39;">
+<meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量集(Semaphore Sets)，尽管信号量集被认为是 IPC 的一种方式，但实际上通常把信号量集用于进程间同步或者资源访问互斥，信号量集和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量集，本文仅针对 SYSTEM V 信号量集；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。"><meta itemprop="datePublished" content="2023-09-01T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2023-09-01T16:43:29+08:00" />
+<meta itemprop="wordCount" content="8828">
+<meta itemprop="keywords" content="Linux,进程间通信,IPC,信号量,semaphore,system V," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="IPC之五：使用 System V 信号量集解决经典的&#39;哲学家就餐问题&#39;"/>
+<meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量集(Semaphore Sets)，尽管信号量集被认为是 IPC 的一种方式，但实际上通常把信号量集用于进程间同步或者资源访问互斥，信号量集和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量集，本文仅针对 SYSTEM V 信号量集；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">IPC之五：使用 System V 信号量集解决经典的&#39;哲学家就餐问题&#39;</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-09-01 </span>
+        <div class="post-category">
+            <a href="/categories/ipc/"> IPC </a>
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-信号量集semaphore-sets的基本概念">1 信号量集(Semaphore Sets)的基本概念</a></li>
+        <li><a href="#2-创建获取信号量集---semget">2 创建/获取信号量集 - semget()</a></li>
+        <li><a href="#3-内核对信号量集的管理">3 内核对信号量集的管理</a></li>
+        <li><a href="#4-信号量集的操作---semop">4 信号量集的操作 - semop()</a></li>
+        <li><a href="#5-信号量集的控制操作---semctl">5 信号量集的控制操作 - semctl()</a></li>
+        <li><a href="#6-实例">6 实例</a></li>
+        <li><a href="#7-信号量集的命令行命令">7 信号量集的命令行命令</a></li>
+        <li><a href="#8-有关进程间通信ipc的的其它文章">8 有关进程间通信(IPC)的的其它文章：</a></li>
+        <li><a href="#欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量集(Semaphore Sets)，尽管信号量集被认为是 IPC 的一种方式，但实际上通常把信号量集用于进程间同步或者资源访问互斥，信号量集和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量集，本文仅针对 SYSTEM V 信号量集；本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。</p>
+<h2 id="1-信号量集semaphore-sets的基本概念">1 信号量集(Semaphore Sets)的基本概念</h2>
+<ul>
+<li>
+<p>在传统的 UNIX SYSTEM V 中有三种 IPC 方法：消息队列(Message Queue)、信号量集(Semaphore Sets)和共享内存(Shared Memory)；</p>
+</li>
+<li>
+<p>文章<a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>中介绍了 SYSTEM V 下的消息队列，在阅读本文之前建议先阅读此文，因为 SYSTEM V 的各种 IPC 方法有很多相似之处，并且有一些基本概念是完全一致的；</p>
+</li>
+<li>
+<p>如无特别说明，以下所述的信号量集均指 SYSTEM V 信号量集；</p>
+</li>
+<li>
+<p>信号量集之所以被称为&quot;<strong>集</strong>&quot;，是因为在内核实现中是按照一个信号量集合(数组)进行管理的，而不是以单个信号量进行管理的，在文章的后面会介绍内核是如何管理信号量集的；</p>
+</li>
+<li>
+<p>在实践中经常把信号量集称为<strong>信号量</strong>，是因为很多应用场景中，信号量集中只有一个信号量，不过，怎么称呼并不重要；</p>
+</li>
+<li>
+<p>在多任务系统中，会有多个进程(线程)并行运行，这可能会出现多个进程同时操作同一个资源(比如：公共变量、共享内存、文件等)的情况，这种情况是有很大的潜在风险的：</p>
+<blockquote>
+<p>比如一个全局数组，A 进程在读出数组的第一个元素后，由于进程调度，A 进程暂停，B 进程开始写这个数组，B 进程写完后，由于进程调度，B 进程暂停，A 进程继续运行，继续读取数组的其它元素，A 进程读取了这个数组中的所有元素，但是，很显然，其读到的第一个元素的值，可能和其它元素的值并不是一组，这可能导致 A 进程通过数据做出的判断出现错误；</p>
+</blockquote>
+</li>
+<li>
+<p>并发进程/线程有助于提高性能，但是，当它们对共享资源进行访问时，需要对共享资源的访问进行必要的保护，以免出现不一致和不正确的状态；</p>
+</li>
+<li>
+<p>其它的资源，比如：数据库，共享内存、文件以及共享打印机等都有类似的问题，</p>
+</li>
+<li>
+<p>我们把这种只能有限个进程(线程)同时访问的资源叫做 <strong>临界资源</strong>(Critical Resources)，把访问临界资源的代码称为 <strong>临界区</strong>(Critical Sections)；</p>
+</li>
+<li>
+<p>信号量是内核级原语(Kernel Level Primitives)，是原子性(Atomic)的，不会产生竞争，这意味着对信号量的操作过程不会被中断；</p>
+</li>
+<li>
+<p>信号量是一个不小于 0 的计数器，当计数器为 0 时，表示其对应的一个资源的使用率以达到 100%，不能再有新的进程访问；</p>
+</li>
+<li>
+<p>对信号量有两个主要操作：</p>
+<ul>
+<li>一个叫 P 操作(获取信号量)，就是把信号量的值减 1(也可以是大于 1 的其它正整数)，如果此时信号量大于 0，则信号量值减 1，进程获得资源使用许可；如果此时信号量的值已经为 0，则进程等待在信号量上，直到信号量的值大于 0；</li>
+<li>另一个叫 V 操作(释放信号量)，就是把信号量的值加 1(也可以是大于 1 的其它正整数)；</li>
+<li>P 操作的称谓来源于荷兰语的单词 <strong>Proberen</strong>，意思是&quot;尝试&quot;(to test)；</li>
+<li>V 操作的称谓同样来源与荷兰语单词 <strong>Verhogen</strong>，意思是&quot;增加&quot;(to raise)；</li>
+</ul>
+</li>
+<li>
+<p>信号量的一种作用正是用于保护临界资源，使并发进程(线程)对资源的访问实现互斥；</p>
+<blockquote>
+<p>以下描述一个简单的使用信号量实现访问临界区互斥的过程：把一个信号量的值初始化为 1，当程序要进入临界区时，对信号量执行 P 操作(信号量减 1)，信号量值变为 0，程序获得许可进入临界区；如果此时信号量为 0，则进入排队等待，等待其它进程执行 V 操作，使信号量大于 0，然后对信号量执行 P 操作，获得许可进入临界区；程序在退出临界区时，对信号量执行 V 操作(信号量加 1)，如果此时信号量为 0，加 1 后便会启动等待在该信号量上的其它进程(线程)，获得允许进入临界区的许可；</p>
+</blockquote>
+</li>
+<li>
+<p>信号量的另一个主要用途是进程(线程)间的同步，进程间同步和互斥是不同的概念，互斥指的是多个进程不能同时访问临界资源，同步指的是多个进程要按照一个特定顺序访问临界资源；</p>
+<blockquote>
+<p>以下描述一个简单的进程同步过程：假定一组数据需要经过三个进程的依此处理后才能完成，这三个进程分别为：proc1、proc2 和 proc3，数据首先要经过 proc1 处理，然后 proc2 处理，然后 proc3 处理，循环往复，那么我们需要建立一个有三个信号量的信号量集：semset[3]，初始化时 semset[0]=1，semset[1]=semset[2]=0，proc1 对 semset[0] 执行 P 操作，proc2 对 semset[1] 执行 P 操作，proc3 对 semset[2] 执行 P 操作，初始状态时只有 proc1 可以获得许可(因为 semset[0]=1)，proc2 和 proc3 将等待在信号量上，proc1 完成任务后对 semset[1] 执行 V 操作，唤醒了 proc2，然后 proc1 再次对 semset[0] 执行 P 操作，等待在信号量上；proc2 完成任务后对 semset[2] 执行 V 操作，唤醒 proc3，然后再次对 semset[1] 执行 P 操作，等待在信号量上；proc3 完成任务后对 semset[0] 执行 V 操作，唤醒 proc1，然后对 semset[2] 执行 P 操作，等待在信号量上；&hellip;&hellip;；这样便可以对数据的处理顺序的进行有效地同步；</p>
+</blockquote>
+</li>
+<li>
+<p>所以，似乎信号量并不能完成进程间的通信；但信号量有一个重要的用法就是和 IPC 的共享内存共同使用完成进程间通信。</p>
+</li>
+<li>
+<p>和 SYSTEM V 的其它 IPC 一样，信号量集对内核资源的使用也有一些限制，可以使用命令 <code>ipcs -s -l</code> 查看这些限制：</p>
+<p><img src="https://whowin.gitee.io/images/190015/screenshot-of-sem-limits.png" alt="Screenshot of ipcs -s -l"></p>
+</li>
+<li>
+<p>也可以在 proc 文件系统中找到这些限制值：</p>
+<p><img src="https://whowin.gitee.io/images/190015/screenshot-of-sem-limits-proc.png" alt="Screenshot of sem limits in proc"></p>
+<ul>
+<li>第一项为 SEMMSL：每一个信号量集中的最大信号量数；</li>
+<li>第二项为 SEMMNS：整个 Linux 系统中的信号量(不是信号量集)的最大数；</li>
+<li>第三项为 SEMOPM：执行 semop() 时，一次可以操作的信号量的最大数；</li>
+<li>第四项为 SEMMNI：整个 Linux 系统中的信号量集的最大数。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-创建获取信号量集---semget">2 创建/获取信号量集 - semget()</h2>
+<ul>
+<li>在 SYSTEM V 三种 IPC 方法的 API 中，都是使用 <code>~get()</code> 来创建和获取的，消息队列使用 msgget()，共享内存使用 shmget()，信号量集中使用 semget()，其中的一些概念是一样的，这里就不在赘述，请务必参考文章<a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a></li>
+<li>与 SYSTEM V 的消息队列一样，信号量集的使用 ID 作为其唯一标识符；</li>
+<li>使用 semget() 创建/获取信号量集
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/ipc.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/sem.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">semget</span><span class="p">(</span><span class="n">key_t</span> <span class="n">key</span><span class="p">,</span> <span class="kt">int</span> <span class="n">nsems</span><span class="p">,</span> <span class="kt">int</span> <span class="n">semflg</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>可以使用 ftok() 生成 <strong>key</strong>，请参考文章<a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>中的相关说明；</li>
+<li><strong>nsems</strong> 表示创建的新信号量集中有多少个信号量，当仅仅是获取信号量的 ID(semflag=IPC_EXCL)，nsems 可以为 0，很多情况下，nsems 为 1，表示这个信号量集里只有一个信号量；</li>
+<li><strong>semflag</strong> 的有效值有 IPC_CREAT 和 IPC_EXCL：
+<ul>
+<li>当 <strong>IPC_CREAT</strong> 时，如果 key 对应的信号量集存在，则返回其信号量集的 ID，如果 key 对应的信号量集不存在，则建立与 key 关联的信号量集，并返回该新信号量集的 ID；</li>
+<li>当 <strong>IPC_CREAT | IPC_EXCL</strong> 时，如果 key 对应的信号量集存在，则报错返回 -1，<code>errno = EEXIST(File exists)</code>；如果 key 对应的信号量集不存在，则建立与 key 关联的信号量集，并返回该新信号量集的 ID；</li>
+<li>当 <strong>IPC_EXEL</strong> 时，如果 key 对应的信号量集存在，则返回信号量集的 ID(这点和 IPC_CREAT 一样)，如果 key 对应的信号量集不存在，则返回 -1，<code>errno = ENOENT(No such file or directory)</code>；</li>
+<li>另外，semflag 还可以加上所创建的消息队列的读写权限，要用八进制表示，比如：0666；</li>
+<li>semflag 举例：<code>IPC_CREAT | IPC_EXEL | 0666</code></li>
+</ul>
+</li>
+<li>当 <code>key = IPC_PRIVATE</code> 时，<code>semget()</code> 将创建一个新的信号量集并返回该信号量集的 ID；
+<ul>
+<li>这样生成的信号量集只有 ID，没有 key(key 为 0)，所以其它进程并不能方便地使用这个信号量集，通常只能在子进程之间使用；</li>
+<li>实际上，IPC_PRIVATE 的值是 0，所以我们自己生成的 key 不能是 0，否则相当于将 key 设置为 IPC_PRIVATE；</li>
+</ul>
+</li>
+<li>下面这段代码创建一个有三个信号量的信号量集：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">key_t</span> <span class="n">sem_key</span> <span class="o">=</span> <span class="n">ftok</span><span class="p">(</span><span class="s">&#34;/tmp/&#34;</span><span class="p">,</span> <span class="mi">1234</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">semid</span> <span class="o">=</span> <span class="n">semget</span><span class="p">(</span><span class="n">sem_key</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">IPC_CREAT</span> <span class="o">|</span> <span class="n">IPC_EXCL</span> <span class="o">|</span> <span class="mo">0666</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">semid</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">perror</span><span class="p">(</span><span class="s">&#34;semget()&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>特别要注意的是 msgflag 参数中的读/写权限的设置，如果不显式标明，那么默认的读写权限将变成 0000，这样的一个信号量集是没有办法进行使用的；当然还可以使用 <code>semctl()</code> 修改信号量集的读写权限，但需要更高的权限(比如root)才能做到；</li>
+<li>另外要注意的是，新创建的信号量集中的信号量的初始值均为 0，如果不希望其值为 0，可以使用 semctl() 去设置一下。</li>
+</ul>
+<h2 id="3-内核对信号量集的管理">3 内核对信号量集的管理</h2>
+<ul>
+<li>
+<p>信号量集是在内核中实现的，也是由内核进行管理的，内核提供了一组调用供应用程序对信号量集进行操作和控制；</p>
+</li>
+<li>
+<p>先介绍内核对信号量集的管理还是先介绍 semop() 调用，其实是很让人纠结的，因为这两者交织在一起，很难分开，所以建议在阅读这一节时与下面介绍 semop() 调用的章节一起阅读，否则可能有些地方不好理解；</p>
+</li>
+<li>
+<p>要了解内核对信号量集的管理，其实了解两个结构就可以了：</p>
+<ul>
+<li>
+<p>第一个是定义在 <code>&lt;linux/sem.h&gt;</code> 中的完整的 <code>struct semid_ds</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">semid_ds</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">ipc_perm</span>	<span class="n">sem_perm</span><span class="p">;</span>       <span class="cm">/* permissions .. see ipc.h */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__kernel_time_t</span>	<span class="n">sem_otime</span><span class="p">;</span>      <span class="cm">/* last semop time */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__kernel_time_t</span>	<span class="n">sem_ctime</span><span class="p">;</span>      <span class="cm">/* create/last semctl() time */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sem</span>	<span class="o">*</span><span class="n">sem_base</span><span class="p">;</span>          <span class="cm">/* ptr to first semaphore in array */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sem_queue</span> <span class="o">*</span><span class="n">sem_pending</span><span class="p">;</span>  <span class="cm">/* pending operations to be processed */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sem_queue</span> <span class="o">**</span><span class="n">sem_pending_last</span><span class="p">;</span>    <span class="cm">/* last pending operation */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">sem_undo</span>	<span class="o">*</span><span class="n">undo</span><span class="p">;</span>          <span class="cm">/* undo requests on this array */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span>	<span class="n">sem_nsems</span><span class="p">;</span>      <span class="cm">/* no. of semaphores in array */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>Linux 用一个结构数组来管理信号量集，这个数组的起始指针就是 <code>struct semid_ds</code> 中的 <code>sem_base</code> 字段，这个数组的元素数量就是 <code>sem_nsems</code> 字段，也就是使用 semget() 创建信号量集时的参数 nsems；</p>
+</li>
+<li>
+<p>第二个要了解的结构就是 <code>struct sem</code> 是 <code>struct semid_ds</code> 中的 <code>sem_base</code> 指向的结构数组，数组中的每一个元素表示一个信号量；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sem</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span>  <span class="n">semval</span><span class="p">;</span>   <span class="cm">/* semaphore value */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span>  <span class="n">semzcnt</span><span class="p">;</span>  <span class="cm">/* # waiting for zero */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span>  <span class="n">semncnt</span><span class="p">;</span>  <span class="cm">/* # waiting for increase */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pid_t</span>           <span class="n">sempid</span><span class="p">;</span>   <span class="cm">/* PID of process that last */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>semval</strong>：信号量的值，这个值一定为 0 或者正整数；</p>
+<blockquote>
+<p>任何一个进程在使用 semop() 试图将 semval 改变成小于 0 的数值时，都会产生阻塞，直至其它进程改变了 semval 的值，使当前进程在执行 semop() 操作后，semval 的值仍然大于或等于 0；</p>
+</blockquote>
+</li>
+<li>
+<p><strong>semzcnt</strong>：等待资源利用率达到100%的进程数；</p>
+<blockquote>
+<p>semop() 通过设置 sem_op 的值来改变 semval 的值，当 sem_op 设置为 0 时，semop() 将等待在这个信号量上，直至该信号量的 semval 为 0，<strong>semzcnt</strong> 就是记录当前处于这种状态的进程数量；</p>
+</blockquote>
+</li>
+<li>
+<p><strong>semncnt</strong>：等待资源可用的进程数；</p>
+<blockquote>
+<p>当一个信号量的 semval 为 0 时，表示其关联的资源不可用，此时，想要获取该信号量的进程必须等待在这个信号量上，等待其它进程将信号量的值改变为大于 0 的值，<strong>semncnt</strong> 就是记录处于这种状态的进程数；</p>
+</blockquote>
+</li>
+<li>
+<p><strong>sempid</strong>：最后操作该信号量的进程号；</p>
+</li>
+</ul>
+</li>
+<li>
+<p>内核中还为每一个打开了信号量集的进程维护着一个变量 <strong>semadj</strong>，这个值的初始值为 0，当该进程执行 semop() 成功时，其对信号量的影响将记录在 semadj 中，这样当这个进程终止时，内核可以根据 semadj 消除该进程对某个信号量的影响；</p>
+<blockquote>
+<p>下面简单描述以下 semadj 的作用：某进程打开一个只有一个信号量的信号量集，此时：<code>semval = 1</code>，<code>semadj = 0</code>，该进程调用 semop() 执行 P 操作，使 <code>semval = 0</code>，内核将在semadj 做相反操作(+1)，使 <code>semadj = 1</code>，此后，该进程执行 V 操作，使 <code>semval = 1</code>，内核再次对 semadj 做相反操作(-1)，使 <code>semadj = 0</code>，然后，该进程再次执行 P 操作，使 <code>semval = 0</code>，内核对 semadj 做相反操作(+1)，使 <code>semadj = 1</code>，此时该进程意外终止，此时，该信号量的 <code>semval = 0</code>，将导致其它任何进程都无法获取该信号量，但是由于内核设置了 semadj 变量，在该进程终止时，执行 <code>semval += semadj</code> 操作，以消除该进程对这个信号量的影响，执行结果使 <code>semval = 1</code>，使其它进程可以继续使用该信号量。</p>
+</blockquote>
+<blockquote>
+<p>在调用 semop() 时在参数 sem_flg 上设置 <code>SEM_UNDO</code>，则其对信号量值的改变将被记录到 semadj 变量中。</p>
+</blockquote>
+</li>
+<li>
+<p>另外在 <code>&lt;sys/sem.h&gt;</code> 中对 <code>struct semid_ds</code> 的定义仅是这个结构的一部分，但用户空间的应用程序已经足够了，应用程序并不需要了解内核如何管理信号量集；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">semid_ds</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">ipc_perm</span> <span class="n">sem_perm</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time_t</span>          <span class="n">sem_otime</span><span class="p">;</span>   <span class="cm">/* last operation time */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time_t</span>          <span class="n">sem_ctime</span><span class="p">;</span>   <span class="cm">/* last change time */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">long</span>   <span class="n">sem_nsems</span><span class="p">;</span>   <span class="cm">/* count of sems in set */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id="4-信号量集的操作---semop">4 信号量集的操作 - semop()</h2>
+<ul>
+<li>
+<p>前面说过，信号量就是一个计数器，那么对信号量的主要操作就是对它的增/减操作，这就是本节主要要介绍的内容；</p>
+</li>
+<li>
+<p>使用 semop() 对信号量集进行操作：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/ipc.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/sem.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">semop</span><span class="p">(</span><span class="kt">int</span> <span class="n">semid</span><span class="p">,</span> <span class="k">struct</span> <span class="n">sembuf</span> <span class="o">*</span><span class="n">sops</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nsops</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">semtimedop</span><span class="p">(</span><span class="kt">int</span> <span class="n">semid</span><span class="p">,</span> <span class="k">struct</span> <span class="n">sembuf</span> <span class="o">*</span><span class="n">sops</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nsops</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">timespec</span> <span class="o">*</span><span class="n">timeout</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>semop()</code> 调用成功返回 0，调用失败返回 -1，errno 中为错误编码；</p>
+</li>
+<li>
+<p><strong>semid</strong>：已经打开的信号量集 ID；</p>
+</li>
+<li>
+<p>如果信号量集中有不止一个信号量，<code>semop()</code> 可以一次处理多个信号量，最多一次可以处理 <strong>SEMOPM</strong> 个信号量，这些信号量必须在一个信号量集中；</p>
+</li>
+<li>
+<p><strong>sops</strong>：这是一个结构数组的起始指针，数组中的每个结构元素定义了对信号量集中某个信号量的操作，这个数组中的元素个数，由后面的参数 <strong>nsops</strong> 指定；</p>
+</li>
+<li>
+<p><strong>sops</strong> 对应的结构如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sembuf</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="kt">int</span> <span class="n">sem_num</span><span class="p">;</span> <span class="cm">/* semaphore number */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">short</span> <span class="kt">int</span> <span class="n">sem_op</span><span class="p">;</span>           <span class="cm">/* semaphore operation */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">short</span> <span class="kt">int</span> <span class="n">sem_flg</span><span class="p">;</span>          <span class="cm">/* operation flag */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>sem_num</strong>：要操作的信号量在信号量集中的索引号(数组下标)；</p>
+</li>
+<li>
+<p><strong>sem_op</strong>：要对信号量做的操作，根据其值有三种可能性：</p>
+<ol>
+<li>
+<p><strong>sem_op 是正整数</strong>：</p>
+<blockquote>
+<p>执行一个所谓的 V 操作；</p>
+</blockquote>
+<blockquote>
+<p>信号量值(semval)将被修改为：<code>semval + sem_op</code>；调用进程需要对信号量集有写权限；</p>
+</blockquote>
+<blockquote>
+<p>此外，如果为此操作指定了 SEM_UNDO，则系统会从此信号量的信号量调整 (semadj) 值中减去值 sem_op。</p>
+</blockquote>
+</li>
+<li>
+<p><strong>sem_op 为 0</strong>：</p>
+<blockquote>
+<p>如果信号量值(semval)为 0，该调用将立即返回；调用进程需要有信号量集的读权限；</p>
+</blockquote>
+<blockquote>
+<p>如果信号量值(semval)不为 0，则调用进程进入阻塞，直至信号量值变为 0 时才返回成功；或者该信号量集被删除，该调用返回一个错误，errno=EIDRM；或者调用线程捕获到了一个信号(signal)进入信号处理程序，该调用返回一个错误，errno=EINTR；</p>
+</blockquote>
+<blockquote>
+<p>如果 sem_flag 中设置了 IPC_NOWAIT，且信号量值(semval)不为 0，则调用失败，errno=EAGAIN；</p>
+</blockquote>
+</li>
+<li>
+<p><strong>sem_op 为负数</strong>：</p>
+<blockquote>
+<p>执行一个所谓的 P 操作；</p>
+</blockquote>
+<blockquote>
+<p>如果 <code>semval - |sem_op| &gt;= 0</code>，则信号量值将被修改为：<code>semval - |sem_op|</code>；调用进程需要对信号量集有写权限；</p>
+</blockquote>
+<blockquote>
+<p>如果 <code>semval - |sem_op| &lt; 0</code>，则调用进程/线程进入阻塞，直至 <code>semval &gt;= |semop|</code>，调用返回成功；或者该信号量集被删除，该调用返回一个错误，errno=EIDRM；或者调用线程捕获到了一个信号(signal)进入信号处理程序，该调用返回一个错误，errno=EINTR；</p>
+</blockquote>
+<blockquote>
+<p>如果 sem_flag 中设置了 IPC_NOWAIT，且<code>semval - |sem_op| &lt; 0</code>，则调用失败，errno=EAGAIN；</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li>
+<p>看上去 sem_op 有些复杂，但在具体编程实践中，多数情况下信号量集中只有一个信号量，所以 sem_num 始终为 0；sem_op 多数情况下仅为 1 或者 -1，这样看起来就不那么复杂了；</p>
+</li>
+<li>
+<p><strong>sem_flag</strong>：操作标志，只有两种：IPC_NOWAIT 和 SEM_UNDO；</p>
+<blockquote>
+<p>设置 <code>IPC_NOWAIT</code> 后，当调用需要阻塞时会立即返回错误，并在 errno 中设置错误代码；</p>
+</blockquote>
+<blockquote>
+<p>设置 <code>SEM_UNDO</code> 后，调用中对 semval 的影响都将被记录在该进程的 <code>semadj</code> 中，请参考上一节中关于 semadj 的介绍，在一个进程终止时，内核会根据 semadj 的值修改 semval 的值，以消除一个进程对某个信号量的影响；</p>
+</blockquote>
+</li>
+<li>
+<p>对 <code>semtimedop()</code> 就不做介绍了，这个函数用的不多，可以参考文章<a href="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/">《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》</a>中关于 <code>mq_timedsend()</code> 的介绍，其实主要是对 <code>struct timespec</code> 的介绍。</p>
+</li>
+</ul>
+<h2 id="5-信号量集的控制操作---semctl">5 信号量集的控制操作 - semctl()</h2>
+<ul>
+<li>
+<p>使用 semctl() 调用对信号量集进行控制操作</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/ipc.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/sem.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">semctl</span><span class="p">(</span><span class="kt">int</span> <span class="n">semid</span><span class="p">,</span> <span class="kt">int</span> <span class="n">semnum</span><span class="p">,</span> <span class="kt">int</span> <span class="n">cmd</span><span class="p">,</span> <span class="p">...);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>这个调用有三个或者四个参数，是否有第四个参数，取决于第三个参数 cmd 的值，当有第四个参数时，第四个参数为 <code>union semun arg</code>，其类型为 <code>union semun</code>，见如下定义：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">union</span> <span class="n">semun</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>              <span class="n">val</span><span class="p">;</span>    <span class="cm">/* Value for SETVAL */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">semid_ds</span> <span class="o">*</span><span class="n">buf</span><span class="p">;</span>    <span class="cm">/* Buffer for IPC_STAT, IPC_SET */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span>  <span class="o">*</span><span class="n">array</span><span class="p">;</span>  <span class="cm">/* Array for GETALL, SETALL */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">seminfo</span>  <span class="o">*</span><span class="n">__buf</span><span class="p">;</span>  <span class="cm">/* Buffer for IPC_INFO(Linux-specific) */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>其中的 <code>struct semid_ds</code> 前面有过介绍，定义在 <code>&lt;sys/sem.h&gt;</code> 中：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">semid_ds</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">ipc_perm</span> <span class="n">sem_perm</span><span class="p">;</span>  <span class="cm">/* Ownership and permissions */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time_t</span>          <span class="n">sem_otime</span><span class="p">;</span> <span class="cm">/* Last semop time */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time_t</span>          <span class="n">sem_ctime</span><span class="p">;</span> <span class="cm">/* Last change time */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">long</span>   <span class="n">sem_nsems</span><span class="p">;</span> <span class="cm">/* No. of semaphores in set */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li><code>struct semid_ds</code> 中的 <code>struct ipc_perm</code> 定义如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ipc_perm</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">key_t</span>          <span class="n">__key</span><span class="p">;</span> <span class="cm">/* Key supplied to semget(2) */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">uid_t</span>          <span class="n">uid</span><span class="p">;</span>   <span class="cm">/* Effective UID of owner */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">gid_t</span>          <span class="n">gid</span><span class="p">;</span>   <span class="cm">/* Effective GID of owner */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">uid_t</span>          <span class="n">cuid</span><span class="p">;</span>  <span class="cm">/* Effective UID of creator */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">gid_t</span>          <span class="n">cgid</span><span class="p">;</span>  <span class="cm">/* Effective GID of creator */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">mode</span><span class="p">;</span>  <span class="cm">/* Permissions */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">__seq</span><span class="p">;</span> <span class="cm">/* Sequence number */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>这个调用在失败时返回 -1，在成功时的返回值与 cmd 有关；</p>
+</li>
+<li>
+<p><strong>semid</strong>：已经打开的信号量集 ID；</p>
+</li>
+<li>
+<p><strong>semnum</strong>：要操作的信号量在信号量集中的索引号(数组下标)，对于只有一个信号量的信号量集，这个值为 0；</p>
+</li>
+<li>
+<p><strong>cmd</strong>：执行的命令，这个参数决定着对信号量做什么操作，也决定着这个调用最后的不定长参数应该是什么参数；</p>
+</li>
+<li>
+<p>semctl() 可以执行的操作很多，我们仅就常用的 cmd 值做出介绍：</p>
+<ul>
+<li>
+<p><strong>IPC_STAT</strong>：获取信号量集当前的状态</p>
+<blockquote>
+<p>该调用的第四个参数为 <code>arg.buf</code>，是一个指向 <code>struct semid_ds</code> 的指针，调用成功，内核中 <code>struct semid_ds</code> 的数据将复制到 <code>arg.buf</code> 中；实际上该调用主要用于获取信号量集的读写权限以及该信号量集中信号量的数量等；</p>
+</blockquote>
+<blockquote>
+<p>此命令中，参数 semnum 无效，设置为 0 即可。</p>
+</blockquote>
+<blockquote>
+<p>调用成功时，返回 0。</p>
+</blockquote>
+</li>
+<li>
+<p><strong>IPC_SET</strong>：设置信号量集的状态，这个命令和 <code>IPC_STAT</code> 是一对；</p>
+<blockquote>
+<p>该调用的第四个参数为 <code>arg.buf</code>，是一个指向 <code>struct semid_ds</code> 的指针，通常在调用前，应该先使用 <code>IPC_STAT</code> 命令调用 semctl() 获取信号量集的状态，然后修改其中需要设置的值，然后再次用 <code>IPC_SET</code> 命令调用 semctl() 设置信号量集的新状态；已知的可以设置的状态有：<code>sem_perm.uid</code>、<code>sem_perm.gid</code> 和 <code>sem_perm.mode</code>(后 9 位)；在实际编程实践中，这个命令仅用于设置信号量集的读写权限，也就是 <code>sem_perm.mode</code>(后 9 位)；</p>
+</blockquote>
+<blockquote>
+<p>此命令中，参数 semnum 无效，设置为 0 即可；</p>
+</blockquote>
+<blockquote>
+<p>调用成功时，返回 0。</p>
+</blockquote>
+</li>
+<li>
+<p><strong>IPC_RMID</strong>：删除一个信号量集；</p>
+<blockquote>
+<p>此命令无需第四个参数，参数 semnum 没有意义，为 0 即可，该调用成功时返回 0；</p>
+</blockquote>
+</li>
+<li>
+<p><strong>GETALL</strong>：获取信号量集中所有信号量的值；</p>
+<blockquote>
+<p>第四个参数为 arg.array，其数组的大小为该信号量集中信号量的数量，此命令中，参数 semnum 没有意义，为 0 即可，该调用成功时返回 0；</p>
+</blockquote>
+</li>
+<li>
+<p><strong>SETALL</strong>：设置信号量集中所有信号量的值，该命令与 GETALL 是一对；</p>
+<blockquote>
+<p>第四个参数为 arg.array，其数组的大小为该信号量集中信号量的数量，其数组中各元素的值将设置为对应的信号量的值；此命令中，参数 semnum 没有意义，为 0 即可，该调用成功时返回 0；</p>
+</blockquote>
+<blockquote>
+<p>该命令可以用于初始化一个信号量集；</p>
+</blockquote>
+</li>
+<li>
+<p><strong>GETVAL</strong>：获取信号量集中某个信号量的值；</p>
+<blockquote>
+<p>该命令不需要第四个参数，调用成功时，返回该信号量的值；</p>
+</blockquote>
+</li>
+<li>
+<p><strong>SETVAL</strong>：设置信号量集中指定信号量的值；</p>
+<blockquote>
+<p>第四个参数为 arg.val，该值将设置为指定信号量的值，调用成功时返回 0；</p>
+</blockquote>
+<blockquote>
+<p>该命令可以用来初始化信号量集中的一个信号量；</p>
+</blockquote>
+</li>
+<li>
+<p>还有一些用于 semctl() 的命令，请自行翻阅在线手册 <code>man semctl</code></p>
+</li>
+</ul>
+</li>
+<li>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/190015/sem-ctl.c">sem-ctl.c</a>(<strong>点击文件名下载源程序</strong>)演示了以上列举的各种用于 semctl() 的命令的简单用法；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall sem-ctl.c -o sem-ctl</code></p>
+</li>
+<li>
+<p>运行：<code>./sem-ctl</code></p>
+</li>
+<li>
+<p>运行截图：</p>
+<p><img src="https://whowin.gitee.io/images/190015/screenshot-of-sem-ctl.png" alt="Screenshot fot running sem-ctl"></p>
+</li>
+</ul>
+<hr>
+<h2 id="6-实例">6 实例</h2>
+<ul>
+<li>
+<p>在下面这个实例中，我们使用信号量集解决一个经典的问题 - 哲学家就餐问题(The Dining Philosophers problem)；</p>
+</li>
+<li>
+<p>如果希望更多地了解这个问题，可以百度一下，这里仅做简要说明：</p>
+<ul>
+<li>5 位哲学家围坐在一个圆桌周围，餐桌中央摆着一盘意大利面，每个哲学家的左边都有一把叉子；</li>
+<li>哲学家们只做两件事：思考或者吃饭，而且同时只能做一件事，即：吃饭时不思考，思考时不吃饭；</li>
+<li>哲学家吃饭时，需要用两把叉子，只能用临近的两把叉子；</li>
+</ul>
+</li>
+<li>
+<p>哲学家就餐问题的要点：</p>
+<ul>
+<li>哲学家思考的时候，无需任何资源；</li>
+<li>哲学家吃饭时，需要拿起临近的两把叉子，只有在他的旁边的两个人没有吃饭时，他才能够得到这两把叉子；</li>
+<li>当相邻的两位哲学家都要吃饭时，他们将在他们之间的叉子上产生竞争；</li>
+</ul>
+</li>
+<li>
+<p>解决方案：</p>
+<ul>
+<li>
+<p>每位哲学家有三种状态：思考、饥饿、吃饭</p>
+</li>
+<li>
+<p>哲学家们的初始状态均为：思考；</p>
+</li>
+<li>
+<p>状态转换过程：思考 &mdash;&gt; 饥饿 &mdash;&gt; 吃饭 &mdash;&gt; 思考；</p>
+</li>
+<li>
+<p>主要竞争资源：叉子</p>
+</li>
+<li>
+<p>假设条件：同时只允许一位哲学家进行状态转换，所以改变状态的代码为临界区，设置一个信号量 <code>sem[0]</code> 保证临界区的互斥；</p>
+</li>
+<li>
+<p>从思考状态变为饥饿状态：</p>
+<blockquote>
+<p>只需要获得进入临界区的许可，对信号量 <code>sem[0]</code> 执行 P 操作；</p>
+</blockquote>
+</li>
+<li>
+<p>哲学家 x 要从饥饿状态变为吃饭状态：</p>
+<blockquote>
+<p>如果他左右两边的哲学家都不在吃饭状态，则可以顺利进入吃饭状态，然后对信号量 <code>sem[0]</code> 执行 V 操作，以允许其它哲学家改变状态；</p>
+</blockquote>
+<blockquote>
+<p>如果他左右两边至少有一位哲学家在吃饭状态，则无法进入吃饭状态，只能等待在饥饿状态，为每一位哲学家设置一个信号量 <code>sem[x](x=1-5)</code>，无法从饥饿状态进入吃饭状态的哲学家在饥饿状态下需要等待左右两边的哲学家都进入思考状态，对 <code>sem[x]</code> 执行 P 操作以进行等待，在对 <code>sem[x]</code> 执行 P 操作前要首先对 <code>sem[0]</code> 进行 V 操作，以允许其它哲学家进入临界区改变状态；</p>
+</blockquote>
+<blockquote>
+<p>在饥饿状态等待的哲学家需要等待被他的邻居(他左右两边的哲学家)唤醒，被唤醒后仍要首先获得临界区的许可，即对 sem[0] 做 P 操作，然后才能尝试进入吃饭状态，如果仍然无法进入吃饭状态，则要继续等待在饥饿状态，也就是重复上面的两个步骤，直至进入吃饭状态；</p>
+</blockquote>
+</li>
+<li>
+<p>哲学家要从吃饭状态变成思考状态：</p>
+<blockquote>
+<p>首先对信号量 <code>sem[0]</code> 执行 P 操作，以获得进入临界区的许可，然后进入思考状态，如果其左边或右边的哲学家在饥饿状态，则要对相应的信号量 <code>sem[LEFT]</code> 或 <code>sem[RIGHT]</code> 执行 V 操作，以唤醒正在等待的哲学家，然后对信号量 <code>sem[0]</code> 执行 V 操作，以允许其它哲学家进入临界区改变状态；</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>
+<p>下面示意图描述了这个问题的基本场景：</p>
+<p><img src="https://whowin.gitee.io/images/190015/diag-of-philosophers.png" alt="diagram of the dinning philosphers problem"></p>
+</li>
+<li>
+<p>下面示意图描述了哲学家状态转换与信号量集的关系</p>
+<p><img src="https://whowin.gitee.io/images/190015/state-transition-diagram.png" alt="state transition diagram"></p>
+</li>
+<li>
+<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/190015/sem-philo.c">sem-philo.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用信号量集解决经典的‘<strong>哲学家就餐问题</strong>’；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall sem-philo.c -o sem-philo -lpthread</code></p>
+</li>
+<li>
+<p>运行：<code>./sem-philo</code></p>
+</li>
+<li>
+<p>运行动图：</p>
+<p><img src="https://whowin.gitee.io/images/190015/dinning-philosopher-problem.gif" alt="GIF of running sem-philo"></p>
+</li>
+</ul>
+<h2 id="7-信号量集的命令行命令">7 信号量集的命令行命令</h2>
+<ul>
+<li>
+<p><code>ipcs -s -l</code> - 显示信号量集的限制值；</p>
+</li>
+<li>
+<p><code>ipcs -s</code> - 显示现有信号量集的 key、ID 等部分属性；</p>
+</li>
+<li>
+<p><code>ipcs -s -i &lt;ID&gt;</code> - 显示指定 ID 的信号量集的属性(比 <code>ipcs -s</code> 显示的属性要多些)；</p>
+</li>
+<li>
+<p><code>ipcrm -S &lt;key&gt;</code> - 删除指定 key 的信号量集；</p>
+</li>
+<li>
+<p><code>ipcrm -s &lt;ID&gt;</code> - 删除指定 ID 的信号量集；</p>
+</li>
+<li>
+<p><code>ipcrm --all=sem</code> - 删除所有的信号量集</p>
+</li>
+<li>
+<p><code>ipcmk -S &lt;num&gt;</code> - 创建一个新的信号量集，其中包含 <code>&lt;num&gt;</code> 个信号量，其读写权限为默认的 0644；</p>
+</li>
+<li>
+<p><code>ipcmk -S &lt;num&gt; -p &lt;perm&gt;</code> - 创建一个新的信号量集，其中包含 <code>&lt;num&gt;</code> 个信号量，其读写权限为指定的 <code>&lt;perm&gt;</code>。</p>
+</li>
+</ul>
+<h2 id="8-有关进程间通信ipc的的其它文章">8 有关进程间通信(IPC)的的其它文章：</h2>
+<ul>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></li>
+<li><a href="https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/">IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘</a></li>
+</ul>
+<h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
+-->
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-09-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">进程间通信</a>
+          <a href="/tags/ipc/">IPC</a>
+          <a href="/tags/%E4%BF%A1%E5%8F%B7%E9%87%8F/">信号量</a>
+          <a href="/tags/semaphore/">semaphore</a>
+          <a href="/tags/system-v/">system V</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/ipc/0016-posix-semaphores/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">IPC之六：使用 POSIX 信号量解决经典的&#39;生产者-消费者问题&#39;</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/ipc/0014-posix-message-queue/">
+            <span class="next-text nav-default">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/ipc/0015-systemv-semaphore-sets/" class="leancloud_visitors" data-flag-title="IPC之五：使用 System V 信号量集解决经典的&#39;哲学家就餐问题&#39;">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

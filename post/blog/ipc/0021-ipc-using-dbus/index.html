@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，本文介绍在 Linux 下 IPC 的另外一种实现，D-Bus，D-Bus 是一种用于进程间通信的消息总线系统，它提供了一个可靠且灵活的机制，使得不同进程之间能够相互通信，本文给出了使用 D-Bus 进行基本 IPC 的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例" />
+<meta property="og:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，本文介绍在 Linux 下 IPC 的另外一种实现，D-Bus，D-Bus 是一种用于进程间通信的消息总线系统，它提供了一个可靠且灵活的机制，使得不同进程之间能够相互通信，本文给出了使用 D-Bus 进行基本 IPC 的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2023-12-01T16:43:29+08:00" />
+<meta property="article:modified_time" content="2023-12-01T16:43:29+08:00" />
+
+<meta itemprop="name" content="IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例">
+<meta itemprop="description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，本文介绍在 Linux 下 IPC 的另外一种实现，D-Bus，D-Bus 是一种用于进程间通信的消息总线系统，它提供了一个可靠且灵活的机制，使得不同进程之间能够相互通信，本文给出了使用 D-Bus 进行基本 IPC 的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"><meta itemprop="datePublished" content="2023-12-01T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2023-12-01T16:43:29+08:00" />
+<meta itemprop="wordCount" content="9080">
+<meta itemprop="keywords" content="Linux,进程间通信,D-Bus,IPC,libdbus," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例"/>
+<meta name="twitter:description" content="IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，本文介绍在 Linux 下 IPC 的另外一种实现，D-Bus，D-Bus 是一种用于进程间通信的消息总线系统，它提供了一个可靠且灵活的机制，使得不同进程之间能够相互通信，本文给出了使用 D-Bus 进行基本 IPC 的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2023-12-01 </span>
+        <div class="post-category">
+            <a href="/categories/ipc/"> IPC </a>
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-d-bus-概述">1 D-Bus 概述</a></li>
+        <li><a href="#2-d-bus-基本概念">2 D-Bus 基本概念</a></li>
+        <li><a href="#3-d-bus-编程实例">3 D-Bus 编程实例</a></li>
+        <li><a href="#4-libdbus-数据结构及函数调用介绍">4 libdbus 数据结构及函数调用介绍</a></li>
+        <li><a href="#5-其他">5 其他</a></li>
+        <li><a href="#欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，本文介绍在 Linux 下 IPC 的另外一种实现，D-Bus，D-Bus 是一种用于进程间通信的消息总线系统，它提供了一个可靠且灵活的机制，使得不同进程之间能够相互通信，本文给出了使用 D-Bus 进行基本 IPC 的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。</p>
+<h2 id="1-d-bus-概述">1 D-Bus 概述</h2>
+<ul>
+<li>
+<p>本文并不打算详细描述 D-Bus 的概念以及数据结构和调用方法，力求以实用为主，通过实例介绍 D-bus 的基本应用；</p>
+</li>
+<li>
+<p>D-Bus 是Linux 和类 unix 系统下一种进程间通信机制；</p>
+</li>
+<li>
+<p>D-Bus 和其它常用的 IPC 方法不同，它采用总线的形式实现进程间的通信；</p>
+</li>
+<li>
+<p>D-Bus 的基本原理并不复杂，见下图：</p>
+<p><img src="https://whowin.gitee.io/images/190021/d-bus.png" alt="D-Bus Overview"></p>
+</li>
+<li>
+<p>需要相互进行通信的进程都连接到 D-Bus 上，然后通过总线的消息转发实现进程间的消息传递；</p>
+</li>
+<li>
+<p>当 Process B 要向 Process C 发送消息时，Process B 首先要把消息发送到 D-Bus 上，D-Bus 再把消息转发到 Process C 上；</p>
+</li>
+<li>
+<p>D-Bus 总线并不是像 PCI 总线那样的一条物理总线，而是一条逻辑总线；</p>
+</li>
+<li>
+<p>D-Bus 其实就是一个特殊的应用程序，它接受来自多个其他应用程序的连接，并在各个应用程序之间转发消息，从而实现进程间通信；</p>
+</li>
+<li>
+<p>这个特殊的应用程序又被称为 dbus-daemon，dbus-daemon 在 Ubuntu(我这里是 Ubuntu 20.04) 下是默认安装的；</p>
+</li>
+<li>
+<p>在 Ubuntu 下，dbus-daemon 开机是默认启动的，使用 <code>ps aux|grep dbus-daemon</code> 可以看到正在运行的 <code>dbus-daemon</code>；</p>
+</li>
+<li>
+<p>可以使用 <code>man dbus-daemon</code> 在线手册了解 dbus-daemon 的使用方法；</p>
+</li>
+<li>
+<p><a href="dbus_webpage">D-Bus 官网</a>：https://www.freedesktop.org/wiki/Software/dbus/</p>
+</li>
+<li>
+<p>D-Bus 的最底层是 D-Bus 总线协议，在 <a href="https://dbus.freedesktop.org/doc/dbus-specification.html">D-Bus 规范</a> 中有详细描述；</p>
+</li>
+<li>
+<p>D-Bus 具有分层架构：</p>
+<ul>
+<li>libdbus 库，是 D-Bus 总线协议的实现，它为两个进程之间的通信提供了 C 语言接口；</li>
+<li>消息总线守护进程(dbus-daemon)，dbus-daemon 是使用 libdbus 构建的，允许多个进程链接到 dbus_darmon，dbus-daemon 可以将消息从一个进程转发到多个其他进程；</li>
+<li>基于特定应用程序框架的包装库，例如 libdbus-glib 和 libdbus-qt，这些包装库简化了 D-Bus 编程的细节，是大多数程序员使用的 API，libdbus 的设计初衷主要是作为这些包装库的低级后端，其大部分 API 对包装库实现有用，对直接客户显得并不是很友好；</li>
+</ul>
+</li>
+<li>
+<p>libdbus 只支持一对一的连接，就像网络原始套接字(raw socket)一样；</p>
+</li>
+<li>
+<p>libdbus 的连接是基于消息的，换句话说就是在 dbus 的连接上只能发送消息，不能像 TCP 通信那样发送字节流；</p>
+</li>
+<li>
+<p>libdbus 连接上发送的消息有标识消息类型的报头和包含数据的正文，libdbus 还抽象了实际使用的传输方式(socket 等)，并可以处理诸如身份验证之类的细节。</p>
+</li>
+<li>
+<p>尽管 libdbus 对直接用户并不友好，但是如果仅仅是要完成进程之间的通信，也并没有多少难度，本文的实例将使用 libdbus 库实现进程间通信；</p>
+</li>
+<li>
+<p>libdbus 库的数据结构和调用方法均有一定的复杂性，本文不会介绍 libdbus 所有的数据结构和函数，仅讨论与实例相关的部分；</p>
+</li>
+<li>
+<p>libdbus 库的 API 调用手册：<a href="libdbus_api">D-Bus low-level public API</a></p>
+</li>
+<li>
+<p>本文将从一个具体的实例开始介绍如何使用 libdbus 完成进程间通信。</p>
+</li>
+</ul>
+<h2 id="2-d-bus-基本概念">2 D-Bus 基本概念</h2>
+<ul>
+<li>
+<p>这一节可能会比较晦涩，所以我们会增加一些代码片段以便可以直接地感受到其具体的使用方法，不明白的地方不必深究，与下一节一起看可能就明白了；</p>
+</li>
+<li>
+<p>这一节中代码片段中涉及到的函数调用后面会有详细介绍，这里不必深究；</p>
+</li>
+<li>
+<p>D-Bus 总线分为两种类型：<strong>系统总线</strong>(System Bus)和<strong>会话总线</strong>(Session Bus)</p>
+<ul>
+<li><strong>系统总线</strong>(System Bus)：用于系统应用程序和用户进程之间通信；</li>
+<li><strong>会话总线</strong>(Session Bus)：用于桌面环境中应用程序之间交换数据；</li>
+</ul>
+</li>
+<li>
+<p>当两个用户进程进行通信时，通常应该选择会话总线；</p>
+</li>
+<li>
+<p>D-Bus 的基本概念是基于 Client/Server 模式的，服务端程序连接到 D-Bus 上，建立一个新的连接并成为该连接的拥有者，向客户端提供服务，客户端连接到总线并向服务端请求服务；</p>
+</li>
+<li>
+<p>下面代码使用 libdbus 库建立一个会话总线的连接：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="n">DBusError</span> <span class="n">dbus_error</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">conn</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">dbus_error_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dbus_error</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">conn</span> <span class="o">=</span> <span class="n">dbus_bus_get</span><span class="p">(</span><span class="n">DBUS_BUS_SESSION</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dbus_error</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>前面提到过，D-Bus 总线不是物理总线，而是逻辑总线，实际上就是一个特殊的应用程序，被成为 dbus-daemon，连接到 D-Bus 上与连接到 dbus-daemon 上是相同的含义；</p>
+</li>
+<li>
+<p>当一个应用进程连接到 D-Bus(dbus-daemon) 上时，dbus-daemon 会为每个新连接随机分配一个总线名称，这个过程与 DNS 的动态域名解析类似；</p>
+<ul>
+<li>随机分配的总线名称与 DNS 为新连接随机动态分配的 IP 地址类似，D-Bus 总线名称是以 &ldquo;:&rdquo; 开头的一组由 &ldquo;.&rdquo; 分隔的数字组成，比如：<code>:1.14</code></li>
+<li>总线名称是唯一性的标识，在整个 D-Bus 的生命周期内都不会改变，即便该连接已经关闭，并且有新的连接产生时，也不会占用已经分配过的总线名称；</li>
+</ul>
+</li>
+<li>
+<p>下面的代码片段使用 libdbus 库查看一个连接的总线名称；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="n">DBusError</span> <span class="n">dbus_error</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">conn</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">unique_bus_name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">dbus_error_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dbus_error</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">conn</span> <span class="o">=</span> <span class="n">dbus_bus_get</span><span class="p">(</span><span class="n">DBUS_BUS_SESSION</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dbus_error</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">unique_bus_name</span> <span class="o">=</span> <span class="n">dbus_bus_get_unique_name</span><span class="p">(</span><span class="n">conn</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">unique_bus_name</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&#34;The bus name is %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">unique_bus_name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>但是其它应用程序并不知道这个随机分配的总线名称，所以很难通过总线名称访问一个连接下的对象，通常要指定一个固定的名称与这个连接绑定，与动态 DNS 解析中将域名解析到一个动态 IP 上相似；</p>
+</li>
+<li>
+<p>这个固定的名称通常使用反向域名的命名方式，例如：cn.whowin.dbus，应用程序可以通过这个固定的名称请求服务端的服务；</p>
+</li>
+<li>
+<p>下面的代码片段使用 libdbus 库为一个连接指定一个固定的名称；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">DBusError</span> <span class="n">dbus_error</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">conn</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">dbus_error_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dbus_error</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">conn</span> <span class="o">=</span> <span class="n">dbus_bus_get</span><span class="p">(</span><span class="n">DBUS_BUS_SESSION</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dbus_error</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">server_bus_name</span> <span class="o">=</span> <span class="s">&#34;cn.whowin.dbus&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="n">dbus_bus_request_name</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">server_bus_name</span><span class="p">,</span> <span class="n">DBUS_NAME_FLAG_DO_NOT_QUEUE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dbus_error</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>D-Bus 的服务采用了分层结构，以便客户端可以明确地请求服务；</p>
+<ul>
+<li>一个连接下可以有一个或多个对象(Object)；</li>
+<li>每个对象下可以有一个或多个接口(Interface)；</li>
+<li>每个接口下可以有一个或多个调用方法(Method Call)或者信号(Signal)；</li>
+</ul>
+</li>
+<li>
+<p>对象(Object)的命名方法为对象路径，一个对象路径看上去与 Linux 的文件路径很像，比如：<code>/cn/whowin/dbus/object</code> 表示一个 D-Bus 对象；</p>
+<ul>
+<li>尽管看上去与文件路径很像，但是跟文件没有半毛钱关系，不会在文件系统上产生实际的物理文件，只是一个对象名称而已；</li>
+</ul>
+</li>
+<li>
+<p>接口(Interface)的命名方法通常也是采用反向域名的方式，比如：<code>cn.whowin.dbus_iface</code> 表示一个接口；</p>
+</li>
+<li>
+<p>接口下可以定义若干个调用方法(Method Call)和信号(Signal)，D-Bus 规范目前仅定义了这两种服务；</p>
+<ul>
+<li>调用方法需要定义一个方法名称及调用该方法的参数(参数数量和参数类型)，供客户端调用时使用；</li>
+<li>信号是一种消息通知，比如新设备上线通知等，客户端订阅感兴趣的信号后，就会从服务端收到相应的信号；</li>
+</ul>
+</li>
+<li>
+<p>当客户端要在 D-Bus 上请求服务端的服务时，需要了解下面四点：</p>
+<ol>
+<li>服务是在系统总线(System Bus)上，还是在会话总线(Session Bus)上；</li>
+<li>提供服务的总线名称</li>
+<li>调用方法所属的对象路径</li>
+<li>调用方法或信号的接口</li>
+</ol>
+</li>
+<li>
+<p>当客户端向服务端请求一个调用方法时，可以要求回复或者不回复，当需要回复时，会收到来自服务端的回复信息；</p>
+</li>
+<li>
+<p>D-Bus 有一个自省机制(D-Bus introspection mechanism)，当客户端进程并不了解服务端的对象、接口以及接口下定义的调用方法和信号时，可以通过这个自省机制获得信息；</p>
+</li>
+</ul>
+<h2 id="3-d-bus-编程实例">3 D-Bus 编程实例</h2>
+<ul>
+<li>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190021/dbus-objects.c">dbus-objects.c</a>(<strong>点击文件名下载源程序，建议使用UTF-8字符集</strong>)演示了如何使用 libdbus 库实现多个客户端进程向服务端进程请求服务的通信过程；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall -g dbus-objects.c -o dbus-objects `pkg-config --libs --cflags dbus-1` </code></p>
+</li>
+<li>
+<p>运行：<code>./dbus-objects</code></p>
+</li>
+<li>
+<p>该程序是个多进程的程序，建立了一个服务端进程，运行函数：<code>dbus_server()</code>，建立多个客户端进程，运行函数：<code>dbus_clien()</code>，运行起来以后，相当于运行着一个服务器端程序和若干个客户端程序；</p>
+</li>
+<li>
+<p>客户端进程的数量由常量 <code>CLIENT_NUM</code> 控制，默认情况下是 3 个客户端进程；</p>
+</li>
+<li>
+<p>服务端进程提供了三种调用方法的服务，其接口名称和方法名称一样，但分别部署在三个对象上：</p>
+<ol>
+<li>
+<p>对象路径：/cn/whowin/bus/yes，接口：cn.whowin.bus_demo，方法：hello</p>
+<blockquote>
+<p>将客户端请求中的参数(一个字符串)，前面加上 &ldquo;yes&rdquo; 返回；</p>
+</blockquote>
+</li>
+<li>
+<p>对象路径：/cn/whowin/bus/no，接口：cn.whowin.bus_demo，方法：hello</p>
+<blockquote>
+<p>将客户端请求中的参数(一个字符串)，前面加上 &ldquo;no&rdquo; 返回；</p>
+</blockquote>
+</li>
+<li>
+<p>对象路径：/cn/whowin/bus/quit，接口：cn.whowin.bus_demo，方法：hello</p>
+<blockquote>
+<p>将客户端请求中的参数(一个字符串)，前面加上 &ldquo;quit&rdquo; 返回；</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li>
+<p>编译：<code>gcc -Wall -g dbus-objects.c -o dbus-objects `pkg-config --libs --cflags dbus-1` </code></p>
+<ul>
+<li>
+<p>其中：<code>pkg-config --libs --cflags dbus-1</code> 是一个命令行命令，可以帮助你获取正确的编译选项；</p>
+</li>
+<li>
+<p><code>pkg-config</code> 依赖 <code>.pc</code> 文件，libdbus 的 .pc 文件位于路径 <code>/usr/lib/x86_64-linux-gnu/pkgconfig</code> 下(<code>ubuntu 20.04</code>)；</p>
+</li>
+<li>
+<p>可以在终端上运行 <code>pkg-config --libs --cflags dbus-1</code> 看一下输出的是什么，对理解 <code>pkg-cofig</code> 会有帮助：</p>
+<p><img src="https://whowin.gitee.io/images/190021/screenshot-of-pkg-config.png" alt="Screenshot of pkg-config"></p>
+</li>
+<li>
+<p>有关 <code>pkg-config</code> 不是本文的讨论内容，请自行查找相关资料或查阅在线手册 <code>man pkg-config</code></p>
+</li>
+</ul>
+</li>
+<li>
+<p>运行：<code>./dbus-objects</code></p>
+</li>
+<li>
+<p>运行截图：</p>
+<p><img src="https://whowin.gitee.io/images/190021/screenshot-of-dbus-objects.png" alt="Screenshot of dbus-objects"></p>
+</li>
+</ul>
+<hr>
+<ul>
+<li>
+<p>同样是提供三个调用方法的服务，也可以部署在一个对象上，在一个接口上提供三个方法，如下：</p>
+<ol>
+<li>
+<p>对象路径：/cn/whowin/dbus，接口：cn.whowin.bus_demo，方法：yes</p>
+<blockquote>
+<p>将客户端请求中的参数(一个字符串)，前面加上 &ldquo;yes&rdquo; 返回；</p>
+</blockquote>
+</li>
+<li>
+<p>对象路径：/cn/whowin/dbus，接口：cn.whowin.bus_demo，方法：no</p>
+<blockquote>
+<p>将客户端请求中的参数(一个字符串)，前面加上 &ldquo;no&rdquo; 返回；</p>
+</blockquote>
+</li>
+<li>
+<p>对象路径：/cn/whowin/bus，接口：cn.whowin.bus_demo，方法：quit</p>
+<blockquote>
+<p>将客户端请求中的参数(一个字符串)，前面加上 &ldquo;quit&rdquo; 返回；</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190021/dbus-methods.c">dbus-methods.c</a>(<strong>点击文件名下载源程序</strong>)与 dbus-objects.c 完成一样的任务，但是是在一个对象下的三个调用方法；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall -g dbus-methods.c -o dbus-methods `pkg-config --libs --cflags dbus-1` </code></p>
+</li>
+<li>
+<p>运行：<code>./dbus-methods</code></p>
+</li>
+<li>
+<p>运行截图：</p>
+<p><img src="https://whowin.gitee.io/images/190021/screenshot-of-dbus-methods.png" alt="Screenshot of dbus-methods"></p>
+</li>
+</ul>
+<h2 id="4-libdbus-数据结构及函数调用介绍">4 libdbus 数据结构及函数调用介绍</h2>
+<ul>
+<li>
+<p>有了前面两个范例，再回过头来介绍与 libdbus 相关的数据结构及函数调用，本文仅就在两个范例中相关的结构和函数作出说明；</p>
+</li>
+<li>
+<p>点击 <a href="https://dbus.freedesktop.org/doc/api/html/group__DBus.html">libdbus 库的 API 文档</a> 可以查看 libdbus 库的在线文档；</p>
+</li>
+<li>
+<p>使用 libdbus 实现服务端的步骤：</p>
+<ol>
+<li>使用 <code>dbus_bus_get()</code> 连接到 D-Bus；</li>
+<li>使用 <code>dbus_bus_request_name()</code> 为这个连接指定一个唯一的名称，以便客户端可以访问这个连接；</li>
+<li>使用 <code>dbus_connection_pop_message()</code> 接收来自客户端的请求消息；</li>
+<li>使用 <code>dbus_message_has_path()</code>、<code>dbus_message_is_method_call()</code> 判断消息的对象、接口和方法是否正确；</li>
+<li>使用 <code>dbus_message_get_args()</code> 获取消息中的请求参数，并作出适当处理；</li>
+<li>使用 <code>dbus_message_new_method_return()</code> 初始化一个用于向客户端回复的消息；</li>
+<li>使用 <code>dbus_message_append_args()</code> 将回复内容添加到回复消息中；</li>
+<li>使用 <code>dbus_connection_send()</code> 将回复消息加入到发送队列中；</li>
+<li>使用 <code>dbus_connection_flush()</code> 将消息队列中消息发送出去；</li>
+</ol>
+</li>
+<li>
+<p>关于接收信息</p>
+<ul>
+<li>服务端使用 <code>dbus_connection_pop_message()</code> 接收客户端请求，通常情况下，程序需要一个循环不断地调用这个函数，就像下面的代码，但是这种方式显然是效率低下的；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DBusMwssage</span> <span class="o">*</span><span class="n">message</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">message</span> <span class="o">=</span> <span class="n">dbus_connection_pop_message</span><span class="p">(</span><span class="n">conn</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">message</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">usleep</span><span class="p">(</span><span class="mi">1000000</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Process the message
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>libdbus 给出了另外一种方案，即使用 <code>dbus_connection_read_write_dispatch()</code>，当消息队列中有消息到来或者可以发送消息时，这个函数会返回 TRUE，否则一直阻塞；</li>
+<li>使用这个函数就可以像下面这样接收消息：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="n">dbus_connection_read_write_dispatch</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DBusMessage</span> <span class="o">*</span><span class="n">message</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">message</span> <span class="o">=</span> <span class="n">dbus_connection_pop_message</span><span class="p">(</span><span class="n">conn</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>使用 libdbus 实现客户端的步骤：</p>
+<ol>
+<li>使用 <code>dbus_bus_get()</code> 连接到 D-Bus，这里要使用服务端为连接指定的名称；</li>
+<li>使用 <code>dbus_message_new_method_call()</code> 为向服务端发出的请求初始化一个方法调用消息；</li>
+<li>使用 <code>dbus_message_append_args()</code> 将方法调用的参数添加到消息中；</li>
+<li>使用 <code>dbus_connection_send_with_reply_and_block()</code> 发送请求消息并得到服务端的回复消息；</li>
+<li>使用 <code>dbus_message_get_args()</code> 获取消息中的回复信息；</li>
+</ol>
+</li>
+<li>
+<p>客户端向服务端发送请求时，可以要求服务端给予回复，此时要使用 <code>dbus_connection_send_with_reply_and_block()</code> 发送消息，而不能使用 <code>dbus_connection_send()</code>；</p>
+</li>
+<li>
+<p>范例中主要涉及到了 libdbus 中的三个数据结构：</p>
+<ol>
+<li>DBusConnection：表达一个与 D-Bus 的连接；</li>
+<li>DBusMessage：表示一个消息；</li>
+<li>DBusError：表示一个错误信息；</li>
+</ol>
+</li>
+<li>
+<p>libdbus 进行了抽象，所以实际上在应用层面上根本不用理会 DBusConnection 和 DBusMessage 两个结构中的具体组成字段，对 DBusError 也仅需了解一、两个字段即可；</p>
+</li>
+<li>
+<p>结构 <strong>DBusError</strong></p>
+<ul>
+<li>表示错误信息的结构；</li>
+<li>libdbus 库中的函数在调用出错时，如果调用参数中有 <code>DBusError *</code>，其错误信息会返回到这个结构中；</li>
+<li>这个结构中有意义的字段只有两个，一个是 <code>char *name</code>，表示错误名称，另一个是 <code>char *message</code>，表示错误信息；</li>
+<li>在本文的实例中，仅用到了 message 字段，用于显示错误信息；</li>
+<li>在使用这个结构之前，需要使用 <code>void dbus_error_init(DBusError *error)</code> 对数据结构进行初始化；</li>
+<li>使用函数 <code>dbus_bool_t dbus_error_is_set(const DBusError *error)</code> 检查在函数调用过程中是否出现了错误，如果出错，可以打印出 message 字段查看错误信息；</li>
+<li>如果出现错误，在处理完错误信息后要使用 <code>void dbus_error_free(DBusError *error)</code> 释放错误，或者使用 <code>dbus_error_init()</code> 重新初始化；</li>
+<li>下面代码片段演示了如何使用这个结构：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="n">DBusError</span> <span class="n">dbus_error</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">conn</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">dbus_error_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dbus_error</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">conn</span> <span class="o">=</span> <span class="n">dbus_bus_get</span><span class="p">(</span><span class="n">DBUS_BUS_SESSION</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dbus_error</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">dbus_error_is_set</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dbus_error</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&#34;dbus_bus_get(): %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">dbus_error</span><span class="p">.</span><span class="n">message</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dbus_error_free</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dbus_error</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>函数 <code>dbus_bus_get()</code> 连接 <code>dbus-daemon</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">dbus_bus_get</span><span class="p">(</span><span class="n">DBusBusType</span> <span class="n">type</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                             <span class="n">DBusError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>连接到 dbus-daemon 守护进程，并向其注册；</li>
+<li>type 为总线类型，可以是 <code>DBUS_BUS_SESSION</code>(会话总线) 或者 <code>DBUS_BUS_SYSTEM</code>(系统总线)，应用程序中通常选择 <code>DBUS_BUS_SESSION</code>；</li>
+<li>该函数在正常情况下会返回一个 <code>DBusConnection</code> 结构指针，在后面的接收消息和发送消息中均需要这个结构指针；</li>
+<li>不管是服务端还是客户端，在执行 D-Bus 相关操作前均需要首先连接到 dbus-darmon；</li>
+</ul>
+</li>
+<li>
+<p>函数 <code>dbus_bus_request_name()</code> 为连接指定名称</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">dbus_bus_request_name</span><span class="p">(</span><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">connection</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                          <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                          <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                          <span class="n">DBusError</span> <span class="o">*</span><span class="n">error</span><span class="p">);</span>    
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>该函数为一个连接指定一个名称；</p>
+</li>
+<li>
+<p>当服务端连接上 dbus-daemon 后，dbus-daemon 会为这个连接随机分配一个名称，以 &ldquo;:&rdquo; 开头的一组数字，比如：<code>:1.14</code></p>
+</li>
+<li>
+<p>客户端无法知晓这个分配的名称，所以也就无法通过这个名称向服务端请求服务，通常需要使用一个公共的名称与 dbus-daemon 分配的名称绑定，客户端可以使用这个公共名称向服务端发出请求；</p>
+</li>
+<li>
+<p>比如这个公共名称为：cn.whowin.dbus，服务端启动后与 dbus-daemon 建立连接，然后将 cn.whowin.dbus 与 dbus-daemon 分配的名称绑定，客户端启动后只需使用 cn.whowin.dbus 向服务端请求服务即可；</p>
+</li>
+<li>
+<p>dbus-daemon 允许多个进程向其申请相同的总线名称，但同时只能有一个进程实际拥有这个名称，这个拥有者叫做<strong>主要拥有者</strong>(Primary Owener)，其他申请该名称的进程将进入队列等候，直到主要拥有者释放该名称，队列中的第一位申请者将获得该名称；</p>
+</li>
+<li>
+<p>参数 connection：需要指定名称的连接；</p>
+</li>
+<li>
+<p>参数 name：为该连接指定的名称；</p>
+</li>
+<li>
+<p>参数flags：这个标志可以有三个选项，</p>
+<ol>
+<li><code>DBUS_NAME_FLAG_ALLOW_REPLACEMENT</code>：表示该进程在成为名称的主要拥有者后，如果其他申请该名称的进程在调用 <code>dbus_bus_request_neme()</code> 时使用了 <code>DBUS_NAME_FLAG_REPLACE_EXISTING</code> 标志，则新的申请名称的进程将从当前拥有者手中抢走该名称的拥有权，成为新的主要拥有者；</li>
+<li><code>DBUS_NAME_FLAG_REPLACE_EXISTING</code>：见 <code>DBUS_NAME_FLAG_ALLOW_REPLACEMENT</code>；</li>
+<li><code>DBUS_NAME_FLAG_DO_NOT_QUEUE</code>：如果在申请名称时使用了该标志，表示进程只想立即成为该名称的主要拥有者，并不想进入队列等待，如果不能立即拥有该名称，将返回一个错误；</li>
+<li>如果没有指定标志(flags = 0)，则只有当所申请的名称没有拥有者时才会获得名称的所有权，并且其它进程无法使用 <code>DBUS_NAME_FLAG_REPLACE_EXISTING</code> 从其手中抢夺所有权；</li>
+</ol>
+</li>
+<li>
+<p>返回值：</p>
+<ol>
+<li>DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER：当前进程获得了该名称的主要拥有者；</li>
+<li>DBUS_REQUEST_NAME_REPLY_IN_QUEUE：当前进程没有获得名称的所有权，已经进入队列等待名称所有者放弃该名称；</li>
+<li>DBUS_REQUEST_NAME_REPLY_EXISTS：该名称已经被其它进程拥有，当前调用指定了 <code>DBUS_NAME_FLAG_DO_NOT_QUEUE</code> 或者该名称的拥有者没有设置为 <code>DBUS_NAME_FLAG_ALLOW_REPLACEMENT</code> 或者当前调用没有指定 <code>DBUS_NAME_FLAG_REPLACE_EXISTING</code>，这三种情况下会返回该值；</li>
+<li>DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER：当前进程在调用 <code>dbus_bus_request_name()</code> 之前已经是该名称的主要拥有者；</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>
+<p>服务端接收客户端发送的服务请求</p>
+<ul>
+<li>
+<p>使用函数 <code>dbus_connection_pop_message()</code> 和 <code>dbus_connection_read_write_dispatch()</code> 组合可以方便地接收到客户端发送的服务请求消息；</p>
+</li>
+<li>
+<p>服务端通常使用这两个函数读取客户端发送的请求，基本格式如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="n">dbus_connection_read_write_dispatch</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DBusMessage</span> <span class="o">*</span><span class="n">message</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">message</span> <span class="o">=</span> <span class="n">dbus_connection_pop_message</span><span class="p">(</span><span class="n">conn</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>        
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>dbus_connection_read_write_dispatch()</code> 原型</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">dbus_bool_t</span> <span class="nf">dbus_connection_read_write_dispatch</span><span class="p">(</span><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">connection</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                                <span class="kt">int</span> <span class="n">timeout_milliseconds</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>dbus_connection_read_write_dispatch()</code> 监视连接上是否有可读消息或者可以发送消息，然后使用 <code>dbus_connection_pop_message()</code> 接收消息；</p>
+</li>
+<li>
+<p>connection：使用 <code>dbus_bus_get()</code> 函数获取的连接；</p>
+</li>
+<li>
+<p>timeout_milliseconds：<code>dbus_connection_read_write_dispatch()</code> 是一个阻塞函数，直至 <code>timeout_milliseconds</code> 指定的超时时间到，或者有可读/写消息，注意 <code>timeout_milliseconds</code> 的单位为毫秒(millisecond)，当 <code>timeout_milliseconds</code> 设为 -1 时，表示一直阻塞直至有可读/写消息；</p>
+</li>
+<li>
+<p><code>dbus_connection_pop_message()</code> 原型</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">DBusMessage</span> <span class="o">*</span><span class="nf">dbus_connection_pop_message</span><span class="p">(</span><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">connection</span><span class="p">);</span>	
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>dbus_connection_pop_message()</code> 函数从连接的消息队列中接收一条消息，参数 connection 是通过 <code>dbus_bus_get()</code> 获得的连接，返回一个 DBusMessage 结构的指针；</p>
+</li>
+<li>
+<p>如果消息队列中没有消息，<code>dbus_connection_pop_message()</code> 会返回一个 NULL；</p>
+</li>
+</ul>
+</li>
+<li>
+<p>判断客户端调用的对象、接口和方法</p>
+<ul>
+<li>实际编程实践中，不必关心 <code>dbus_connection_pop_message()</code> 返回的 DBusMessage 结构中的具体细节，有一系列的函数可以帮助你从这个结构中获取信息；</li>
+<li><code>int dbus_message_get_type(DBusMessage *message)</code> 可以获取 message 的类型，通常有四种类型：
+<ul>
+<li>DBUS_MESSAGE_TYPE_METHOD_CALL：该消息为一个方法调用，一般客户端会以这种类型的消息向服务端请求服务；</li>
+<li>DBUS_MESSAGE_TYPE_METHOD_RETURN：该消息为一个方法调用产生的回复信息，客户端向服务端请求服务并要求得到回复时，客户端会收到服务端发来的这种类型的消息；</li>
+<li>DBUS_MESSAGE_TYPE_ERROR：该 message 为一条错误信息；</li>
+<li>DBUS_MESSAGE_TYPE_SIGNAL：该 message 是一个信号(Signal)，本文不讨论信号；</li>
+</ul>
+</li>
+<li><code>dbus_bool_t dbus_message_has_path(DBusMessage *message, const char *path)</code> 可以检查消息中是否存在指定的对象路径，其中 <code>path</code> 参数为对象路径，比如：<code>/cn/whowin/dbus</code>；</li>
+<li><code>dbus_bool_t dbus_message_is_method_call(DBusMessage *message, const char *iface, const char *method)</code> 可以检查消息中是否与指定的接口和方法一致，其中 <code>iface</code> 是接口名称，比如 <code>cn.whowin.dbus_demo</code>，<code>method</code> 为方法名称；</li>
+<li>首先使用 <code>dbus_message_get_type()</code> 判断该消息是否为我们需要处理的消息类型，然后使用 <code>dbus_message_has_path()</code> 和 <code>dbus_message_is_method_call()</code> 判断客户请求的对象、接口和方法，从而提供准确的服务；</li>
+</ul>
+</li>
+<li>
+<p>函数 <code>dbus_message_get_args()</code> 获取请求参数</p>
+<ul>
+<li>
+<p>函数 <code>dbus_message_get_args()</code> 原型</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">dbus_bool_t</span> <span class="nf">dbus_message_get_args</span><span class="p">(</span><span class="n">DBusMessage</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="n">DBusError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="kt">int</span> <span class="n">first_arg_type</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="p">...</span> 
+</span></span><span class="line"><span class="cl">                                  <span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>我们通过前面介绍的几个函数已经可以很清楚地判断出客户端请求的对象、接口和方法，<code>dbus_message_get_args()</code> 函数的作用在于进一步获取这个请求的参数；</p>
+</li>
+<li>
+<p>一个请求的参数可以有多个，参数的数据类型也可以有很多种，本例中，调用参数中只有一个字符串，这里仅介绍获取字符串参数的方法；</p>
+</li>
+<li>
+<p>这个函数的前两个参数无需更多介绍，在前面的函数中已经多次出现；</p>
+</li>
+<li>
+<p><code>first_arg_type</code> 是参数类型，当参数为字符串时，这个值应为：<code>DBUS_TYPE_STRING</code>，还可以有：DBUS_TYPE_INT16、DBUS_TYPE_ARRAY 等，这里不多介绍，在头文件 <code>dbus/dbus-protocol.h</code> 中定义；</p>
+</li>
+<li>
+<p>下面的 <code>&quot;...&quot;</code> 表示允许放多个参数，用于从 message 中一次获取多个调用参数，我们这里仅介绍获取一个字符串参数的方法，以后的文章中会介绍更多；</p>
+</li>
+<li>
+<p>当仅获取一个字符串参数时，其实际调用方法如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">dbus_bool_t</span> <span class="nf">dbus_message_get_args</span><span class="p">(</span><span class="n">DBusMessage</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="n">DBusError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="n">DBUS_TYPE_STRING</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="o">&amp;</span><span class="n">str</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                  <span class="n">DBUS_TYPE_INVALID</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>所以这里需要我们关注的只有一个变量 str，注意这里传给函数的一个字符串指针的指针；</p>
+</li>
+<li>
+<p>很显然这个调用成功后，str 会指向一个字符串，但根据 D-Bus 的文档，返回到 str 中的类型为 <code>const char *</code>，不需要我们去释放相应的内存；</p>
+</li>
+<li>
+<p>这个函数在调用成功时，会返回 TRUE，失败时返回 FALSE，从 error 可以获取错误信息；</p>
+</li>
+<li>
+<p>最后那个 DBUS_TYPE_INVALID 是必需的；</p>
+</li>
+</ul>
+</li>
+<li>
+<p>初始化一个 DBusMessage 结构</p>
+<ul>
+<li>当需要发送消息时，需要首先构建一个 DBusMessage 结构，通常使用 libdbus 提供的函数来初始化；</li>
+<li>libdbus 提供了几个函数用来在各种不同的情况下初始化 DBusMessage 结构，包括：方法调用(Method Call)、方法调用的回复(Method Call Return)和信号(Signal)等，本文仅涉及方法调用和方法调用回复；</li>
+<li>初始化一个方法调用的 DBusMessage 结构
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">DBusMessage</span> <span class="o">*</span><span class="nf">dbus_message_new_method_call</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">destination</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                                          <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                                          <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">iface</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                                          <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">method</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>当初始化一个方法调用的 DBusMessage 时，意味着客户端准备向服务端请求一个服务，此时需要知道四个信息：服务端总线名称、请求的对象路径、接口名称以及方法名称；</li>
+<li>destination：服务端的总线名称，比如：cn.whowin.dbus</li>
+<li>path：服务端对象路径，比如：/cn/whowin/dbus</li>
+<li>iface：接口名称，比如：cn.whowin.dbus_demo</li>
+<li>method：请求的方法名称，比如：yes</li>
+</ul>
+</li>
+<li>初始化一个方法调用回复的 DBusMessage 结构
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">DBusMessage</span> <span class="o">*</span><span class="nf">dbus_message_new_method_return</span> <span class="p">(</span><span class="n">DBusMessage</span> <span class="o">*</span><span class="n">method_call</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>当初始化一个方法调用回复的 DBusMessage 时，意味着服务端已经收到了一个客户端发来的方法调用的消息，经过处理后，准备将处理结果回复给客户端，此时，只需知道客户端发来的方法调用的 DBusMessage 即可，因为这个结构里有所有需要的信息；</li>
+<li>method_call：客户端发送的方法调用消息；</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>函数 <code>dbus_message_append_args()</code> 将调用参数添加到消息中</p>
+<ul>
+<li>在初始化 DBusMessage 结构时，已经设置了总线名称、对象路径、接口名称和方法名称，<code>dbus_message_append_args()</code> 的作用就是向这个消息中添加实际的调用参数；</li>
+<li><code>dbus_message_append_args()</code> 原型
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">dbus_bool_t</span> <span class="nf">dbus_message_append_args</span><span class="p">(</span><span class="n">DBusMessage</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                                     <span class="kt">int</span> <span class="n">first_arg_type</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                     <span class="p">...);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>这个函数的调用方式与前面介绍的 <code>dbus_message_get_args()</code> 有些相似，本例中仅需要添加一个字符串类型的参数，其具体调用方法如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">str_arg</span> <span class="o">=</span> <span class="s">&#34;This is an argument&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">char</span> <span class="o">*</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">str_arg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">dbus_bool_t</span> <span class="nf">dbus_message_append_args</span><span class="p">(</span><span class="n">DBusMessage</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                                     <span class="n">DBUS_TYPE_STRING</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                     <span class="o">&amp;</span><span class="n">ptr</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                     <span class="n">DBUS_TYPE_INVALID</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>请参考函数 <code>dbus_message_get_args()</code> 的介绍；</li>
+<li>该函数调用成功返回 TRUE，失败时返回 FALSE；</li>
+</ul>
+</li>
+<li>
+<p>发送消息</p>
+<ul>
+<li>通常发送消息时可以使用 <code>dbus_connection_send()</code> 函数；</li>
+<li>当客户端向服务端发送请求并且希望服务端给予回复时，可以使用 <code>dbus_connection_send_with_reply_and_block()</code> 函数，这两个函数在调用方法上略有不同；</li>
+<li>函数 <code>dbus_connection_send()</code> 原型
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">dbus_bool_t</span> <span class="nf">dbus_connection_send</span><span class="p">(</span><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">connection</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                                 <span class="n">DBusMessage</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span> 
+</span></span><span class="line"><span class="cl">                                 <span class="n">dbus_uint32_t</span> <span class="o">*</span><span class="n">serial</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>该函数在调用成功时返回 TRUE</li>
+<li>该函数仅仅将消息放入发送队列，然后就返回，并不保证消息已经发出，即便是连接已经断开，仍然可以将消息放入发送队列，所以该函数仍然会返回 TRUE；</li>
+<li>如果希望消息马上发出，应该在该调用后调用 <code>void dbus_connection_flush(DBusConnection *connection)</code> 该函数会将指定连接的发送队列中的消息全部发送出去再返回；</li>
+</ul>
+</li>
+<li>函数 <code>dbus_connection_send_with_reply_and_block()</code> 原型
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">DBusMessage</span> <span class="n">dbus_connection_send_with_reply_and_block</span><span class="p">(</span><span class="n">DBusConnection</span> <span class="o">*</span><span class="n">connection</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                                      <span class="n">DBusMessage</span> <span class="o">*</span><span class="n">message</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                                      <span class="kt">int</span> <span class="n">timeout_milliseconds</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                                      <span class="n">DBusError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>该函数会发送 message 消息，然后进入阻塞，等待服务端的回复消息，或者到达超时时间 <code>timeout_milliseconds</code></li>
+<li>该消息成功获得服务端的返回消息后，返回回复消息的 DBusMessage 结构，如果超时或调用失败，则返回 NULL，从 error 中可以获得错误信息；</li>
+<li>注意超时时间单位为毫秒</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>至此，本文范例中涉及的 libdbus 的函数就介绍完了，原恒旭应该可以搞懂了。</p>
+</li>
+</ul>
+<h2 id="5-其他">5 其他</h2>
+<ul>
+<li>本文仅对 D-Bus 作了初步的介绍，其范例也是基本的使用方法，或许在后续的文章中会更多地介绍 D-Bus 的相关应用和编程方法；</li>
+<li>很多系统服务均提供一系列的 D-Bus API，比如：域名解析、蓝牙等，这使得应用程序可以方便地调用系统服务的 API，给编写应用程序带来很多方便；</li>
+<li>D-Bus 也有一些命令行工具，通过命令行可以向 D-Bus 发送消息，查看 D-Bus 连接树等，这些将在后续的文章中介绍。</li>
+</ul>
+<h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!-- for CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
+[article06]: https://blog.csdn.net/whowin/article/details/134939609
+[article07]: https://blog.csdn.net/whowin/article/details/135015196
+[article08]: https://blog.csdn.net/whowin/article/details/135074991
+[article09]: https://blog.csdn.net/whowin/article/details/135143545
+[article10]: https://blog.csdn.net/whowin/article/details/135212050
+[article11]: https://blog.csdn.net/whowin/article/details/135281195
+-->
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2023-12-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">进程间通信</a>
+          <a href="/tags/d-bus/">D-Bus</a>
+          <a href="/tags/ipc/">IPC</a>
+          <a href="/tags/libdbus/">libdbus</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/ipc/0022-dbus-asyn-process-signal/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/ipc/0020-ipc-using-files/">
+            <span class="next-text nav-default">IPC之十：使用共享文件进行进程间通信的实例</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/ipc/0021-ipc-using-dbus/" class="leancloud_visitors" data-flag-title="IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
