@@ -7,11 +7,13 @@ authorbox: false
 toc: true
 pager: true
 categories:
+  - "IPC"
   - "Linux"
   - "C Language"
 tags:
   - Linux
   - 进程间通信
+  - IPC
   - files
   - IPC
 draft: false
@@ -24,7 +26,7 @@ draft: false
 # - [Inter-process communication](https://en.wikipedia.org/wiki/Inter-process_communication)
 #       - 里面列出了所有 ipc 方法
 
-postid: 100020
+postid: 190020
 ---
 
 IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 IPC 方式有管道、消息队列、共享内存等，但其实使用广大程序员都熟悉的文件也是可以完成 IPC 的，本文介绍如何使用共享文件实现进程间通信，本文给出了具体的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程、文件锁等概念，所以对 Linux 编程的初学者有一些难度，但对于了解 Linux 下共享文件，特别是文件锁的应用，将是非常难得的。
@@ -193,18 +195,21 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 I
 
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
-[article01]: https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/
-[article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
-[article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
-[article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
-[article05]: https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
-[article06]: https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/
-[article07]: https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
-[article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
-[article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
-[article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
-[article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
-[article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
+[article01]: https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/
+[article02]: https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/
+[article03]: https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/
+[article04]: https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/
+[article05]: https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/
+[article06]: https://whowin.gitee.io/post/blog/ipc/0016-posix-semaphores/
+[article07]: https://whowin.gitee.io/post/blog/ipc/0017-systemv-shared-memory/
+[article08]: https://whowin.gitee.io/post/blog/ipc/0018-posix-shared-memory/
+[article09]: https://whowin.gitee.io/post/blog/ipc/0019-ipc-with-unix-domain-socket/
+[article10]: https://whowin.gitee.io/post/blog/ipc/0020-ipc-using-files/
+[article11]: https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/
+[article12]: https://whowin.gitee.io/post/blog/ipc/0022-dbus-asyn-process-signal/
+[article13]: https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/
+[article14]: https://whowin.gitee.io/post/blog/ipc/0024-select-recv-message/
+[article15]: https://whowin.gitee.io/post/blog/ipc/0025-resolve-arbitrary-dns-record/
 
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
@@ -219,6 +224,6 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 I
 [article10]: https://blog.csdn.net/whowin/article/details/135212050
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/100020/ipc-files.c
+[src01]: https://whowin.gitee.io/sourcecodes/190020/ipc-files.c
 
-[img01]: https://whowin.gitee.io/images/100020/ipc-files.gif
+[img01]: https://whowin.gitee.io/images/190020/ipc-files.gif

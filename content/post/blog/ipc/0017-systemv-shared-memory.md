@@ -7,6 +7,7 @@ authorbox: false
 toc: true
 pager: true
 categories:
+  - "IPC"
   - "Linux"
   - "C Language"
 tags:
@@ -20,7 +21,7 @@ draft: false
 #references: 
 # - [Linux Interprocess Communications](https://tldp.org/LDP/lpg/node7.html)
 
-postid: 100017
+postid: 190017
 ---
 
 IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍共享内存(Shared Memory)，因为没有像管道、消息队列这样的中介介入，所以通常认为共享内存是迄今为止最快的 IPC 方式；Linux 既支持 UNIX SYSTEM V 的共享内存，也支持 POSIX 的共享内存，本文针对 System V 共享内存段，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程和信号处理等，阅读本文还需要一些基本的内存管理知识，本文对 Linux 编程的初学者有一些难度。
@@ -265,18 +266,21 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[article01]: https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/
-[article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
-[article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
-[article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
-[article05]: https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
-[article06]: https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/
-[article07]: https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
-[article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
-[article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
-[article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
-[article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
-[article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
+[article01]: https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/
+[article02]: https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/
+[article03]: https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/
+[article04]: https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/
+[article05]: https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/
+[article06]: https://whowin.gitee.io/post/blog/ipc/0016-posix-semaphores/
+[article07]: https://whowin.gitee.io/post/blog/ipc/0017-systemv-shared-memory/
+[article08]: https://whowin.gitee.io/post/blog/ipc/0018-posix-shared-memory/
+[article09]: https://whowin.gitee.io/post/blog/ipc/0019-ipc-with-unix-domain-socket/
+[article10]: https://whowin.gitee.io/post/blog/ipc/0020-ipc-using-files/
+[article11]: https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/
+[article12]: https://whowin.gitee.io/post/blog/ipc/0022-dbus-asyn-process-signal/
+[article13]: https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/
+[article14]: https://whowin.gitee.io/post/blog/ipc/0024-select-recv-message/
+[article15]: https://whowin.gitee.io/post/blog/ipc/0025-resolve-arbitrary-dns-record/
 
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
@@ -287,13 +291,13 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article06]: https://blog.csdn.net/whowin/article/details/134939609
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/100017/shm-ctl.c
-[src02]: https://whowin.gitee.io/sourcecodes/100017/shm-server.c
-[src03]: https://whowin.gitee.io/sourcecodes/100017/shm-client.c
-[src04]: https://whowin.gitee.io/sourcecodes/100017/shm-public.h
+[src01]: https://whowin.gitee.io/sourcecodes/190017/shm-ctl.c
+[src02]: https://whowin.gitee.io/sourcecodes/190017/shm-server.c
+[src03]: https://whowin.gitee.io/sourcecodes/190017/shm-client.c
+[src04]: https://whowin.gitee.io/sourcecodes/190017/shm-public.h
 
-[img01]: https://whowin.gitee.io/images/100017/screen-of-ipcs-m-l.png
-[img02]: https://whowin.gitee.io/images/100017/screenshot-max-proc.png
-[img03]: https://whowin.gitee.io/images/100017/screenshot-of-sysctl.png
-[img04]: https://whowin.gitee.io/images/100017/screenshot-of-shm-ctl.png
-[img05]: https://whowin.gitee.io/images/100017/shm-server-client.gif
+[img01]: https://whowin.gitee.io/images/190017/screen-of-ipcs-m-l.png
+[img02]: https://whowin.gitee.io/images/190017/screenshot-max-proc.png
+[img03]: https://whowin.gitee.io/images/190017/screenshot-of-sysctl.png
+[img04]: https://whowin.gitee.io/images/190017/screenshot-of-shm-ctl.png
+[img05]: https://whowin.gitee.io/images/190017/shm-server-client.gif

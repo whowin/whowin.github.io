@@ -7,11 +7,13 @@ authorbox: false
 toc: true
 pager: true
 categories:
+  - "IPC" 
   - "Linux"
   - "C Language"
 tags:
   - Linux
   - 进程间通信
+  - IPC
   - 消息队列
   - "Message queues"
 draft: false
@@ -26,7 +28,7 @@ draft: false
 # - [进程同步实验（IPC 同步机制编程）](http://blog.chinaunix.net/uid-197233-id-3073546.html)
 # - [Implementation of Message Queues in the Linux Kernel](https://www.baeldung.com/linux/kernel-message-queues)
 
-postid: 100013
+postid: 190013
 ---
 
 IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 System V 消息队列，并给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。
@@ -360,18 +362,21 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
-[article01]: https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/
-[article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
-[article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
-[article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
-[article05]: https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
-[article06]: https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/
-[article07]: https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
-[article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
-[article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
-[article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
-[article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
-[article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
+[article01]: https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/
+[article02]: https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/
+[article03]: https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/
+[article04]: https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/
+[article05]: https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/
+[article06]: https://whowin.gitee.io/post/blog/ipc/0016-posix-semaphores/
+[article07]: https://whowin.gitee.io/post/blog/ipc/0017-systemv-shared-memory/
+[article08]: https://whowin.gitee.io/post/blog/ipc/0018-posix-shared-memory/
+[article09]: https://whowin.gitee.io/post/blog/ipc/0019-ipc-with-unix-domain-socket/
+[article10]: https://whowin.gitee.io/post/blog/ipc/0020-ipc-using-files/
+[article11]: https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/
+[article12]: https://whowin.gitee.io/post/blog/ipc/0022-dbus-asyn-process-signal/
+[article13]: https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/
+[article14]: https://whowin.gitee.io/post/blog/ipc/0024-select-recv-message/
+[article15]: https://whowin.gitee.io/post/blog/ipc/0025-resolve-arbitrary-dns-record/
 
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
@@ -381,21 +386,21 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article05]: https://blog.csdn.net/whowin/article/details/134869636
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/100013/ipc-key.c
-[src02]: https://whowin.gitee.io/sourcecodes/100013/msg-send.c
-[src03]: https://whowin.gitee.io/sourcecodes/100013/msg-recv.c
-[src04]: https://whowin.gitee.io/sourcecodes/100013/msgtool.c
-[src05]: https://whowin.gitee.io/sourcecodes/100013/listmsq.c
-[src06]: https://whowin.gitee.io/sourcecodes/100013/traversemsq.c
+[src01]: https://whowin.gitee.io/sourcecodes/190013/ipc-key.c
+[src02]: https://whowin.gitee.io/sourcecodes/190013/msg-send.c
+[src03]: https://whowin.gitee.io/sourcecodes/190013/msg-recv.c
+[src04]: https://whowin.gitee.io/sourcecodes/190013/msgtool.c
+[src05]: https://whowin.gitee.io/sourcecodes/190013/listmsq.c
+[src06]: https://whowin.gitee.io/sourcecodes/190013/traversemsq.c
 
 
 
-[img01]: https://whowin.gitee.io/images/100013/screenshot-ipcs-l.png
-[img02]: https://whowin.gitee.io/images/100013/screenshot-proc-msg.png
-[img03]: https://whowin.gitee.io/images/100013/screenshot-sysctl.png
-[img04]: https://whowin.gitee.io/images/100013/screenshot-of-msgsend.png
-[img05]: https://whowin.gitee.io/images/100013/screenshot-of-msgrecv.png
-[img06]: https://whowin.gitee.io/images/100013/screenshot-of-msgtool.png
-[img07]: https://whowin.gitee.io/images/100013/screenshot-of-proc-file.png
+[img01]: https://whowin.gitee.io/images/190013/screenshot-ipcs-l.png
+[img02]: https://whowin.gitee.io/images/190013/screenshot-proc-msg.png
+[img03]: https://whowin.gitee.io/images/190013/screenshot-sysctl.png
+[img04]: https://whowin.gitee.io/images/190013/screenshot-of-msgsend.png
+[img05]: https://whowin.gitee.io/images/190013/screenshot-of-msgrecv.png
+[img06]: https://whowin.gitee.io/images/190013/screenshot-of-msgtool.png
+[img07]: https://whowin.gitee.io/images/190013/screenshot-of-proc-file.png
 
 

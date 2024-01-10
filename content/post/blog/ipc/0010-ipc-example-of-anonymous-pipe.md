@@ -7,10 +7,12 @@ authorbox: false
 toc: true
 pager: true
 categories:
+  - "IPC"
   - "Linux"
   - "C Language"
 tags:
   - Linux
+  - IPC
   - 进程间通信
   - pipe
   - 匿名管道
@@ -21,7 +23,7 @@ draft: false
 # - [Linux Interprocess Communications](https://tldp.org/LDP/lpg/node7.html)
 # - [sending commands to a child process through pipe/dup2 in C](https://stackoverflow.com/questions/11689421/sending-commands-to-a-child-process-through-pipe-dup2-in-c)
 
-postid: 100010
+postid: 190010
 ---
 
 IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍匿名管道(又称管道、半双工管道)，尽管很多人在编程中使用过管道，但一些特殊的用法还是鲜有文章涉及，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读
@@ -295,18 +297,18 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[article01]: https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/
-[article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
-[article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
-[article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
-[article05]: https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
-[article06]: https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/
-[article07]: https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
-[article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
-[article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
-[article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
-[article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
-[article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
+[article01]: https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/
+[article02]: https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/
+[article03]: https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/
+[article04]: https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/
+[article05]: https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/
+[article06]: https://whowin.gitee.io/post/blog/ipc/0016-posix-semaphores/
+[article07]: https://whowin.gitee.io/post/blog/ipc/0017-systemv-shared-memory/
+[article08]: https://whowin.gitee.io/post/blog/ipc/0018-posix-shared-memory/
+[article09]: https://whowin.gitee.io/post/blog/ipc/0019-ipc-with-unix-domain-socket/
+[article10]: https://whowin.gitee.io/post/blog/ipc/0020-ipc-using-files/
+[article11]: https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/
+[article12]: https://whowin.gitee.io/post/blog/ipc/0022-dbus-asyn-process-signal/
 
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
@@ -316,16 +318,16 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article05]: https://blog.csdn.net/whowin/article/details/134869636
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/100010/pipe.c
-[src02]: https://whowin.gitee.io/sourcecodes/100010/pipe-dup-stdin.c
-[src03]: https://whowin.gitee.io/sourcecodes/100010/pipe-dup-stdout.c
-[src04]: https://whowin.gitee.io/sourcecodes/100010/pipe-popen.c
-[src05]: https://whowin.gitee.io/sourcecodes/100010/pipe-popen2.c
-[src06]: https://whowin.gitee.io/sourcecodes/100010/pipe-popen3.c
+[src01]: https://whowin.gitee.io/sourcecodes/190010/pipe.c
+[src02]: https://whowin.gitee.io/sourcecodes/190010/pipe-dup-stdin.c
+[src03]: https://whowin.gitee.io/sourcecodes/190010/pipe-dup-stdout.c
+[src04]: https://whowin.gitee.io/sourcecodes/190010/pipe-popen.c
+[src05]: https://whowin.gitee.io/sourcecodes/190010/pipe-popen2.c
+[src06]: https://whowin.gitee.io/sourcecodes/190010/pipe-popen3.c
 
 
-[img01]: https://whowin.gitee.io/images/100010/pipe-process-kernel.png
-[img02]: https://whowin.gitee.io/images/100010/pipe-parent-child-process-kernel.png
-[img03]: https://whowin.gitee.io/images/100010/data-from-child-to-parent.png
-[img04]: https://whowin.gitee.io/images/100010/pipe-with-dup.png
+[img01]: https://whowin.gitee.io/images/190010/pipe-process-kernel.png
+[img02]: https://whowin.gitee.io/images/190010/pipe-parent-child-process-kernel.png
+[img03]: https://whowin.gitee.io/images/190010/data-from-child-to-parent.png
+[img04]: https://whowin.gitee.io/images/190010/pipe-with-dup.png
 

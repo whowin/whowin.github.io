@@ -7,12 +7,14 @@ authorbox: false
 toc: true
 pager: true
 categories:
+  - "IPC"
   - "Linux"
   - "C Language"
   - "Network"
 tags:
   - Linux
   - 进程间通信
+  - IPC
   - pipe
   - socket
   - "AF_UNIX"
@@ -31,7 +33,7 @@ draft: false
 # - [Abstract Namespace Socket Connections](http://www.hitchhikersguidetolearning.com/2020/04/25/abstract-namespace-af_unix-stream-socket-code-example/)
 #       - 里面有一个例子
 
-postid: 100019
+postid: 190019
 ---
 
 socket 编程是一种用于网络通信的编程方式，在 socket 的协议族中除了常用的 AF_INET、AF_RAW、AF_NETLINK等以外，还有一个专门用于 IPC 的协议族 AF_UNIX，IPC 是 Linux 编程中一个重要的概念，常用的 IPC 方式有管道、消息队列、共享内存等，本文主要介绍用于本地进程间通信的 UNIX Domain Socket，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程等，本文对 Linux 编程的初学者有一些难度。
@@ -353,18 +355,21 @@ socket 编程是一种用于网络通信的编程方式，在 socket 的协议�
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[article01]: https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/
-[article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
-[article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
-[article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
-[article05]: https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
-[article06]: https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/
-[article07]: https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
-[article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
-[article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
-[article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
-[article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
-[article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
+[article01]: https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/
+[article02]: https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/
+[article03]: https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/
+[article04]: https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/
+[article05]: https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/
+[article06]: https://whowin.gitee.io/post/blog/ipc/0016-posix-semaphores/
+[article07]: https://whowin.gitee.io/post/blog/ipc/0017-systemv-shared-memory/
+[article08]: https://whowin.gitee.io/post/blog/ipc/0018-posix-shared-memory/
+[article09]: https://whowin.gitee.io/post/blog/ipc/0019-ipc-with-unix-domain-socket/
+[article10]: https://whowin.gitee.io/post/blog/ipc/0020-ipc-using-files/
+[article11]: https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/
+[article12]: https://whowin.gitee.io/post/blog/ipc/0022-dbus-asyn-process-signal/
+[article13]: https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/
+[article14]: https://whowin.gitee.io/post/blog/ipc/0024-select-recv-message/
+[article15]: https://whowin.gitee.io/post/blog/ipc/0025-resolve-arbitrary-dns-record/
 
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
@@ -378,14 +383,14 @@ socket 编程是一种用于网络通信的编程方式，在 socket 的协议�
 [article09]: https://blog.csdn.net/whowin/article/details/135143545
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/100019/sendto-recvfrom.c
-[src02]: https://whowin.gitee.io/sourcecodes/100019/sendmsg-recvmsg.c
-[src03]: https://whowin.gitee.io/sourcecodes/100019/abstract-socket.c
-[src04]: https://whowin.gitee.io/sourcecodes/100019/seqpacket.c
-[src05]: https://whowin.gitee.io/sourcecodes/100019/socketpair.c
+[src01]: https://whowin.gitee.io/sourcecodes/190019/sendto-recvfrom.c
+[src02]: https://whowin.gitee.io/sourcecodes/190019/sendmsg-recvmsg.c
+[src03]: https://whowin.gitee.io/sourcecodes/190019/abstract-socket.c
+[src04]: https://whowin.gitee.io/sourcecodes/190019/seqpacket.c
+[src05]: https://whowin.gitee.io/sourcecodes/190019/socketpair.c
 
-[img01]: https://whowin.gitee.io/images/100019/screenshot-sendto-recvfrom.png
-[img02]: https://whowin.gitee.io/images/100019/screenshot-sendmsg-recvmsg.png
-[img03]: https://whowin.gitee.io/images/100019/screenshot-abstract-socket.png
-[img04]: https://whowin.gitee.io/images/100019/screenshot-of-seqpacket.png
-[img05]: https://whowin.gitee.io/images/100019/screenshot-of-socketpair.png
+[img01]: https://whowin.gitee.io/images/190019/screenshot-sendto-recvfrom.png
+[img02]: https://whowin.gitee.io/images/190019/screenshot-sendmsg-recvmsg.png
+[img03]: https://whowin.gitee.io/images/190019/screenshot-abstract-socket.png
+[img04]: https://whowin.gitee.io/images/190019/screenshot-of-seqpacket.png
+[img05]: https://whowin.gitee.io/images/190019/screenshot-of-socketpair.png

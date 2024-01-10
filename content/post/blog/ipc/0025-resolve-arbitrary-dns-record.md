@@ -7,6 +7,7 @@ authorbox: false
 toc: true
 pager: true
 categories:
+  - "IPC"
   - "Linux"
   - "C Language"
   - "Network"
@@ -34,7 +35,7 @@ draft: false
 # - [DBusWatch and DBusTimeout examples](https://stackoverflow.com/questions/9378593/dbuswatch-and-dbustimeout-examples)
 
 
-postid: 100025
+postid: 190025
 ---
 
 
@@ -205,26 +206,43 @@ postid: 100025
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[article01]: https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/
-[article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
-[article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
-[article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
-[article05]: https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
-[article06]: https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/
-[article07]: https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
-[article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
-[article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
-[article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
-[article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
-[article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
-[article13]: https://whowin.gitee.io/post/blog/linux/0023-dbus-resolve-hostname/
-[article14]: https://whowin.gitee.io/post/blog/linux/0024-select-recv-message/
+[article01]: https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/
+[article02]: https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/
+[article03]: https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/
+[article04]: https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/
+[article05]: https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/
+[article06]: https://whowin.gitee.io/post/blog/ipc/0016-posix-semaphores/
+[article07]: https://whowin.gitee.io/post/blog/ipc/0017-systemv-shared-memory/
+[article08]: https://whowin.gitee.io/post/blog/ipc/0018-posix-shared-memory/
+[article09]: https://whowin.gitee.io/post/blog/ipc/0019-ipc-with-unix-domain-socket/
+[article10]: https://whowin.gitee.io/post/blog/ipc/0020-ipc-using-files/
+[article11]: https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/
+[article12]: https://whowin.gitee.io/post/blog/ipc/0022-dbus-asyn-process-signal/
+[article13]: https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/
+[article14]: https://whowin.gitee.io/post/blog/ipc/0024-select-recv-message/
+[article15]: https://whowin.gitee.io/post/blog/ipc/0025-resolve-arbitrary-dns-record/
 
 
 [article51]: https://whowin.gitee.io/post/blog/network/0019-dns-client-in-c/
 
 <!-- CSDN
 [article51]: https://blog.csdn.net/whowin/article/details/130181333
+
+[article01]: https://blog.csdn.net/whowin/article/details/132171311
+[article02]: https://blog.csdn.net/whowin/article/details/132171930
+[article03]: https://blog.csdn.net/whowin/article/details/132172172
+[article04]: https://blog.csdn.net/whowin/article/details/134869490
+[article05]: https://blog.csdn.net/whowin/article/details/134869636
+[article06]: https://blog.csdn.net/whowin/article/details/134939609
+[article07]: https://blog.csdn.net/whowin/article/details/135015196
+[article08]: https://blog.csdn.net/whowin/article/details/135074991
+[article09]: https://blog.csdn.net/whowin/article/details/135143545
+[article10]: https://blog.csdn.net/whowin/article/details/135212050
+[article11]: https://blog.csdn.net/whowin/article/details/135281195
+[article12]: https://blog.csdn.net/whowin/article/details/135332257
+[article13]: https://blog.csdn.net/whowin/article/details/135332658
+[article14]: https://blog.csdn.net/whowin/article/details/135493350
+[article15]: https://blog.csdn.net/whowin/article/details/135493382
 -->
 
 [rfc1035]: https://www.ietf.org/rfc/rfc1035.txt
@@ -236,7 +254,7 @@ postid: 100025
 [systemd-resolved_api]: https://www.freedesktop.org/software/systemd/man/latest/org.freedesktop.resolve1.html
 
 
-[src01]: https://whowin.gitee.io/sourcecodes/100025/dbus-dns-record.c
+[src01]: https://whowin.gitee.io/sourcecodes/190025/dbus-dns-record.c
 
-[img01]: https://whowin.gitee.io/images/100025/screenshot-of-dbus-dns-record.png
+[img01]: https://whowin.gitee.io/images/190025/screenshot-of-dbus-dns-record.png
 

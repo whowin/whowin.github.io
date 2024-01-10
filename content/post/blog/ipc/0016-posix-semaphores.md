@@ -7,11 +7,13 @@ authorbox: false
 toc: true
 pager: true
 categories:
+  - "IPC"
   - "Linux"
   - "C Language"
 tags:
   - Linux
   - 进程间通信
+  - IPC
   - 信号量
   - semaphore
   - POSIX
@@ -28,7 +30,7 @@ draft: false
 # - [Producer–consumer problem](https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem)
 # - [生产者消费者问题](https://zh.wikipedia.org/wiki/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98)
 
-postid: 100016
+postid: 190016
 ---
 
 IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍信号量(Semaphores)，尽管信号量被认为是 IPC 的一种方式，但实际上通常把信号量用于进程间同步或者资源互斥，和共享内存(Shared Memory)配合使用，可以实现完美的进程间通信；Linux 既支持 UNIX SYSTEM V 的信号量集，也支持 POSIX 的信号量，本文针对 POSIX 信号量，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多线程编程和信号处理等，对 Linux 编程的初学者有一些难度。
@@ -318,18 +320,21 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[article01]: https://whowin.gitee.io/post/blog/linux/0010-ipc-example-of-anonymous-pipe/
-[article02]: https://whowin.gitee.io/post/blog/linux/0011-ipc-examples-of-fifo/
-[article03]: https://whowin.gitee.io/post/blog/linux/0013-systemv-message-queue/
-[article04]: https://whowin.gitee.io/post/blog/linux/0014-posix-message-queue/
-[article05]: https://whowin.gitee.io/post/blog/linux/0015-systemv-semaphore-sets/
-[article06]: https://whowin.gitee.io/post/blog/linux/0016-posix-semaphores/
-[article07]: https://whowin.gitee.io/post/blog/linux/0017-systemv-shared-memory/
-[article08]: https://whowin.gitee.io/post/blog/linux/0018-posix-shared-memory/
-[article09]: https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
-[article10]: https://whowin.gitee.io/post/blog/linux/0020-ipc-using-files/
-[article11]: https://whowin.gitee.io/post/blog/linux/0021-ipc-using-dbus/
-[article12]: https://whowin.gitee.io/post/blog/linux/0022-dbus-asyn-process-signal/
+[article01]: https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/
+[article02]: https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/
+[article03]: https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/
+[article04]: https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/
+[article05]: https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/
+[article06]: https://whowin.gitee.io/post/blog/ipc/0016-posix-semaphores/
+[article07]: https://whowin.gitee.io/post/blog/ipc/0017-systemv-shared-memory/
+[article08]: https://whowin.gitee.io/post/blog/ipc/0018-posix-shared-memory/
+[article09]: https://whowin.gitee.io/post/blog/ipc/0019-ipc-with-unix-domain-socket/
+[article10]: https://whowin.gitee.io/post/blog/ipc/0020-ipc-using-files/
+[article11]: https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/
+[article12]: https://whowin.gitee.io/post/blog/ipc/0022-dbus-asyn-process-signal/
+[article13]: https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/
+[article14]: https://whowin.gitee.io/post/blog/ipc/0024-select-recv-message/
+[article15]: https://whowin.gitee.io/post/blog/ipc/0025-resolve-arbitrary-dns-record/
 
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
@@ -340,11 +345,11 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article06]: https://blog.csdn.net/whowin/article/details/134939609
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/100016/sem-create.c
-[src02]: https://whowin.gitee.io/sourcecodes/100016/official-exam.c
-[src03]: https://whowin.gitee.io/sourcecodes/100016/producer-consumer.c
+[src01]: https://whowin.gitee.io/sourcecodes/190016/sem-create.c
+[src02]: https://whowin.gitee.io/sourcecodes/190016/official-exam.c
+[src03]: https://whowin.gitee.io/sourcecodes/190016/producer-consumer.c
 
 
-[img01]: https://whowin.gitee.io/images/100016/screenshot-of-sem-create.png
-[img02]: https://whowin.gitee.io/images/100016/screenshot-of-official-exam.png
-[img03]: https://whowin.gitee.io/images/100016/producer-consumer.gif
+[img01]: https://whowin.gitee.io/images/190016/screenshot-of-sem-create.png
+[img02]: https://whowin.gitee.io/images/190016/screenshot-of-official-exam.png
+[img03]: https://whowin.gitee.io/images/190016/producer-consumer.gif
