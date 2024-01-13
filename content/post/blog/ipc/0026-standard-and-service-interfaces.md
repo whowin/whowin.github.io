@@ -1,5 +1,5 @@
 ---
-title: "IPC之十六：D-Bus的标准接口和服务接口的具体实现"
+title: "D-Bus的标准接口、自省机制和服务接口的具体实现方法"
 date: 2024-01-08T16:43:29+08:00
 author: whowin
 sidebar: false
@@ -7,6 +7,7 @@ authorbox: false
 toc: true
 pager: true
 categories:
+  - "IPC"
   - "Linux"
   - "C Language"
 tags:
@@ -362,6 +363,7 @@ D-Bus的规范中提供了一系列的标准接口，绝大多数有D-Bus接口�
 [article13]: https://blog.csdn.net/whowin/article/details/135332658
 [article14]: https://blog.csdn.net/whowin/article/details/135493350
 [article15]: https://blog.csdn.net/whowin/article/details/135493382
+[article16]: https://blog.csdn.net/whowin/article/details/135524259
 -->
 
 
