@@ -134,6 +134,28 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0003-checksum-of-udp-header/">如何计算UDP头的checksum</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2022-12-12 </span>
+      <div class="post-category">
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum；本文对网络编程的初学者难度不大。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0003-checksum-of-udp-header/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/network/0005-send-udp-via-linux-cli/">如何在Linux命令行下发送和接收UDP数据包</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2022-12-10 </span>
@@ -217,27 +239,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/c/0001-parameters-passing-mechanism/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/linux/0012-setuid/">Linux文件权限：setuid、setgid和sticky bit</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2022-08-25 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>Linux 下的文件权限管理分为三组：拥有者、组、其它用户，文件权限分为读、写、执行，但其实并不仅仅如此，还有 setuid、setgid、sticky bit 这一组标志，本文通过一个可执行文件的权限 4755 展开介绍 setuid、setgid 和 sticky bit 的概念，希望本文对读者理解 Linux 文件权限管理能有所帮助。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/linux/0012-setuid/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

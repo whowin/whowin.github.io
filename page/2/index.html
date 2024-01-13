@@ -134,6 +134,30 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0023-dbus-resolve-hostname/">IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-12-10 </span>
+      <div class="post-category">
+          <a href="/categories/ipc/"> IPC </a>
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>前面两篇有关 D-Bus 的文章介绍了使用 libdbus 库进行进程间的方法调用和信号的传输，实际上 D-Bus 的更强大的地方是其建立了与大量系统服务之间建立了有效的对话规范，使得应用程序可以使用标准的方式调用系统服务的方法，访问系统服务中的一些开放的属性，本文将使用 libdbus 库调用系统服务中的方法从而实现域名解析，本文给出了实现该功能的实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/ipc/0023-dbus-resolve-hostname/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0022-dbus-asyn-process-signal/">IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-12-06 </span>
@@ -221,29 +245,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/ipc/0019-ipc-with-unix-domain-socket/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0018-posix-shared-memory/">IPC之八：使用 POSIX 共享内存进行进程间通信的实例</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-09-27 </span>
-      <div class="post-category">
-          <a href="/categories/ipc/"> IPC </a>
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍共享内存(Shared Memory)，因为没有像管道、消息队列这样的中介介入，所以通常认为共享内存是迄今为止最快的 IPC 方式；Linux 既支持 UNIX SYSTEM V 的共享内存段，也支持 POSIX 的共享内存对象，本文针对 POSIX 共享内存对象，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程和信号处理等，阅读本文还需要一些基本的内存管理知识，本文对 Linux 编程的初学者有一些难度。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/ipc/0018-posix-shared-memory/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
