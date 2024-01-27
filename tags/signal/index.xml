@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>signal on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/signal/</link>
+    <description>Recent content in signal on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 25 Jan 2024 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/signal/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用signal中止阻塞的socket函数的应用实例</title>
+      <link>https://whowin.gitee.io/post/blog/network/0023-using-signals-with-blocking-socket-apis/</link>
+      <pubDate>Thu, 25 Jan 2024 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0023-using-signals-with-blocking-socket-apis/</guid>
+      <description>&lt;p&gt;在 socket 编程中，有一些函数是阻塞的，为了使程序高效运行，有一些办法可以把这些阻塞函数变成非阻塞的，本文介绍一种使用定时器信号中断阻塞函数的方法，同时介绍了一些信号处理和定时器设置的编程方法，本文附有完整实例的源代码，本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

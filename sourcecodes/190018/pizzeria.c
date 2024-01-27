@@ -16,6 +16,7 @@
  * Example source code for article 《IPC之八：使用 POSIX 共享内存进行进程间通信的实例》
  * 
  */
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

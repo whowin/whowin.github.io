@@ -134,6 +134,30 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0024-select-recv-message/">IPC之十四：使用libdbus通过select()接收D-Bus消息的实例</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-12-25 </span>
+      <div class="post-category">
+          <a href="/categories/ipc/"> IPC </a>
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>在『进程间通信』系列文章中前面已经有三篇关于D-Bus的文章，本文继续讨论D-Bus；libdbus抽象了实现IPC时实际使用的方式(管道、socket等)，libdbus允许在一个D-Bus连接上添加一个watch，通过watch对实际IPC中使用的文件描述符进行监视，本文讨论了如何在D-Bus连接中添加watch，如何使用在socket编程中常用的select从D-Bus返回的文件描述符中接收到D-Bus消息，本文给出了具体实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/ipc/0024-select-recv-message/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0023-dbus-resolve-hostname/">IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-12-10 </span>
@@ -221,30 +245,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/ipc/0020-ipc-using-files/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0019-ipc-with-unix-domain-socket/">IPC之九：使用UNIX Domain Socket进行进程间通信的实例</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-10-16 </span>
-      <div class="post-category">
-          <a href="/categories/ipc/"> IPC </a>
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>socket 编程是一种用于网络通信的编程方式，在 socket 的协议族中除了常用的 AF_INET、AF_RAW、AF_NETLINK等以外，还有一个专门用于 IPC 的协议族 AF_UNIX，IPC 是 Linux 编程中一个重要的概念，常用的 IPC 方式有管道、消息队列、共享内存等，本文主要介绍用于本地进程间通信的 UNIX Domain Socket，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程等，本文对 Linux 编程的初学者有一些难度。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/ipc/0019-ipc-with-unix-domain-socket/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

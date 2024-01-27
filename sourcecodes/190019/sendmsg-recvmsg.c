@@ -16,6 +16,7 @@
  * Example source code for article 《IPC之九：使用UNIX Domain Socket进行进程间通信的实例》
  * 
  */
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

@@ -15,6 +15,7 @@
  * Example source code for article 《IPC之三：使用消息队列进行进程间通信的实例》
  * 
  */
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

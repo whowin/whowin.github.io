@@ -16,6 +16,7 @@
  * Example source code for article 《IPC之五：使用 System V 信号量集解决经典的'哲学家就餐问题'》
  * 
  */
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

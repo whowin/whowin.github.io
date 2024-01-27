@@ -18,6 +18,7 @@
  * 
  */
 
+#define _GNU_SOURCE
 #ifndef _SHM_PUBLIC_H
 #define _SHM_PUBLIC_H   1
 

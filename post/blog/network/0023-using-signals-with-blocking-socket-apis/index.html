@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>使用signal中止阻塞的socket函数的应用实例 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="在 socket 编程中，有一些函数是阻塞的，为了使程序高效运行，有一些办法可以把这些阻塞函数变成非阻塞的，本文介绍一种使用定时器信号中断阻塞函数的方法，同时介绍了一些信号处理和定时器设置的编程方法，本文附有完整实例的源代码，本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/network/0023-using-signals-with-blocking-socket-apis/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="使用signal中止阻塞的socket函数的应用实例" />
+<meta property="og:description" content="在 socket 编程中，有一些函数是阻塞的，为了使程序高效运行，有一些办法可以把这些阻塞函数变成非阻塞的，本文介绍一种使用定时器信号中断阻塞函数的方法，同时介绍了一些信号处理和定时器设置的编程方法，本文附有完整实例的源代码，本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0023-using-signals-with-blocking-socket-apis/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2024-01-25T16:43:29+08:00" />
+<meta property="article:modified_time" content="2024-01-25T16:43:29+08:00" />
+
+<meta itemprop="name" content="使用signal中止阻塞的socket函数的应用实例">
+<meta itemprop="description" content="在 socket 编程中，有一些函数是阻塞的，为了使程序高效运行，有一些办法可以把这些阻塞函数变成非阻塞的，本文介绍一种使用定时器信号中断阻塞函数的方法，同时介绍了一些信号处理和定时器设置的编程方法，本文附有完整实例的源代码，本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"><meta itemprop="datePublished" content="2024-01-25T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2024-01-25T16:43:29+08:00" />
+<meta itemprop="wordCount" content="2615">
+<meta itemprop="keywords" content="Linux,网络编程,accept,signal," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用signal中止阻塞的socket函数的应用实例"/>
+<meta name="twitter:description" content="在 socket 编程中，有一些函数是阻塞的，为了使程序高效运行，有一些办法可以把这些阻塞函数变成非阻塞的，本文介绍一种使用定时器信号中断阻塞函数的方法，同时介绍了一些信号处理和定时器设置的编程方法，本文附有完整实例的源代码，本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">使用signal中止阻塞的socket函数的应用实例</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2024-01-25 </span>
+        <div class="post-category">
+            <a href="/categories/network/"> Network </a>
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-前言">1 前言</a></li>
+        <li><a href="#2-使用-signal-中止-socket-阻塞函数">2 使用 signal 中止 socket 阻塞函数</a></li>
+        <li><a href="#3-范例">3 范例</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>在 socket 编程中，有一些函数是阻塞的，为了使程序高效运行，有一些办法可以把这些阻塞函数变成非阻塞的，本文介绍一种使用定时器信号中断阻塞函数的方法，同时介绍了一些信号处理和定时器设置的编程方法，本文附有完整实例的源代码，本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。</p>
+<h2 id="1-前言">1 前言</h2>
+<ul>
+<li>在 socket 编程中，阻塞还是不阻塞是经常要考虑的问题，<code>accept()</code>、<code>recv()</code> 等一些函数都是阻塞函数，阻塞函数有时会给程序带来麻烦；</li>
+<li>使用 <code>select()</code> 或者 <code>poll()</code> 监视 <code>socket</code> 描述符可以有效地避免诸如 <code>accept()</code>、<code>recv()</code> 等函数的阻塞带来的麻烦；</li>
+<li>下面这段代码是使用 select() 避免阻塞的示例：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sockfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span> <span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="n">fd_set</span> <span class="n">fds</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">FD_ZERO</span><span class="p">(</span><span class="n">fd_set</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">FD_SET</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">fds</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">timeval</span> <span class="n">tv</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">tv</span><span class="p">.</span><span class="n">tv_sec</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">tv</span><span class="p">.</span><span class="n">tv_usec</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">sockfd</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">fds</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">tv</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">FD_ISSET</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">fds</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">......</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>下面这段代码是使用 poll() 避免阻塞的示例：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sockfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span> <span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">pollfd</span> <span class="n">pfd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">pfd</span><span class="p">.</span><span class="n">fd</span> <span class="o">=</span> <span class="n">sockfd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">pfd</span><span class="p">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">POLLIN</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">poll</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pfd</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5000</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">pfd</span><span class="p">.</span><span class="n">revents</span> <span class="o">&amp;</span> <span class="n">POLLIN</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">......</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>使用 <code>ioctl()</code> 将一个 socket 设置为非阻塞模式也是解决 socket 函数阻塞的方法之一；</li>
+<li>下面代码使用 ioctl() 将 socket 设置为非阻塞模式：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sockfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span> <span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">on</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">ioctl</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">FIONBIO</span><span class="p">,</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">on</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>下面这段代码使用 fcntl() 将 socket 设置为非阻塞模式，与 ioctl() 是等效的：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sockfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">flags</span> <span class="o">=</span> <span class="n">fcntl</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">F_GETFL</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">fcntl</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">F_SETFL</span><span class="p">,</span> <span class="n">flags</span> <span class="o">|</span> <span class="n">O_NONBLOCK</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>如果将 <code>socket</code> 设置为非阻塞模式，<code>socket</code> 阻塞函数将立即返回，给出一个错误代码 <code>EAGAIN</code>，所以代码要写成下面这样：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">sockfd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span> <span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">on</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">ioctl</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">FIONBIO</span><span class="p">,</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">on</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">rc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">do</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rc</span> <span class="o">=</span> <span class="n">accept</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">usleep</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">);</span>             <span class="c1">// sleep 100 ms
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="n">EAGAIN</span> <span class="o">||</span> <span class="n">rc</span> <span class="o">==</span> <span class="n">EINTR</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>本文讨论使用信号(signal)避免 socket 阻塞函数产生阻塞的方法。</li>
+</ul>
+<h2 id="2-使用-signal-中止-socket-阻塞函数">2 使用 signal 中止 socket 阻塞函数</h2>
+<ul>
+<li>
+<p>实际上 socket 阻塞函数除了在非阻塞模式下会立即返回外，一旦当前进程收到信号(任何信号)时也会返回；</p>
+<ul>
+<li>在非阻塞模式下，socket 阻塞函数返回值为 -1 时，其 errno=EAGAIN;</li>
+<li>因为收到信号而中止的 socket 阻塞函数返回值为 -1， errno=EINTR；</li>
+</ul>
+</li>
+<li>
+<p>基于此，可以设置一个定时器，Linux 的定时器会发出一个 SIGALRM 信号，该信号显然可以中止 socket 阻塞函数的阻塞状态；</p>
+</li>
+<li>
+<p>设置定时器通常有两种方法，一种是使用 <code>alarm()</code>，另一种是使用 <code>setitimer()</code>；</p>
+</li>
+<li>
+<p>下面代码使用 setitimer() 设置一个 5 秒的定时器：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">itimerval</span> <span class="n">new_value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">new_value</span><span class="p">.</span><span class="n">it_value</span><span class="p">.</span><span class="n">tv_sec</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">new_value</span><span class="p">.</span><span class="n">it_value</span><span class="p">.</span><span class="n">tv_usec</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">new_value</span><span class="p">.</span><span class="n">it_interval</span><span class="p">.</span><span class="n">tv_sec</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">new_value</span><span class="p">.</span><span class="n">it_interval</span><span class="p">.</span><span class="n">tv_usec</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">setitimer</span><span class="p">(</span><span class="n">ITIMER_REAL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">new_value</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>有关 <code>setitimer()</code> 的详细信息，可以查看在线手册 <code>man setitimer</code>，这里仅做简单介绍；</p>
+</li>
+<li>
+<p><code>setitimer()</code> 的定义：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/time.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">setitimer</span><span class="p">(</span><span class="kt">int</span> <span class="n">which</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">itimerval</span> <span class="o">*</span><span class="n">new_value</span><span class="p">,</span> <span class="k">struct</span> <span class="n">itimerval</span> <span class="o">*</span><span class="n">old_value</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>其中 <code>struct itimeval</code> 的定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">itimerval</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">timeval</span> <span class="n">it_interval</span><span class="p">;</span> <span class="cm">/* Interval for periodic timer */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">timeval</span> <span class="n">it_value</span><span class="p">;</span>    <span class="cm">/* Time until next expiration */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">timeval</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time_t</span>      <span class="n">tv_sec</span><span class="p">;</span>         <span class="cm">/* seconds */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">suseconds_t</span> <span class="n">tv_usec</span><span class="p">;</span>        <span class="cm">/* microseconds */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>调用 <code>setitimer()</code> 时，参数 which 表示计时方式，有三个可选值：</p>
+<ul>
+<li><strong>ITIMER_REAL</strong>：以实际时钟计时，计时器时间到产生 SIGALRM 信号；</li>
+<li><strong>ITIMER_VIRTUAL</strong>：以进程消耗的用户模式下 CPU 时间计时，计时器时间到产生一个 SIGVTALRM 信号；</li>
+<li><strong>ITIMER_PROF</strong>：以进程消耗的总 CPU 时间计时，计时器到时时产生一个 SIGPROF 信号；</li>
+</ul>
+</li>
+<li>
+<p>调用 <code>setitimer()</code> 时，参数 <code>new_value</code> 用于设置定时器时间：</p>
+<ul>
+<li><code>new_value.it_value</code> 中有两个字段，如果两个字段均为 0，表示取消定时器，如果两个字段中有一个不为 0，则认为是设置了一个时间间隔；</li>
+<li><code>new_value.it_interval</code> 用于指定计时器的新间隔，当 <code>new_value.it_interval</code> 中的两个字段均为 0 时，表示这个计时器是单次的，其中有一个字段不为 0，则将被作为一个新的时间间隔在下次被指定；</li>
+</ul>
+</li>
+<li>
+<p>调用 <code>setitimer()</code> 时，参数 <code>old_value</code> 用于返回之前的设置值(实际就是 <code>getitime()</code> 返回的值)，可以设置为 NULL；</p>
+</li>
+<li>
+<p>函数 <code>setitimer()</code> 调用成功时返回 0，失败时返回 -1，<code>errno</code> 中为错误代码；</p>
+</li>
+<li>
+<p><code>alarm()</code> 的使用比较简单，定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">unsigned</span> <span class="kt">int</span> <span class="nf">alarm</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">seconds</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>alarm()</code> 设置的时间到时，将产生一个 SIGALRM 信号，<code>alarm()</code> 是一个单次的定时器，所以使用 <code>alarm()</code> 设置的定时器只会响应一次，如果需要重复定时，可以在 SIGALRM 信号处理程序中再次执行 <code>alarm()</code> 重新设置定时；</p>
+</li>
+<li>
+<p><code>alarm()</code> 和 <code>setitimer()</code> 使用的是同一个定时器，所以，这两个函数相互间会互相影响，建议在同一个进程中，应避免使用两种方法设置定时器；</p>
+</li>
+<li>
+<p><code>alarm()</code> 在设置定时器时只能设置到秒的精度，而且只能使用实际时钟，相比较而言，<code>setitimer()</code> 可以设置精度更高的定时器，而且计时方式也比较多样，但复杂度略高；</p>
+</li>
+<li>
+<p>不管是 <code>alarm()</code> 还是 <code>setitimer()</code>，在计时时间到时都是发出一个信号，所以编写信号处理程序是使用定时器时必须要做的工作，需要使用 <code>signal()</code> 设置信号处理程序；</p>
+</li>
+<li>
+<p>下面程序设置了 SIGALRM 信号的信号处理程序：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">signal_handler</span><span class="p">(</span><span class="kt">int</span> <span class="n">sig</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">signal</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">signal_handler</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Catch the signal: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="n">sig</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl">    <span class="n">signal</span><span class="p">(</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="n">signal_handler</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>signal() 函数设置的信号处理程序在信号产生后会被重置为默认处理程序，如果需要下次产生信号时继续使用当前处理程序，需要在信号处理程序中执行 signal() 重新设置，就像上面程序演示的那样；</p>
+</li>
+<li>
+<p>下面这段程序使用 alarm() 设置了一个 5 秒的定时器，每 5 秒会产生一个 SIGALRM 信号：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#define _POSIX_SOURCE
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">signal_handler</span><span class="p">(</span><span class="kt">int</span> <span class="n">sig</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">signal</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">signal_handler</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Catch the signal: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="n">sig</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl">    <span class="n">alarm</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl">    <span class="n">signal</span><span class="p">(</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="n">signal_handler</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">alarm</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="n">loop</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">......</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>下面这段代码使用 setitimer() 设置了一个 5 秒的定时器，每 5 秒会产生一个 SIGALRM 信号：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#define _POSIX_SOURCE
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/time.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">signal_handler</span><span class="p">(</span><span class="kt">int</span> <span class="n">sig</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">signal</span><span class="p">(</span><span class="n">sig</span><span class="p">,</span> <span class="n">signal_handler</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Catch the signal: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span><span class="n">sig</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl">    <span class="n">signal</span><span class="p">(</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="n">signal_handler</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">itimerval</span> <span class="n">new_value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">new_value</span><span class="p">.</span><span class="n">it_value</span><span class="p">.</span><span class="n">tv_sec</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">new_value</span><span class="p">.</span><span class="n">it_value</span><span class="p">.</span><span class="n">tv_usec</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">new_value</span><span class="p">.</span><span class="n">it_interval</span><span class="p">.</span><span class="n">tv_sec</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">new_value</span><span class="p">.</span><span class="n">it_interval</span><span class="p">.</span><span class="n">tv_usec</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">setitimer</span><span class="p">(</span><span class="n">ITIMER_REAL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">new_value</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="n">loop</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">......</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>除了编程上的区别外，还要注意 <code>alarm()</code> 需要的头文件是 <code>&lt;unistd.h&gt;</code>，而 <code>setitimer()</code> 需要的头文件是 <code>&lt;sys/time.h&gt;</code>；</p>
+</li>
+<li>
+<p>关于系统调用中的阻塞函数在进程收到信号后会被中止的相关信息可以参考在线手册 <code>man 7 signal</code>，其中 <code>&lt;Interruption of system calls and library functions by signal handlers&gt;</code> 一节中详细介绍了那些阻塞函数可以被信号中止；</p>
+</li>
+<li>
+<p>另外，阻塞函数被信号中止的功能是 POSIX 标准中的一部分，并不是 libc 默认支持的，所以在程序的开头要加上 <code>#include _POSIX_SOURCE</code>。</p>
+</li>
+</ul>
+<h2 id="3-范例">3 范例</h2>
+<ul>
+<li>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/100023/nonblock-signal.c">nonblock-signal.c</a>(<strong>点击文件名下载源程序，建议使用UTF-8字符集</strong>)演示了使用信号使 socket 编程里的阻塞函数 <code>accept()</code> 每隔 5 秒钟中止一次的过程；</p>
+</li>
+<li>
+<p>该范例不仅仅是处理了 SIGALRM 信号，还处理了 SIGINT 和 SIGQUIT 信号，旨在说明不仅仅是定时器产生的 SIGALRM 信号会中止阻塞函数，任何信号都会使阻塞函数中止；</p>
+</li>
+<li>
+<p>SIGQUIT 信号可以使用键盘 <code>ctrl + \</code> 产生，SIGINT 信号就是 <code>ctrl + c</code>；</p>
+</li>
+<li>
+<p>为了程序可以正常退出，程序对 SIGINT 信号做了计数，当按下 <code>ctrl + c</code> 四次时，程序会正常退出；</p>
+</li>
+<li>
+<p>因为一个 socket 阻塞函数可以被任意信号打断，被打断的函数会返回一个 EINTR 错误，所以在进行 socket 编程时，一定要处理 EINTR；</p>
+</li>
+<li>
+<p>程序使用 常量 <code>_ALARM_FUNC</code> 控制采用哪种方式设置定时器，当常量 <code>_ALARM_FUNC</code> 已定义时，使用 <code>alarm()</code> 设置定时器，否则使用 <code>setitimer()</code> 设置定时器；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall -g nonblock-signal.c -o nonblock-signal</code></p>
+</li>
+<li>
+<p>运行：<code>./nonblock-signal</code></p>
+</li>
+<li>
+<p>运行截图：</p>
+<p><img src="/images/180023/nonblock-signal.gif" alt="GIF of running nonblock-signal"></p>
+</li>
+</ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2024-01-25
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+          <a href="/tags/accept/">accept</a>
+          <a href="/tags/signal/">signal</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/linux/0010-19-useful-tools-in-ubuntu/">
+            <span class="next-text nav-default">在ubuntu上的18个非常实用的命令行工具软件</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/network/0023-using-signals-with-blocking-socket-apis/" class="leancloud_visitors" data-flag-title="使用signal中止阻塞的socket函数的应用实例">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

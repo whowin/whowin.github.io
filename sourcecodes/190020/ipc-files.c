@@ -15,6 +15,7 @@
  * IPC examples using shared files 《IPC之十：使用共享文件进行进程间通信的实例》
  * 
  */
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
