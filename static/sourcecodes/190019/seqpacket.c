@@ -17,6 +17,7 @@
  * https://whowin.gitee.io/post/blog/linux/0019-ipc-with-unix-domain-socket/
  * 
  */
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

@@ -16,6 +16,7 @@
  * Example source code for article 《IPC之六：使用 POSIX 信号量解决经典的'生产者消费者问题'》
  * 
  */
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

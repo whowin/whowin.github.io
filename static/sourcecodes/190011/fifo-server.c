@@ -15,6 +15,7 @@
  * Example source code for article 《IPC之二：使用命名管道(FIFO)进行进程间通信的例子》
  * 
  */
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
