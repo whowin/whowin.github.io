@@ -134,6 +134,30 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0025-resolve-arbitrary-dns-record/">IPC之十五：使用libdbus通过D-Bus请求系统调用实现任意DNS记录解析的实例</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-12-28 </span>
+      <div class="post-category">
+          <a href="/categories/ipc/"> IPC </a>
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>关于D-Bus的文章中曾介绍了如何通过D-Bus调用系统服务从而实现解析出一个域名的IP地址的过程，本文我们继续调用系统调用来实现解析任意DNS记录，系统调用的方法与前一篇文章类似，只是方法名称和调用参数以及返回参数不同，本文将详细介绍systemd-resolved服务中的ResolveRecord方法，同前面几篇关于D-BUS的文章相同，本文将使用 libdbus 库实现系统服务的调用，本文给出了实现解析任意DNS记录的实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/ipc/0025-resolve-arbitrary-dns-record/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0024-select-recv-message/">IPC之十四：使用libdbus通过select()接收D-Bus消息的实例</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-12-25 </span>
@@ -222,29 +246,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/ipc/0021-ipc-using-dbus/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0020-ipc-using-files/">IPC之十：使用共享文件进行进程间通信的实例</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-11-06 </span>
-      <div class="post-category">
-          <a href="/categories/ipc/"> IPC </a>
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 IPC 方式有管道、消息队列、共享内存等，但其实使用广大程序员都熟悉的文件也是可以完成 IPC 的，本文介绍如何使用共享文件实现进程间通信，本文给出了具体的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程、文件锁等概念，所以对 Linux 编程的初学者有一些难度，但对于了解 Linux 下共享文件，特别是文件锁的应用，将是非常难得的。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/ipc/0020-ipc-using-files/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

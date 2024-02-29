@@ -134,6 +134,29 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0021-using-poll-instead-of-select/">使用poll()代替select()处理多客户连接的TCP服务器实例</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2024-02-27 </span>
+      <div class="post-category">
+          <a href="/categories/network/"> Network </a>
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>在网络编程中，使用 select() 处理多客户端的连接是非常常用的方法，select() 是一个非常古老的方法，在大量连接下会显得效率不高，而且其对描述符的数值还有一些限制，Linux内核从 2.1.13 版以后提供了 poll() 替代 select()，本文介绍 poll() 在网络编程中的使用方法，并着重介绍 poll() 在编程行与 select() 的区别，旨在帮助熟悉 select() 编程的程序员可以很容易地使用 poll() 编程，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0021-using-poll-instead-of-select/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/network/0023-using-signals-with-blocking-socket-apis/">使用signal中止阻塞的socket函数的应用实例</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2024-01-25 </span>
@@ -216,30 +239,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/ipc/0026-standard-and-service-interfaces/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0025-resolve-arbitrary-dns-record/">IPC之十五：使用libdbus通过D-Bus请求系统调用实现任意DNS记录解析的实例</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-12-28 </span>
-      <div class="post-category">
-          <a href="/categories/ipc/"> IPC </a>
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>关于D-Bus的文章中曾介绍了如何通过D-Bus调用系统服务从而实现解析出一个域名的IP地址的过程，本文我们继续调用系统调用来实现解析任意DNS记录，系统调用的方法与前一篇文章类似，只是方法名称和调用参数以及返回参数不同，本文将详细介绍systemd-resolved服务中的ResolveRecord方法，同前面几篇关于D-BUS的文章相同，本文将使用 libdbus 库实现系统服务的调用，本文给出了实现解析任意DNS记录的实例，附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/ipc/0025-resolve-arbitrary-dns-record/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

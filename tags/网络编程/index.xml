@@ -6,7 +6,16 @@
     <description>Recent content in 网络编程 on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 25 Jan 2024 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 27 Feb 2024 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用poll()代替select()处理多客户连接的TCP服务器实例</title>
+      <link>https://whowin.gitee.io/post/blog/network/0021-using-poll-instead-of-select/</link>
+      <pubDate>Tue, 27 Feb 2024 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0021-using-poll-instead-of-select/</guid>
+      <description>&lt;p&gt;在网络编程中，使用 select() 处理多客户端的连接是非常常用的方法，select() 是一个非常古老的方法，在大量连接下会显得效率不高，而且其对描述符的数值还有一些限制，Linux内核从 2.1.13 版以后提供了 poll() 替代 select()，本文介绍 poll() 在网络编程中的使用方法，并着重介绍 poll() 在编程行与 select() 的区别，旨在帮助熟悉 select() 编程的程序员可以很容易地使用 poll() 编程，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>使用signal中止阻塞的socket函数的应用实例</title>
       <link>https://whowin.gitee.io/post/blog/network/0023-using-signals-with-blocking-socket-apis/</link>

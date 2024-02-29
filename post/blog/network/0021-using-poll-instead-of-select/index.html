@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>使用poll()代替select()处理多客户连接的TCP服务器实例 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="在网络编程中，使用 select() 处理多客户端的连接是非常常用的方法，select() 是一个非常古老的方法，在大量连接下会显得效率不高，而且其对描述符的数值还有一些限制，Linux内核从 2.1.13 版以后提供了 poll() 替代 select()，本文介绍 poll() 在网络编程中的使用方法，并着重介绍 poll() 在编程行与 select() 的区别，旨在帮助熟悉 select() 编程的程序员可以很容易地使用 poll() 编程，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/network/0021-using-poll-instead-of-select/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="使用poll()代替select()处理多客户连接的TCP服务器实例" />
+<meta property="og:description" content="在网络编程中，使用 select() 处理多客户端的连接是非常常用的方法，select() 是一个非常古老的方法，在大量连接下会显得效率不高，而且其对描述符的数值还有一些限制，Linux内核从 2.1.13 版以后提供了 poll() 替代 select()，本文介绍 poll() 在网络编程中的使用方法，并着重介绍 poll() 在编程行与 select() 的区别，旨在帮助熟悉 select() 编程的程序员可以很容易地使用 poll() 编程，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0021-using-poll-instead-of-select/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2024-02-27T16:43:29+08:00" />
+<meta property="article:modified_time" content="2024-02-27T16:43:29+08:00" />
+
+<meta itemprop="name" content="使用poll()代替select()处理多客户连接的TCP服务器实例">
+<meta itemprop="description" content="在网络编程中，使用 select() 处理多客户端的连接是非常常用的方法，select() 是一个非常古老的方法，在大量连接下会显得效率不高，而且其对描述符的数值还有一些限制，Linux内核从 2.1.13 版以后提供了 poll() 替代 select()，本文介绍 poll() 在网络编程中的使用方法，并着重介绍 poll() 在编程行与 select() 的区别，旨在帮助熟悉 select() 编程的程序员可以很容易地使用 poll() 编程，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。"><meta itemprop="datePublished" content="2024-02-27T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2024-02-27T16:43:29+08:00" />
+<meta itemprop="wordCount" content="4652">
+<meta itemprop="keywords" content="Linux,网络编程,select,poll," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用poll()代替select()处理多客户连接的TCP服务器实例"/>
+<meta name="twitter:description" content="在网络编程中，使用 select() 处理多客户端的连接是非常常用的方法，select() 是一个非常古老的方法，在大量连接下会显得效率不高，而且其对描述符的数值还有一些限制，Linux内核从 2.1.13 版以后提供了 poll() 替代 select()，本文介绍 poll() 在网络编程中的使用方法，并着重介绍 poll() 在编程行与 select() 的区别，旨在帮助熟悉 select() 编程的程序员可以很容易地使用 poll() 编程，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">使用poll()代替select()处理多客户连接的TCP服务器实例</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2024-02-27 </span>
+        <div class="post-category">
+            <a href="/categories/network/"> Network </a>
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-前言">1 前言</a></li>
+        <li><a href="#2-poll-的基本使用方法">2 poll() 的基本使用方法</a></li>
+        <li><a href="#3-poll-和-select-在编程上的区别">3 poll() 和 select() 在编程上的区别</a></li>
+        <li><a href="#4-poll-编程的基本步骤">4 poll() 编程的基本步骤</a></li>
+        <li><a href="#5-实例一个使用-poll-的-tcp-服务器">5 实例：一个使用 poll() 的 TCP 服务器</a></li>
+        <li><a href="#6-结论">6 结论</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>在网络编程中，使用 select() 处理多客户端的连接是非常常用的方法，select() 是一个非常古老的方法，在大量连接下会显得效率不高，而且其对描述符的数值还有一些限制，Linux内核从 2.1.13 版以后提供了 poll() 替代 select()，本文介绍 poll() 在网络编程中的使用方法，并着重介绍 poll() 在编程行与 select() 的区别，旨在帮助熟悉 select() 编程的程序员可以很容易地使用 poll() 编程，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。</p>
+<h2 id="1-前言">1 前言</h2>
+<ul>
+<li>在<a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a>中，有两篇文章都涉及到了使用 <code>select()</code> 处理多个 <code>socket</code> 连接：
+<ul>
+<li><a href="https://blog.csdn.net/whowin/article/details/129410476">《使用select实现的UDP/TCP组合服务器》</a></li>
+<li><a href="https://blog.csdn.net/whowin/article/details/129685842">《TCP服务器如何使用select处理多客户连接》</a></li>
+</ul>
+</li>
+<li>Linux 上的另一个系统调用 <code>poll()</code>，可以和 <code>select()</code> 完成相同的工作，而且通常认为 <code>poll()</code> 的效率要高于 <code>select()</code>；</li>
+<li>似乎 <code>select()</code> 要比 <code>poll()</code> 更普及一些，这可能是因为在 Linux 内核 2.0 版以前是不支持 <code>poll()</code> 的，只有 <code>select()</code>，直到 <code>2.1.13</code> 版后才开始既支持 <code>select()</code> 也支持 <code>poll()</code>；</li>
+<li>另一个导致 <code>select()</code> 更加普及的原因可能是大多数的应用程序需要同时处理的 <code>I/O</code> 数量并不是很多，使得对性能的要求不高，其实在大量的 <code>I/O</code> 处理上，<code>poll()</code> 和 <code>select()</code> 在性能上的差别还是挺大的；</li>
+<li>本文假定读者已经对 socket 编程和 <code>select()</code> 函数有基本的理解，有关这方面的知识请自行参考前面提到的两篇文章，本文不再讨论；</li>
+<li><code>select()</code> 和 <code>poll()</code> 并不适用于普通文件(指文件系统上的文件)，一个普通文件将永远处于可读或者可写的状态，不管是使用 <code>select()</code> 还是 <code>poll()</code>，都会一直返回；</li>
+<li>通常情况下，<code>select()</code> 和 <code>poll()</code> 用于 <code>socket</code>、管道等，尽管我们在 <code>D-Bus</code> 的文章中也使用了 <code>select()</code>，但实际上 <code>D-Bus</code> 使用的是 <code>socket</code> 或者管道，<code>D-Bus</code> 只是将其抽象化了；</li>
+<li><code>select()</code> 和 <code>poll()</code> 实际上完成的功能非常近似，使用上的差异也不大；</li>
+<li>本文讨论的重点是使用 <code>poll()</code> 替代以前使用 <code>select()</code> 的程序，会介绍 <code>poll()</code> 的使用方法，以及 <code>poll()</code> 和 <code>select()</code> 在编程上的区别，并最终实现一个使用 <code>poll()</code> 的 TCP 服务器；</li>
+<li>尽管普遍认为 <code>epoll()</code> 在处理多连接方面表现更加优异，但 <code>epoll()</code> 的编程方式与 <code>select()</code> 和 <code>poll()</code> 有较大区别，所以本文不会讨论 <code>epoll()</code> 相关的编程方法；</li>
+</ul>
+<h2 id="2-poll-的基本使用方法">2 poll() 的基本使用方法</h2>
+<ul>
+<li>
+<p>poll() 函数的输入参数中有一个结构数组，结构中包含有一个描述符字段，poll() 函数等待在这些描述符上，当结构数组中的任何一个或多个描述符上有事件发生时，该函数将返回；</p>
+</li>
+<li>
+<p>poll() 函数的定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;poll.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">poll</span><span class="p">(</span><span class="k">struct</span> <span class="n">pollfd</span> <span class="o">*</span><span class="n">fds</span><span class="p">,</span> <span class="n">nfds_t</span> <span class="n">nfds</span><span class="p">,</span> <span class="kt">int</span> <span class="n">timeout</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><code>struct pollfd</code> 的定义</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">pollfd</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>                 <span class="cm">/* File descriptor to poll.  */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">short</span> <span class="kt">int</span> <span class="n">events</span><span class="p">;</span>       <span class="cm">/* Types of events poller cares about.  */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">short</span> <span class="kt">int</span> <span class="n">revents</span><span class="p">;</span>      <span class="cm">/* Types of events that actually occurred.  */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在调用 <code>poll()</code> 之前，要先初始化 <code>fds</code>；</p>
+<ul>
+<li><code>fds</code> 中的 fd 是要监视的文件描述符，可以是文件、<code>socket</code>、管道、设备等，比较常用的是在一个 TCP 服务器上监视侦听的 <code>socket</code> 以及与多个客户端之间的连接 <code>socket</code>；</li>
+<li><code>fds</code> 中的 events 是要在这个描述符上监视哪些事件，可监视的事件主要有：
+<ul>
+<li><code>POLLIN</code> - 当 socket 上有数据可读时，触发该事件；</li>
+<li><code>POLLOUT</code> - 当向 socket 上写入数据不会产生阻塞时，触发该事件；</li>
+<li><code>POLLPRI</code> - 当 socket 上有紧急的数据需要读取时，触发该事件；</li>
+<li><code>POLLERR</code> - 当 socket 上产生一个异步错误时，触发该事件；</li>
+<li><code>POLLHUP</code> - 当 socket 连接已经断开时，触发该事件，该事件仅在输出时有效；</li>
+<li><code>POLLNVAL</code> - 无效的请求，通常表示描述符没有打开，触发该事件；</li>
+<li>可以使用 &ldquo;或&rdquo; 操作在一个描述符上同时监视多个事件，最常用的监视事件为 <code>PULLIN</code> 和 <code>POLLOUT</code>，同时监视这两个事件时可以表达为 <code>POLLIN | POLLOUT</code>；</li>
+</ul>
+</li>
+<li><code>revents</code> 是实际发生的事件，当 <code>poll()</code> 返回时会填充该字段，程序通过这个字段可以判断在这个描述符上发生了什么事件；</li>
+</ul>
+</li>
+<li>
+<p><code>poll()</code> 函数的第二个参数 <code>nfds</code> 是 fds 数组中有效的条目的数量，比如结构数组的 fds 可以容纳的条目最大为 100 个，但只有前 10 个是我们准备监视的描述符，则 <code>nfds</code> 应该为 10；</p>
+</li>
+<li>
+<p><code>poll()</code> 函数的第三个参数 <code>timeout</code> 是超时时间，调用 <code>poll()</code> 会进入阻塞，等待被监视的描述符产生事件，如果设置了 <code>timeout</code> 参数，则阻塞 <code>timeout</code> 时间后，即便没有产生事件，<code>poll()</code> 函数也会返回；</p>
+</li>
+<li>
+<p><code>timeout</code> 的时间单位为毫秒；</p>
+<ul>
+<li>将 <code>timeout</code> 设为 -1 表示永久等待，直至有事件产生；</li>
+<li>将 <code>timeout</code> 设为 0，<code>poll()</code> 将立即返回，不管是否有事件产生；</li>
+</ul>
+</li>
+<li>
+<p><code>poll()</code> 的返回值有三种情况：</p>
+<ul>
+<li>当有事件产生时，<code>poll()</code> 返回一个大于 0 的正整数，表示有多少个文件描述符上有事件产生，程序需要遍历 fds 数组，查看结构中的 revent 字段来判断那个文件描述符上产生了哪些事件；</li>
+<li>当没有事件产生，<code>poll()</code> 仅仅是因为超时返回时，<code>poll()</code> 返回 0；</li>
+<li>当出现错误时，<code>poll()</code> 返回 -1，此时，errno 中存放有错误代码，详情可以查看在线手册 <code>man 2 poll</code>；</li>
+</ul>
+</li>
+<li>
+<p><code>poll()</code> 检测到 <code>socket</code> 有数据可读时，如果读出的数据长度为 0 时，认为该 <code>socket</code> 连接已经断开；</p>
+</li>
+<li>
+<p>poll() 的返回值有四种可能：</p>
+<ul>
+<li><strong>0</strong>：表示调用超时；</li>
+<li><strong>-1</strong>：表示调用失败，errno 中为错误代码；</li>
+<li><strong>1</strong>：表示在被监听的描述符中，只有一个描述符上有事件产生，等待处理；</li>
+<li><strong>1+</strong>：表示在被监听的描述符中，有多个描述符上有等待处理的事件，返回值为等待处理的描述符的数量；</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-poll-和-select-在编程上的区别">3 poll() 和 select() 在编程上的区别</h2>
+<ul>
+<li>通常情况下，poll() 的代码会比 select() 简单一些；</li>
+<li>先看一下 select() 编程的代码：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">fd_set</span> <span class="n">fds</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">FD_ZERO</span><span class="p">(</span><span class="n">fd_set</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">FD_SET</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">fds</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">timeval</span> <span class="n">tv</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">tv</span><span class="p">.</span><span class="n">tv_sec</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">tv</span><span class="p">.</span><span class="n">tv_usec</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="mi">501</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">fds</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">tv</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">FD_ISSET</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">fds</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">...</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>再看一下完成同样工作的 poll() 编程的代码：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">pollfd</span> <span class="n">pfd</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="n">pfd</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">fd</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">pfd</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">events</span> <span class="o">=</span> <span class="n">POLLIN</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">poll</span><span class="p">(</span><span class="o">&amp;</span><span class="n">pfd</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5000</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">pfd</span><span class="p">.</span><span class="n">revents</span> <span class="o">&amp;</span> <span class="n">POLLIN</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">...</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>看上去显然使用 <code>poll()</code> 编程要简单一些；</li>
+<li><code>select()</code> 在标识文件描述符时使用的位掩码，<code>bit 0</code> 表示描述符为 0，<code>bit 1</code> 表示描述符为 1，以此类推，当表示某个描述符的 bit 为 1 时，表示这个描述符需要被监视，如果我们仅需要监视数值为 500 的文件描述符，此时，<code>bit 0~499</code> 为 0，<code>bit 500</code> 为 1；</li>
+<li>所以，在使用 <code>select()</code> 时，即便我们只需要监视描述符为 500 的 socket，实际上，仍要检查描述符 <code>0~499</code> 的位掩码，当所要监视的描述符值比较大时，运行效率肯定会受到影响；</li>
+<li>在使用 <code>select()</code> 时，使用三个描述符集来监视读、写和意外事件，当一个描述符既需要监视读又需要监视写时，是需要在两个描述符集中设置相应的描述符的；</li>
+<li>另外，使用 <code>select()</code> 监视描述符时，对描述符的最大值是有限制的，在 Linux 下允许的描述符的最大值为 1024，这一点显然也是 <code>select()</code> 的麻烦之处，当要监视的描述符的值大于 1024 时，将无法使用 <code>select()</code>；</li>
+<li>使用 <code>poll()</code> 则不需要设置描述符集，而是需要为每一个需要监视的描述符建立一个结构：<code>struct pollfd</code>，这个结构中的 fd 字段指定要监视的描述符，events 字段可以设置多个要监视的事件，如果对一个描述符既要监视其&quot;读&quot;事件，也要监视其&quot;写&quot;事件，只需在这个 events 字段上设置两个事件即可，像下面这段代码
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">pollfd</span> <span class="o">*</span><span class="n">fds</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="n">fds</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">fds</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">events</span> <span class="o">=</span> <span class="n">POLLIN</span> <span class="o">|</span> <span class="n">POLLOUT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>由此可见，使用 <code>poll()</code> 监视描述符不会有最大值不能超过 1024 的限制，在监视效率上也会比 <code>select()</code> 要高一些；</li>
+<li>在 <code>select()</code> 编程中，通常每次调用 <code>select()</code> 之前需要重新设置描述符集，像下面代码，这段代码中 client_socket 数组中存放着连接到服务器的客户端的 socket，listen_socket 为服务器上正在侦听的 socket：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">FD_ZERO</span><span class="p">(</span><span class="o">&amp;</span><span class="n">readfds</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">FD_SET</span><span class="p">(</span><span class="n">listening_socket</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">readfds</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">max_fd</span> <span class="o">=</span> <span class="n">listening_socket</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">MAX_CLIENTS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">client_socket</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">FD_SET</span><span class="p">(</span><span class="n">client_socket</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">readfds</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">client_socket</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">max_fd</span><span class="p">)</span> <span class="n">max_fd</span> <span class="o">=</span> <span class="n">client_socket</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rc</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">max_fd</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">readfds</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>但其实 <code>poll()</code> 编程中也有类似的困扰，<code>poll()</code> 使用一个结构数组 <code>struct pollfd *</code> 来标识需要监视的描述符及其事件，但当一个客户连接中止时，尽管可以将结构数组中的 fd 字段置为 0，但 <code>poll()</code> 并不会自动地跳过 fd 字段为 0 的数组项，所以我们在启动 <code>poll()</code> 之前仍然有必要重新整理整个结构数组，以保证其中没有已经不再使用的描述符，像下面代码段，fds_size 为结构数组 fds 中的有效元素数，从中删除所有的 fd 字段为 0 的元素：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">pollfd</span> <span class="o">*</span><span class="n">fds</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">((</span><span class="n">fds_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">fds</span><span class="p">[</span><span class="n">fds_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">].</span><span class="n">fd</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span> <span class="n">fds_size</span><span class="o">--</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">fds_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">fds_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">fds</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">].</span><span class="n">fd</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">fds</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">].</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fds</span><span class="p">[</span><span class="n">fds_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">].</span><span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">fds</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">].</span><span class="n">events</span> <span class="o">=</span> <span class="n">fds</span><span class="p">[</span><span class="n">fds_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">].</span><span class="n">events</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">fds</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">].</span><span class="n">revents</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">fds</span><span class="p">[</span><span class="n">fds_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">].</span><span class="n">fd</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">while</span> <span class="p">((</span><span class="n">fds_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">fds</span><span class="p">[</span><span class="n">fds_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">].</span><span class="n">fd</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span> <span class="n">fds_size</span><span class="o">--</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">fds_size</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">i</span><span class="o">--</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>在 <code>poll()</code> 编程中，当有事件产生时，需要遍历整个结构数组，检查每个数组结构中的 revents 字段，找到需要处理的描述符及其事件，这一点和 <code>select()</code> 编程类似，<code>select()</code> 返回后，需要检查所有被监控的描述符，以找到哪个描述符需要处理；</li>
+</ul>
+<h2 id="4-poll-编程的基本步骤">4 poll() 编程的基本步骤</h2>
+<ol>
+<li>使用 <code>socket()</code> 建立需要侦听的 socket；</li>
+<li>使用 <code>setsockopt()</code> 设置 socket 为可重复使用；</li>
+<li>使用 <code>ioctl()</code> 设置 socket 为非阻塞；</li>
+<li>使用 <code>bind()</code> 绑定服务器的地址和端口；</li>
+<li>使用 <code>listen()</code> 开始侦听端口；</li>
+</ol>
+<ul>
+<li>以上步骤和使用 <code>select()</code> 编程时一致的；</li>
+</ul>
+<ol start="7">
+<li>
+<p>初始化结构数组 <code>struct pollfd *</code>，将服务器侦听 socket 加入到数组中；</p>
+</li>
+<li>
+<p>启动 <code>poll()</code>；</p>
+<ul>
+<li>返回 0 表示调用超时，可以重新启动 <code>poll()</code>；</li>
+<li>返回 <code>&lt;0</code> 表示 <code>poll()</code> 出错，errno 中为错误代码；</li>
+<li>返回 <code>&gt;0</code> 表示有需要处理的 socket，进行处理；</li>
+</ul>
+<blockquote>
+<p>要处理的 socket 通常又分为两种，一种是正在侦听的 socket，如果有 <code>POLLIN</code> 事件表示有客户端发出了连接请求，使用 <code>accept()</code> 接受连接将产生一个新的 socket，这个新的 socket 要加入到结构数组 <code>struct pollfd *</code> 中，以便在 <code>poll()</code> 中可以被监视；另一类 socket 就是已经和服务器建立连接的一个或多个客户端的 socket，这类 socket 有 POLLIN 事件产生可能是有数据发送回来，也可能是因为连接中断，在调用 <code>recv()</code> 从 socket 中接收数据时，如果返回值 <code>&gt;0</code> 表示确实有数据发送回来，要做出相应处理，如果返回值为 0 则表示这个连接已经中断，此时应该及时将该 socket 从结构数组 <code>struct pollfd *</code> 中清除，避免在调用 <code>poll()</code> 时给 <code>poll()</code> 增加额外负担；</p>
+</blockquote>
+</li>
+<li>
+<p>整理结构数组 <code>struct pollfd *</code>，然后再次启动 <code>poll()</code>；</p>
+<blockquote>
+<p>在处理 poll() 函数的返回结果时，当有新的客户端连接请求被接受时，会有新的 socket 需要添加到结构数组 <code>struct pollfd *</code> 中，当有客户端 socket 连接中断时，需要将这个已经失效的 socket 从结构数组 <code>struct pollfd *</code> 中删除，所以在处理完 poll() 的返回结果后需要对结构数组 <code>struct pollfd *</code> 进行整理，将新的 socket 添加进来，将失效的 socket 删除；不能简单地把结构数组 <code>struct pollfd *</code> 中的 fd 字段或者 events 字段置 0 来表示一个失效的 socket，poll() 并不会自动跳过这样标识的结构数组项；</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="5-实例一个使用-poll-的-tcp-服务器">5 实例：一个使用 poll() 的 TCP 服务器</h2>
+<ul>
+<li>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/180021/poll-server.c">poll-server.c</a>(<strong>点击文件名下载源程序，建议使用UTF-8字符集</strong>)演示了使用 poll() 完成的一个 TCP 服务器；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall -g poll-server.c -o poll-server</code></p>
+</li>
+<li>
+<p>运行：<code>./poll-server</code></p>
+</li>
+<li>
+<p>该程序是一个多进程程序，程序会建立一个服务端进程和若干个(默认为 3 个，由宏 MAX_CONNECTIONS 控制)客户端进程；</p>
+</li>
+<li>
+<p>服务端进程侦听在端口 8888 上，等待客户端进程的连接；</p>
+</li>
+<li>
+<p>启动 <code>poll()</code> 监视 socket；</p>
+</li>
+<li>
+<p>服务端在接受客户端请求后，将新连接的 socket 加入到结构数组中，并向客户端发送一条欢迎信息；</p>
+</li>
+<li>
+<p>客户端在连接建立以后向服务端发送一条信息，服务端在收到客户端信息后会将该信息原封不动地发送回客户端；</p>
+</li>
+<li>
+<p>客户端判断收到的信息与自己发出的信息一样后，主动关闭连接，然后退出进程；</p>
+</li>
+<li>
+<p>服务端发现连接中断后，将从结构数组中删除该失效 socket，然后继续启动 <code>poll()</code> 监视 socket；</p>
+</li>
+<li>
+<p>服务进程中拦截了 SIGINT 信号，这个信号可以使用 <code>ctrl + c</code> 产生，服务进程在收到这个信号后将退出进程；</p>
+</li>
+<li>
+<p>主进程监视客户端进程的退出，当所有客户端进程都已退出后，向服务端进程发送 SIGINT 信号，使服务端进程退出，整个程序运行结束。</p>
+</li>
+<li>
+<p>运行截图：</p>
+<p><img src="https://whowin.gitee.io/images/180021/screenshot-of-poll-server.png" alt="Screenshot of poll-server"></p>
+</li>
+</ul>
+<h2 id="6-结论">6 结论</h2>
+<ul>
+<li><code>poll()</code> 和 <code>select()</code> 编程有很多相似的地方，除了 <code>select()</code> 使用描述符集而 <code>poll()</code> 使用结构数组外，其它方面非常相似，对熟悉 <code>select()</code> 编程的程序员而言，使用 <code>poll()</code> 替换 <code>select()</code> 编写服务端程序并不困难；</li>
+<li>在调用 <code>select()</code> 之前，需要初始化描述符集，在调用 <code>poll()</code> 之前，需要初始化结构数组；</li>
+<li>在 <code>select()</code> 返回后，需要使用 <code>FD_ISSET()</code> 遍历描述符集以判断哪个描述符有事件产生，在 <code>poll()</code> 返回后，需要遍历结构数组中的 revents 字段，以判断哪个描述符有事件产生；</li>
+<li>在接受连接请求、接收、发送数据，判断错误以及连接是否中断方面，使用 <code>select()</code> 和 <code>poll()</code> 是一样的；</li>
+<li>在处理完 select() 的返回后，需要重新初始化描述符集才可以再次调用 <code>select()</code>，在处理完 <code>poll()</code> 的返回后，需要重新整理结构数组后才可以再次调用 <code>poll()</code>。</li>
+</ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2024-02-27
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+          <a href="/tags/select/">select</a>
+          <a href="/tags/poll/">poll</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/network/0023-using-signals-with-blocking-socket-apis/">
+            <span class="next-text nav-default">使用signal中止阻塞的socket函数的应用实例</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/network/0021-using-poll-instead-of-select/" class="leancloud_visitors" data-flag-title="使用poll()代替select()处理多客户连接的TCP服务器实例">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
