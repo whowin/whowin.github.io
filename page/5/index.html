@@ -134,6 +134,29 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-07-28 </span>
+      <div class="post-category">
+          <a href="/categories/ipc/"> IPC </a>
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍匿名管道(又称管道、半双工管道)，尽管很多人在编程中使用过管道，但一些特殊的用法还是鲜有文章涉及，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/network/0022-how-to-scan-wifi-signal/">使用ioctl扫描wifi信号获取AP的essid、mac地址等属性</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-06-26 </span>
@@ -220,29 +243,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/network/0018-tun-example-for-setting-up-ip-tunnel/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0017-sync-time-from-time-server-using-sntp/">使用SNTP协议从时间服务器同步时间</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-02-13 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>在互联网上校准时间，是几乎连接在互联网上的每台计算机都要去做的事情，而且很多是在后台完成的，并不需要人工干预；互联网上有很多时间服务器可以发布精确的时间，计算机客户端使用NTP(Network Time Protocol)协议与这些时间服务器进行时间同步，使本机得到精确时间，本文简要描述了NTP协议的原理，对NTP协议的时间同步精度做了简要分析，并具体实现了SNTP(Simple Network Time Protocol)下的客户端，本文附有完整的C语言SNTP客户端的源程序。阅读本文只需掌握基本的socket编程即可，本文对网络编程的初学者难度不大。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0017-sync-time-from-time-server-using-sntp/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

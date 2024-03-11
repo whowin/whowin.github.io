@@ -134,6 +134,29 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0017-sync-time-from-time-server-using-sntp/">使用SNTP协议从时间服务器同步时间</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-02-13 </span>
+      <div class="post-category">
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>在互联网上校准时间，是几乎连接在互联网上的每台计算机都要去做的事情，而且很多是在后台完成的，并不需要人工干预；互联网上有很多时间服务器可以发布精确的时间，计算机客户端使用NTP(Network Time Protocol)协议与这些时间服务器进行时间同步，使本机得到精确时间，本文简要描述了NTP协议的原理，对NTP协议的时间同步精度做了简要分析，并具体实现了SNTP(Simple Network Time Protocol)下的客户端，本文附有完整的C语言SNTP客户端的源程序。阅读本文只需掌握基本的socket编程即可，本文对网络编程的初学者难度不大。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0017-sync-time-from-time-server-using-sntp/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/network/0016-longest-prefix-match/">简单的路由表查找程序</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-02-10 </span>
@@ -220,29 +243,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/network/0009-get-gateway-ip-via-netlink/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0007-recv-arp-request-and-reply/">接收arp请求并发送回应的实例</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-01-12 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>ARP协议在网络编程中有着重要的地位，是一个工作在数据链路层的协议，本文简单介绍了ARP协议，用一个实例查看收到的ARP请求，并对该请求发出ARP回应，实例有完整的源代码，使用C语言在Linux下实现，代码中有详细的注释；阅读本文需要有一定的网络编程基础，了解OSI的网络模型，本文对初学者有一定的难度。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0007-recv-arp-request-and-reply/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

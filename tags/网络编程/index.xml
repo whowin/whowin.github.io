@@ -6,7 +6,16 @@
     <description>Recent content in 网络编程 on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 27 Feb 2024 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 10 Mar 2024 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用epoll()进行socket编程处理多客户连接的TCP服务器实例</title>
+      <link>https://whowin.gitee.io/post/blog/network/0024-using-epoll-in-socket-programming/</link>
+      <pubDate>Sun, 10 Mar 2024 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0024-using-epoll-in-socket-programming/</guid>
+      <description>&lt;p&gt;在网络编程中，当需要使用单线程处理多客户端的连接时，常使用select()或者poll()来处理，但是当并发数量非常大时，select()和poll()的性能并不好，epoll()的性能大大好于select()和poll()，在编写大并发的服务器软件时，epoll()应该是首选的方案，本文介绍epoll()在网络编程中的使用方法，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>使用poll()代替select()处理多客户连接的TCP服务器实例</title>
       <link>https://whowin.gitee.io/post/blog/network/0021-using-poll-instead-of-select/</link>

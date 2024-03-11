@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>使用epoll()进行socket编程处理多客户连接的TCP服务器实例 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="在网络编程中，当需要使用单线程处理多客户端的连接时，常使用select()或者poll()来处理，但是当并发数量非常大时，select()和poll()的性能并不好，epoll()的性能大大好于select()和poll()，在编写大并发的服务器软件时，epoll()应该是首选的方案，本文介绍epoll()在网络编程中的使用方法，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/network/0024-using-epoll-in-socket-programming/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="使用epoll()进行socket编程处理多客户连接的TCP服务器实例" />
+<meta property="og:description" content="在网络编程中，当需要使用单线程处理多客户端的连接时，常使用select()或者poll()来处理，但是当并发数量非常大时，select()和poll()的性能并不好，epoll()的性能大大好于select()和poll()，在编写大并发的服务器软件时，epoll()应该是首选的方案，本文介绍epoll()在网络编程中的使用方法，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0024-using-epoll-in-socket-programming/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2024-03-10T16:43:29+08:00" />
+<meta property="article:modified_time" content="2024-03-10T16:43:29+08:00" />
+
+<meta itemprop="name" content="使用epoll()进行socket编程处理多客户连接的TCP服务器实例">
+<meta itemprop="description" content="在网络编程中，当需要使用单线程处理多客户端的连接时，常使用select()或者poll()来处理，但是当并发数量非常大时，select()和poll()的性能并不好，epoll()的性能大大好于select()和poll()，在编写大并发的服务器软件时，epoll()应该是首选的方案，本文介绍epoll()在网络编程中的使用方法，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。"><meta itemprop="datePublished" content="2024-03-10T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2024-03-10T16:43:29+08:00" />
+<meta itemprop="wordCount" content="4071">
+<meta itemprop="keywords" content="Linux,网络编程,socket,epoll," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用epoll()进行socket编程处理多客户连接的TCP服务器实例"/>
+<meta name="twitter:description" content="在网络编程中，当需要使用单线程处理多客户端的连接时，常使用select()或者poll()来处理，但是当并发数量非常大时，select()和poll()的性能并不好，epoll()的性能大大好于select()和poll()，在编写大并发的服务器软件时，epoll()应该是首选的方案，本文介绍epoll()在网络编程中的使用方法，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">使用epoll()进行socket编程处理多客户连接的TCP服务器实例</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2024-03-10 </span>
+        <div class="post-category">
+            <a href="/categories/network/"> Network </a>
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-基本概念">1 基本概念</a></li>
+        <li><a href="#2-epoll-的基本使用方法">2 epoll 的基本使用方法</a></li>
+        <li><a href="#3-epoll-进行-socket-编程的基本步骤">3 epoll 进行 socket 编程的基本步骤</a></li>
+        <li><a href="#4-实例一个使用-epoll-的-tcp-服务器">4 实例：一个使用 epoll() 的 TCP 服务器</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>在网络编程中，当需要使用单线程处理多客户端的连接时，常使用select()或者poll()来处理，但是当并发数量非常大时，select()和poll()的性能并不好，epoll()的性能大大好于select()和poll()，在编写大并发的服务器软件时，epoll()应该是首选的方案，本文介绍epoll()在网络编程中的使用方法，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。</p>
+<h2 id="1-基本概念">1 基本概念</h2>
+<ul>
+<li>在<a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a>中，有两篇文章都涉及到了使用 <code>select()</code> 处理多个 <code>socket</code> 连接：
+<ul>
+<li><a href="https://blog.csdn.net/whowin/article/details/129410476">《使用select实现的UDP/TCP组合服务器》</a></li>
+<li><a href="https://blog.csdn.net/whowin/article/details/129685842">《TCP服务器如何使用select处理多客户连接》</a></li>
+</ul>
+</li>
+<li>在<a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a>中，有一篇文章都涉及到了使用 <code>poll()</code> 处理多个 <code>socket</code> 连接：
+<ul>
+<li><a href="https://blog.csdn.net/whowin/article/details/136454503">《使用poll()代替select()处理多客户连接的TCP服务器实例》</a></li>
+</ul>
+</li>
+<li><code>poll()</code> 和 <code>select()</code> 的编程方法非常相似，但 epoll 有较大区别；</li>
+<li>epoll 完成与 <code>poll()</code> 相似的工作：监视多个文件描述符看它们是否可以进行 I/O 操作；</li>
+<li>epoll 的核心概念就是 epoll 实例，从用户空间的角度看，一个 epll 实例就是内核中的一个数据结构，可以被看成是下列两个列表的容器；
+<ul>
+<li><strong>Interest List</strong>：(有时也被称为 epoll set)进程向 epoll 登记的需要被监视的文件描述符集；</li>
+<li><strong>Ready List</strong>：可以无阻塞地进行 I/O 操作的文件描述符集，Ready List 是 Interest List 的一个子集，内核实时地把可以进行 I/O 操作的文件描述符从 Interest List 填充到 Ready List；</li>
+</ul>
+</li>
+<li>使用 epoll 的过程就是将要监视的文件描述符向 epoll 登记进入 Interest List，然后从 Ready List 中处理那些可以进行 I/O 操作的文件描述符；</li>
+<li>使用 epoll 有三个基本的函数，后面会详细介绍这三个函数的使用方法：
+<ul>
+<li><code>epoll_create1()</code> - 用于建立一个 epoll 实例；</li>
+<li><code>epoll_ctl()</code> - 用于向 epoll 实例的 Interest List 中添加要监视的文件描述符，或者修改/删除 Interest List 中的文件描述符；</li>
+<li><code>epoll_wait()</code> - 用于监视已经登记的文件描述符集，当有一个或多个被监视的文件描述符可以进行 I/O 操作时返回；</li>
+</ul>
+</li>
+<li>在调用 <code>epoll_wait()</code> 后，有两种触发方式可以使 <code>epoll_wait()</code> 返回，边沿触发(Edge-Triggered)和电平触发(Level-Triggered)，这两个词是从电子电路中引申过来的，熟悉电子电路的或者做嵌入式编程的读者应该对此有些了解；</li>
+<li>可以用一个例子来说明这两种触发方式的不同，假设在下列条件下，看看边沿触发和电平触发有什么不同：
+<ol>
+<li>将一个管道(pipe)读出端的文件描述符 rfd 登记到 epoll 实例上进行监视；</li>
+<li>在管道的写入端写入 2kb 的数据；</li>
+<li>调用 <code>epoll_wait()</code> 会返回文件描述符 rfd，表示在 rfd 上有数据可以读取；</li>
+<li>从 rfd 中读取 1kb 的数据；</li>
+<li>再次调用 <code>epoll_wait()</code>；</li>
+</ol>
+</li>
+<li>当使用电平触发(Level-Triggered)方式时，只要 rfd 中仍然还有数据没有读出，<code>epoll_wait()</code> 就会被触发返回，由于写入了 2kb 数据但只读出了 1kb，所以在第 5 步时，<code>epoll_wait()</code> 会返回 rfd 有数据可读；</li>
+<li>当使用边沿触发(Edge-Triggered)方式时，只有当 rfd 从没有数据可读变为有数据可读时才会触发 <code>epoll_wait()</code> 返回，虽然读缓冲区中仍有 1kb 的数据没有被读出，但在第 5 步时 <code>epoll_wait()</code> 是不会返回的；</li>
+<li>当使用电平触发方式时，epoll 实际上只是一个运行的比较快的 <code>poll()</code>，可以在任何使用 <code>poll()</code> 的地方使用电平触发方式的 epoll，epoll 真正的意义在于其边缘触发方式；</li>
+<li>由于边沿触发方式的特点，<code>epoll_wait()</code> 被触发后必须将读缓冲区的数据全部读出，否则可能会有数据丢失，所以当使用边沿触发方式时，通常需要将文件描述符设置成非阻塞方式，然后循环读取，直至出现 EAGAIN 错误代码为止，如下
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">done</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>               <span class="c1">// not done
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="n">nbytes</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>             <span class="c1">// how many bytes to read
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">do</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">nbytes</span> <span class="o">=</span> <span class="n">recv</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buffer</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">nbytes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">buffer</span><span class="p">[</span><span class="n">nbytes</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">...</span>
+</span></span><span class="line"><span class="cl">        <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// the socket discinnected
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">errno</span> <span class="o">==</span> <span class="n">EINTR</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// if errno==EINTR, it means socket is not closed, just because some network errors happened
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">errno</span> <span class="o">==</span> <span class="n">EAGAIN</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">done</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">perror</span><span class="p">(</span><span class="s">&#34;recv() failed&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>本文后面的实例中将演示边沿触发方式的具体编程方法；</li>
+</ul>
+<h2 id="2-epoll-的基本使用方法">2 epoll 的基本使用方法</h2>
+<ul>
+<li>
+<p>前面提到过了使用 epoll 的三个基本函数，本节将着重介绍这些函数的使用方法及相关的数据结构；</p>
+</li>
+<li>
+<p><strong>epoll_create1()</strong> - 创建一个 epoll 实例</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/epoll.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">epoll_create</span><span class="p">(</span><span class="kt">int</span> <span class="n">size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">epoll_create1</span><span class="p">(</span><span class="kt">int</span> <span class="n">flags</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>这两个函数都是创建一个 epoll 实例，在 epoll_create() 中的参数 size 表示在这个 epoll 实例上所管理的最大描述符的数量，但从 Linux 2.6.8 以后，这个参数已经无效，但参数 size 必须是一个大于 0 的整数；</li>
+<li>实际上通常都是使用 epoll_create1() 来建立一个 epoll 实例，参数 flags 通常设为 0；</li>
+<li>调用成功，函数返回 epoll 实例的文件描述符，调用失败时返回 -1，errno 中是错误代码；</li>
+</ul>
+</li>
+<li>
+<p><strong>epoll_ctl()</strong> - epoll 文件描述符的控制接口</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/epoll.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">epoll_ctl</span><span class="p">(</span><span class="kt">int</span> <span class="n">epfd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">op</span><span class="p">,</span> <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">epoll_event</span> <span class="o">*</span><span class="n">event</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>这个函数用于向 epoll 实例的 Interest List 中添加、修改和删除文件描述符，具体操作取决于参数 op；</li>
+<li><strong>epfd</strong> 为 epoll_create1() 返回的 epoll 实例的文件描述符</li>
+<li>当 op 为 <strong>EPOLL_CTL_ADD</strong> 时，表示要添加一个文件描述符 fd 进入 epoll 实例的 Interest List 中；</li>
+<li>当 op 为 <strong>EPOLL_CTL_MOD</strong> 时，表示要修改一个已经在 Interest List 中的文件描述符 fd；</li>
+<li>当 op 为 <strong>EPOLL_CTL_DEL</strong> 时，表示要将一个已经在 Interest List 中的文件描述符 fd 从 Intersst List 中删除；</li>
+<li>参数 <strong>fd</strong> 为想要操作的文件描述符；</li>
+<li>参数 <strong>event</strong> 在添加和修改时是有意义的，在删除时可以设置为 NULL；</li>
+<li><strong>struct epoll_event</strong> 的定义如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">union</span> <span class="n">epoll_data</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span>        <span class="o">*</span><span class="n">ptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>          <span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint32_t</span>     <span class="n">u32</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint64_t</span>     <span class="n">u64</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">epoll_data_t</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">epoll_event</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint32_t</span>     <span class="n">events</span><span class="p">;</span>      <span class="cm">/* Epoll events */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">epoll_data_t</span> <span class="n">data</span><span class="p">;</span>        <span class="cm">/* User data variable */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>struct epoll_event 中的 events 是一个位掩码，由以下零个或多个可用事件类型组合而成(这里仅列出常用的几个)：
+<ul>
+<li><strong>EPOLLIN</strong>：相应的文件描述符上有数据可读；</li>
+<li><strong>EPOLLOUT</strong>：相应的文件描述符上可以进行写操作；</li>
+<li><strong>EPOLLET</strong>：使用边沿触发方式；</li>
+</ul>
+</li>
+<li>下面代码将一个文件描述符 fd 加入到 epoll 实例 epfd 的 Interest List 中，使用边沿触发方式，当可以进行读操作时触发 epoll_wait() 返回：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="p">......</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">epfd</span> <span class="o">=</span> <span class="n">epoll_create1</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">epoll_event</span> <span class="n">event</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">event</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">epoll_event</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Set up the structure epoll_event
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">event</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">event</span><span class="p">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">EPOLLIN</span> <span class="o">|</span> <span class="n">EPOLLET</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Add a new descriptor to the interest list
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="n">epoll_ctl</span><span class="p">(</span><span class="n">epfd</span><span class="p">,</span> <span class="n">EPOLL_CTL_ADD</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">event</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">perror</span><span class="p">(</span><span class="s">&#34;EPOLL_CTL_ADD failed&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">......</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>该函数调用成功时返回 0，失败时返回 -1，errno 中为错误代码；</li>
+</ul>
+</li>
+<li>
+<p><strong>epoll_wait()</strong> - 等待 epoll 文件描述符上的 I/O 事件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/epoll.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">epoll_wait</span><span class="p">(</span><span class="kt">int</span> <span class="n">epfd</span><span class="p">,</span> <span class="k">struct</span> <span class="n">epoll_event</span> <span class="o">*</span><span class="n">events</span><span class="p">,</span> <span class="kt">int</span> <span class="n">maxevents</span><span class="p">,</span> <span class="kt">int</span> <span class="n">timeout</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>调用 <code>epoll_wait()</code> 后，当 epoll 实例中被监视的文件描述符有事件产生或者超时时间 timeout 到，该函数将返回；</li>
+<li>参数 <strong>epfd</strong> 为使用 <code>epoll_create1()</code> 返回的 epoll 实例的文件描述符；</li>
+<li>参数 <strong>events</strong> 中将返回所有有事件产生的 fd，<code>events-&gt;data.fd</code> 为产生事件的文件描述符，<code>events-&gt;events</code> 为实际产生的事件(位掩码)；</li>
+<li>参数 <strong>maxevent</strong> 为返回事件的最大值，必须大于 0，<code>epoll_wait()</code> 在参数 events 中返回的事件不会大于 maxevents；</li>
+<li>参数 <strong>timeout</strong> 为超时时间，单位为毫秒，<code>epoll_wait()</code> 等待 timeout 时长后不论是否有事件产生都会返回，将 timeout 设为 -1，<code>epoll_wait()</code> 将一直等待直至有事件产生，将 timeout 设为 0，<code>epoll_sait()</code> 将立即返回，不论是否有事件产生；</li>
+<li><code>epoll_wait()</code> 调用成功时，返回一个正整数，表示在参数 events 中有多少个事件；</li>
+<li><code>epoll_wait()</code> 因超时返回时，将返回 0；</li>
+<li><code>epoll_wait()</code> 调用失败将返回 -1，errno 中为错误代码；</li>
+<li><code>epoll_wait()</code> 可以被信号打断，此时，错误代码为 EINTR，通常情况下如果 errno 为 EINTR 时可以重新调用 <code>epoll_wait()</code>；</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-epoll-进行-socket-编程的基本步骤">3 epoll 进行 socket 编程的基本步骤</h2>
+<ul>
+<li>尽管 epoll 监视的事件是文件描述符的事件，但通常不会用在普通文件(指文件系统下的文件)，一个普通文件将永远处于可读或者可写的状态，epoll 更多地是用在 socket 编程上；</li>
+<li>epoll 进行 socket 编程的基本步骤：
+<ol>
+<li>使用 <code>socket()</code> 建立需要侦听的 socket；</li>
+<li>使用 <code>setsockopt()</code> 设置 socket 为可重复使用；</li>
+<li>使用 <code>ioctl()</code> 设置 socket 为非阻塞；</li>
+<li>使用 <code>bind()</code> 绑定服务器的地址和端口；</li>
+<li>使用 <code>listen()</code> 开始侦听端口；</li>
+</ol>
+<ul>
+<li>以上步骤和使用 <code>select()/poll()</code> 编程时是一致的；</li>
+</ul>
+<ol start="6">
+<li>
+<p>使用 <code>epoll_create1()</code> 构建一个 epoll 实例 epfd；</p>
+</li>
+<li>
+<p>构建一个结构 <code>struct epoll_event ev</code>，将服务器侦听 socket 加入到加入到结构中，并设置 EPOLLIN 事件及边沿触发方式(EPOLLET)；</p>
+</li>
+<li>
+<p>使用 <code>epoll_ctl()</code> 的 <code>EPOLL_CTL_ADD</code> 方法将侦听 socket 加入到 epoll 实例 epfd 的 Interest List 中；</p>
+</li>
+<li>
+<p>启动 <code>epoll_wait()</code>；</p>
+<ul>
+<li>返回 0 表示调用超时，可以重新启动 <code>epoll_wait()</code>；</li>
+<li>返回 <code>&lt;0</code> 表示 <code>epoll_wait()</code> 出错，errno 中为错误代码；</li>
+<li>返回 <code>&gt;0</code> 表示有需要处理的 socket，进行处理；</li>
+</ul>
+<blockquote>
+<p>要处理的 socket 通常又分为两种，一种是正在侦听的 socket，如果有 <code>EPOLLIN</code> 事件表示有客户端发出了连接请求，使用 <code>accept()</code> 接受连接将产生一个新的 socket，这个新的 socket 要按照步骤 7、8 的方法加入到 epoll 实例的 Interest List 中，以便在 epoll 中可以被监视，因为我们使用的边沿触发方式，所以还要记得使用 <code>ioctl()</code> 将这个新的 socket 设置成非阻塞；</p>
+</blockquote>
+<blockquote>
+<p>另一类 socket 就是已经和服务器建立连接的一个或多个客户端的 socket，这类 socket 有 EPOLLIN 事件产生可能是有数据发送回来，也可能是因为连接中断，在调用 <code>recv()</code> 从 socket 中接收数据时，如果返回值 <code>&gt;0</code> 表示确实有数据发送回来，要做出相应处理，如果返回值为 0 则表示这个连接已经中断，此时只需将该 socket 关闭即可，理论上说，当一个 socket 被关闭后，epoll 会自动地将该 socket 从 Interest List 中删除，所以通常我们不需要显式地使用 epoll_ctl() 的 EPOLL_CTL_DEL 方法从 epoll 实例的 Interest List 中删除这个 socket；</p>
+</blockquote>
+</li>
+<li>
+<p>回到步骤 9，再次启动 <code>epoll_wait()</code>；</p>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="4-实例一个使用-epoll-的-tcp-服务器">4 实例：一个使用 epoll() 的 TCP 服务器</h2>
+<ul>
+<li>
+<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/180024/epoll-server.c">epoll-server.c</a>(<strong>点击文件名下载源程序，建议使用UTF-8字符集</strong>)演示了使用 epoll 完成的一个 TCP 服务器；</p>
+</li>
+<li>
+<p>编译：<code>gcc -Wall -g epoll-server.c -o epoll-server</code></p>
+</li>
+<li>
+<p>运行：<code>./epoll-server</code></p>
+</li>
+<li>
+<p>该程序是一个多进程程序，程序会建立一个服务端进程和若干个(默认为 3 个，由宏 MAX_CONNECTIONS 控制)客户端进程；</p>
+</li>
+<li>
+<p>服务端进程侦听在端口 8888 上，等待客户端进程的连接；</p>
+</li>
+<li>
+<p>启动 <code>epoll_wait()</code> 监视 socket；</p>
+</li>
+<li>
+<p>服务端在接受客户端请求后，将新连接的 socket 加入到 epoll 实例中，并向客户端发送一条欢迎信息；</p>
+</li>
+<li>
+<p>客户端在连接建立以后向服务端发送一条信息，服务端在收到客户端信息后会将该信息原封不动地发送回客户端；</p>
+</li>
+<li>
+<p>客户端判断收到的信息与自己发出的信息一样后，主动关闭连接，然后退出进程；</p>
+</li>
+<li>
+<p>服务端发现连接中断后，关闭该 socket，并使用 epoll_ctl() 的 EPOLL_CTL_DEL 方法从 epoll 中删除该失效 socket(这一步可以没有)，然后继续启动 <code>epoll_wait()</code> 监视 socket；</p>
+</li>
+<li>
+<p>服务进程中拦截了 SIGINT 信号，这个信号可以使用 <code>ctrl + c</code> 产生，服务进程在收到这个信号后将退出进程；</p>
+</li>
+<li>
+<p>主进程监视客户端进程的退出，当所有客户端进程都已退出后，向服务端进程发送 SIGINT 信号，使服务端进程退出，整个程序运行结束；</p>
+</li>
+<li>
+<p>该程序的客户端进程的程序与文章<a href="https://blog.csdn.net/whowin/article/details/136454503">《使用poll()代替select()处理多客户连接的TCP服务器实例》</a>中的客户端程序完全一样；</p>
+</li>
+<li>
+<p>运行截图：</p>
+<p><img src="/images/180024/screenshot-of-epoll-server.png" alt="Screenshot of epoll-server"></p>
+</li>
+</ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2024-03-10
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+          <a href="/tags/socket/">socket</a>
+          <a href="/tags/epoll/">epoll</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/network/0021-using-poll-instead-of-select/">
+            <span class="next-text nav-default">使用poll()代替select()处理多客户连接的TCP服务器实例</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/network/0024-using-epoll-in-socket-programming/" class="leancloud_visitors" data-flag-title="使用epoll()进行socket编程处理多客户连接的TCP服务器实例">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

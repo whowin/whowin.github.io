@@ -134,6 +134,29 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0026-standard-and-service-interfaces/">D-Bus的标准接口、自省机制和服务接口的具体实现方法</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2024-01-08 </span>
+      <div class="post-category">
+          <a href="/categories/ipc/"> IPC </a>
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>D-Bus的规范中提供了一系列的标准接口，绝大多数有D-Bus接口的系统调用都会实现这些标准接口，这些标准接口中包括D-Bus的自省(Introspection)机制，自省机制可以让我们通过一个标准接口了解一个D-Bus服务的各种方法的调用方法，本文将介绍D-Bus的这些标准接口及实现方式，同时也会介绍如何在D-Bus上提供自有服务，本文附有完整的实例和完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/ipc/0026-standard-and-service-interfaces/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0025-resolve-arbitrary-dns-record/">IPC之十五：使用libdbus通过D-Bus请求系统调用实现任意DNS记录解析的实例</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-12-28 </span>
@@ -223,29 +246,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/ipc/0022-dbus-asyn-process-signal/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0021-ipc-using-dbus/">IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-12-01 </span>
-      <div class="post-category">
-          <a href="/categories/ipc/"> IPC </a>
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系列文章的前十篇介绍了几乎所有的常用的 IPC 方法，每种方法都给出了具体实例，本文介绍在 Linux 下 IPC 的另外一种实现，D-Bus，D-Bus 是一种用于进程间通信的消息总线系统，它提供了一个可靠且灵活的机制，使得不同进程之间能够相互通信，本文给出了使用 D-Bus 进行基本 IPC 的实例，并附有完整的源代码；本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/ipc/0021-ipc-using-dbus/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
