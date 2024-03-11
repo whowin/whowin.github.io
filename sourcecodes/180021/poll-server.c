@@ -10,9 +10,9 @@
  * Tested on Linux 5.4.0-139-generic #156-Ubuntu SMP Fri Jan 20 17:27:18 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux.
  *
  * To compile: $ gcc -Wall -g poll-server.c -o poll-server
- * Usage: $ ./select-server
+ * Usage: $ ./poll-server
  * 
- * Example source code for article 《TCP服务器如何使用poll处理多客户连接》
+ * Example source code for article 《使用poll()代替select()处理多客户连接的TCP服务器实例》
  *
  */
 #include <stdio.h>
