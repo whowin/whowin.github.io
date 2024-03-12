@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用ioctl扫描wifi信号获取AP的essid、mac地址等属性">
 <meta itemprop="description" content="使用 wifi 是一件再平常不过的是事情，有很多 wifi 工具可以帮助你扫描附近的 wifi 信号，测试信号强度等，但如何通过编程来操作 wifi 却鲜有文章涉及；本文立足实践，不使用任何第三方库，仅使用 ioctl 扫描附近的 wifi 信号，并获取这些 AP 的 ESSID、MAC 地址、占用信道和工作频率，本文将给出完整的源程序，今后还会写一些文章讨论如果编程获取 wifi 信号的其它属性(比如：信号强度、加密方式等)的方法，敬请关注；本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；阅读本文并不需要对 IEEE802.11 协议有所了解。"><meta itemprop="datePublished" content="2023-06-26T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-06-26T16:43:29+08:00" />
-<meta itemprop="wordCount" content="8372">
+<meta itemprop="wordCount" content="8423">
 <meta itemprop="keywords" content="Linux,网络编程,802.11,wifi,无线网络,ioctl," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用ioctl扫描wifi信号获取AP的essid、mac地址等属性"/>
 <meta name="twitter:description" content="使用 wifi 是一件再平常不过的是事情，有很多 wifi 工具可以帮助你扫描附近的 wifi 信号，测试信号强度等，但如何通过编程来操作 wifi 却鲜有文章涉及；本文立足实践，不使用任何第三方库，仅使用 ioctl 扫描附近的 wifi 信号，并获取这些 AP 的 ESSID、MAC 地址、占用信道和工作频率，本文将给出完整的源程序，今后还会写一些文章讨论如果编程获取 wifi 信号的其它属性(比如：信号强度、加密方式等)的方法，敬请关注；本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；阅读本文并不需要对 IEEE802.11 协议有所了解。"/>
@@ -313,7 +313,7 @@
 <h3 id="23-获取-wifi-信号的扫描结果">2.3 获取 wifi 信号的扫描结果</h3>
 <ul>
 <li>使用头文件 wireless.h 中的 <strong>SIOCGIWSCAN</strong> 可以获取 wifi 信号的扫描结果</li>
-<li>在启动 wifi 信号扫描后，并不能立即返回结果，要等待几秒后在发出 <code>SIOCGIWSCAN</code> 获取扫描结果，等待的时间主要取决于当前的系统和驱动程序，所以在调用 ioctl() 获取扫描结果时，要监视 <strong>errno</strong>，如果 <code>error == EAGAIN</code>，则需要 sleep 一下后再次调用 ioctl()</li>
+<li>在启动 wifi 信号扫描后，并不能立即返回结果，要等待几秒后再发出 <code>SIOCGIWSCAN</code> 获取扫描结果，等待的时间主要取决于当前的系统和驱动程序，所以在调用 ioctl() 获取扫描结果时，要监视 <strong>errno</strong>，如果 <code>error == EAGAIN</code>，则需要 sleep 一下后再次调用 ioctl()</li>
 <li>下面这段程序演示了获取扫描结果的过程
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -641,7 +641,7 @@
 </div>
 </div></li>
 <li>
-<p>用 <code>struct iw_enent</code> 去对应这个数据，那么，<code>len</code> 是 0x0018(十进制24)，表示这个 event 数据的总长度，所以可以确定这个 event 的数据如下：</p>
+<p>用 <code>struct iw_event</code> 去对应这个数据，那么，<code>len</code> 是 0x0018(十进制24)，表示这个 event 数据的总长度，所以可以确定这个 event 的数据如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -668,7 +668,7 @@
 </div>
 </div></li>
 <li>
-<p>第 3 个 event(event_2)，长度是0X0010(十进制16)：</p>
+<p>第 3 个 event(event_3)，长度是0X0010(十进制16)：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -679,7 +679,7 @@
 </div>
 </div></li>
 <li>
-<p>第 4 个 event，长度是0X0017(十进制23)：</p>
+<p>第 4 个 event(event_4)，长度是0X0017(十进制23)：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -745,7 +745,7 @@
 </span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_event</span> <span class="o">*</span><span class="n">essid_evt</span> <span class="o">=</span> <span class="p">...;</span>   <span class="cm">/* 指向 SIOCGIWESSID event 数据 */</span>
-</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_essid</span> <span class="o">*</span><span class="n">essid_p</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">iw_essid</span> <span class="o">*</span><span class="p">)</span><span class="n">essid_evt</span><span class="p">.</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_essid</span> <span class="o">*</span><span class="n">essid_p</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">iw_essid</span> <span class="o">*</span><span class="p">)</span><span class="n">essid_evt</span><span class="o">-&gt;</span><span class="n">u</span><span class="p">.</span><span class="n">data</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="cm">/* 
 </span></span></span><span class="line"><span class="cl"><span class="cm">   essid_p-&gt;len     为 essid 的长度
@@ -1230,8 +1230,8 @@
 </div>
 </div></li>
 <li>
-<p>这段程序的运行截图
-<img src="https://whowin.gitee.io/images/180022/screenshot-of-iwevent-test.png" alt="Screenshot of iwevent test"></p>
+<p>这段程序的运行截图</p>
+<p><img src="https://whowin.gitee.io/images/180022/screenshot-of-iwevent-test.png" alt="Screenshot of iwevent test"></p>
 <ul>
 <li>首先可以看到系统确实为 <code>struct iw_event</code> 分配了 24 字节的内存，而不是 20 字节；</li>
 <li>字段 len 的地址是 <code>~f160</code>，字段 cmd 的地址是 <code>~f162</code>，因为 len 的数据类型是 __u16，占用 2 个字节；</li>
@@ -1286,8 +1286,11 @@
 </ul>
 <h2 id="4-完整的-wifi-信号扫描程序">4 完整的 wifi 信号扫描程序</h2>
 <ul>
-<li>完整的源代码，文件名：<a href="https://whowin.gitee.io/sourcecodes/180022/wifi-scanner.c">wifi-scanner.c</a>(<strong>点击文件名下载源程序</strong>)</li>
-<li>编译，因为在计算工作频率时使用了函数 pow()，所以编译时要加上 <code>-lm</code> 选项，意即连接数学函数库；
+<li>
+<p>完整的源代码，文件名：<a href="https://whowin.gitee.io/sourcecodes/180022/wifi-scanner.c">wifi-scanner.c</a>(<strong>点击文件名下载源程序</strong>)，请务必使用 UTF-8 字符集，否则源程序中的中文注释为乱码；</p>
+</li>
+<li>
+<p>编译，因为在计算工作频率时使用了函数 pow()，所以编译时要加上 <code>-lm</code> 选项，意即连接数学函数库；</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -1297,7 +1300,8 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>运行，本程序的运行需要 root 权限
+<li>
+<p>运行，本程序的运行需要 root 权限，这主要是因为操作 wifi 需要 root 权限；</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -1307,8 +1311,10 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>运行截图
-<img src="https://whowin.gitee.io/images/180022/screenshot-of-wifi-scanner.png" alt="Screenshot of wifi-scanner"></li>
+<li>
+<p>运行截图</p>
+<p><img src="https://whowin.gitee.io/images/180022/screenshot-of-wifi-scanner.png" alt="Screenshot of wifi-scanner"></p>
+</li>
 </ul>
 <h2 id="5-后记">5 后记</h2>
 <ul>
