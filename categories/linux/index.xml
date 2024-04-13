@@ -6,7 +6,16 @@
     <description>Recent content in Linux on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 10 Mar 2024 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 11 Apr 2024 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用ioctl扫描wifi信号获取信号属性的实例(二)</title>
+      <link>https://whowin.gitee.io/post/blog/network/0025-another-wifi-scanner-example/</link>
+      <pubDate>Thu, 11 Apr 2024 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0025-another-wifi-scanner-example/</guid>
+      <description>&lt;p&gt;使用工具软件扫描 wifi 信号是一件很平常的事情，在知晓 wifi 密码的前提下，通常我们会尽可能地连接信号质量比较好的 wifi 信号，但是如何通过编程来扫描 wifi 信号并获得这些信号的属性(比如信号强度等)，却鲜有文章提及，本文在前面博文的基础上通过实例向读者介绍如何通过编程扫描 wifi 信号，并获得信号的一系列的属性，本文给出了完整的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；阅读本文并不需要对 IEEE802.11 协议有所了解，但本文实例中大量涉及链表和指针，所以本文可能不适合初学者阅读。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>使用epoll()进行socket编程处理多客户连接的TCP服务器实例</title>
       <link>https://whowin.gitee.io/post/blog/network/0024-using-epoll-in-socket-programming/</link>
@@ -197,7 +206,7 @@
     </item>
     
     <item>
-      <title>使用ioctl扫描wifi信号获取AP的essid、mac地址等属性</title>
+      <title>使用ioctl扫描wifi信号获取信号属性的实例(一)</title>
       <link>https://whowin.gitee.io/post/blog/network/0022-how-to-scan-wifi-signal/</link>
       <pubDate>Mon, 26 Jun 2023 16:43:29 +0800</pubDate>
       

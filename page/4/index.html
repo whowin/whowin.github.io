@@ -134,6 +134,29 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0017-systemv-shared-memory/">IPC之七：使用 System V 共享内存段进行进程间通信的实例</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2023-09-12 </span>
+      <div class="post-category">
+          <a href="/categories/ipc/"> IPC </a>
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍共享内存(Shared Memory)，因为没有像管道、消息队列这样的中介介入，所以通常认为共享内存是迄今为止最快的 IPC 方式；Linux 既支持 UNIX SYSTEM V 的共享内存，也支持 POSIX 的共享内存，本文针对 System V 共享内存段，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程和信号处理等，阅读本文还需要一些基本的内存管理知识，本文对 Linux 编程的初学者有一些难度。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/ipc/0017-systemv-shared-memory/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0016-posix-semaphores/">IPC之六：使用 POSIX 信号量解决经典的&#39;生产者-消费者问题&#39;</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2023-09-06 </span>
@@ -220,29 +243,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/ipc/0013-systemv-message-queue/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2023-08-02 </span>
-      <div class="post-category">
-          <a href="/categories/ipc/"> IPC </a>
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍命名管道(FIFO)，命名管道可以完成同一台计算机上的进程之间的通信，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/ipc/0011-ipc-examples-of-fifo/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
