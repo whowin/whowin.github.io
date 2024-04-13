@@ -2,7 +2,7 @@
  * File: wifi-scanner.c
  * Author: Songqing Hua
  *
- * (C) 2023 Songqing Hua.
+ * (C) 2024 Songqing Hua.
  * https://blog.csdn.net/whowin/
  *
  * A program that uses ioctl to scan wifi signals
@@ -12,7 +12,7 @@
  * To compile: $ gcc -Wall wifi-scanner.c -o wifi-scanner -lm
  * Usage: $ sudo ./wifi-scanner
  * 
- * Example source code for article 《使用ioctl扫描wifi信号获取AP的essid、mac地址等属性》
+ * Example source code for article 《使用ioctl扫描wifi信号获取信号属性的范例(一)》
  *
  */
 #include <stdio.h>
@@ -31,14 +31,14 @@
 
 #include <linux/wireless.h>     // for the SIOCGIWNAME and the struct iwreq
 
-extern int errno;
-
 //#define DEBUG                   // 打开注释会打印一些调试信息
+
+#define MAC_ADDR_LEN        6   // MAC地址的长度
 
 // 无线网络接口链表
 struct wifs_chain {
-    struct ifaddrs *wif;
-    struct wifs_chain *next;
+    struct ifaddrs *wif;        // 无线网络接口指针
+    struct wifs_chain *next;    // 后向指针
 };
 // event链表
 struct events_chain {
@@ -50,11 +50,11 @@ struct aps_chain {
     int channel;                // 占用信道
     float freq;                 // 工作频率
     uint16_t essid_len;         // essid的长度
-    char *essid;                // essid
-    uint8_t *mac;               // mac地址
+    char essid[IW_ESSID_MAX_SIZE];  // essid
+    uint8_t mac[MAC_ADDR_LEN];  // mac地址
     struct aps_chain *next;     // 后向指针
 };
-
+// 事件数据为essid时的数据格式
 struct iw_essid {
     uint16_t len;               // essid的长度
     uint16_t flags;
@@ -175,7 +175,7 @@ struct aps_chain *get_last_ap(struct aps_chain *aps) {
 int extract_ap_attributes(struct iw_event *event, struct aps_chain **aps_p) {
     int ret = -1;
 
-    if (event->len < IW_EV_LCP_PK_LEN) {
+    if (event->len < IW_EV_LCP_PK_LEN) {    // IW_EV_LCP_PK_LEN定义在wireless.h中，表示event数据流中结构头的长度
         return ret;
     }
     
@@ -200,38 +200,29 @@ int extract_ap_attributes(struct iw_event *event, struct aps_chain **aps_p) {
             }
         }
         if (ret == 0) {
-            last_ap->channel = 0;
-            last_ap->essid = NULL;
-            last_ap->essid_len = 0;
-            last_ap->freq = 0.0;
-            last_ap->next = NULL;
-            last_ap->mac = (uint8_t *)event->u.ap_addr.sa_data;
+            memset(last_ap, 0, sizeof(struct aps_chain));
+            memcpy(last_ap->mac, event->u.ap_addr.sa_data, MAC_ADDR_LEN);
         }
     } else if (event->cmd == SIOCGIWESSID) {    // 8B1B = SIOCGIWESSID - get ESSID
         // 获取AP的ESSID
-        if (last_ap != NULL) {
-            if (last_ap->mac != NULL) {
-                struct iw_essid *ap_essid = (struct iw_essid *)&(event->u.data);
-
-                last_ap->essid_len = ap_essid->len;
-                last_ap->essid = (char *)&ap_essid->essid;
-                ret = 0;
-            }
+        if (last_ap != NULL && last_ap->mac != NULL) {
+            struct iw_essid *ap_essid = (struct iw_essid *)&(event->u.data);
+            last_ap->essid_len = ap_essid->len;
+            strncpy(last_ap->essid, &ap_essid->essid, ap_essid->len);
+            ret = 0;
         }
     } else if (event->cmd == SIOCGIWFREQ) {     // 8B05 = SIOCGIWFREQ - get channel/frequency (Hz)
-        if (last_ap != NULL) {
-            if (last_ap->mac != NULL) {
-                struct iw_freq *ap_freq = (struct iw_freq *)&(event->u.freq);
-                double freq = (double)ap_freq->m * pow(10, ap_freq->e);
-                if (freq > 1000) {
-                    // ap的工作频率
-                    last_ap->freq = (float)freq / (1e9);
-                } else {
-                    // AP的channel
-                    last_ap->channel = freq;
-                }
-                ret = 0;
+        if (last_ap != NULL && last_ap->mac != NULL) {
+            struct iw_freq *ap_freq = (struct iw_freq *)&(event->u.freq);
+            double freq = (double)ap_freq->m * pow(10, ap_freq->e);
+            if (freq > 1000) {
+                // ap的工作频率
+                last_ap->freq = (float)freq / (1e9);
+            } else {
+                // AP的channel
+                last_ap->channel = freq;
             }
+            ret = 0;
         }
     }
     return ret;
@@ -255,21 +246,18 @@ struct events_chain *extract_events(struct iwreq *wreq) {
     char *current = wreq->u.data.pointer;
     struct iw_event *p = (struct iw_event *)current;     // p指向当前event
     
-    //struct events_chain *events_list;
     struct events_chain *events = NULL;
     struct events_chain *curr_event = NULL;
 
-    //printf("buffer: %p\t\twreq pointer: %p\n", buffer, wreq->u.data.pointer);
     while (data_len > 0) {
         if (p->cmd == SIOCGIWAP ||      // get access point MAC addresses   - 8B15
             p->cmd == SIOCGIWESSID ||   // get ESSID                        - 8B1B
-            p->cmd == SIOCGIWFREQ ||    // get channel/frequency (Hz)       - 8B05
-            p->cmd == SIOCGIWTXPOW) {   // get transmit power (dBm)         - 8B27
+            p->cmd == SIOCGIWFREQ) {    // get channel/frequency (Hz)       - 8B05
 #ifdef DEBUG
             printf("\nEvent No. %d\n", event_no);
             printf("Event length: %d\t\tEvent Command: %04x\n", p->len, p->cmd);
             for (int i = 0; i < p->len; ++i) {
-                if ((i + 1) % 17 == 0) printf("\n");
+                if (i % 16 == 0) printf("\n");
                 printf("%02X ", (uint8_t)*((char *)p + i));
             }
             puts("");
@@ -344,6 +332,7 @@ char *get_scanning_result(int sockfd, struct iwreq *wreq) {
         }
         if (errno == E2BIG) {   // 7 - Argument list too long
             // buffer不够大
+            printf("Data length: %d\n", wreq->u.data.length);
             counter++;
             goto REALLOC_MEM;
         }
@@ -434,7 +423,6 @@ struct wifs_chain *get_wireless_interface(struct ifaddrs *ifs_start_pointer) {
                 char *ip = inet_ntoa(sock_addr->sin_addr);
                 if (is_wireless(ifa->ifa_name)) {   // interface name
                     // 当前接口是无线网卡
-                    //printf("Interface name: %s\n", ifa->ifa_name);
                     printf("IP Address: %s\n\n", ip);
 
                     if (curr_wif == NULL) {
@@ -467,12 +455,10 @@ struct wifs_chain *get_wireless_interface(struct ifaddrs *ifs_start_pointer) {
  * main
  *********************************************************************/
 int main() {
-    struct ifaddrs *ifs_start_pointer = NULL;           // 网络接口链表
-    struct wifs_chain *wifs = NULL;
-    struct wifs_chain *wifs_start_pointer = NULL;       // 无线网络接口链表     
 
     // Step 01: 获取所有的网络接口，结果在interfaces_start_pointer指向的链表中
     //===================================================================
+    struct ifaddrs *ifs_start_pointer = NULL;           // 网络接口链表
     if (getifaddrs(&ifs_start_pointer) == -1) {
         perror("can't get local address\n");
         return -1;
@@ -480,6 +466,8 @@ int main() {
 
     // Step 02: 从网络接口中找到无线网卡
     //=================================
+    struct wifs_chain *wifs = NULL;
+    struct wifs_chain *wifs_start_pointer = NULL;       // 无线网络接口链表     
     wifs_start_pointer = get_wireless_interface(ifs_start_pointer);
 
     printf("There are %d interfaces. ", ifs_count(ifs_start_pointer));
@@ -491,13 +479,9 @@ int main() {
         return -1;
     }
 
-    printf("\n---- Scan wifi signals ----\n");
-    int sockfd = 0;                             // 用于ioctl
-    char *buffer = NULL;                        // 用于存储扫描AP返回的结果
-    struct iwreq wreq;                          // ioctl的第三个参数，用于设置ioctl参数或接收ioctl返回结果
-    struct events_chain *events = NULL;         // event链表
-
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    // Step 03: 建立一个socket
+    //========================
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);   // 建立一个socket用于ioctl
     if (sockfd == -1) {
         perror("socket(main)");
         free_wifs_chain(wifs_start_pointer);
@@ -505,16 +489,21 @@ int main() {
         return -1;
     }
 
+    char *buffer = NULL;                        // 用于存储扫描AP返回的结果
+    struct iwreq wreq;                          // ioctl的第三个参数，用于设置ioctl参数或接收ioctl返回结果
+    struct events_chain *events = NULL;         // event链表
+
+    printf("\n---- Scan wifi signals ----\n");
     // 遍历无线接口链表
     for (wifs = wifs_start_pointer; wifs != NULL; wifs = wifs->next) {
         printf("Wireless interface name: %s\n", wifs->wif->ifa_name);
 
         // 对无线接口进行扫描后，会返回很多AP，每个AP的每个属性(mac, essid, frequency等)都会以一个event返回，
         // 所以每个AP会返回多个event，这里只处理了三种event: SIOCGIWAP, SIOCGIWFREQ, SIOCGIWESSID
-        // 首先获取所有的event，放在链表events_list中(get_all_ap_events())，
-        // 然后从events_list中提取出所有的AP属性(extract_ap_attributes)
+        // 首先获取所有的event，放在链表events中(get_all_ap_events())，
+        // 然后从events中提取出所有的AP属性(extract_ap_attributes)
 
-        // Step 03: 通过当前无线接口扫描所有的AP
+        // Step 04: 通过当前无线接口扫描所有的AP
         //====================================
         if (scan_all_ap(sockfd, wifs->wif->ifa_name, &wreq) == -1) {
             printf("Error occurs when starting to scan APs.\n");
@@ -525,7 +514,7 @@ int main() {
 #endif
         sleep(5);
 
-        // Step 04: 获取扫描返回的event stream
+        // Step 05: 获取扫描返回的event stream
         //====================================
         buffer = get_scanning_result(sockfd, &wreq);
         if (buffer == NULL) {
@@ -536,7 +525,7 @@ int main() {
         printf("Successfully got the scanning result.\n");
 #endif
 
-        // Step 05: 分析event stream，将我们所需的event存在链表中
+        // Step 06: 分析event stream，将我们所需的event存在链表中
         //====================================================
         events = extract_events(&wreq);
         if (events == NULL) {
@@ -547,7 +536,7 @@ int main() {
         printf("Successfully extracted the events.\n");
 #endif
 
-        // Step 06: 从event链表中提取AP的所有属性
+        // Step 07: 从event链表中提取AP的所有属性
         //=======================================
         struct events_chain *curr_event = NULL;      // event链表
         // 为AP链表的第一项申请内存并初始化
@@ -556,7 +545,7 @@ int main() {
             extract_ap_attributes(curr_event->event, &aps);  // 从event中提取wifi信号属性
         }
 
-        // Step 07: 显示wifi信号属性
+        // Step 08: 显示wifi信号属性
         //============================
         if (aps->mac != NULL) {
             printf("\n---- WIFI signal list ----");
@@ -576,7 +565,7 @@ int main() {
                 curr_ap = curr_ap->next;
             }
         }
-        // Step 08: 释放内存
+        // Step 09: 释放内存
         //===================
         free_events_chain(events);     // 释放event链表
         events = NULL;
