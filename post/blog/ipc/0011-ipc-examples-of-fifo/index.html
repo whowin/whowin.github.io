@@ -469,8 +469,8 @@
 <li>
 <p>下面是一个使用 FIFO 传递消息的实例，分为两个独立的程序</p>
 <ul>
-<li>服务端源程序：<a href="https://whowin.gitee.io/sourcecodes/190011/fifo-server.c">fifo-server.c</a>(<strong>点击文件名下载源程序</strong>)，从 FIFO 上接收数据</li>
-<li>客户端源程序：<a href="https://whowin.gitee.io/sourcecodes/190011/fifo-client.c">fifo-client.c</a>(<strong>点击文件名下载源程序</strong>)，向 FIFO 中写入消息</li>
+<li>服务端源程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-server.c">fifo-server.c</a>(<strong>点击文件名下载源程序</strong>)，从 FIFO 上接收数据</li>
+<li>客户端源程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-client.c">fifo-client.c</a>(<strong>点击文件名下载源程序</strong>)，向 FIFO 中写入消息</li>
 <li>这个实例中使用 <code>fopen()</code> 打开 FIFO，客户端使用 <code>fputs()</code> 向 FIFO 中写入数据，服务端使用 <code>fgets()</code> 从 FIFO 中读出数据，使用 <code>fclose()</code> 关闭 FIFO；</li>
 <li>也可以使用 <code>open()/write()/read()/close()</code> 这组系统调用来进行 FIFO 的操作；</li>
 <li>这个实例使用 <code>mknod()</code> 创建 FIFO，当然也可以使用 <code>mkfifo()</code> 创建 FIFO；</li>
@@ -594,7 +594,7 @@
 <p>写入数据时，<code>write()</code> 也会返回错误，所以，通常情况下并不一定要捕捉 SIGPIPE 信号；</p>
 </li>
 <li>
-<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/190011/fifo-sigpipe.c">fifo-sigpipe.c</a>(<strong>点击文件名下载源程序</strong>)演示了在向 FIFO 写入数据时，如何截获 SIGPIPE 信号；</p>
+<p>源程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-sigpipe.c">fifo-sigpipe.c</a>(<strong>点击文件名下载源程序</strong>)演示了在向 FIFO 写入数据时，如何截获 SIGPIPE 信号；</p>
 <ul>
 <li>编译：<code>gcc -Wall fifo-sigpipe.c -o fifo-sigpipe</code></li>
 <li>运行这个程序需要两个终端窗口，在第一个终端上运行：<code>./fifo-sigpipe</code>，程序运行后将被阻塞在 <code>open()</code> 上，在第二个终端上运行：<code>cat myfifo</code>，来模拟从 FIFO 中读取数据；</li>
@@ -612,7 +612,7 @@
 </ul>
 </li>
 <li>
-<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/190011/fifo-eof.c">fifo-eof.c</a>(<strong>点击文件名下载源程序</strong>)演示了在从 FIFO 中读数据时，如何截获 EOF；</p>
+<p>源程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-eof.c">fifo-eof.c</a>(<strong>点击文件名下载源程序</strong>)演示了在从 FIFO 中读数据时，如何截获 EOF；</p>
 <ul>
 <li>编译：<code>gcc -Wall fifo-eof.c -o fifo-eof</code></li>
 <li>运行这个程序需要两个终端窗口，在第一个终端上运行：<code>./fifo-eof</code>，程序运行后将被阻塞在 <code>open()</code> 上，在第二个终端上运行：<code>echo &quot;Hello world&quot;&gt;myfifo</code>，来模拟向 FIFO 写入数据；</li>
@@ -627,10 +627,10 @@
 <li>使用流式文件的操作函数(<code>fopen()/fread()/fwrite()/fclose()</code>等)是可以操作 FIFO 的，这个在前面的实例中已经有演示，但是与低级文件I/O的系统调用比是有一些差异的，本节将讨论已经发现的一些差异；</li>
 <li>使用流式文件的方式从 FIFO 中读出数据时，如果遇到 EOF，必须要关闭 FIFO，然后再次打开，才能继续从 FIFO 中读取数据；
 <ul>
-<li><a href="https://whowin.gitee.io/sourcecodes/190011/fifo-server.c">fifo-server.c</a> 这个实例中，演示了流式文件方式从 FIFO 中读取数据时，遇到 EOF 需要再次打开 FIFO 的过程；</li>
+<li><a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-server.c">fifo-server.c</a> 这个实例中，演示了流式文件方式从 FIFO 中读取数据时，遇到 EOF 需要再次打开 FIFO 的过程；</li>
 <li>读者可以尝试修改这个程序，在遇到 EOF 后不关闭 FIFO，继续读取数据，是读不出数据的；</li>
 <li>但是使用低级文件 I/O (<code>open()/read()/write()/close()</code>)操作 FIFO，在遇到 EOF 时，则不需要关闭 FIFO；</li>
-<li><a href="https://whowin.gitee.io/sourcecodes/190011/fifo-eof.c">fifo-eof.c</a> 这个实例中，演示了使用低级文件 I/O 从 FIFO 中读取数据时，遇到 EOF 无需关闭 FIFO 的过程；</li>
+<li><a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-eof.c">fifo-eof.c</a> 这个实例中，演示了使用低级文件 I/O 从 FIFO 中读取数据时，遇到 EOF 无需关闭 FIFO 的过程；</li>
 </ul>
 </li>
 <li>当使用流式文件的方式向 FIFO 中写入数据时，因为流式文件缓存的原因，写入的数据可能不会马上进入到 FIFO 中；
@@ -655,11 +655,11 @@
 <li>
 <p>以本文提供的四个范例已经足够衍生出很多的测试程序：</p>
 <ul>
-<li><a href="https://whowin.gitee.io/sourcecodes/190011/fifo-server.c">fifo-server.c</a> - 是使用流式文件的方式从 FIFO 中读数据的，可以尝试将 <code>fopen()/fclose()</code> 放在循环外面，可以验证使用流式文件的方式读取 FIFO 时遇到 EOF 需要重新打开 FIFO 的观点；</li>
-<li><a href="https://whowin.gitee.io/sourcecodes/190011/fifo-server.c">fifo-server.c</a> - 可以将这个程序改成使用低级文件 I/O 读取 FIFO 的方式，以比较流式文件的操作函数和低级文件 I/O 的操作函数之间的差异；</li>
-<li><a href="https://whowin.gitee.io/sourcecodes/190011/fifo-client.c">fifo-client.c</a> - 可以加一个循环，使程序每隔 5 秒向 FIFO 写入一次数据，同时去掉 <code>fflush()</code>，可以验证流式文件的缓存对 FIFO 写入的影响；</li>
-<li><a href="https://whowin.gitee.io/sourcecodes/190011/fifo-client.c">fifo-client.c</a> - 可以将其改成使用低级文件 I/O 写入 FIFO 的方式，以比较流式文件的操作函数和低级文件 I/O 的操作函数之间的差异；</li>
-<li><a href="https://whowin.gitee.io/sourcecodes/190011/fifo-sigpipe.c">fifo-sigpipe.c</a> - 可以将其改为使用流式文件方式向 FIFO 写入数据，验证一下在读出端关闭时，<code>fputs()</code> 仍然返回成功的情况，同时体会一下如何在流式文件方式下捕捉 SIGPIPE 信号；</li>
+<li><a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-server.c">fifo-server.c</a> - 是使用流式文件的方式从 FIFO 中读数据的，可以尝试将 <code>fopen()/fclose()</code> 放在循环外面，可以验证使用流式文件的方式读取 FIFO 时遇到 EOF 需要重新打开 FIFO 的观点；</li>
+<li><a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-server.c">fifo-server.c</a> - 可以将这个程序改成使用低级文件 I/O 读取 FIFO 的方式，以比较流式文件的操作函数和低级文件 I/O 的操作函数之间的差异；</li>
+<li><a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-client.c">fifo-client.c</a> - 可以加一个循环，使程序每隔 5 秒向 FIFO 写入一次数据，同时去掉 <code>fflush()</code>，可以验证流式文件的缓存对 FIFO 写入的影响；</li>
+<li><a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-client.c">fifo-client.c</a> - 可以将其改成使用低级文件 I/O 写入 FIFO 的方式，以比较流式文件的操作函数和低级文件 I/O 的操作函数之间的差异；</li>
+<li><a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-sigpipe.c">fifo-sigpipe.c</a> - 可以将其改为使用流式文件方式向 FIFO 写入数据，验证一下在读出端关闭时，<code>fputs()</code> 仍然返回成功的情况，同时体会一下如何在流式文件方式下捕捉 SIGPIPE 信号；</li>
 </ul>
 </li>
 <li>
@@ -717,6 +717,11 @@
 [article03]: https://blog.csdn.net/whowin/article/details/132172172
 [article04]: https://blog.csdn.net/whowin/article/details/134869490
 [article05]: https://blog.csdn.net/whowin/article/details/134869636
+-->
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/8b0a919f4084f7941e8b4913b6d0f4db.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/16fb2f26b1d50451540fa8642ac56fbb.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/d76ec9eba314ac0095e83d3e2395ec59.png
 -->
     </div>
 

@@ -698,13 +698,13 @@
 <h2 id="3-实例">3 实例</h2>
 <ul>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190024/dbus-select.c">dbus-select.c</a> (<strong>点击文件名下载源程序，建议使用UTF-8字符集</strong>)演示了使用 libdbus 通过 <code>select()</code> 接收方法调用消息的过程；</p>
+<p><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190024/dbus-select.c">dbus-select.c</a> (<strong>点击文件名下载源程序，建议使用UTF-8字符集</strong>)演示了使用 libdbus 通过 <code>select()</code> 接收方法调用消息的过程；</p>
 </li>
 <li>
-<p>该程序与文章 <a href="https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中的实例 <a href="https://whowin.gitee.io/sourcecodes/190021/dbus-methods.c">dbus-methods.c</a> 完成相同的任务，其中客户端进程的程序完全一样；</p>
+<p>该程序与文章 <a href="https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中的实例 <a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190021/dbus-methods.c">dbus-methods.c</a> 完成相同的任务，其中客户端进程的程序完全一样；</p>
 </li>
 <li>
-<p>与 <a href="https://whowin.gitee.io/sourcecodes/190021/dbus-methods.c">dbus-methods.c</a> 不同的是服务端进程，<a href="https://whowin.gitee.io/sourcecodes/190024/dbus-select.c">dbu-select.c</a> 在服务端进程为 D-Bus 连接添加了一个 watch，使用 <code>dbus_watch_get_unix_fd()</code> 从 watch 中获取实际使用的文件描述符；</p>
+<p>与 <a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190021/dbus-methods.c">dbus-methods.c</a> 不同的是服务端进程，<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190024/dbus-select.c">dbu-select.c</a> 在服务端进程为 D-Bus 连接添加了一个 watch，使用 <code>dbus_watch_get_unix_fd()</code> 从 watch 中获取实际使用的文件描述符；</p>
 </li>
 <li>
 <p>当文件描述符上有数据可以读取时，调用接收程序读取消息并处理消息，然后向客户端发出回复消息；</p>
@@ -752,6 +752,9 @@
 [article12]: https://blog.csdn.net/whowin/article/details/135332257
 [article13]: https://blog.csdn.net/whowin/article/details/135332658
 [article14]: https://blog.csdn.net/whowin/article/details/135493350
+-->
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/47ba719630bf63ad68877dfbdada0a73.gif
 -->
     </div>
 

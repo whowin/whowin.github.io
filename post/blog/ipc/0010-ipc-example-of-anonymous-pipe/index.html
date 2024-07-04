@@ -419,7 +419,7 @@
 </div>
 </div></li>
 <li>如前所述，建立了管道以后，就可以像对待普通文件描述符一样对待管道描述符；</li>
-<li>源程序：<a href="https://whowin.gitee.io/sourcecodes/190010/pipe.c">pipe.c</a>(<strong>点击文件名下载源程序</strong>)演示了子进程向父进程发送信息：Hello, world!</li>
+<li>源程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe.c">pipe.c</a>(<strong>点击文件名下载源程序</strong>)演示了子进程向父进程发送信息：Hello, world!</li>
 </ul>
 <h2 id="4-在管道上使用-dup">4 在管道上使用 dup()</h2>
 <ul>
@@ -503,7 +503,7 @@
 <p><img src="https://whowin.gitee.io/images/190010/pipe-with-dup.png" alt="pipe with dup()"></p>
 </li>
 <li>
-<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/190010/pipe-dup-stdin.c">pipe-dup-stdin.c</a>(<strong>点击文件名下载源程序</strong>)演示了在管道中使用 <code>dup2()</code> 将 fd[0] 复制到 <code>STDIN</code> 的方法：</p>
+<p>源程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe-dup-stdin.c">pipe-dup-stdin.c</a>(<strong>点击文件名下载源程序</strong>)演示了在管道中使用 <code>dup2()</code> 将 fd[0] 复制到 <code>STDIN</code> 的方法：</p>
 <blockquote>
 <p>子进程中把 fd[0] 复制到 <code>STDIN</code>，然后启动 <code>sort</code>，父进程向管道中写入若干个单词，每个单词以 <code>\n</code> 结尾，<code>sort</code> 从 <code>STDIN</code> 读入数据，实际上是从管道中读入数据，所以 <code>sort</code> 程序会对这些单词进行排序，并把结果写入文件 <code>sort.log</code> 中，程序运行完毕后，使用 <code>cat sort.log</code> 可以看到经过排序的单词；</p>
 </blockquote>
@@ -512,7 +512,7 @@
 <p>同样道理，也可以在子进程中把管道的输入端(<code>fd[1]</code>)复制到 <code>STDOUT</code> 上，这样，当子进程中启动的程序向 <code>STDOUT</code> 输出时，实际上是在向管道上写入数据；</p>
 </li>
 <li>
-<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/190010/pipe-dup-stdout.c">pipe-dup-stdout.c</a>(<strong>点击文件名下载源程序</strong>)演示了在管道中使用 <code>dup2()</code> 将 fd[1] 复制到 <code>STDOUT</code> 的方法：</p>
+<p>源程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe-dup-stdout.c">pipe-dup-stdout.c</a>(<strong>点击文件名下载源程序</strong>)演示了在管道中使用 <code>dup2()</code> 将 fd[1] 复制到 <code>STDOUT</code> 的方法：</p>
 <blockquote>
 <p>子进程中把 <code>fd[1]</code> 复制到 <code>STDOUT</code>，然后启动 <code>uname</code>，<code>uname -r</code> 会输出一个字符串到 <code>STDOUT</code>，实际上是写入到了管道中，父进程从管道中收到了这个字符串并显示出来；</p>
 </blockquote>
@@ -589,7 +589,7 @@
 <p><code>pclose()</code> 函数对由 <code>popen()</code> 派生的进程执行 <code>wait4()</code>，当 <code>wait4()</code> 返回时，它会销毁管道和文件流；</p>
 </li>
 <li>
-<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/190010/pipe-popen.c">pipe-popen.c</a>(<strong>点击文件名下载源程序</strong>)完成与前面的例子 <a href="https://whowin.gitee.io/sourcecodes/190010/pipe-dup-stdin.c">pipe-dup-stdin.c</a> 一样的功能，但看上去要简单的多；</p>
+<p>源程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe-popen.c">pipe-popen.c</a>(<strong>点击文件名下载源程序</strong>)完成与前面的例子 <a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe-dup-stdin.c">pipe-dup-stdin.c</a> 一样的功能，但看上去要简单的多；</p>
 </li>
 <li>
 <p>由于 <code>popen()</code> 使用 <code>shell</code> 来执行命令，因此 <code>shell</code> 扩展字符和元字符都可以使用，此外，使用 popen() 打开管道时，可以使用一些高级技术来执行命令，例如重定向，甚至输出管道；以下调用示例分别使用了扩展字符、重定向和输出管道：</p>
@@ -607,10 +607,10 @@
 </div>
 </div></li>
 <li>
-<p>源程序：<a href="https://whowin.gitee.io/sourcecodes/190010/pipe-popen2.c">pipe-popen2.c</a>(<strong>点击文件名下载源程序</strong>)打开了两个管道，一个用于 <code>ls</code> 命令，另一个用于 <code>sort</code> 命令；</p>
+<p>源程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe-popen2.c">pipe-popen2.c</a>(<strong>点击文件名下载源程序</strong>)打开了两个管道，一个用于 <code>ls</code> 命令，另一个用于 <code>sort</code> 命令；</p>
 </li>
 <li>
-<p>下面这个例子试图编写一个通用的管道程序，源程序文件：<a href="https://whowin.gitee.io/sourcecodes/190010/pipe-popen3.c">pipe-popen3.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>下面这个例子试图编写一个通用的管道程序，源程序文件：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe-popen3.c">pipe-popen3.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 <ul>
 <li>使用方法为：<code>./pipe-popen3 [command] [filename]</code></li>
 <li>该程序会首先打开文件 <code>filename</code></li>
@@ -691,6 +691,12 @@
 [article03]: https://blog.csdn.net/whowin/article/details/132172172
 [article04]: https://blog.csdn.net/whowin/article/details/134869490
 [article05]: https://blog.csdn.net/whowin/article/details/134869636
+-->
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/fca2c50ac5250408b48adcafd118595c.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/99baefca021c879ac587b625e815d461.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/8cdda105b707b332a6b05c9a48524e51.png
+[img04]: https://img-blog.csdnimg.cn/img_convert/45dd62313ff5435233326ddc0eb12739.png
 -->
     </div>
 

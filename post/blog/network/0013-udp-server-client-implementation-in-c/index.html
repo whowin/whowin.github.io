@@ -50,7 +50,7 @@
 <meta itemprop="name" content="使用C语言实现服务器/客户端的UDP通信">
 <meta itemprop="description" content="本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，使读者可以在这个框架下经过扩展构建出更加复杂的服务，本文适合网络通信的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0"><meta itemprop="datePublished" content="2023-01-05T16:43:29+08:00" />
 <meta itemprop="dateModified" content="2023-01-05T16:43:29+08:00" />
-<meta itemprop="wordCount" content="4446">
+<meta itemprop="wordCount" content="4450">
 <meta itemprop="keywords" content="Linux,Socket,网络编程,udp," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="使用C语言实现服务器/客户端的UDP通信"/>
 <meta name="twitter:description" content="本文旨在使用简单的例子说明编写一个服务器/客户端模式的UDP通信程序的步骤，并通过一个实例给出了程序的基本框架，使读者可以在这个框架下经过扩展构建出更加复杂的服务，本文适合网络通信的初学者阅读；本文的程序在ubuntu 20.04中编译运行成功，gcc版本号为：9.4.0"/>
@@ -500,7 +500,7 @@
 <p>这两个程序在ubuntu 20.04下编译运行成功；</p>
 </li>
 <li>
-<p>服务器端程序：<a href="https://whowin.gitee.io/sourcecodes/180013/udp-server.c">udp-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>服务器端程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180013/udp-server.c">udp-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 <blockquote>
 <p>服务器端程序在绑定地址时绑定的是服务器的地址，端口号是程序接收数据的端口，INADDR_ANY这个宏在netinet/in.h中定义，实际上就是一个32位的0，对应的IP地址就是0.0.0.0，和inet_addr(&ldquo;0.0.0.0&rdquo;)是一样的，inet_addr()函数会把一个字符串形式的IP地址转换成一个网络字符顺序的32位的IP地址，这里将IP绑定为0.0.0.0的含义是本机的所有IP地址，一台机器有可能有多个网卡，比如有线网卡和无线网卡，那么这台机器就可能有两个IP地址，加上loopback，就有三个IP地址，假定这三个地址分别是：192.168.2.112(有线网卡)、192.168.2.113(无线网卡)和127.0.0.1(loopback)，如果这里设置成inet_addr(&ldquo;192.168.2.112&rdquo;)，则表示只接收发往目的地址是192.168.2.112这个IP的信息，也就是只接收从有线网卡收到的数据，大家可以试一下；如果绑定的IP地址不是本机的一个合法IP，在执行bind()时会出错。</p>
 </blockquote>
@@ -557,7 +557,7 @@
 <hr>
 <ul>
 <li>
-<p>客户端程序：<a href="https://whowin.gitee.io/sourcecodes/180013/udp-client.c">udp-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>客户端程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180013/udp-client.c">udp-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 <blockquote>
 <p>客户端程序的socket不需要绑定地址，但在发送时需要设置目的地址，目的地址是服务器的地址，端口号是服务器端程序绑定的端口，192.168.2.112是服务器的IP地址，请根据自身的情况进行修改，IP和端口号必须和服务器一致，否则服务器无法收到信息。</p>
 </blockquote>
@@ -626,6 +626,11 @@
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
 <p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!-- CSDN>
+[img01]:https://img-blog.csdnimg.cn/img_convert/198e06db14be3887cb203cb81b24fb96.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/a640dd4958b655a289459c6aeb577176.png
+[img03]:https://img-blog.csdnimg.cn/img_convert/0e86d556723d3c21fa4e7b9d477d72ac.png
+-->
 <!--gitee
 [article1]:https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/
 -->

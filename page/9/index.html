@@ -134,6 +134,72 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0006-send-udp-with-raw-socket/">如何使用raw socket发送UDP报文</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2022-12-27 </span>
+      <div class="post-category">
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>使用raw socket发送报文比接收报文要复杂一些，因为需要在程序中构建数据链路层、网络层和传输层的报头，本文以发送UDP报文为例说明在使用raw socket时如何构建数据链路层、网络层和传输层的报头并发送报文，文中给出了完整的源程序；阅读本文需要掌握基本的IPv4下的socket编程方法，本文对初学者有一定难度。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0006-send-udp-with-raw-socket/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0004-checksum-of-ip-header/">如何计算IP报头的checksum</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2022-12-14 </span>
+      <div class="post-category">
+          <a href="/categories/network/"> network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>如果你研究过TCP/IP协议，那么你肯定知道IP报头中的checksum字段，或许你还曾经为如何计算这个字段的值所困扰，本文我们将讨论checksum的概念，并详细介绍IP报头中的checksum是如何计算的，本文适合初学者阅读。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0004-checksum-of-ip-header/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0003-checksum-of-udp-header/">如何计算UDP头的checksum</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2022-12-12 </span>
+      <div class="post-category">
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>UDP报头只有4个字段，分别是：源端口号、目的端口号、报文长度和报头checksum，其中的报头checksum这个字段在IPv4中并不是强制的，但在IPv6中是强制的，本文介绍UDP报头中checksum的计算方法，并给出相应的源程序，实际上，网络通信中常用的IP报头、TCP报头和UDP报头中都有checksum，其计算方法基本一样，所以把这些检查和一般统称为Internet Checksum；本文对网络编程的初学者难度不大。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0003-checksum-of-udp-header/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/network/0005-send-udp-via-linux-cli/">如何在Linux命令行下发送和接收UDP数据包</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2022-12-10 </span>
@@ -173,71 +239,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/network/0002-link-layer-programming/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0001-how-to-get-ipv6-in-c/">C语言获取ipv6地址的三种方法</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2022-10-16 </span>
-      <div class="post-category">
-          <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/network/"> Network </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>使用通常获取ipv4的IP地址的方法是无法获取ipv6地址的，本文介绍了使用C语言获取ipv6地址的三种方法：从proc文件从系统获取ipv6地址、使用getifaddrs()函数获取ipv6地址和使用netlink获取ipv6地址，每种方法均给出了完整的源程序，本文所有实例在 ubuntu 20.04 下测试通过，gcc 版本 9.4.0；阅读本文需要有一定的网络编程基础知识和IPv6的知识。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0001-how-to-get-ipv6-in-c/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/c/0001-parameters-passing-mechanism/">C语言函数调用时的参数传递机制</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2022-09-20 </span>
-      <div class="post-category">
-          <a href="/categories/c-language/"> C Language </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>本文通过实例验证了 C 语言函数调用时参数传递机制在 32 位和 64 位时的不同；阅读本文不仅需要 C 语言的知识，还需要有一些汇编语言的知识。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/c/0001-parameters-passing-mechanism/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/linux/0012-setuid/">Linux文件权限：setuid、setgid和sticky bit</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2022-08-25 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>Linux 下的文件权限管理分为三组：拥有者、组、其它用户，文件权限分为读、写、执行，但其实并不仅仅如此，还有 setuid、setgid、sticky bit 这一组标志，本文通过一个可执行文件的权限 4755 展开介绍 setuid、setgid 和 sticky bit 的概念，希望本文对读者理解 Linux 文件权限管理能有所帮助。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/linux/0012-setuid/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

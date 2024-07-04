@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Linux下使用libiw进行无线信号扫描的实例 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，本文将讨论在Linux下使用C语言连接wifi的方法，本文给出的实例不使用任何第三方软件和库，就可以连接到指定的wifi上，本文将给出完整的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；尽管本文内容主要涉及无线网络，但读者并不需要对 802.11 标准有所了解。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/network/0026-wifi-scanner-with-libiw/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Linux下使用libiw进行无线信号扫描的实例" />
+<meta property="og:description" content="打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，本文将讨论在Linux下使用C语言连接wifi的方法，本文给出的实例不使用任何第三方软件和库，就可以连接到指定的wifi上，本文将给出完整的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；尽管本文内容主要涉及无线网络，但读者并不需要对 802.11 标准有所了解。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0026-wifi-scanner-with-libiw/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2024-04-13T16:43:29+08:00" />
+<meta property="article:modified_time" content="2024-04-13T16:43:29+08:00" />
+
+<meta itemprop="name" content="Linux下使用libiw进行无线信号扫描的实例">
+<meta itemprop="description" content="打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，本文将讨论在Linux下使用C语言连接wifi的方法，本文给出的实例不使用任何第三方软件和库，就可以连接到指定的wifi上，本文将给出完整的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；尽管本文内容主要涉及无线网络，但读者并不需要对 802.11 标准有所了解。"><meta itemprop="datePublished" content="2024-04-13T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2024-04-13T16:43:29+08:00" />
+<meta itemprop="wordCount" content="2457">
+<meta itemprop="keywords" content="Linux,网络编程,802.11,wifi,无线网络,ioctl," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Linux下使用libiw进行无线信号扫描的实例"/>
+<meta name="twitter:description" content="打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，本文将讨论在Linux下使用C语言连接wifi的方法，本文给出的实例不使用任何第三方软件和库，就可以连接到指定的wifi上，本文将给出完整的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；尽管本文内容主要涉及无线网络，但读者并不需要对 802.11 标准有所了解。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Linux下使用libiw进行无线信号扫描的实例</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2024-04-13 </span>
+        <div class="post-category">
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            <a href="/categories/network/"> Network </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-前言">1 前言</a></li>
+        <li><a href="#2-安装-libiw">2 安装 libiw</a></li>
+        <li><a href="#3-wifi扫描涉及的-libiw-函数和数据结构">3 wifi扫描涉及的 libiw 函数和数据结构</a></li>
+        <li><a href="#4-使用-libiw-扫描-wifi-信号的基本思路">4 使用 libiw 扫描 wifi 信号的基本思路</a></li>
+        <li><a href="#5-使用-libiw-扫描-wifi-信号">5 使用 libiw 扫描 wifi 信号</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，本文将讨论在Linux下使用C语言连接wifi的方法，本文给出的实例不使用任何第三方软件和库，就可以连接到指定的wifi上，本文将给出完整的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；尽管本文内容主要涉及无线网络，但读者并不需要对 802.11 标准有所了解。</p>
+<h2 id="1-前言">1 前言</h2>
+<ul>
+<li>前面已经有两篇文章介绍了如何扫描 wifi 信号，<a href="https://blog.csdn.net/whowin/article/details/131504380">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a>和<a href="https://blog.csdn.net/whowin/article/details/137711398">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a>，这两篇文章均是使用 <code>ioctl()</code> 完成的 wifi 信号扫描；</li>
+<li>本文介绍使用 libiw 库进行 wifi 信号扫描的方法，比较前两篇文章中介绍的方法，编程上更加简单；</li>
+<li>实际上使用 libiw 扫描 wifi 信号，本质上还是使用 <code>ioctl()</code>；</li>
+<li>在大多数以 Linux 内核为基础的操作系统中，都是包含 WE(Wireless Extensions) 的，WE 实际就是一组在用户空间操作无线网卡驱动程序的一组 API，库 libiw 是对 WE 的一个封装；</li>
+<li>尽管库 libiw 可以给 wifi 编程带来一定的便利，但其实这是一个已经过时的库，这个库的最后更新日期是 2009 年，尽管如此，现在的绝大多数无线网卡驱动程序仍然支持 WE，所以我们仍然可以使用 libiw 进行 wifi 编程；</li>
+<li>一些常用的 wifi 工具软件是使用 WE 实现的，比如：iwlist、iwconfig 等，由此也可以看出 WE 在 wifi 编程中仍然占有很重要的位置；</li>
+</ul>
+<h2 id="2-安装-libiw">2 安装 libiw</h2>
+<ul>
+<li>
+<p>libiw 包含在开源项目 <a href="https://github.com/HewlettPackard/wireless-tools">Wireless Tools</a> 中，可以自行编译 libiw 库或者使用 apt 安装</p>
+</li>
+<li>
+<p>在 ubuntu 上使用 apt 安装 libiw</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt update
+</span></span><span class="line"><span class="cl">sudo apt install libiw-dev
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>自行编译 libiw</p>
+<ul>
+<li>克隆项目：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">git clone https://github.com/HewlettPackard/wireless-tools
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>编译静态库 libiw.so.29
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Os -W -Wall -Wstrict-prototypes -Wmissing-prototypes -Wshadow -Wpointer-arith -Wcast-qual -Winline -I. -MMD -fPIC -c -o iwlib.so iwlib.c
+</span></span><span class="line"><span class="cl">gcc -shared -o libiw.so.29 -Wl,-soname,libiw.so.29  -lm -lc iwlib.so
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>编译静态库 libiw.a
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">rm -f libiw.a
+</span></span><span class="line"><span class="cl">ar cru libiw.a iwlib.so
+</span></span><span class="line"><span class="cl">ranlib libiw.a
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>
+<p>要说明的是，使用 apt 安装的 libiw，其动态链接库为 <code>libiw.so.30</code>，但是使用这个项目的开源版本编译出来的动态链接库为 <code>libiw.so.29</code>，版本略有不同，<code>libiw.so.30</code> 更新于 2009 年，而开源项目的源代码更新于 2007 年，二者还是略有差别的；</p>
+</li>
+</ul>
+<h2 id="3-wifi扫描涉及的-libiw-函数和数据结构">3 wifi扫描涉及的 libiw 函数和数据结构</h2>
+<ul>
+<li>
+<p>使用 libiw 编写 wifi 扫描程序，比起使用 <code>ioctl()</code> 要容易一些，但可以获得的信息远不如使用 <code>ioct()</code> 直接扫描 wifi 获得的信息多；</p>
+</li>
+<li>
+<p>以下一些 libiw 中的函数和数据结构在下面的程序中会使用到：</p>
+</li>
+<li>
+<p><code>int iw_sockets_open(void)</code></p>
+<blockquote>
+<p>这个函数逐个尝试使用不同的协议族建立 socket，直至成功或者全部失败，尝试的顺序为：<code>AF_INET、AF_IPX、AF_AX25、AF_APPLETALK</code>，绝大多数情况下可以使用 <code>AF_INET</code> 建立 socket，成功返回 socket，失败则返回 -1；</p>
+</blockquote>
+</li>
+<li>
+<p><code>void iw_enum_devices(int skfd, iw_enum_handler fn, char *args[], int count)</code></p>
+<blockquote>
+<p>这个函数会列举出系统中的所有网络接口，每找到一个网络接口就会调用一次函数 <code>fn()</code>，<code>args[]</code> 是传给 <code>fn()</code> 的参数数组，count 是参数的数量，本文利用这个函数在所有网络接口中找到无线网络接口，然后对无线网络接口进行扫描；</p>
+</blockquote>
+<blockquote>
+<p>其查找无线网络的原理是：当 <code>iw_enum_devices()</code> 函数找到一个网络接口时会调用 <code>fn()</code>，在函数 <code>fn()</code> 辨别该网络接口是否为无线网络接口；</p>
+</blockquote>
+</li>
+<li>
+<p><code>int iw_get_range_info(int skfd, const char *ifname, iwrange *range)</code></p>
+<blockquote>
+<p>使用这个函数主要是为了得到当前系统 WE(Wireless Extensions) 的版本号，在调用 iw_scan() 对无线网络接口进行扫描时，需要 WE 的版本号作为参数，这是因为不同版本的 WE 在进行扫描时方法略有差异；</p>
+</blockquote>
+</li>
+<li>
+<p><code>int iw_scan(int skfd, char *ifname, int we_version, wireless_scan_head *context)</code></p>
+<blockquote>
+<p>对无线网络接口进行扫描，ifname 为网络接口名称，扫描结果放在 context 中，context 是 <code>struct wireless_scan_head</code> 的指针，里面存放了扫描结果链表的首指针 result，<code>struct wireless_scan_head</code> 定义在 iwlib.h 中，其具体结构如下：</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">wireless_scan_head</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">wireless_scan</span>   <span class="o">*</span><span class="n">result</span><span class="p">;</span>    <span class="cm">/* Result of the scan */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>             <span class="n">retry</span><span class="p">;</span>      <span class="cm">/* Retry level */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">wireless_scan_head</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>其中的 wireless_scan 就是 <code>struct wireless_scan</code>，同样定义在 iwlib.h 中，其具体定义如下：</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">wireless_scan</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* Linked list */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">wireless_scan</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/* Cell identifiaction */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>         <span class="n">has_ap_addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sockaddr</span>    <span class="n">ap_addr</span><span class="p">;</span>        <span class="cm">/* Access point address */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/* Other information */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">wireless_config</span>  <span class="n">b</span><span class="p">;</span>  <span class="cm">/* Basic information */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">iwstats</span> <span class="n">stats</span><span class="p">;</span>              <span class="cm">/* Signal strength */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">has_stats</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">iwparam</span> <span class="n">maxbitrate</span><span class="p">;</span>         <span class="cm">/* Max bit rate in bps */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">has_maxbitrate</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">wireless_scan</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>这是一个结构链表，next 指向链表的下一项，链表中的每一项表示一个扫描到的信号，在 struct wireless_scan 中，当 has_ap_addr 不为 0 时，ap_addr 中存放着该信号对应的 AP 的 MAC 地址；当 has_maxbitrate 不为 0 时，maxbitrate 中存放着该信号所支持的最大传输速率；当 has_stats 不为 0 时，stats 中存放着信号强度；信号的 SSID、工作频率等，存放在 b 中，b 是一个 struct wireless_scan 结构，定义在 iwlib.h 中，其具体定义如下：</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">wireless_config</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span>    <span class="n">name</span><span class="p">[</span><span class="n">IFNAMSIZ</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span> <span class="cm">/* Wireless/protocol name */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">has_nwid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">iwparam</span> <span class="n">nwid</span><span class="p">;</span>               <span class="cm">/* Network ID */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">has_freq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">double</span>  <span class="n">freq</span><span class="p">;</span>               <span class="cm">/* Frequency/channel */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">freq_flags</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">has_key</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span>   <span class="n">key</span><span class="p">[</span><span class="n">IW_ENCODING_TOKEN_MAX</span><span class="p">];</span> <span class="cm">/* Encoding key used */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">key_size</span><span class="p">;</span>           <span class="cm">/* Number of bytes */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">key_flags</span><span class="p">;</span>          <span class="cm">/* Various flags */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">has_essid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">essid_on</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span>    <span class="n">essid</span><span class="p">[</span><span class="n">IW_ESSID_MAX_SIZE</span> <span class="o">+</span> <span class="mi">2</span><span class="p">];</span>   <span class="cm">/* ESSID (extended network) */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">essid_len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">has_mode</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">mode</span><span class="p">;</span>               <span class="cm">/* Operation mode */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>实际上这里面的一些项很多 WE 都已经不再支持，本例中我们会用到以下字段：name、freq、essid，其它字段很多 WE 并不返回数据；</p>
+</blockquote>
+</li>
+<li>
+<p><code>void iw_sockets_close(int skfd)</code></p>
+<blockquote>
+<p>这个函数将关闭一个使用 iw_sockets_open() 打开的 socket，其实这个函数和 close() 无异，所以你可以直接用 close(skfd) 关闭 socket。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="4-使用-libiw-扫描-wifi-信号的基本思路">4 使用 libiw 扫描 wifi 信号的基本思路</h2>
+<ul>
+<li>
+<p><strong>扫描 wifi 信号的基本流程</strong></p>
+<ol>
+<li>使用 <code>iw_sockets_open()</code> 建立一个socket</li>
+<li>使用 <code>iw_enum_devices()</code> 枚举所有的网络设备，并从中找到无线网卡设备名称</li>
+<li>使用 <code>iw_get_range_ino()</code> 获取 WE 的版本号</li>
+<li>使用 <code>iw_scan()</code> 启动 wifi 信号扫描并获取扫描结果</li>
+<li>使用 <code>iw_sockets_close()</code> 关闭使用 <code>iw_sockets_open()</code> 打开的 socket</li>
+</ol>
+</li>
+<li>
+<p><strong>使用 iw_scan() 获取扫描结果的问题</strong></p>
+<ul>
+<li>与使用 <code>ioctl()</code> 进行 wifi 信号扫描(请参考<a href="https://blog.csdn.net/whowin/article/details/131504380">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a>和<a href="https://blog.csdn.net/whowin/article/details/137711398">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a>)相比，使用 libiw 扫描 wifi 信号得到的信息其实要少一些，这也是这种方法的最主要的不足；</li>
+<li>这主要是因为 <code>struct wireless_scan</code> 这个结构可以容纳的信息十分有限</li>
+<li><code>iw_scan()</code> 需要 4 个参数(见上节关于该函数的说明)，其中第 4 个参数是 <code>wireless_scan_head *context</code>；</li>
+<li>wireless_scan_head 和其中的 wireless_scan 的数据结构在上节已经做了详细的介绍，扫描到的 wifi 信号的数据实际存放在一个 wireless_scan 结构链表中；</li>
+<li>受结构所限，很多信息都不得不减少，比如一般一个信号可以支持很多连接速率，但是该结构中只给出一个 maxbitrate 字段，所以无法所有信号支持的传输速率</li>
+<li>在比如一个信号通常可以支持多个不同的信道，每个信道为不同的工作频率，使用 libiw 扫描信号只能得到其列表中的最后一个频率值；</li>
+<li>这些缺失的数据在使用 ioctl() 进行信号扫描时都是可以得到的。</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-使用-libiw-扫描-wifi-信号">5 使用 libiw 扫描 wifi 信号</h2>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!-- 使用ioctl扫描wifi信号获取信号属性的实例(一) -->
+<!-- 使用ioctl扫描wifi信号获取信号属性的实例(二) -->
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2024-04-13
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+          <a href="/tags/802.11/">802.11</a>
+          <a href="/tags/wifi/">wifi</a>
+          <a href="/tags/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C/">无线网络</a>
+          <a href="/tags/ioctl/">ioctl</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/network/0026-how-to-connect-wifi-in-c-under-linux/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Linux下使用libiw进行无线信号扫描的实例</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/network/0025-another-wifi-scanner-example/">
+            <span class="next-text nav-default">使用ioctl扫描wifi信号获取信号属性的实例(二)</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/network/0026-wifi-scanner-with-libiw/" class="leancloud_visitors" data-flag-title="Linux下使用libiw进行无线信号扫描的实例">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

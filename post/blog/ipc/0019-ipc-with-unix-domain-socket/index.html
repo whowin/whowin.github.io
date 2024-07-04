@@ -455,7 +455,7 @@
 <p>在 <code>Internet Socket</code> 的 UDP 编程中，需要使用 <code>struct sockaddr_in</code> 设置对端的 IP 地址和端口，而 <code>UNIX Socket</code> 要使用 <code>struct sockaddr_un</code> 来设置对端的文件路径；</p>
 </li>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190019/sendto-recvfrom.c">sendto-recvfrom.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用 sendto() 和 recvfrom() 进行面向报文的进程间通信；</p>
+<p><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190019/sendto-recvfrom.c">sendto-recvfrom.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用 sendto() 和 recvfrom() 进行面向报文的进程间通信；</p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall -g sendto-recvfrom.c -o sendto-recvfrom</code></p>
@@ -543,7 +543,7 @@
 <p>关于这对函数的使用可以参考在线文档 <code>man sendmsg</code>、<code>man recvmsg</code> 和 <code>man writev</code>，本文并不打算详细描述这对函数的使用方法，但会给出一个具体实例；</p>
 </li>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190019/sendmsg-recvmsg.c">sendmsg-recvmsg.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用 sendmsg() 和 recvmsg() 进行面向报文的进程间通信；</p>
+<p><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190019/sendmsg-recvmsg.c">sendmsg-recvmsg.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用 sendmsg() 和 recvmsg() 进行面向报文的进程间通信；</p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall -g sendmsg-recvmsg.c -o sendmsg-recvmsg</code></p>
@@ -655,7 +655,7 @@
 <p>要注意的是，一定要在替换 <code>'#'</code> 前使用 <code>SUN_LEN()</code> 宏去计算 <code>server_addr</code> 的长度，否则因为 <code>'\0'</code> 的替换将导致长度计算错误；</p>
 </li>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190019/abstract-socket.c">abstract-socket.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用抽象命名空间 socket 进行进程间通信；</p>
+<p><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190019/abstract-socket.c">abstract-socket.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用抽象命名空间 socket 进行进程间通信；</p>
 <ul>
 <li>该程序建立了两个进程，一个是服务端进程，另一个是客户端进程；</li>
 <li>服务端进程在抽象命名空间上建立了一个 socket 并侦听在该 socket 上；</li>
@@ -713,7 +713,7 @@
 </blockquote>
 </li>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190019/seqpacket.c">seqpacket.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用顺序数据包进行进程间通信，同时演示了 SOCK_STREAM 的“粘包”现象以及 SOCK_SEQPACKET 有清晰报文边界的特性；</p>
+<p><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190019/seqpacket.c">seqpacket.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用顺序数据包进行进程间通信，同时演示了 SOCK_STREAM 的“粘包”现象以及 SOCK_SEQPACKET 有清晰报文边界的特性；</p>
 <ul>
 <li>建立了三个进程，第一个是 SOCK_STREAM 类型 socket 的服务端进程，第二个是 SOCK_SEQPACKET 类型 socket 的服务端进程，第三个是客户端进程；</li>
 <li>客户端进程使用同样的程序分别向两个服务端进程发送了三条连续的报文；</li>
@@ -775,7 +775,7 @@
 <p>因为是匿名的，所以只能通过继承的方式将 socket 对传递给子进程，所以只能用于父子进程间或拥有同一父进程的子进程之间进行通信；</p>
 </li>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190019/socketpair.c">socketpair.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何 socketpair() 建立的 socket 对进行进程间通信；</p>
+<p><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190019/socketpair.c">socketpair.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何 socketpair() 建立的 socket 对进行进程间通信；</p>
 <ul>
 <li>在父进程中建立一个 socket 对；</li>
 <li>建立了两个子进程，第一个是服务端进程，第二个是客户端进程，socket 对通过继承传到子进程；</li>
@@ -808,6 +808,13 @@
 [article07]: https://blog.csdn.net/whowin/article/details/135015196
 [article08]: https://blog.csdn.net/whowin/article/details/135074991
 [article09]: https://blog.csdn.net/whowin/article/details/135143545
+-->
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/3395170c306ff90363229182e7f90cd0.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/4ea570bc6c26497171b4ae18fb41fa20.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/ca1ada43724070e550251a2461e232ef.png
+[img04]: https://img-blog.csdnimg.cn/img_convert/6194333eb95d75467518613c52e156a9.png
+[img05]: https://img-blog.csdnimg.cn/img_convert/ff00c3de0ff09fb62bfc482d5050e0d7.png
 -->
     </div>
 

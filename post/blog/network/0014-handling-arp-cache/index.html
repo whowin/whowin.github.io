@@ -371,7 +371,7 @@
 <p>ioctl获取arp cache的记录，只能一条一条的获取，不能一下获取一个完整的arp cache，要获取一个完整的arp cache，似乎唯一的办法就是读取文件：/proc/net/arp，至少我还没有找到其它方法；</p>
 </li>
 <li>
-<p>在这个实例中，我们仅仅获得arp cache中的一条记录，文件名为：<a href="https://whowin.gitee.io/sourcecodes/180014/arp-get.c">arp-get.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>在这个实例中，我们仅仅获得arp cache中的一条记录，文件名为：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180014/arp-get.c">arp-get.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>编译</p>
@@ -412,7 +412,7 @@
 <p>如果你对宏str(s)和xstr(s)的用法不熟悉，可以参考<a href="https://www.includehelp.com/c/stringize-operator-in-c.aspx">《Stringizing Operator (#) in C》</a></p>
 </li>
 <li>
-<p>文件名：<a href="https://whowin.gitee.io/sourcecodes/180014/arp-get-all.c">arp-get-all.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>文件名：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180014/arp-get-all.c">arp-get-all.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>文件/proc/net/arp中有6个字段，本程序只读出了其中的3个：IP地址、设备名称和MAC地址，如果需要，可以修改程序读出全部字段；</p>
@@ -468,7 +468,7 @@
 <p>当需要添加一条动态记录时，arp_flags = ATF_COM即可，当需要添加一条静态记录时，要设置arp_flags = ATF_COM | ATF_PERM</p>
 </li>
 <li>
-<p>文件名：<a href="https://whowin.gitee.io/sourcecodes/180014/arp-set.c">arp-set.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>文件名：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180014/arp-set.c">arp-set.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>编译</p>
@@ -511,7 +511,7 @@
 <p>arp cache实际上是以[IP address]为键值的，所以，删除时只需要知道设备名称和IP地址即可；</p>
 </li>
 <li>
-<p>文件名：<a href="https://whowin.gitee.io/sourcecodes/180014/arp-del.c">arp-del.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>文件名：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180014/arp-del.c">arp-del.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>编译</p>
@@ -549,6 +549,12 @@
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
 <p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/4d71776c4b22204b03c5e2f1143f2973.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/2f32607afb6680c3c746371510c02d5e.png
+[img03]:https://img-blog.csdnimg.cn/img_convert/c8db77ee67af22366376e284a456aaac.png
+[img04]:https://img-blog.csdnimg.cn/img_convert/72e9180977a2713dc7da39f3c17949a0.png
+-->
     </div>
 
     <div class="post-copyright">

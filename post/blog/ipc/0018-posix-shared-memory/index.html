@@ -564,7 +564,7 @@
 <p>munmap() 调用成功时返回 0，失败时返回 -1，errno 中为错误代码，注意：当地址范围内没有可以取消的映射时，munmap() 不会返回 -1。</p>
 </li>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190018/map-offset.c">map-offset.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何映射共享内存的一部分；</p>
+<p><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190018/map-offset.c">map-offset.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何映射共享内存的一部分；</p>
 <ul>
 <li>该程序使用 <code>getpagesize()</code> 获取内存页的 PAGESIZE；</li>
 <li>建立一个长度达到两个 PAGESIZE 的共享内存对象；</li>
@@ -623,7 +623,7 @@
 <p>一个进程退出时，Linux 会回收该进程的资源，包括打开的文件描述符和映射，所以理论上说，程序中不用显式地取消映射和关闭文件描述符，当进程退出时会自动完成这些事，但显式地取消映射和关闭文件描述符是程序员良好编程习惯的具体体现；</p>
 </li>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190018/shm-unlink.c">shm-unlink.c</a>(<strong>点击文件名下载源程序</strong>)演示了在使用 <code>shm_unlink()</code> 删除了共享内存对象后，已经存在的映射仍然可以使用的情形；</p>
+<p><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190018/shm-unlink.c">shm-unlink.c</a>(<strong>点击文件名下载源程序</strong>)演示了在使用 <code>shm_unlink()</code> 删除了共享内存对象后，已经存在的映射仍然可以使用的情形；</p>
 <ul>
 <li>该程序在主进程中建立了一个共享内存对象和一个信号量；</li>
 <li>主进程建立了一个子进程，子进程中打开共享内存对象并进行了映射，映射完成后通过信号量通知主进程；</li>
@@ -653,7 +653,7 @@
 <p>共享内存很多情况下都是和信号量配合使用的，因为共享内存的写操作是互斥的，否则会产生混乱；</p>
 </li>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190018/pizzeria.c">pizzeria.c</a>(<strong>点击文件名下载源程序</strong>)模拟了一个披萨餐厅里厨师制作披萨和服务员端给顾客的过程；</p>
+<p><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190018/pizzeria.c">pizzeria.c</a>(<strong>点击文件名下载源程序</strong>)模拟了一个披萨餐厅里厨师制作披萨和服务员端给顾客的过程；</p>
 </li>
 <li>
 <p>模拟的情景描述如下：</p>
@@ -738,6 +738,11 @@
 [article06]: https://blog.csdn.net/whowin/article/details/134939609
 [article07]: https://blog.csdn.net/whowin/article/details/135015196
 [article08]: https://blog.csdn.net/whowin/article/details/135074991
+-->
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/8fb23733955eafd0e2b42a4d0e0487ab.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/fbb35cc00f9e4405c1d41377a97c0adc.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/dab17d8e85a6c6dcbd41ea23919dba08.gif
 -->
     </div>
 

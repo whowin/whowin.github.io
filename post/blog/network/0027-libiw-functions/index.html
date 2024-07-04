@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>libiw中的函数说明 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，在网络专栏的文章中，有两篇是关于wfi编程的文章，其中对无线网卡的操作都是通过ioctl()完成的，显得有些繁琐和晦涩，但其实WE(Wireless Extensions)有一个简单的库libiw，这个库的实现也是使用ioctl()，但是经过封装后，会使wifi编程变得容易一些，本文为一篇资料类的文章，主要描述libiw中API的调用方法。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/network/0027-libiw-functions/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="libiw中的函数说明" />
+<meta property="og:description" content="打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，在网络专栏的文章中，有两篇是关于wfi编程的文章，其中对无线网卡的操作都是通过ioctl()完成的，显得有些繁琐和晦涩，但其实WE(Wireless Extensions)有一个简单的库libiw，这个库的实现也是使用ioctl()，但是经过封装后，会使wifi编程变得容易一些，本文为一篇资料类的文章，主要描述libiw中API的调用方法。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/network/0027-libiw-functions/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2024-04-13T16:43:29+08:00" />
+<meta property="article:modified_time" content="2024-04-13T16:43:29+08:00" />
+
+<meta itemprop="name" content="libiw中的函数说明">
+<meta itemprop="description" content="打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，在网络专栏的文章中，有两篇是关于wfi编程的文章，其中对无线网卡的操作都是通过ioctl()完成的，显得有些繁琐和晦涩，但其实WE(Wireless Extensions)有一个简单的库libiw，这个库的实现也是使用ioctl()，但是经过封装后，会使wifi编程变得容易一些，本文为一篇资料类的文章，主要描述libiw中API的调用方法。"><meta itemprop="datePublished" content="2024-04-13T16:43:29+08:00" />
+<meta itemprop="dateModified" content="2024-04-13T16:43:29+08:00" />
+<meta itemprop="wordCount" content="9970">
+<meta itemprop="keywords" content="Linux,网络编程,802.11,wifi,无线网络,ioctl," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="libiw中的函数说明"/>
+<meta name="twitter:description" content="打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，在网络专栏的文章中，有两篇是关于wfi编程的文章，其中对无线网卡的操作都是通过ioctl()完成的，显得有些繁琐和晦涩，但其实WE(Wireless Extensions)有一个简单的库libiw，这个库的实现也是使用ioctl()，但是经过封装后，会使wifi编程变得容易一些，本文为一篇资料类的文章，主要描述libiw中API的调用方法。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">libiw中的函数说明</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2024-04-13 </span>
+        <div class="post-category">
+            <a href="/categories/linux/"> Linux </a>
+            <a href="/categories/c-language/"> C Language </a>
+            <a href="/categories/network/"> Network </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-前言">1 前言</a></li>
+        <li><a href="#2-库函数列表共计-52-个">2. 库函数列表(共计 52 个)</a></li>
+        <li><a href="#3-socket-subroutines2个函数">3 SOCKET SUBROUTINES(2个函数)</a></li>
+        <li><a href="#4-wireless-subroutines6个函数">4 WIRELESS SUBROUTINES(6个函数)</a></li>
+        <li><a href="#5-protocol-subroutines1个函数">5 PROTOCOL SUBROUTINES(1个函数)</a></li>
+        <li><a href="#6-essid-subroutines2个函数">6 ESSID SUBROUTINES(2个函数)</a></li>
+        <li><a href="#7-frequency-subroutines7个函数">7 FREQUENCY SUBROUTINES(7个函数)</a></li>
+        <li><a href="#8-power-subroutines3个函数">8 POWER SUBROUTINES(3个函数)</a></li>
+        <li><a href="#9-statistics-subroutines2个函数">9 STATISTICS SUBROUTINES(2个函数)</a></li>
+        <li><a href="#10-encoding-subroutines3个函数">10 ENCODING SUBROUTINES(3个函数)</a></li>
+        <li><a href="#11-power-management-subroutines2个函数">11 POWER MANAGEMENT SUBROUTINES(2个函数)</a></li>
+        <li><a href="#12-retry-limitlifetime-subroutines1个函数">12 RETRY LIMIT/LIFETIME SUBROUTINES(1个函数)</a></li>
+        <li><a href="#13-time-subroutines1个函数">13 TIME SUBROUTINES(1个函数)</a></li>
+        <li><a href="#14-address-subroutines9个函数">14 ADDRESS SUBROUTINES(9个函数)</a></li>
+        <li><a href="#15-misc-subroutines1个函数">15 MISC SUBROUTINES(1个函数)</a></li>
+        <li><a href="#16-event-subroutines2个函数">16 EVENT SUBROUTINES(2个函数)</a></li>
+        <li><a href="#7-scanning-subroutines2个函数">7 SCANNING SUBROUTINES(2个函数)</a></li>
+        <li><a href="#8-内联函数8个函数">8 内联函数(8个函数)</a></li>
+        <li><a href="#欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，在网络专栏的文章中，有两篇是关于wfi编程的文章，其中对无线网卡的操作都是通过ioctl()完成的，显得有些繁琐和晦涩，但其实WE(Wireless Extensions)有一个简单的库libiw，这个库的实现也是使用ioctl()，但是经过封装后，会使wifi编程变得容易一些，本文为一篇资料类的文章，主要描述libiw中API的调用方法。</p>
+<h2 id="1-前言">1 前言</h2>
+<ul>
+<li>
+<p>在大多数以 Linux 内核为基础的操作系统中，都是包含 WE(Wireless Extensions) 的，WE 实际就是一组在用户空间操作无线网卡驱动程序的一组 API，库 libiw 是对 WE 的一个封装；</p>
+</li>
+<li>
+<p>尽管库 libiw 可以给 wifi 编程带来一定的便利，但其实这是一个已经过时的库，这个库的最后更新日期是 2009 年，尽管如此，现在的绝大多数无线网卡驱动程序仍然支持 WE，所以我们仍然可以使用 libiw 进行 wifi 编程；</p>
+</li>
+<li>
+<p>一些常用的 wifi 工具软件是使用 WE 实现的，比如：iwlist、iwconfig 等，由此也可以看出 WE 在 wifi 编程中仍然占有很重要的位置；</p>
+</li>
+<li>
+<p>WE 的基本实现是使用 ioctl()，前面的两篇文章 <a href="https://blog.csdn.net/whowin/article/details/131504380">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a> 和 <a href="https://blog.csdn.net/whowin/article/details/137711398">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a> 都是使用 ioctl() 实现的；</p>
+</li>
+<li>
+<p>libiw 是对 WE 的一个封装，使编程者不必直接面对 ioctl() 中复杂的调用方法和返回数据，可以给编程带来一些便利；</p>
+</li>
+<li>
+<p>之所以要写这样一份资料类的文章，是因为完整的 libiw 中 API 调用方法的资料几乎没有，libiw API 的使用方法几乎只能通过阅读源码来学习，很不方便；</p>
+</li>
+<li>
+<p>本文是通过阅读 libiw 的源码 <code>iwlib.c</code> 和 <code>iwlib.h</code> 以及一些 wifi 工具软件的源码总结而成；</p>
+</li>
+<li>
+<p>项目 <a href="https://github.com/HewlettPackard/wireless-tools">Wireless Tools</a> 中的 <code>iwlib.c</code> 和 <code>iwlib.h</code> 组成了 libiw</p>
+</li>
+<li>
+<p>克隆项目：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">git clone https://github.com/HewlettPackard/wireless-tools
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>编译静态库 libiw.so.29</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Os -W -Wall -Wstrict-prototypes -Wmissing-prototypes -Wshadow -Wpointer-arith -Wcast-qual -Winline -I. -MMD -fPIC -c -o iwlib.so iwlib.c
+</span></span><span class="line"><span class="cl">gcc -shared -o libiw.so.29 -Wl,-soname,libiw.so.29  -lm -lc iwlib.so
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>编译静态库 libiw.a</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">rm -f libiw.a
+</span></span><span class="line"><span class="cl">ar cru libiw.a iwlib.so
+</span></span><span class="line"><span class="cl">ranlib libiw.a
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在 ubuntu 上，要使用 libiw 需要单独安装，安装方法非常容易：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt update
+</span></span><span class="line"><span class="cl">sudo apt install libiw-dev
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>要说明的是，使用 apt 安装的 libiw，看到的动态链接库为 <code>libiw.so.30</code>，但是使用这个项目的开源版本编译出来的动态链接库为 <code>libiw.so.29</code>，版本略有不同，从 <code>iwlib.h</code> 看，<code>libiw.so.30</code> 更新于 2009 年，而开源项目的源代码更新于 2007 年，二者还是有一些差距的；</p>
+</li>
+<li>
+<p>从 <code>libiw.h</code> 看，<code>libiw.so.30</code> 中包含了一些 <code>libiw.so.29</code> 中没有的函数，但总体看，区别不是很大。</p>
+</li>
+</ul>
+<h2 id="2-库函数列表共计-52-个">2. 库函数列表(共计 52 个)</h2>
+<ul>
+<li>
+<p><strong>SOCKET SUBROUTINES(2 个)</strong></p>
+<ol>
+<li><code>int iw_sockets_open(void);</code></li>
+<li><code>void iw_enum_devices(int skfd, iw_enum_handler fn, char *args[], int count);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>WIRELESS SUBROUTINES(6个)</strong></p>
+<ol>
+<li><code>int iw_get_kernel_we_version(void);</code></li>
+<li><code>int iw_print_version_info(const char *toolname);</code></li>
+<li><code>int iw_get_range_info(int skfd, const char *ifname, iwrange *range);</code></li>
+<li><code>int iw_get_priv_info(int skfd, const char *ifname, iwprivargs **    ppriv);</code></li>
+<li><code>int iw_get_basic_config(int skfd, const char *ifname, wireless_config *info);</code></li>
+<li><code>int iw_set_basic_config(int skfd, const char *ifname, wireless_config *info);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>PROTOCOL SUBROUTINES(1个)</strong></p>
+<ol>
+<li><code>int iw_protocol_compare(const char *protocol1, const char *protocol2);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>ESSID SUBROUTINES(2个)</strong></p>
+<ol>
+<li><code>void iw_essid_escape(char *dest, const char *src, const int slen);</code></li>
+<li><code>int iw_essid_unescape(char *dest, const char *src);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>FREQUENCY SUBROUTINES(7个)</strong></p>
+<ol>
+<li><code>void iw_float2freq(double in, iwfreq *out);</code></li>
+<li><code>double iw_freq2float(const iwfreq *in);</code></li>
+<li><code>void iw_print_freq_value(char *buffer, int buflen, double freq);</code></li>
+<li><code>void    iw_print_freq(char *buffer, int buflen, double freq, int channel, int freq_flags);</code></li>
+<li><code>int iw_freq_to_channel(double freq, const struct iw_range *range);</code></li>
+<li><code>int iw_channel_to_freq(int channel, double *pfreq, const struct iw_range *range);</code></li>
+<li><code>void iw_print_bitrate(char *buffer, int buflen, int bitrate);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>POWER SUBROUTINES(3个)</strong></p>
+<ol>
+<li><code>int iw_dbm2mwatt(int in);</code></li>
+<li><code>int iw_mwatt2dbm(int in);</code></li>
+<li><code>void iw_print_txpower(char *buffer, int buflen, struct iw_param *txpower);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>STATISTICS SUBROUTINES(2个)</strong></p>
+<ol>
+<li><code>int iw_get_stats(int skfd, const char *ifname, iwstats *stats, const iwrange *range, int has_range);</code></li>
+<li><code>void iw_print_stats(char *buffer, int buflen, const iwqual *qual, const iwrange *range, int has_range);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>ENCODING SUBROUTINES(3个)</strong></p>
+<ol>
+<li><code>void iw_print_key(char *buffer, int buflen, const unsigned char *key, int key_size, int key_flags);</code></li>
+<li><code>int iw_in_key(const char *input, unsigned char *key);</code></li>
+<li><code>int iw_in_key_full(int skfd, const char *ifname, const char *input, unsigned char *key, __u16 *flags);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>POWER MANAGEMENT SUBROUTINES(2个)</strong></p>
+<ol>
+<li><code>void iw_print_pm_value(char *buffer, int buflen, int value, int flags, int we_version);</code></li>
+<li><code>void iw_print_pm_mode(char *buffer, int buflen, int flags);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>RETRY LIMIT/LIFETIME SUBROUTINES(1个)</strong></p>
+<ol>
+<li><code>void iw_print_retry_value(char *buffer, int buflen, int value, int flags, int we_version);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>TIME SUBROUTINES(1个)</strong></p>
+<ol>
+<li><code>void iw_print_timeval(char *buffer, int buflen, const struct timeval *time, const struct timezone *tz);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>ADDRESS SUBROUTINES(9个)</strong></p>
+<ol>
+<li><code>int iw_check_mac_addr_type(int skfd, const char *ifname);</code></li>
+<li><code>int iw_check_if_addr_type(int skfd, const char *ifname);</code></li>
+<li><code>char *iw_mac_ntop(const unsigned char *mac, int maclen, char *buf, int buflen);</code></li>
+<li><code>void iw_ether_ntop(const struct ether_addr *eth, char *buf);</code></li>
+<li><code>char *iw_sawap_ntop(const struct sockaddr *sap, char *buf);</code></li>
+<li><code>int iw_mac_aton(const char *orig, unsigned char *mac, int macmax);</code></li>
+<li><code>int iw_ether_aton(const char *bufp, struct ether_addr *eth);</code></li>
+<li><code>int iw_in_inet(char *bufp, struct sockaddr *sap);</code></li>
+<li><code>int iw_in_addr(int skfd, const char *ifname, char *bufp, struct sockaddr *sap);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>MISC SUBROUTINES(1个)</strong></p>
+<ol>
+<li><code>int iw_get_priv_size(int args);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>EVENT SUBROUTINES(2个)</strong></p>
+<ol>
+<li><code>void iw_init_event_stream(struct stream_descr *stream, char *data, int len);</code></li>
+<li><code>int iw_extract_event_stream(struct stream_descr *stream, struct iw_event *iwe, int we_version);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>SCANNING SUBROUTINES(2个)</strong></p>
+<ol>
+<li><code>int iw_process_scan(int skfd, char *ifname, int we_version, wireless_scan_head *context);</code></li>
+<li><code>int iw_scan(int skfd, char *ifname, int we_version, wireless_scan_head *context);</code></li>
+</ol>
+</li>
+<li>
+<p><strong>内联函数(8个)</strong></p>
+<ol>
+<li><code>static inline int iw_set_ext(int skfd, const char *ifname, int request, struct iwreq *pwrq);</code></li>
+<li><code>static inline int iw_get_ext(int skfd, const char *ifname, int request, struct iwreq *pwrq);</code></li>
+<li><code>static inline void iw_sockets_close(int skfd);</code></li>
+<li><code>static inline char *iw_saether_ntop(const struct sockaddr *sap, char* bufp);</code></li>
+<li><code>static inline int iw_saether_aton(const char *bufp, struct sockaddr *sap);</code></li>
+<li><code>static inline void iw_broad_ether(struct sockaddr *sap);</code></li>
+<li><code>static inline void iw_null_ether(struct sockaddr *sap);</code></li>
+<li><code>static inline int iw_ether_cmp(const struct ether_addr* eth1, const struct ether_addr* eth2);</code></li>
+</ol>
+</li>
+</ul>
+<h2 id="3-socket-subroutines2个函数">3 SOCKET SUBROUTINES(2个函数)</h2>
+<ul>
+<li><code>int iw_sockets_open(void);</code>
+<ul>
+<li>功能：打开一个 socket</li>
+<li>返回：成功时，返回一个打开的 socket；失败时，返回 <code>-1</code></li>
+<li>说明：按顺序尝试使用不同的协议族打开 socket，直至成功或全部失败，协议族顺序为：<code>AF_INET、AF_IPX、AF_AX25、AF_APPLETALK</code>；99% 的情况下可以使用 AF_INET 协议族打开 socket。</li>
+</ul>
+</li>
+<li><code>void iw_enum_devices(int skfd, iw_enum_handler fn, char *args[], int count);</code>
+<ul>
+<li>功能：枚举所有无线接口设备</li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 <code>iw_sockets_open()</code> 打开的 socket</li>
+<li>fn 为一个函数的指针，每找到一个无线接口，都会调用 fn，iw_enum_handler 的定义如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">typedef int (*iw_enum_handler)(int skfd, char *ifname, char *args[], int count);
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>由此可见 fn() 返回的是一个 int，其调用参数有 4 个，skfd 为一个打开的 socket，ifname 为接口名称，args[] 为传递给 fn() 的自定义参数，count 为 args[] 中的参数数量；</p>
+</blockquote>
+</li>
+<li>argc[] 和 count 为传递给 fn() 的自定义参数，count 表示 args[] 参数的数量；</li>
+</ul>
+</li>
+<li>可以使用 fn() 打印接口信息等；</li>
+<li>说明：这个函数的实现是首先读取文件 <code>/proc/net/wireless</code> 获取无线网络接口名称，然后调用 *fn()，并将获得的设备接口名称自动填到 *fn() 第二个参数 ifname 上。</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-wireless-subroutines6个函数">4 WIRELESS SUBROUTINES(6个函数)</h2>
+<ul>
+<li><code>int iw_get_kernel_we_version(void);</code>
+<ul>
+<li>功能：获取内核中 WE(Wireless Extension) 的版本号</li>
+<li>返回：版本号</li>
+<li>说明：这个函数的实现是从文件 <code>/proc/net/wireless</code> 中提取出 WE 的版本号。</li>
+</ul>
+</li>
+<li><code>int iw_print_version_info(const char *toolname);</code>
+<ul>
+<li>功能：打印 Wireless Tools 所使用的 WE 的版本号，Wireless Tools 的版本号，Wireless Tools 的版本号其实就是常数 WT_VERSION，以及接口支持的 WE 版本号</li>
+<li>参数：toolsname - Wireless Tools 名称，从源码看，这个参数可以是任意字符串，或者为 NULL</li>
+<li>返回：成功返回 0，如果打开 socket 失败则返回 -1</li>
+</ul>
+</li>
+<li><code>int iw_get_range_info(int skfd, const char *ifname, iwrange *range);</code>
+<ul>
+<li>功能：从驱动程序中获取 range 信息</li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 iw_sockets_open() 打开的 socket</li>
+<li>ifname 为网络接口名称</li>
+<li>iwrange 就是 <code>struct iw_range</code>，获取的信息将放在 range 指向的 <code>struct iw_range</code> 中，<code>struct iw_range</code> 定义在 <code>wireless.h</code> 中；</li>
+</ul>
+</li>
+<li>返回：成功返回 0，range 中存放获取的信息，失败则返回 -1</li>
+<li>说明：该函数使用 <code>ioctl()</code> 的 SIOCGIWRANGE 命令获取 range 信息，<code>struct iw_range</code> 结构比较庞大，不同的驱动程序可以返回的信息也不同。</li>
+</ul>
+</li>
+<li><code>int iw_get_priv_info(int skfd, const char *ifname, iwprivargs **ppriv);</code>
+<ul>
+<li>功能：获取有关驱动程序支持哪些私有 ioctl 的信息</li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 <code>iw_sockets_open()</code> 打开的 socket</li>
+<li>ifname 为网络接口名称</li>
+<li>iwprivargs 就是 <code>struct iw_priv_args</code>，该结构定义在 wireless.h 中，如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_priv_args</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u32</span>       <span class="n">cmd</span><span class="p">;</span>            <span class="cm">/* Number of the ioctl to issue */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span>       <span class="n">set_args</span><span class="p">;</span>       <span class="cm">/* Type and number of args */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span>       <span class="n">get_args</span><span class="p">;</span>       <span class="cm">/* Type and number of args */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span>        <span class="n">name</span><span class="p">[</span><span class="n">IFNAMSIZ</span><span class="p">];</span> <span class="cm">/* Name of the extension */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>ppriv 为一个数组指针，成功返回后将存放该接口支持的 ioctl</li>
+</ul>
+</li>
+<li>返回：调用成功返回支持的 ioctl 的数量，失败返回 -1；</li>
+<li>说明：该函数会动态为 ppriv 参数申请内存，所以使用完毕一定要记得 <code>free()</code>，源码中提示，即便返回的数据长度为 0，仍然要调用 <code>free(*ppriv)</code>。</li>
+</ul>
+</li>
+<li><code>int iw_get_basic_config(int skfd, const char *ifname, wireless_config *info);</code>
+<ul>
+<li>功能：从设备驱动程序获取必要的(基本的)无线配置</li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 iw_sockets_open() 打开的 socket</li>
+<li>ifname 为网络接口名称</li>
+<li>wireless_config 就是 <code>struct wireless_config</code>，定义如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">wireless_config</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span>        <span class="n">name</span><span class="p">[</span><span class="n">IFNAMSIZ</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>     <span class="cm">/* Wireless/protocol name */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>         <span class="n">has_nwid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">iwparam</span>     <span class="n">nwid</span><span class="p">;</span>                   <span class="cm">/* Network ID */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>         <span class="n">has_freq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">double</span>      <span class="n">freq</span><span class="p">;</span>                   <span class="cm">/* Frequency/channel */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>         <span class="n">freq_flags</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>         <span class="n">has_key</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span>    <span class="n">key</span><span class="p">[</span><span class="n">IW_ENCODING_TOKEN_MAX</span><span class="p">];</span>    <span class="cm">/* Encoding key used */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>         <span class="n">key_size</span><span class="p">;</span>               <span class="cm">/* Number of bytes */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>         <span class="n">key_flags</span><span class="p">;</span>              <span class="cm">/* Various flags */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>         <span class="n">has_essid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>         <span class="n">essid_on</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span>        <span class="n">essid</span><span class="p">[</span><span class="n">IW_ESSID_MAX_SIZE</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>       <span class="cm">/* ESSID (extended network) */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>         <span class="n">has_mode</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>         <span class="n">mode</span><span class="p">;</span>                   <span class="cm">/* Operation mode */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">wireless_config</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>info 是一个指向 <code>struct wireless_config</code> 的指针，调用成功将存放获得的无线配置</li>
+</ul>
+</li>
+<li>返回：成功返回 0，info 中存放着获得的无线配置，失败返回 -1</li>
+<li>说明：该函数会调用 ioctl() 的如下命令已获得无线配置信息：SIOCGIWNAME、SIOCGIWNWID、SIOCGIWFREQ、SIOCGIWENCODE、SIOCGIWESSID、SIOCGIWMODE</li>
+</ul>
+</li>
+<li><code>int iw_set_basic_config(int skfd, const char *ifname, wireless_config *info);</code>
+<ul>
+<li>功能：在设备驱动程序中设置必要的(基本的)无线配置</li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 <code>iw_sockets_open() </code>打开的 socket</li>
+<li>ifname 为网络接口名称</li>
+<li>info 说明同上，为一个 <code>struct wireless_config</code> 结构指针；</li>
+</ul>
+</li>
+<li>返回：全部成功返回 0，有一项或多项失败返回 -1；</li>
+<li>说明：该函数会调用 <code>ioctl()</code> 的如下命令已设置无线配置信息：SIOCSGIWNAME、SIOCSIWMODE、SIOCSIWFREQ、SIOCSIWENCODE、SIOCSIWNWID、SIOCSIWESSID</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-protocol-subroutines1个函数">5 PROTOCOL SUBROUTINES(1个函数)</h2>
+<ul>
+<li><code>int iw_protocol_compare(const char *protocol1, const char *protocol2);</code>
+<ul>
+<li>功能：比较协议标识符</li>
+<li>参数：
+<ul>
+<li>protocol1 为第一个协议(字符串)</li>
+<li>protecol2 为第二个协议(字符串)</li>
+</ul>
+</li>
+<li>返回：如果协议兼容则返回 1，否则返回 0</li>
+<li>说明：如果 protocol1 和 protocol2 完全一样，返回 1；如果 protocol1 和 protocol2 的起始字符串都是 &ldquo;IEEE 802.11&rdquo;，则 protocol1 和 protocol2 后面字符串中只要含有 &ldquo;Dbg&rdquo; 之中任一个字符(protocol1 和 protocol2 中可以不一样)，则返回 1，或者 protocol1 和 protocol2 中均含有 &ldquo;a&rdquo;(5g)，也将返回 1；其它情况返回 0。</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-essid-subroutines2个函数">6 ESSID SUBROUTINES(2个函数)</h2>
+<ul>
+<li><code>void iw_essid_escape(char *dest, const char *src, const int slen);</code></li>
+<li><code>int iw_essid_unescape(char *dest, const char *src);</code></li>
+<li>上面两个函数在 libiw.so.29 中没有，仅存在在 libiw.so.30 中。</li>
+</ul>
+<h2 id="7-frequency-subroutines7个函数">7 FREQUENCY SUBROUTINES(7个函数)</h2>
+<ul>
+<li>
+<p><code>void iw_float2freq(double in, iwfreq *out);</code></p>
+<ul>
+<li>功能：将浮点数转换为频率，内核是不好处理浮点数的，所以需要将一个浮点数转换成一种内部格式(<code>struct iw_freq</code>)传递给内核</li>
+<li>参数：
+<ul>
+<li>in 为浮点数频率</li>
+<li>iwfreq 就是 <code>struct iw_freq</code>，是一个内核可以接受的频率格式，定义如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_freq</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__s32</span> <span class="n">m</span><span class="p">;</span>      <span class="cm">/* Mantissa */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__s16</span> <span class="n">e</span><span class="p">;</span>      <span class="cm">/* Exponent */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>  <span class="n">i</span><span class="p">;</span>      <span class="cm">/* List index (when in range struct) */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>  <span class="n">flags</span><span class="p">;</span>  <span class="cm">/* Flags (fixed/auto) */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>in = m x 10<sup>e</sup></li>
+</ul>
+</li>
+<li>返回：转换结果存放在 out 中；</li>
+</ul>
+</li>
+<li>
+<p><code>double iw_freq2float(const iwfreq *in);</code></p>
+<ul>
+<li>功能：将内部格式(<code>struct iw_freq</code>)表示的频率转换为浮点数</li>
+<li>参数：
+<ul>
+<li>in 为使用 <code>struct iw_freq</code> 表示的频率</li>
+</ul>
+</li>
+<li>返回：返回以浮点数表示的频率</li>
+</ul>
+</li>
+<li>
+<p><code>void iw_print_freq_value(char *buffer, int buflen, double freq);</code></p>
+<ul>
+<li>功能：将频率值转换成适当单位(GHz、MHz、kHz)的字符串</li>
+<li>参数：
+<ul>
+<li>buffer 存放转换完成的字符串的缓冲区</li>
+<li>buflen 为 buffer 的长度</li>
+<li>freq 频率值</li>
+</ul>
+</li>
+<li>返回：转换好的字符串存放在 buffer 中</li>
+</ul>
+</li>
+<li>
+<p><code>void iw_print_freq(char *buffer, int buflen, double freq, int channel, int freq_flags);</code></p>
+<ul>
+<li>功能：将频率值转换成适当单位(GHz、MHz、kHz)的字符串，并分离出工作信道(channel)</li>
+<li>说明：当使用 ioctl() 获取工作频率时，如果返回值 <code>&lt; 1000</code> 则该值为工作信道(channel)，否则为工作频率；当 <code>freq &lt; 1000</code> 时，该函数转换成类似 <code>Channel:5</code> 这样的字符串，否则，转换成类似 <code>Frequency:5.265 GHz</code> 这样的字符串；</li>
+<li>参数：
+<ul>
+<li>buffer 存放转换完成的字符串的缓冲区</li>
+<li>buflen 为 buffer 的长度</li>
+<li>freq 频率值</li>
+<li>当 <code>channel &gt;= 0</code> 时，转换的字符串类似 <code>Frequency:5.265 GHz (Channel 3)</code> 这样的字符串；</li>
+<li>当 <code>freq_flags = 1</code> 时，转换出的字符串类似 <code>Frequency=5.265 GHz</code>，否则为 <code>Frequency:5.265 GHz</code></li>
+</ul>
+</li>
+<li>返回：转换好的字符串存放在 buffer 中</li>
+</ul>
+</li>
+<li>
+<p><code>int iw_freq_to_channel(double freq, const struct iw_range *range);</code></p>
+<ul>
+<li>功能：得到工作频率对应的工作信道(channel)</li>
+<li>参数：
+<ul>
+<li>freq 为工作频率值</li>
+<li>range 从接口驱动程序中获取的 range</li>
+</ul>
+</li>
+<li>返回：<code>&gt;=0</code> 时表示工作频率所在的工作信道，<code>-2</code> 表示在 range 中没有找到指定的频率 freq，<code>-1</code> 表示 <code>freq &lt; 1000</code></li>
+<li>说明：<code>struct iw_range</code> 定义在 wireless.h 中，其中有一个 <code>struct iw_freq</code> 的结构数组，该函数将从这个结构数组(<code>struct iw_freq).freq</code>)中查找与 freq 一致的频率，找到后返回 <code>(struct iw_freq).i</code>，否则返回 -2，当参数 <code>freq &lt; 1000</code> 时，返回 -1</li>
+</ul>
+</li>
+<li>
+<p><code>int iw_channel_to_freq(int channel, double *pfreq, const struct iw_range *range);</code></p>
+<ul>
+<li>功能：将工作信道转换成工作频率</li>
+<li>参数：
+<ul>
+<li>channel 为工作信道</li>
+<li>pfreq 为存放频率的指针，转换好的频率将存放在这里</li>
+<li>range 从接口驱动程序中获取的 range</li>
+</ul>
+</li>
+<li>返回：转换成功返回 channel，否则返回 <code>&lt;0</code> 的值</li>
+<li>说明：参考前面 <code>struct iw_freq</code> 的定义，<code>struct iw_range</code> 定义在 wireless.h 中，从 range 中的 <code>struct iw_freq</code> 结构数组中的 <code>(struct iw_freq).i</code> 中查找与 channel 一致的项，并将其对应的 <code>(struct iw_freq).freq</code> 存放到 pfreq 中；</li>
+</ul>
+</li>
+<li>
+<p><code>void iw_print_bitrate(char *buffer, int buflen, int bitrate);</code></p>
+<ul>
+<li>功能：将传输速率(bitrate)以适当的单位(<code>Gb/s、Mb/s、kb/s</code>)表示的字符串</li>
+<li>参数：
+<ul>
+<li>buffer 为存放转换结果字符串的缓冲区</li>
+<li>buflen 为 buffer 的长度</li>
+<li>bitrate 为要转换的传输速率</li>
+</ul>
+</li>
+<li>返回：转换好的字符串存放在 buffer 中</li>
+<li>说明：当速率 &gt;10<sup>9</sup> 时，单位为 <code>Gb/s</code>，当速率 &gt;10<sup>6</sup> 时，单位为 <code>Mb/s</code>，当速率 &gt;1000 时，单位为 <code>kb/s</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="8-power-subroutines3个函数">8 POWER SUBROUTINES(3个函数)</h2>
+<ul>
+<li>
+<p><code>int iw_dbm2mwatt(int in);</code></p>
+<ul>
+<li>功能：将 dBm 值转换为毫瓦值</li>
+<li>参数：
+<ul>
+<li>in 为功率的 dBm 值</li>
+</ul>
+</li>
+<li>返回：转换后的毫瓦值</li>
+</ul>
+</li>
+<li>
+<p><code>int iw_mwatt2dbm(int in);</code></p>
+<ul>
+<li>功能：将毫瓦值转换为 dBm 值</li>
+<li>参数：
+<ul>
+<li>in 为以毫瓦表示的功率值</li>
+</ul>
+</li>
+<li>返回：转换后的 dBm 值</li>
+</ul>
+</li>
+<li>
+<p><code>void iw_print_txpower(char *buffer, int buflen, struct iw_param *txpower);</code></p>
+<ul>
+<li>功能：txpower 表示发射功率，本函数对 txpower 进行适当的转换，转换结果以字符串输出</li>
+<li>参数：
+<ul>
+<li>buffer 为存放转换结果字符串的缓冲区</li>
+<li>buflen 为 buffer 的长度</li>
+<li><code>struct iw_param</code> 时 WE 下的一个通用结构，定义在 wireless.h 中，具体如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_param</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__s32</span>       <span class="n">value</span><span class="p">;</span>      <span class="cm">/* The value of the parameter itself */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>        <span class="n">fixed</span><span class="p">;</span>      <span class="cm">/* Hardware should not use auto select */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>        <span class="n">disabled</span><span class="p">;</span>   <span class="cm">/* Disable the feature */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span>       <span class="n">flags</span><span class="p">;</span>      <span class="cm">/* Various specifc flags (if any) */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li><code>txpower-&gt;value</code> 为发射功率值，当 <code>txpower-&gt;flags</code> 的 bit 0 为 1 时，value 的单位为毫瓦(否则为 dBm)，当 bit 1 为 1 时表示 value 中的值是一个相对值，没有具体单位</li>
+</ul>
+</li>
+<li>返回：转换结果存放在 buffer 中</li>
+</ul>
+</li>
+</ul>
+<h2 id="9-statistics-subroutines2个函数">9 STATISTICS SUBROUTINES(2个函数)</h2>
+<ul>
+<li>
+<p><code>int iw_get_stats(int skfd, const char *ifname, iwstats *stats, const iwrange *range, int has_range);</code></p>
+<ul>
+<li>功能：读取文件 <code>/proc/net/wireless</code> 获取最新的统计数据</li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 <code>iw_sockets_open()</code> 打开的 socket</li>
+<li>ifname 为网络接口名称</li>
+<li>iwstats 就是 <code>struct iw_statistics</code>，定义在 wireless.h 中，如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_statistics</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span>               <span class="n">status</span><span class="p">;</span>     <span class="cm">/* Status - device dependent for now */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">iw_quality</span>   <span class="n">qual</span><span class="p">;</span>       <span class="cm">/* Quality of the link (instant/mean/max) */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">iw_discarded</span> <span class="n">discard</span><span class="p">;</span>    <span class="cm">/* Packet discarded counts */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">iw_missed</span>    <span class="n">miss</span><span class="p">;</span>       <span class="cm">/* Packet missed counts */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>其中：<code>struct iw_quality</code>、<code>struct iw_discarded</code> 和 <code>struct iw_missed</code> 均定义在 wireless.h 中</li>
+<li>从文件 <code>/proc/net/wireless</code> 读出的统计信息存放在 stats 指向的 <code>struct iw_statistics</code> 中</li>
+<li>has_range 为 1 表示 range 参数存在，range 参数仅用于比较 WE 的版本号，因为 WE version 11 以后才有 <code>/proc/net/wireless</code> 文件</li>
+</ul>
+</li>
+<li>返回：调用成功返回 0，stats 中存放有统计数据，调用失败返回 -1</li>
+</ul>
+</li>
+<li>
+<p><code>void iw_print_stats(char *buffer, int buflen, const iwqual *qual, const iwrange *range, int has_range);</code></p>
+<ul>
+<li>功能：获取连接统计数据，包括信号质量、信号强度和信号噪音，以字符串形式输出</li>
+<li>参数：
+<ul>
+<li>buffer 为存放转换结果字符串的缓冲区</li>
+<li>buflen 为 buffer 的长度</li>
+<li>iwqual 就是 <code>struct iw_quality</code>，定义在 wireless.h 中，如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_quality</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>    <span class="n">qual</span><span class="p">;</span>       <span class="cm">/* link quality (%retries, SNR, %missed beacons or better...) */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>    <span class="n">level</span><span class="p">;</span>      <span class="cm">/* signal level (dBm) */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>    <span class="n">noise</span><span class="p">;</span>      <span class="cm">/* noise level (dBm) */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u8</span>    <span class="n">updated</span><span class="p">;</span>    <span class="cm">/* Flags to know if updated */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>关于信号质量以及相关数据结构的说明，请参考文章<a href="https://blog.csdn.net/whowin/article/details/137711398">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a></li>
+<li>has_range 为 1 表示 range 参数存在，该函数中将使用 <code>range-&gt;max_qual.qual</code>、<code>range-&gt;max_qual.level</code> 和 <code>range-&gt;max_qual.noise</code></li>
+</ul>
+</li>
+<li>返回：信号质量、信号强度和信号噪音，将转换成字符串存放在 buffer 中</li>
+</ul>
+</li>
+</ul>
+<h2 id="10-encoding-subroutines3个函数">10 ENCODING SUBROUTINES(3个函数)</h2>
+<ul>
+<li>
+<p><code>void iw_print_key(char *buffer, int buflen, const unsigned char *key, int key_size, int key_flags);</code></p>
+<ul>
+<li>功能：按照一个特定的格式显示经过编码后的秘钥</li>
+<li>参数：
+<ul>
+<li>buffer 为存放转换结果字符串的缓冲区</li>
+<li>buflen 为 buffer 的长度</li>
+<li>key 为经过编码的秘钥</li>
+<li>key_size 为 key 的长度</li>
+<li>key_flags 为秘钥的标志，当 bit 8 为 1 时，表示没有秘钥</li>
+</ul>
+</li>
+<li>返回：秘钥转换成特定格式的字符串存放在 buffer中</li>
+</ul>
+</li>
+<li>
+<p><code>int iw_in_key(const char *input, unsigned char *key);</code></p>
+<ul>
+<li>功能：从命令行解析密钥</li>
+<li>参数：
+<ul>
+<li>input 为密码字符串</li>
+<li>key 为转换为以 16 进制表示的秘钥</li>
+</ul>
+</li>
+<li>返回：&gt;0 时为秘钥的长度，=0 表示没有秘钥，</li>
+<li>说明：
+<ul>
+<li>input 为一个字符串，当没有任何标志时，应该是用字符串表达的 16 进制数，比如：&ldquo;01:2A:0C:E3:&hellip;&quot;，转换完存放在 key 中是一个 8 位无符号整数数组，比如：<code>{0X01, 0X2A, 0X0C, 0XE3, ...}</code></li>
+<li>当 input 起始字符为 &ldquo;s:&rdquo; 时，表示 input 中为一个由 ASCII 字符组成的字符串，比如：&ldquo;Abc123&hellip;&quot;，转换完放在 key 中的 8 位无符号整数数组为：<code>{0X41, 0X62, 0X63, 0X31, 0X32, 0X33, ...}</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><code>int iw_in_key_full(int skfd, const char *ifname, const char *input, unsigned char *key, __u16 *flags);</code></p>
+<ul>
+<li>功能：从命令行解析密钥，当 input 起始字符为 &ldquo;l:&rdquo; 时，被认为是登录的 <code>username:password</code>，否则调用 <code>iw_in_key()</code></li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 iw_sockets_open() 打开的 socket</li>
+<li>ifname 为网络接口名称</li>
+<li>input 为密码字符串</li>
+<li>key 为转换为以 16 进制表示的秘钥</li>
+<li>flags</li>
+</ul>
+</li>
+<li>说明：skfd 和 ifname 用于获取 range，然后根据 WE 的版本号及 <code>range.encoding_login_index</code> 设置 flags</li>
+</ul>
+</li>
+</ul>
+<h2 id="11-power-management-subroutines2个函数">11 POWER MANAGEMENT SUBROUTINES(2个函数)</h2>
+<ul>
+<li>
+<p><code>void iw_print_pm_value(char *buffer, int buflen, int value, int flags, int we_version);</code></p>
+<ul>
+<li>功能：将电源管理值 value 根据 flags 的提示转换成适当的字符串存入 buffer 中</li>
+<li>参数：
+<ul>
+<li>buffer 为转换后存放字符串的缓冲区</li>
+<li>buflen 为 buffer 的长度</li>
+<li>value 为电源管理值(power management value)</li>
+<li>flags 一些标志电源管理值属性的标志，bit0-</li>
+<li>we_version 为 WE 的版本号</li>
+</ul>
+</li>
+<li>返回：buffer 中存放转换后的字符串</li>
+<li>说明：</li>
+</ul>
+</li>
+<li>
+<p><code>void iw_print_pm_mode(char *buffer, int buflen, int flags);</code></p>
+<ul>
+<li>功能：将 flags 中的电源管理方式转换成字符串存放在 buffer 中</li>
+<li>参数：
+<ul>
+<li>buffer 为转换后存放字符串的缓冲区</li>
+<li>buflen 为 buffer 的长度</li>
+<li>flags 为电源管理方式标志，bit8-11 为电源管理方式，bit8-Unicast only received，bit9-Multicast only received，bit10-All packets received，bit11-Force sending，bit12-Repeat multicasts</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="12-retry-limitlifetime-subroutines1个函数">12 RETRY LIMIT/LIFETIME SUBROUTINES(1个函数)</h2>
+<ul>
+<li><code>void iw_print_retry_value(char *buffer, int buflen, int value, int flags, int we_version);</code>
+<ul>
+<li>功能：将重试值 value 根据 flags 的提示转换成适当的字符串存入 buffer 中</li>
+<li>参数：
+<ul>
+<li>buffer 为转换后存放字符串的缓冲区</li>
+<li>buflen 为 buffer 的长度</li>
+<li>value 为重试值(retry value)</li>
+<li>flags 一些属性的标志</li>
+<li>we_version 为 WE 的版本号</li>
+</ul>
+</li>
+<li>返回：buffer 中存放转换后的字符串</li>
+</ul>
+</li>
+</ul>
+<h2 id="13-time-subroutines1个函数">13 TIME SUBROUTINES(1个函数)</h2>
+<ul>
+<li><code>void iw_print_timeval(char *buffer, int buflen, const struct timeval *time, const struct timezone *tz);</code>
+<ul>
+<li>功能：将 time 中的时间戳转换成字符串存放在 buffer 中</li>
+<li>参数：
+<ul>
+<li>buffer 为转换后存放字符串的缓冲区</li>
+<li>buflen 为 buffer 的长度</li>
+<li>time 为时间戳</li>
+<li>tz 为时间戳所在时区</li>
+</ul>
+</li>
+<li>返回：buffer 中存放转换后的字符串</li>
+</ul>
+</li>
+</ul>
+<h2 id="14-address-subroutines9个函数">14 ADDRESS SUBROUTINES(9个函数)</h2>
+<ul>
+<li>
+<p><code>int iw_check_mac_addr_type(int skfd, const char *ifname);</code></p>
+<ul>
+<li>功能：检查网络接口是否支持正确 MAC 地址类型</li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 iw_sockets_open() 打开的 socket</li>
+<li>ifname 为网络接口名称</li>
+</ul>
+</li>
+<li>返回：0 表示支持 MAC 地址，-1 表示不支持 MAC 地址</li>
+<li>说明：通过 <code>ioctl()</code> 的 SIOCGIFHWADDR 命令获取 HW 的地址类型，应该为 ARPHRD_ETHER 或者 <code>ARPHRD_IEEE80211</code></li>
+</ul>
+</li>
+<li>
+<p><code>int iw_check_if_addr_type(int skfd, const char *ifname);</code></p>
+<ul>
+<li>功能：检查网络接口是否支持正确的接口地址类型(INET)</li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 iw_sockets_open() 打开的 socket</li>
+<li>ifname 为网络接口名称</li>
+</ul>
+</li>
+<li>返回：0 表示支持接口地址类型，-1 表示不支持接口地址类型</li>
+<li>说明：通过 ioctl() 的 SIOCGIFADDR 命令获取接口地址类型，应该为 AF_INET</li>
+</ul>
+</li>
+<li>
+<p><code>char *iw_mac_ntop(const unsigned char *mac, int maclen, char *buf, int buflen);</code></p>
+<ul>
+<li>功能：以可读格式显示任意长度的 MAC 地址</li>
+<li>参数：
+<ul>
+<li>mac 为 16 进制表示的 MAC 地址</li>
+<li>maclen 为 mac 的长度</li>
+<li>buf 为 MAC 地址转换为字符串后的存储区</li>
+<li>buflen 为 buf 的有效长度</li>
+</ul>
+</li>
+<li>返回：成功返回 buf 指针，失败返回 NULL</li>
+</ul>
+</li>
+<li>
+<p><code>void iw_ether_ntop(const struct ether_addr *eth, char *buf);</code></p>
+<ul>
+<li>功能：以可读格式显示以太网地址(实际就是 MAC 地址)</li>
+<li>参数：
+<ul>
+<li><code>struct ether_addr</code> 定义在 ethernet.h 中，如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">ether_addr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">ether_addr_octet</span><span class="p">[</span><span class="n">ETH_ALEN</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">__attribute__</span> <span class="p">((</span><span class="n">__packed__</span><span class="p">));</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>其实就是一个 8 位无符号整数的数组，数组有 6 个(因为 ETH_ALEN 为 6)元素</li>
+<li>buf 转换后以字符串表示的以太网地址存放在这里</li>
+</ul>
+</li>
+<li>返回：buf 中存放着已经转换好的字符串</li>
+<li>说明：<code>iw_mac_ntop()</code> 把一个任意长度的 MAC 地址转换成字符串，其输入参数为一个 <code>unsigned char</code> 数组，<code>iw_ether_ntop()</code> 将一个长度为 6 个字符的 <code>unsigned char</code> 数组转换为字符串，输入参数为 <code>struct ether_addr</code>，两个函数本质上非常相似。</li>
+</ul>
+</li>
+<li>
+<p><code>char *iw_sawap_ntop(const struct sockaddr *sap, char *buf);</code></p>
+<ul>
+<li>功能：以可读格式显示无线接入点 socket 地址</li>
+<li>参数：
+<ul>
+<li><code>struct sockaddr</code> 定义在文件 socket.h 中，如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">sockaddr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sa_family_t</span> <span class="n">sa_family</span><span class="p">;</span>	<span class="cm">/* Common data: address family and length.  */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">sa_data</span><span class="p">[</span><span class="mi">14</span><span class="p">];</span>		<span class="cm">/* Address data.  */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>buf 转换后以字符串表示的以太网地址存放在这里</li>
+</ul>
+</li>
+<li>返回：返回 buf 指针，buf 中存储着转换结果</li>
+<li>说明：实际上就是使用 <code>iw_ether_ntop()</code> 将 socket.sa_data 中的 MAC 地址转换成字符串，这个函数仍然是把 MAC 地址转换为字符串，不过输入参数是 <code>struct sockaddr</code> 而已。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><code>iw_mac_ntop()</code>、<code>iw_ether_ntop()</code>、<code>iw_sawap_ntop()</code> 都是把 MAC 地址转换成易读的字符串形式，但各自的输入参数不同，<code>iw_mac_ntop()</code> 的输入参数是一个任意长度的二进制数组；<code>iw_ether_ntop()</code> 的输入参数是 <code>struct ether_addr</code>；iw_sawap_ntop() 的输入参数是 <code>struct sockaddr</code></p>
+</blockquote>
+<ul>
+<li>
+<p><code>int iw_mac_aton(const char *orig, unsigned char *mac, int macmax);</code></p>
+<ul>
+<li>功能：将任意长度的字符串表达的 MAC 地址，转换成二进制</li>
+<li>参数：
+<ul>
+<li>orig 为以字符串格式表达的一个 MAC 地址</li>
+<li>mac 为 MAC 地址转换为二进制后存放在这里</li>
+<li>macmax 为 mac 的最大长度</li>
+</ul>
+</li>
+<li>返回：成功则返回转换后 MAC 地址长度，失败则返回 0</li>
+</ul>
+</li>
+<li>
+<p><code>int iw_ether_aton(const char *orig, struct ether_addr *eth);</code></p>
+<ul>
+<li>功能：将一个以字符串形式表达的以太网地址转换成二进制</li>
+<li>参数：
+<ul>
+<li>orig 为以字符串格式表达的一个以太网地址</li>
+<li><code>struct ether_addr</code> 在前面有介绍，转换好的二进制以太网地址存放在 eth 中</li>
+</ul>
+</li>
+<li>返回：成功则返回以太网地址的长度，失败返回 0</li>
+<li>说明：<code>iw_mac_aton()</code> 和 <code>iw_ether_aton()</code> 都是把一个字符串表达的 MAC 地址转换成二进制形式，<code>iw_mac_aton()</code> 的输出参数是一个 <code>unsigned char</code> 数组，<code>iw_ether_aton()</code> 的输出参数是 <code>struct ether_addr</code>，<code>iw_mac_aton()</code> 是任意长度，<code>iw_ether_aton()</code> 是 6 个字符长度。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>iw_mac_aton()、iw_ether_aton()、</p>
+</blockquote>
+<ul>
+<li>
+<p><code>int iw_in_inet(char *bufp, struct sockaddr *sap);</code></p>
+<ul>
+<li>功能：将一个以字符串表达的互联网地址(域名)转换成二进制(DNS 名称、IP 地址等)</li>
+<li>参数：
+<ul>
+<li>bufp 为一个以字符串表达的互联网地址，可以是域名、IP 地址</li>
+<li>sap 存放转换结果的结构，bufp 中如果不是官方域名，将改为官方域名</li>
+</ul>
+</li>
+<li>返回：成功返回 0，失败返回 -1</li>
+<li>说明：该函数会使用 gethostbyname() 将域名(主机名)进行解析</li>
+</ul>
+</li>
+<li>
+<p><code>int iw_in_addr(int skfd, const char *ifname, char *bufp, struct sockaddr *sap);</code></p>
+<ul>
+<li>功能：将一个以字符串表达的地址转换成二进制</li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 iw_sockets_open() 打开的 socket</li>
+<li>ifname 为网络接口名称</li>
+<li>bufp 为一个用字符串格式表达的地址</li>
+<li>sap 转换为二进制后存放在这个结构中</li>
+</ul>
+</li>
+<li>返回：成功返回 0，失败返回 -1</li>
+<li>说明：bufp 中既可以是 MAC 地址，也可以是 IP 地址，该函数实际上就是用 MAC 地址生成一个 <code>struct sockaddr</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="15-misc-subroutines1个函数">15 MISC SUBROUTINES(1个函数)</h2>
+<ul>
+<li><code>int iw_get_priv_size(int args);</code>
+<ul>
+<li>功能：返回私有参数以字节为单位的最大长度</li>
+<li>参数：args 私有参数的标志，bit0-10 表示参数的数量，bit12-14 表示参数的类型</li>
+<li>返回：返回私有参数以字节为单位的最大长度</li>
+</ul>
+</li>
+</ul>
+<h2 id="16-event-subroutines2个函数">16 EVENT SUBROUTINES(2个函数)</h2>
+<ul>
+<li>
+<p><code>void iw_init_event_stream(struct stream_descr *stream, char *data, int len);</code></p>
+<ul>
+<li>功能：初始化结构体stream_descr，以便我们可以从事件流中提取单个事件</li>
+<li>参数：
+<ul>
+<li><code>struct stream_descr</code> 定义在 iwlib.h 中，如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">stream_descr</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="o">*</span><span class="n">end</span><span class="p">;</span>          <span class="cm">/* End of the stream */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="o">*</span><span class="n">current</span><span class="p">;</span>      <span class="cm">/* Current event in stream of events */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="o">*</span><span class="n">value</span><span class="p">;</span>        <span class="cm">/* Current value in event */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">stream_descr</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>stream 为需要初始化的结构指针</li>
+<li>data 为事件流数据的起始指针</li>
+<li>len 为事件流数据的长度</li>
+</ul>
+</li>
+<li>返回：stream-&gt;current=data，stream-&gt;end=(data+len)</li>
+</ul>
+</li>
+<li>
+<p><code>int iw_extract_event_stream(struct stream_descr *stream, struct iw_event *iwe, int we_version);</code></p>
+<ul>
+<li>功能：从事件流中提取下一个事件</li>
+<li>参数：
+<ul>
+<li>stream 为经过 <code>iw_init_event_stream()</code> 初始化的结构</li>
+<li><code>struct iw_event</code> 定义在 <code>wireless.h</code> 中，如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">iw_event</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span>   <span class="n">len</span><span class="p">;</span>            <span class="cm">/* Real lenght of this stuff */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">__u16</span>   <span class="n">cmd</span><span class="p">;</span>            <span class="cm">/* Wireless IOCTL */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">union</span> <span class="n">iwreq_data</span> <span class="n">u</span><span class="p">;</span>     <span class="cm">/* IOCTL fixed payload */</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>iwe 将用于存储当前要提取的事件</li>
+<li>we_version 为 WE 的版本号</li>
+</ul>
+</li>
+<li>返回：成功返回 1，此时 iwe 中为当前事件，失败返回 -1，返回 2 表示跳过了当前事件</li>
+</ul>
+</li>
+</ul>
+<h2 id="7-scanning-subroutines2个函数">7 SCANNING SUBROUTINES(2个函数)</h2>
+<ul>
+<li>
+<p><code>int iw_process_scan(int skfd, char *ifname, int we_version, wireless_scan_head *context);</code></p>
+<ul>
+<li>功能：启动无线信号扫描程序并处理结果</li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 iw_sockets_open() 打开的 socket</li>
+<li>ifname 为网络接口名称</li>
+<li>we_version 为 WE 的版本号</li>
+<li>wireless_scan_head 就是 <code>struct wireless_scan_head</code>，定义在 <code>iwlib.h</code> 中，如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">wireless_scan_head</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">wireless_scan</span> <span class="o">*</span><span class="n">result</span><span class="p">;</span>      <span class="cm">/* Result of the scan */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>            <span class="n">retry</span><span class="p">;</span>       <span class="cm">/* Retry level */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">wireless_scan_head</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>context 中将存储获取的扫描结果的首指针，以及获取扫描结果重试的次数</li>
+<li><code>wireless_scan</code> 就是 <code>struct wireless_scan</code>，定义在 <code>iwlib.h</code> 中，如下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">wireless_scan</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="cm">/* Linked list */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">wireless_scan</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/* Cell identifiaction */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>         <span class="n">has_ap_addr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sockaddr</span>    <span class="n">ap_addr</span><span class="p">;</span>        <span class="cm">/* Access point address */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/* Other information */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span>  <span class="n">wireless_config</span>	<span class="n">b</span><span class="p">;</span>  <span class="cm">/* Basic information */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">iwstats</span> <span class="n">stats</span><span class="p">;</span>              <span class="cm">/* Signal strength */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">has_stats</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">iwparam</span> <span class="n">maxbitrate</span><span class="p">;</span>         <span class="cm">/* Max bit rate in bps */</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>     <span class="n">has_maxbitrate</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>扫描结果存放在 <code>struct wireless_scan</code> 中，并且以链表形式存储多个多个无线信号的扫描结果；</li>
+<li><code>struct wireless_scan</code> 中的 <code>struct wireless_config</code> 在前面有介绍；</li>
+</ul>
+</li>
+<li>返回：成功则返回 0</li>
+</ul>
+</li>
+<li>
+<p><code>int iw_scan(int skfd, char *ifname, int we_version, wireless_scan_head *context);</code></p>
+<ul>
+<li>功能：对指定接口执行无线信号扫描</li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 <code>iw_sockets_open()</code> 打开的 socket</li>
+<li>ifname 为网络接口名称</li>
+<li>we_version 为 WE 的版本号</li>
+<li>context 中将存储获取的扫描结果的首指针，以及获取扫描结果重试的次数</li>
+</ul>
+</li>
+<li>返回：成功则返回 0，失败返回 -1</li>
+</ul>
+</li>
+</ul>
+<h2 id="8-内联函数8个函数">8 内联函数(8个函数)</h2>
+<ul>
+<li>这 8 个内联函数(inline)定义在 iwlib.h 中；</li>
+<li><code>static inline int iw_set_ext(int skfd, const char *ifname, int request, struct iwreq *pwrq);</code>
+<ul>
+<li>功能：将无线网卡的参数通过调用 ioctl() 设置到驱动程序中</li>
+</ul>
+</li>
+<li><code>static inline int iw_get_ext(int skfd, const char *ifname, int request, struct iwreq *pwrq);</code>
+<ul>
+<li>功能：通过调用 ioctl() 从无线网卡驱动程序中获取无线参数</li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 <code>iw_sockets_open()</code> 打开的 socket</li>
+<li>ifname 为网络接口名称</li>
+<li>request 为调用 ioctl() 时的命令代码，定义在 wireless.h 中</li>
+<li>pwrq 为一个 <code>struct iwreq</code> 的结构指针，不同的 request，其填写方法也不一样</li>
+</ul>
+</li>
+<li>返回：返回 ioctl() 调用的返回值，0 表示调用成功，-1 表示出现错误，errno 中为错误代码</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>说明：上面这两个内联函数其实是一样的，都是调用指定的 <code>ioctl()</code>，WE 支持的 ioctl 调用方式为：<code>int ioctl(int fd, unsigned long request, struct iwreq *pwrq)</code>，其 request 通常有两种，一种是 SIOCS*，另一种是 SIOCG*，均定义在 wireless.h 中，按照惯例，当 request 为 SIOCS* 时，使用 <code>iw_set_ext()</code>，当 request 为 SIOCG* 时，使用 iw_get_ext()。</p>
+</blockquote>
+<ul>
+<li>
+<p><code>static inline void iw_sockets_close(int skfd);</code></p>
+<ul>
+<li>功能：关闭一个打开的 socket</li>
+<li>参数：
+<ul>
+<li>skfd 为一个使用 <code>iw_sockets_open()</code> 打开的 socket</li>
+</ul>
+</li>
+<li>返回：无</li>
+<li>说明：实际调用 <code>close(skfd)</code></li>
+</ul>
+</li>
+<li>
+<p><code>static inline char *iw_saether_ntop(const struct sockaddr *sap, char* bufp);</code></p>
+<ul>
+<li>功能：将 struct sockaddr 中的 MAC 地址转换成可读格式的字符串</li>
+<li>参数：
+<ul>
+<li>sap 是一个 struct sockaddr 的结构指针，这个结构在 socket 编程中常会用到</li>
+<li>bufp 一个字符缓冲区指针，转换好的字符串存放在这里</li>
+</ul>
+</li>
+<li>返回：转换完成的字符串指针，也就是 bufp</li>
+<li>说明：bufp 的长度务必大于等于 18个字符，否则会内存溢出，该函数实际是调用了 <code>iw_ether_ntop()</code></li>
+</ul>
+</li>
+<li>
+<p><code>static inline int iw_saether_aton(const char *bufp, struct sockaddr *sap);</code></p>
+<ul>
+<li>功能：将一个以字符串表示的 MAC 地址转换成二进制格式</li>
+<li>参数：
+<ul>
+<li>bufp 指向 MAC 地址字符串的指针</li>
+<li>sap 指向结构 struct sockaddr 的指针，转换结果将放到该结构的 sa_data 字段中</li>
+</ul>
+</li>
+<li>返回：成功则返回 MAC 地址的长度，失败则返回 0</li>
+<li>说明：该函数实际调用 <code>iw_ether_aton()</code> 函数</li>
+</ul>
+</li>
+<li>
+<p><code>static inline void iw_broad_ether(struct sockaddr *sap);</code></p>
+<ul>
+<li>功能：创建一个以太网广播地址</li>
+<li>参数：
+<ul>
+<li>sap 指向结构 struct sockaddr 的指针</li>
+</ul>
+</li>
+<li>返回：无，建立的广播地址放在 sap 的 sa_data 字段中</li>
+<li>说明：广播地址就是：FF:FF:FF:FF:FF:FF，该函数实际就是在 sap 的 sa_data 中填上 6 个 0xff</li>
+</ul>
+</li>
+<li>
+<p><code>static inline void iw_null_ether(struct sockaddr *sap);</code></p>
+<ul>
+<li>功能：建立一个以太网空地址</li>
+<li>参数：
+<ul>
+<li>sap 指向结构 struct sockaddr 的指针</li>
+</ul>
+</li>
+<li>返回：无，建立的广播地址放在 sap 的 sa_data 字段中</li>
+<li>说明：空地址就是：00:00:00:00:00:00，该函数实际就是在 sap 的 sa_data 中填上 6 个 0</li>
+</ul>
+</li>
+<li>
+<p><code>static inline int iw_ether_cmp(const struct ether_addr* eth1, const struct ether_addr* eth2);</code></p>
+<ul>
+<li>功能：比较两个以太网地址</li>
+<li>参数：
+<ul>
+<li>eth1 指向结构 struct ether_addr 的指针</li>
+<li>eth2 指向结构 struct ether_addr 的指针</li>
+</ul>
+</li>
+<li>返回：<code>eth1 &lt; eth2</code> 则小于 0，<code>eth1 &gt; eth2</code> 则大于 0，否则等于 0</li>
+<li>说明：该函数使用 memcmp() 对两个以太网地址的二进制数据进行比较，其意义不甚清楚，其结果的意义似乎也不明确</li>
+</ul>
+</li>
+</ul>
+<h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2024-04-13
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+          <a href="/tags/802.11/">802.11</a>
+          <a href="/tags/wifi/">wifi</a>
+          <a href="/tags/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C/">无线网络</a>
+          <a href="/tags/ioctl/">ioctl</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/network/0026-how-to-connect-wifi-in-c-under-linux/">
+            <span class="next-text nav-default">Linux下使用libiw进行无线信号扫描的实例</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/network/0027-libiw-functions/" class="leancloud_visitors" data-flag-title="libiw中的函数说明">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

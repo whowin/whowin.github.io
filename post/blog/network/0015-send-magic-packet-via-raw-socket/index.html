@@ -315,7 +315,7 @@
 <p>先说一下目标，通常使用UDP发送Magic Packet的报文结构为：以太网报头 + IP报头 + UDP报头 + Magic Packet，我们的目标是：<strong>以太网报头 + Magic Packet</strong></p>
 </li>
 <li>
-<p>先看源程序，文件名为：<a href="https://whowin.gitee.io/sourcecodes/180015/magic-packet.c">magic-packet.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>先看源程序，文件名为：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180015/magic-packet.c">magic-packet.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>报文是以广播的形式发出去的，发送广播时，以太网报头的目的MAC要全部填写0xff，(struct sockaddr_ll)中的sll_addr也要全部填写0xff；</p>
@@ -370,6 +370,10 @@
 [article01]:https://whowin.gitee.io/post/blog/embedded/0001-wake-on-lan/
 [article02]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
 [article03]:https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/
+-->
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/4b53b2ccfda26d20a8e656ae96a577ed.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/1389f4f44deb3a3b378ae6b448267a54.png
 -->
     </div>
 

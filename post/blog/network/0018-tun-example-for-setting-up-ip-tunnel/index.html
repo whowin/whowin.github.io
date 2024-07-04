@@ -262,7 +262,7 @@
 </ol>
 </li>
 <li>
-<p>把上面的代码片段组合在一起，就可以完成一个tun设备的建立，文件名：<a href="https://whowin.gitee.io/sourcecodes/180018/tun-01.c">tun_01.c</a>(<strong>点击文件名下载源文件</strong>)</p>
+<p>把上面的代码片段组合在一起，就可以完成一个tun设备的建立，文件名：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180018/tun-01.c">tun_01.c</a>(<strong>点击文件名下载源文件</strong>)</p>
 </li>
 <li>
 <p>这段程序在进入循环前增加了 <code>system(&quot;ifconfig tun0 10.0.0.1/24 up&quot;)</code>，为tun0分配了IP地址10.0.0.1，所以运行完后就不需要再为这个设备分配IP了；</p>
@@ -295,7 +295,7 @@
 <p>设备建立起来以后，程序员关心的是我们如何从这个设备上收发报文，如何处理这些报文；</p>
 </li>
 <li>
-<p>对于一个物理网络接口而言，接口一端连接着网络协议栈，另一端连接着物理网络；而对于一个虚拟网络接口而言，接口的一端仍然连接着网络协议栈，但是另一端连接着一个应用程序，也就是我们前面下载的那个程序(<a href="https://whowin.gitee.io/sourcecodes/180018/tun-01.c">tun-01.c</a>)，我们把这个程序称为 <strong>application-tun</strong>；</p>
+<p>对于一个物理网络接口而言，接口一端连接着网络协议栈，另一端连接着物理网络；而对于一个虚拟网络接口而言，接口的一端仍然连接着网络协议栈，但是另一端连接着一个应用程序，也就是我们前面下载的那个程序(<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180018/tun-01.c">tun-01.c</a>)，我们把这个程序称为 <strong>application-tun</strong>；</p>
 </li>
 <li>
 <p>可以和一个物理网络接口比较来说明虚拟网络接口的数据流向，在物理接口上要发送到物理网络上去的报文，相对于虚拟接口将被发送到应用程序 <strong>application-tun</strong> 上；</p>
@@ -398,7 +398,7 @@
 <li>当我们在电脑系统上运行 <code>sudo ./tun-01</code> 时，我们的系统就有了两个IP地址，一个是物理网卡的，IP为192.168.2.114，另一个是虚拟网卡的，IP为10.0.0.1；</li>
 <li>当我们在做上面的测试时，我们用 <code>echo ......</code> 命令向 10.0.0.1 和 10.0.0.2 发送了UDP消息，发送时我们并没有指定源IP地址，那么发出的消息的源IP地址是什么呢？192.168.2.114 还是 10.0.0.1？</li>
 <li>我们把前面那个程序 tun_01.c 改一下，一是增加一些错误判断，使这个程序更加完善一些，另外我们增加一个显示IPv4报头的功能，这样我们就可以看到IP头中的源IP地址了；</li>
-<li>改好的程序文件名为：<a href="https://whowin.gitee.io/sourcecodes/180018/tun-02.c">tun-02.c</a>(<strong>点击文件名下载源程序</strong>)</li>
+<li>改好的程序文件名为：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180018/tun-02.c">tun-02.c</a>(<strong>点击文件名下载源程序</strong>)</li>
 <li>编译：<code>gcc -Wall tun-02.c -o tun-02</code></li>
 <li>下面我们做个测试，向 10.0.0.2:5678 发送一条UDP消息，我们看看源IP地址是什么？
 <ul>
@@ -565,13 +565,13 @@
 </ol>
 </li>
 <li>
-<p>客户端程序：<a href="https://whowin.gitee.io/sourcecodes/180018/app-client.c">app-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>客户端程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180018/app-client.c">app-client.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>客户端程序编译：<code>gcc -Wall app-client.c -o app-client</code></p>
 </li>
 <li>
-<p>服务器端程序：<a href="https://whowin.gitee.io/sourcecodes/180018/app-server.c">app-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>服务器端程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180018/app-server.c">app-server.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>服务器端程序编译：<code>gcc -Wall app-server.c -o app-server</code></p>
@@ -689,6 +689,22 @@
 <p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!--gitee
 [article01]:https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/
+-->
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/ebd984e31848ac92b1bd298d5ee258f6.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/eed167269500cfa34a43ad1ef6f0cb64.png
+[img03]:https://img-blog.csdnimg.cn/img_convert/9c950df68ff59f890ea6cee30256c435.png
+[img04]:https://img-blog.csdnimg.cn/img_convert/7f9e2dc7debf88b9d95c2f85d73cf613.png
+[img05]:https://img-blog.csdnimg.cn/img_convert/2d3418e11aac01bc1836abaf1956cb64.png
+[img06]:https://img-blog.csdnimg.cn/img_convert/89fe2c83e7cd2143df4db797f0358593.png
+[img07]:https://img-blog.csdnimg.cn/img_convert/ee49f7c1a2d5ae1e55ddd89c0cc02ec0.png
+[img08]:https://img-blog.csdnimg.cn/img_convert/292a56ca58a4cab4da513c35af864c11.png
+[img09]:https://img-blog.csdnimg.cn/img_convert/f51b997553ca8b386d5ca21d0ed89423.png
+[img10]:https://img-blog.csdnimg.cn/img_convert/819d743886e012be90133bfe04be6570.png
+[img11]:https://img-blog.csdnimg.cn/img_convert/d38d55545733ea3d26306d14f738adea.png
+[img12]:https://img-blog.csdnimg.cn/img_convert/f02f8479a3e4dd55237c911acfa13375.png
+[img13]:https://img-blog.csdnimg.cn/img_convert/0dd24d1c29423d37348b09498272e689.png
+[img14]:https://img-blog.csdnimg.cn/img_convert/de785033e8b1079b8f5c92f5da8241ea.png
 -->
     </div>
 

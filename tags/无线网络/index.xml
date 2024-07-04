@@ -6,7 +6,34 @@
     <description>Recent content in 无线网络 on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 11 Apr 2024 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 13 Apr 2024 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>libiw中的函数说明</title>
+      <link>https://whowin.gitee.io/post/blog/network/0027-libiw-functions/</link>
+      <pubDate>Sat, 13 Apr 2024 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0027-libiw-functions/</guid>
+      <description>&lt;p&gt;打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，在网络专栏的文章中，有两篇是关于wfi编程的文章，其中对无线网卡的操作都是通过ioctl()完成的，显得有些繁琐和晦涩，但其实WE(Wireless Extensions)有一个简单的库libiw，这个库的实现也是使用ioctl()，但是经过封装后，会使wifi编程变得容易一些，本文为一篇资料类的文章，主要描述libiw中API的调用方法。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Linux下使用libiw进行无线信号扫描的实例</title>
+      <link>https://whowin.gitee.io/post/blog/network/0026-how-to-connect-wifi-in-c-under-linux/</link>
+      <pubDate>Sat, 13 Apr 2024 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0026-how-to-connect-wifi-in-c-under-linux/</guid>
+      <description>&lt;p&gt;打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，本文将讨论在Linux下使用C语言连接wifi的方法，本文给出的实例不使用任何第三方软件和库，就可以连接到指定的wifi上，本文将给出完整的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；尽管本文内容主要涉及无线网络，但读者并不需要对 802.11 标准有所了解。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Linux下使用libiw进行无线信号扫描的实例</title>
+      <link>https://whowin.gitee.io/post/blog/network/0026-wifi-scanner-with-libiw/</link>
+      <pubDate>Sat, 13 Apr 2024 16:43:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/network/0026-wifi-scanner-with-libiw/</guid>
+      <description>&lt;p&gt;打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，本文将讨论在Linux下使用C语言连接wifi的方法，本文给出的实例不使用任何第三方软件和库，就可以连接到指定的wifi上，本文将给出完整的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；尽管本文内容主要涉及无线网络，但读者并不需要对 802.11 标准有所了解。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>使用ioctl扫描wifi信号获取信号属性的实例(二)</title>
       <link>https://whowin.gitee.io/post/blog/network/0025-another-wifi-scanner-example/</link>

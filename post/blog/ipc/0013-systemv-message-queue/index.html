@@ -292,7 +292,7 @@
 <li>通常认为，同一个项目的程序总是放在同一个目录下，这个目录可以指定为 pathname，但同一个目录下可能有不同的几个项目，那么可以用项目 ID 来区分，这样就可以生成不同的 Key，从而创建/获取不同的消息队列的 ID；</li>
 <li>该函数会取出 pathname 的 inode 节点号和设备号(dev_no)，然后与 proj_id 组合生成一个 key，同样的 pathname 和 proj_id 将获得相同的 key；</li>
 <li>生成 key 的组合方式为：<code>(inode &amp; 0xffff) | ((dev_no &amp; 0xff) &lt;&lt; 16) | ((proj_id &amp; 0xff) &lt;&lt; 24)</code></li>
-<li><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190013/ipc-key.c">ipc-key.c</a>(<strong>点击文件名下载源程序</strong>)验证了这种组合方式的正确性。</li>
+<li><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190013/ipc-key.c">ipc-key.c</a>(<strong>点击文件名下载源程序</strong>)验证了这种组合方式的正确性。</li>
 </ul>
 </li>
 <li>
@@ -447,7 +447,7 @@
 </ol>
 </li>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190013/msg-send.c">msg-send.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用 msgsnd() 向消息队列中发送消息；</p>
+<p><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190013/msg-send.c">msg-send.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用 msgsnd() 向消息队列中发送消息；</p>
 </li>
 <li>
 <p>这个程序以当前目录的相对路径 &ldquo;./&rdquo; 建立一个 key，然后用这个 key 建立/获取一个消息队列的 ID，然后向这个消息队列中发送了三条消息；</p>
@@ -560,7 +560,7 @@
 </ul>
 </li>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190013/msg-recv.c">msg-recv.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用 msgrcv() 从消息队列中读取消息；</p>
+<p><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190013/msg-recv.c">msg-recv.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何使用 msgrcv() 从消息队列中读取消息；</p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall msg-recv.c -o msg-recv</code></p>
@@ -709,7 +709,7 @@
 </ol>
 </li>
 <li>
-<p><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190013/msgtool.c">msgtool.c</a>(<strong>点击文件名下载源程序</strong>)可以看作是一个消息队列的小实用工具；</p>
+<p><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190013/msgtool.c">msgtool.c</a>(<strong>点击文件名下载源程序</strong>)可以看作是一个消息队列的小实用工具；</p>
 <ul>
 <li>以当前路径 + &rsquo;m&rsquo; 的 ASCII 码组合成 key，该实用工具仅针对该 key 关联的消息队列进行操作；</li>
 <li>在发送消息时如果不存在与 key 关联的消息队列则建立一个新的消息队列；</li>
@@ -779,9 +779,9 @@
 </ul>
 <hr>
 <ul>
-<li><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190013/listmsq.c">listmsq.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何通过读取 <code>/proc/sysvipc/msg</code> 文件列出系统中所有的消息队列；</li>
+<li><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190013/listmsq.c">listmsq.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何通过读取 <code>/proc/sysvipc/msg</code> 文件列出系统中所有的消息队列；</li>
 <li>还有一个办法可以列出所有的消息队列；因为消息队列的 ID 号的总量是有限制的(MSGMNI)，所有可以采用遍历所有消息队列的 ID 号的方法找到系统中所有的消息队列；</li>
-<li><strong>源程序</strong>：<a href="https://whowin.gitee.io/sourcecodes/190013/traversemsq.c">traversemsq.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何通过遍历所有可能的消息队列 ID 号找到系统中所有的消息队列；</li>
+<li><strong>源程序</strong>：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190013/traversemsq.c">traversemsq.c</a>(<strong>点击文件名下载源程序</strong>)演示了如何通过遍历所有可能的消息队列 ID 号找到系统中所有的消息队列；</li>
 <li>尽管在本文的所有实例中，从消息队列传输的数据都是字符串，但消息队列是可以传输二进制数据的，也就是说，可以把一个结构完整第通过消息队列进行传输；</li>
 <li>管道与消息队列在进行数据交换上是不同的，消息队列是以消息为一个基本单位，而管道是一个字节流，举个例子说明其不同：
 <blockquote>
@@ -809,6 +809,15 @@
 [article03]: https://blog.csdn.net/whowin/article/details/132172172
 [article04]: https://blog.csdn.net/whowin/article/details/134869490
 [article05]: https://blog.csdn.net/whowin/article/details/134869636
+-->
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/bf40c11bd7a4333235299829dfa0f890.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/f94ea4cf50fd17ae9f3924edf2d6c396.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/51cdd1c4d09eb5c454c3e2e5e8fd7b9c.png
+[img04]: https://img-blog.csdnimg.cn/img_convert/89fcfc871c7b031c66b92e499a2297c7.png
+[img05]: https://img-blog.csdnimg.cn/img_convert/419c4fa7d0a02fb7455d29a5996c9319.png
+[img06]: https://img-blog.csdnimg.cn/img_convert/7db24f1541928feb1e6755418bf692a3.png
+[img07]: https://img-blog.csdnimg.cn/img_convert/1ed6c1d047c9a2484c3551db448e4579.png
 -->
     </div>
 

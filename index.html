@@ -134,6 +134,75 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0027-libiw-functions/">libiw中的函数说明</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2024-04-13 </span>
+      <div class="post-category">
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，在网络专栏的文章中，有两篇是关于wfi编程的文章，其中对无线网卡的操作都是通过ioctl()完成的，显得有些繁琐和晦涩，但其实WE(Wireless Extensions)有一个简单的库libiw，这个库的实现也是使用ioctl()，但是经过封装后，会使wifi编程变得容易一些，本文为一篇资料类的文章，主要描述libiw中API的调用方法。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0027-libiw-functions/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0026-how-to-connect-wifi-in-c-under-linux/">Linux下使用libiw进行无线信号扫描的实例</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2024-04-13 </span>
+      <div class="post-category">
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，本文将讨论在Linux下使用C语言连接wifi的方法，本文给出的实例不使用任何第三方软件和库，就可以连接到指定的wifi上，本文将给出完整的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；尽管本文内容主要涉及无线网络，但读者并不需要对 802.11 标准有所了解。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0026-how-to-connect-wifi-in-c-under-linux/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0026-wifi-scanner-with-libiw/">Linux下使用libiw进行无线信号扫描的实例</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2024-04-13 </span>
+      <div class="post-category">
+          <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中连接指定的wifi其实很少有资料介绍，本文将讨论在Linux下使用C语言连接wifi的方法，本文给出的实例不使用任何第三方软件和库，就可以连接到指定的wifi上，本文将给出完整的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；尽管本文内容主要涉及无线网络，但读者并不需要对 802.11 标准有所了解。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/network/0026-wifi-scanner-with-libiw/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
     <h1 class="post-title"><a class="post-link" href="/post/blog/network/0025-another-wifi-scanner-example/">使用ioctl扫描wifi信号获取信号属性的实例(二)</a></h1>
     <div class="post-meta">
       <span class="post-time"> 2024-04-11 </span>
@@ -174,73 +243,6 @@
     </div>
     <div class="read-more">
       <a href="/post/blog/network/0024-using-epoll-in-socket-programming/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0021-using-poll-instead-of-select/">使用poll()代替select()处理多客户连接的TCP服务器实例</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2024-02-27 </span>
-      <div class="post-category">
-          <a href="/categories/network/"> Network </a>
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>在网络编程中，使用 select() 处理多客户端的连接是非常常用的方法，select() 是一个非常古老的方法，在大量连接下会显得效率不高，而且其对描述符的数值还有一些限制，Linux内核从 2.1.13 版以后提供了 poll() 替代 select()，本文介绍 poll() 在网络编程中的使用方法，并着重介绍 poll() 在编程行与 select() 的区别，旨在帮助熟悉 select() 编程的程序员可以很容易地使用 poll() 编程，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0021-using-poll-instead-of-select/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0023-using-signals-with-blocking-socket-apis/">使用signal中止阻塞的socket函数的应用实例</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2024-01-25 </span>
-      <div class="post-category">
-          <a href="/categories/network/"> Network </a>
-          <a href="/categories/linux/"> Linux </a>
-          <a href="/categories/c-language/"> C Language </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>在 socket 编程中，有一些函数是阻塞的，为了使程序高效运行，有一些办法可以把这些阻塞函数变成非阻塞的，本文介绍一种使用定时器信号中断阻塞函数的方法，同时介绍了一些信号处理和定时器设置的编程方法，本文附有完整实例的源代码，本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/network/0023-using-signals-with-blocking-socket-apis/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/linux/0010-19-useful-tools-in-ubuntu/">在ubuntu上的18个非常实用的命令行工具软件</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2024-01-11 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>使用Ubuntu的过程中，在终端上使用命令行工具是非常常见的事情，熟练地掌握命令行工具是使用ubuntu必不可少的技能，即便是Ubuntu的初学者，通常也很熟悉诸如<code>ls</code>、<code>rm</code>、<code>cp</code>等一些文件操作工具，当浏览<code>/bin</code>目录时，你会发现Ubuntu还有许多工具软件，本文将向读者简单介绍18个在Ubuntu上使用的命令行工具软件，本文不会详细介绍每个命令的用法，有对某个命令感兴趣的读者可以自行查找更详细的资料或者使用man在线手册，本文非常适合初学者阅读。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/linux/0010-19-useful-tools-in-ubuntu/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
