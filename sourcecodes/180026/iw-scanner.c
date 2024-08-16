@@ -1,3 +1,20 @@
+/*
+ * File: iw-scanner.c
+ * Author: Songqing Hua
+ *
+ * (C) 2024 Songqing Hua.
+ * https://blog.csdn.net/whowin/
+ *
+ * A program that uses ioctl to scan wifi signals
+ * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
+ * Tested on Linux 5.4.0-139-generic #156-Ubuntu SMP Fri Jan 20 17:27:18 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux.
+ *
+ * To compile: $ gcc -Wall iw-scanner.c -o iw-scanner -liw
+ * Usage: $ sudo ./iw-scanner
+ * 
+ * Example source code for article 《Linux下使用libiw进行无线信号扫描的实例》
+ *
+ */
 #include <stdio.h>
 #include <time.h>
 #include <iwlib.h>
