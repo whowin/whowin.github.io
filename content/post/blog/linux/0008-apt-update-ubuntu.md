@@ -91,3 +91,6 @@ postid: 100008
 
 [img01]:https://whowin.gitee.io/images/100008/apt-update-screen.png
 
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/c65fff9e72d37ebc52a7de1f0b2a1ec9.png
+-->

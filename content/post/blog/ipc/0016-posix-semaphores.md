@@ -345,11 +345,17 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article06]: https://blog.csdn.net/whowin/article/details/134939609
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/190016/sem-create.c
-[src02]: https://whowin.gitee.io/sourcecodes/190016/official-exam.c
-[src03]: https://whowin.gitee.io/sourcecodes/190016/producer-consumer.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190016/sem-create.c
+[src02]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190016/official-exam.c
+[src03]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190016/producer-consumer.c
 
 
 [img01]: https://whowin.gitee.io/images/190016/screenshot-of-sem-create.png
 [img02]: https://whowin.gitee.io/images/190016/screenshot-of-official-exam.png
 [img03]: https://whowin.gitee.io/images/190016/producer-consumer.gif
+
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/a6bb46bf5ea2c3e0b5449cfc12ec4e7a.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/50d9471b0a8f4fb7c1b5a41abae98a41.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/6d3e55e7340156b54ba33a1626b57e60.gif
+-->

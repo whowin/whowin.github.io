@@ -259,12 +259,18 @@ postid: 180013
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:https://whowin.gitee.io/sourcecodes/180013/udp-client.c
-[src02]:https://whowin.gitee.io/sourcecodes/180013/udp-server.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180013/udp-client.c
+[src02]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180013/udp-server.c
   
 [img01]:https://whowin.gitee.io/images/180013/test_udpserver_with_nc.png
 [img02]:https://whowin.gitee.io/images/180013//screenshot_of_udpclient.png
 [img03]:https://whowin.gitee.io/images/180013/screenshot_of_udpserver.png
+
+<!-- CSDN>
+[img01]:https://img-blog.csdnimg.cn/img_convert/198e06db14be3887cb203cb81b24fb96.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/a640dd4958b655a289459c6aeb577176.png
+[img03]:https://img-blog.csdnimg.cn/img_convert/0e86d556723d3c21fa4e7b9d477d72ac.png
+-->
 
 <!--gitee
 [article1]:https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/

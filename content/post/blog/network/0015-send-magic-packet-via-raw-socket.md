@@ -138,7 +138,7 @@ Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的�
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:https://whowin.gitee.io/sourcecodes/180015/magic-packet.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180015/magic-packet.c
 
 <!--gitee
 [article01]:https://whowin.gitee.io/post/blog/embedded/0001-wake-on-lan/
@@ -155,3 +155,8 @@ Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的�
 
 [img01]:https://whowin.gitee.io/images/180002/sending_data_from_app_with_socket.png
 [img02]:https://whowin.gitee.io/images/180015/screenshot-magic-packet.png
+
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/4b53b2ccfda26d20a8e656ae96a577ed.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/1389f4f44deb3a3b378ae6b448267a54.png
+-->

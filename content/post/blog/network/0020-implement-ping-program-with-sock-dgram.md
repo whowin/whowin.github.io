@@ -391,7 +391,7 @@ SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用�
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:https://whowin.gitee.io/sourcecodes/180020/ping-dgram.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180020/ping-dgram.c
 
 <!--gitee
 [article01]:https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/
@@ -406,3 +406,10 @@ SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用�
 [img02]:https://whowin.gitee.io/images/180019/structure-of-icmp-packet.png
 [img03]:https://whowin.gitee.io/images/180020/screenshot-of-ping-statistics.png
 [img04]:https://whowin.gitee.io/images/180020/screenshot-of-ping-dgram.png
+
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/255e010e19c0378b34781fc13af4afdb.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/a30e5f4a21a95a4cdf90faf2d78b1eda.png
+[img03]:https://img-blog.csdnimg.cn/img_convert/26795655ca48d8d9b3db424265d25dc3.png
+[img04]:https://img-blog.csdnimg.cn/img_convert/7a881c0cbe31c06fa67b2b706d8c5774.png
+-->

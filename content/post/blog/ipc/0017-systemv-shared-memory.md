@@ -291,13 +291,21 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article06]: https://blog.csdn.net/whowin/article/details/134939609
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/190017/shm-ctl.c
-[src02]: https://whowin.gitee.io/sourcecodes/190017/shm-server.c
-[src03]: https://whowin.gitee.io/sourcecodes/190017/shm-client.c
-[src04]: https://whowin.gitee.io/sourcecodes/190017/shm-public.h
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190017/shm-ctl.c
+[src02]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190017/shm-server.c
+[src03]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190017/shm-client.c
+[src04]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190017/shm-public.h
 
 [img01]: https://whowin.gitee.io/images/190017/screen-of-ipcs-m-l.png
 [img02]: https://whowin.gitee.io/images/190017/screenshot-max-proc.png
 [img03]: https://whowin.gitee.io/images/190017/screenshot-of-sysctl.png
 [img04]: https://whowin.gitee.io/images/190017/screenshot-of-shm-ctl.png
 [img05]: https://whowin.gitee.io/images/190017/shm-server-client.gif
+
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/d1c4560f98b8198a9edef981e3813092.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/443c5ae49af630b5454b9be6ead8cdac.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/21343b1c6526ccc33d4c4634fa1a2172.png
+[img04]: https://img-blog.csdnimg.cn/img_convert/8df27a8c225a69107fa009b07773fa29.png
+[img05]: https://img-blog.csdnimg.cn/img_convert/a7a148a5f01498bdc480873da53e1b6a.gif
+-->

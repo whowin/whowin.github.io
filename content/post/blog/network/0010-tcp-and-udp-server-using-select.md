@@ -352,15 +352,23 @@ postid: 180010
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:https://whowin.gitee.io/sourcecodes/180010/tu-server.c
-[src02]:https://whowin.gitee.io/sourcecodes/180010/t-client.c
-[src03]:https://whowin.gitee.io/sourcecodes/180010/u-client.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180010/tu-server.c
+[src02]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180010/t-client.c
+[src03]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180010/u-client.c
 
 [img01]:https://whowin.gitee.io/images/180010/server_test.png
 [img02]:https://whowin.gitee.io/images/180010/tcpclient_test.png
 [img03]:https://whowin.gitee.io/images/180010/udpclient_test.png
 [img04]:https://whowin.gitee.io/images/180010/screenshot_of_server.png
 [img05]:https://whowin.gitee.io/images/180010/screenshot_of_client.png
+
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/c2e13118d7c5db84c26cd9014f8f4507.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/b3920d5f55520c342c90dd1f069b7abc.png
+[img03]:https://img-blog.csdnimg.cn/img_convert/277d8cafee8c53cc294088f28dd8da49.png
+[img04]:https://img-blog.csdnimg.cn/img_convert/27b8175c759294d053b07742e5992ee7.png
+[img05]:https://img-blog.csdnimg.cn/img_convert/ee8a02c6cd3416aab83871306c410cc0.png
+-->
 
 <!--gitee
 [article1]:https://whowin.gitee.io/post/blog/network/0013-udp-server-client-implementation-in-c/

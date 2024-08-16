@@ -386,12 +386,12 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article05]: https://blog.csdn.net/whowin/article/details/134869636
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/190013/ipc-key.c
-[src02]: https://whowin.gitee.io/sourcecodes/190013/msg-send.c
-[src03]: https://whowin.gitee.io/sourcecodes/190013/msg-recv.c
-[src04]: https://whowin.gitee.io/sourcecodes/190013/msgtool.c
-[src05]: https://whowin.gitee.io/sourcecodes/190013/listmsq.c
-[src06]: https://whowin.gitee.io/sourcecodes/190013/traversemsq.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190013/ipc-key.c
+[src02]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190013/msg-send.c
+[src03]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190013/msg-recv.c
+[src04]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190013/msgtool.c
+[src05]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190013/listmsq.c
+[src06]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190013/traversemsq.c
 
 
 
@@ -403,4 +403,12 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [img06]: https://whowin.gitee.io/images/190013/screenshot-of-msgtool.png
 [img07]: https://whowin.gitee.io/images/190013/screenshot-of-proc-file.png
 
-
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/bf40c11bd7a4333235299829dfa0f890.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/f94ea4cf50fd17ae9f3924edf2d6c396.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/51cdd1c4d09eb5c454c3e2e5e8fd7b9c.png
+[img04]: https://img-blog.csdnimg.cn/img_convert/89fcfc871c7b031c66b92e499a2297c7.png
+[img05]: https://img-blog.csdnimg.cn/img_convert/419c4fa7d0a02fb7455d29a5996c9319.png
+[img06]: https://img-blog.csdnimg.cn/img_convert/7db24f1541928feb1e6755418bf692a3.png
+[img07]: https://img-blog.csdnimg.cn/img_convert/1ed6c1d047c9a2484c3551db448e4579.png
+-->

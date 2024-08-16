@@ -323,10 +323,10 @@ postid: 180018
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:https://whowin.gitee.io/sourcecodes/180018/tun-01.c
-[src02]:https://whowin.gitee.io/sourcecodes/180018/tun-02.c
-[src03]:https://whowin.gitee.io/sourcecodes/180018/app-client.c
-[src04]:https://whowin.gitee.io/sourcecodes/180018/app-server.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180018/tun-01.c
+[src02]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180018/tun-02.c
+[src03]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180018/app-client.c
+[src04]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180018/app-server.c
 
 <!--gitee
 [article01]:https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/
@@ -347,3 +347,20 @@ postid: 180018
 [img12]:https://whowin.gitee.io/images/180018/screenshot-server-2nd-terminal-for-testing.png
 [img13]:https://whowin.gitee.io/images/180018/screenshot-client-2nd-terminal-for-testing.png
 [img14]:https://whowin.gitee.io/images/180018/vpn.png
+
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/ebd984e31848ac92b1bd298d5ee258f6.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/eed167269500cfa34a43ad1ef6f0cb64.png
+[img03]:https://img-blog.csdnimg.cn/img_convert/9c950df68ff59f890ea6cee30256c435.png
+[img04]:https://img-blog.csdnimg.cn/img_convert/7f9e2dc7debf88b9d95c2f85d73cf613.png
+[img05]:https://img-blog.csdnimg.cn/img_convert/2d3418e11aac01bc1836abaf1956cb64.png
+[img06]:https://img-blog.csdnimg.cn/img_convert/89fe2c83e7cd2143df4db797f0358593.png
+[img07]:https://img-blog.csdnimg.cn/img_convert/ee49f7c1a2d5ae1e55ddd89c0cc02ec0.png
+[img08]:https://img-blog.csdnimg.cn/img_convert/292a56ca58a4cab4da513c35af864c11.png
+[img09]:https://img-blog.csdnimg.cn/img_convert/f51b997553ca8b386d5ca21d0ed89423.png
+[img10]:https://img-blog.csdnimg.cn/img_convert/819d743886e012be90133bfe04be6570.png
+[img11]:https://img-blog.csdnimg.cn/img_convert/d38d55545733ea3d26306d14f738adea.png
+[img12]:https://img-blog.csdnimg.cn/img_convert/f02f8479a3e4dd55237c911acfa13375.png
+[img13]:https://img-blog.csdnimg.cn/img_convert/0dd24d1c29423d37348b09498272e689.png
+[img14]:https://img-blog.csdnimg.cn/img_convert/de785033e8b1079b8f5c92f5da8241ea.png
+-->

@@ -415,8 +415,8 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article05]: https://blog.csdn.net/whowin/article/details/134869636
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/190015/sem-ctl.c
-[src02]: https://whowin.gitee.io/sourcecodes/190015/sem-philo.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190015/sem-ctl.c
+[src02]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190015/sem-philo.c
 
 
 [img01]: https://whowin.gitee.io/images/190015/screenshot-of-sem-limits.png
@@ -425,3 +425,12 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [img04]: https://whowin.gitee.io/images/190015/diag-of-philosophers.png
 [img05]: https://whowin.gitee.io/images/190015/state-transition-diagram.png
 [img06]: https://whowin.gitee.io/images/190015/dinning-philosopher-problem.gif
+
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/1d9be7c19722b01c607c651c5e068b2b.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/dc6e3c5e26cb791ede73c8fb8190fe32.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/09fd56f5bcfa739456c24c98384db57b.png
+[img04]: https://img-blog.csdnimg.cn/img_convert/cc9740424e76d1c720de276b8f7ce0e6.png
+[img05]: https://img-blog.csdnimg.cn/img_convert/961de7761fae80d324f1bbe8a728053a.png
+[img06]: https://img-blog.csdnimg.cn/img_convert/0a3cf5f6e8061d069f0c49e7c96e8408.gif
+-->

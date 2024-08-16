@@ -303,7 +303,7 @@ postid: 180017
 
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
-[src01]:https://whowin.gitee.io/sourcecodes/180017/sntp-client.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180017/sntp-client.c
 
 [article01]:https://www.rfc-editor.org/rfc/rfc5905
 [article02]:https://www.rfc-editor.org/rfc/rfc1305
@@ -315,3 +315,10 @@ postid: 180017
 [img02]:https://whowin.gitee.io/images/180017/screenshot-of-sntp-client.png
 [img03]:https://whowin.gitee.io/images/180017/ntp-packet-structure.png
 [img04]:https://whowin.gitee.io/images/180017/ntp-timestamp-structure.png
+
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/f2ce11d74bbd7545ab57d366ed662128.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/d3edbc42838b367eebd2bf8c026c4797.png
+[img03]:https://img-blog.csdnimg.cn/img_convert/bf3ef6b56485c47857358e308a6068ee.png
+[img04]:https://img-blog.csdnimg.cn/img_convert/b3f8951f77131c03474314fef8f8d515.png
+-->

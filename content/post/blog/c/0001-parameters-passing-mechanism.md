@@ -462,3 +462,7 @@ postid: 130001
 
 
 [img01]:/images/130001/0001-parameters_passing_mechanism.png
+
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/f11bb43ff6ecc66daa43d5147ac8ddc6.png
+-->

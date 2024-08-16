@@ -371,6 +371,10 @@ D-Bus的规范中提供了一系列的标准接口，绝大多数有D-Bus接口�
 [libdbus_api]: https://dbus.freedesktop.org/doc/api/html/group__DBus.html
 [dbus_specification]: https://dbus.freedesktop.org/doc/dbus-specification.html
 
-[src01]: https://whowin.gitee.io/sourcecodes/190026/dbus-service.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190026/dbus-service.c
 
 [img01]: https://whowin.gitee.io/images/190026/dbus-service.gif
+
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/6af940315ffff84e87bb64ef5be519ee.gif
+-->

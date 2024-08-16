@@ -174,7 +174,7 @@ postid: 180008
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:https://whowin.gitee.io/sourcecodes/180008/get-gateway-proc.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180008/get-gateway-proc.c
 
 <!--gitee
 [article01]:https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/
@@ -190,3 +190,11 @@ postid: 180008
 [img05]:https://whowin.gitee.io/images/180008/screenshot-of-tracing-route-n.png
 [img06]:https://whowin.gitee.io/images/180008/screenshot-get-gateway-proc.png
 
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/312c99b788170ca756b88a813f510d5a.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/a330b274e9c11aff7c23f11398627476.png
+[img03]:https://img-blog.csdnimg.cn/img_convert/28f0ff045103dd4f11e02b77f5aab6e0.png
+[img04]:https://img-blog.csdnimg.cn/img_convert/0f111a4943e67ff7529d033157995394.png
+[img05]:https://img-blog.csdnimg.cn/img_convert/f63f190b63a47c7ba759311aebe7e7d9.png
+[img06]:https://img-blog.csdnimg.cn/img_convert/050b5313d0cb7dc94f96fd8d8cf6ef17.png
+-->

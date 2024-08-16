@@ -120,10 +120,16 @@ UDP报头只有4个字段，分别是：源端口号、目的端口号、报文�
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:https://whowin.gitee.io/sourcecodes/180003/udp-checksum.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180003/udp-checksum.c
 
 [img01]:https://whowin.gitee.io/images/180003/udp_packet_structure.png
 [img02]:https://whowin.gitee.io/images/180003/ip_header.png
 [img03]:https://whowin.gitee.io/images/180003/udp_packet_pseudo_header.png.png
 [img04]:https://whowin.gitee.io/images/180003/udp_checksum_screenshot.png
 
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/308678e96fc65e323a882889600f3dfa.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/06950019d11c9bfbcf4ff8e387fc0858.png
+[img03]:https://img-blog.csdnimg.cn/img_convert/acc464c2ab8e9ce23caadb2023866315.png
+[img04]:https://img-blog.csdnimg.cn/img_convert/955ad417b9c32f315dd340a8869d1a2a.png
+-->

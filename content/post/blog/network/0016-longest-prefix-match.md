@@ -147,7 +147,7 @@ postid: 180016
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:https://whowin.gitee.io/sourcecodes/180016/rt-lookup.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180016/rt-lookup.c
 
 <!--gitee
 [article01]:https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/
@@ -161,6 +161,12 @@ postid: 180016
 [img05]:https://whowin.gitee.io/images/180016/example.png
 [img06]:https://whowin.gitee.io/images/180016/content-of-routing-txt.png
 
-
-
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/7340ec35329fd11f23a1c436214f190c.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/09963262da5ef4297b7f25caab4b6ee9.png
+[img03]:https://img-blog.csdnimg.cn/img_convert/3ba069d49f6a114bbb7f9e0a07e992c2.png
+[img04]:https://img-blog.csdnimg.cn/img_convert/6b13e2706e6912547b31ee503342e56e.png
+[img05]:https://img-blog.csdnimg.cn/img_convert/6f3d4902daf9c21934f41ab6f7b08686.png
+[img06]:https://img-blog.csdnimg.cn/img_convert/73f7a2113ae463293da107ebb3f51681.png
+-->
 

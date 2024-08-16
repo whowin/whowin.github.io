@@ -254,7 +254,10 @@ postid: 180023
 [net_category]: https://blog.csdn.net/whowin/category_12180345.html
 
 
-[src01]: https://whowin.gitee.io/sourcecodes/100023/nonblock-signal.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180023/nonblock-signal.c
 
 [img01]: https://whowin.gitee.io/images/180023/nonblock-signal.gif
 
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/e90ec32ced6aa77ba2cbd745ae859258.gif
+-->

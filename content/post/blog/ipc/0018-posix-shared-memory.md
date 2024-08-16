@@ -338,11 +338,17 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article08]: https://blog.csdn.net/whowin/article/details/135074991
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/190018/map-offset.c
-[src02]: https://whowin.gitee.io/sourcecodes/190018/shm-unlink.c
-[src03]: https://whowin.gitee.io/sourcecodes/190018/pizzeria.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190018/map-offset.c
+[src02]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190018/shm-unlink.c
+[src03]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190018/pizzeria.c
 
 
 [img01]: https://whowin.gitee.io/images/190018/screenshot-of-map-offset.png
 [img02]: https://whowin.gitee.io/images/190018/screenshot-of-shm-unlink.png
 [img03]: https://whowin.gitee.io/images/190018/pizzeria-running.gif
+
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/8fb23733955eafd0e2b42a4d0e0487ab.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/fbb35cc00f9e4405c1d41377a97c0adc.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/dab17d8e85a6c6dcbd41ea23919dba08.gif
+-->

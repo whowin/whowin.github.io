@@ -383,14 +383,22 @@ socket 编程是一种用于网络通信的编程方式，在 socket 的协议�
 [article09]: https://blog.csdn.net/whowin/article/details/135143545
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/190019/sendto-recvfrom.c
-[src02]: https://whowin.gitee.io/sourcecodes/190019/sendmsg-recvmsg.c
-[src03]: https://whowin.gitee.io/sourcecodes/190019/abstract-socket.c
-[src04]: https://whowin.gitee.io/sourcecodes/190019/seqpacket.c
-[src05]: https://whowin.gitee.io/sourcecodes/190019/socketpair.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190019/sendto-recvfrom.c
+[src02]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190019/sendmsg-recvmsg.c
+[src03]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190019/abstract-socket.c
+[src04]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190019/seqpacket.c
+[src05]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190019/socketpair.c
 
 [img01]: https://whowin.gitee.io/images/190019/screenshot-sendto-recvfrom.png
 [img02]: https://whowin.gitee.io/images/190019/screenshot-sendmsg-recvmsg.png
 [img03]: https://whowin.gitee.io/images/190019/screenshot-abstract-socket.png
 [img04]: https://whowin.gitee.io/images/190019/screenshot-of-seqpacket.png
 [img05]: https://whowin.gitee.io/images/190019/screenshot-of-socketpair.png
+
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/3395170c306ff90363229182e7f90cd0.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/4ea570bc6c26497171b4ae18fb41fa20.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/ca1ada43724070e550251a2461e232ef.png
+[img04]: https://img-blog.csdnimg.cn/img_convert/6194333eb95d75467518613c52e156a9.png
+[img05]: https://img-blog.csdnimg.cn/img_convert/ff00c3de0ff09fb62bfc482d5050e0d7.png
+-->

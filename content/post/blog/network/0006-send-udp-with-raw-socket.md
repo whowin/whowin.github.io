@@ -371,7 +371,7 @@ postid: 180006
 
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
-[src01]:https://whowin.gitee.io/sourcecodes/180006/send-raw-udp-packet.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180006/send-raw-udp-packet.c
 
 <!--gitee
 [article01]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/

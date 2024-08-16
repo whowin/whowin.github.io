@@ -480,13 +480,13 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article05]: https://blog.csdn.net/whowin/article/details/134869636
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/190014/mq-attr.c
-[src02]: https://whowin.gitee.io/sourcecodes/190014/mq-create.c
-[src03]: https://whowin.gitee.io/sourcecodes/190014/mq-unlink.c
-[src04]: https://whowin.gitee.io/sourcecodes/190014/mq-server.c
-[src05]: https://whowin.gitee.io/sourcecodes/190014/mq-client.c
-[src06]: https://whowin.gitee.io/sourcecodes/190014/mq-notify.c
-[src07]: https://whowin.gitee.io/sourcecodes/190014/mq-const.h
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190014/mq-attr.c
+[src02]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190014/mq-create.c
+[src03]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190014/mq-unlink.c
+[src04]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190014/mq-server.c
+[src05]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190014/mq-client.c
+[src06]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190014/mq-notify.c
+[src07]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190014/mq-const.h
 
 [img01]: https://whowin.gitee.io/images/190014/screenshot-of-mqattr.png
 [img02]: https://whowin.gitee.io/images/190014//screenshot-of-mq-create.png
@@ -494,3 +494,10 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [img04]: https://whowin.gitee.io/images/190014/mq-server-client.gif
 [img05]: https://whowin.gitee.io/images/190014/screenshot-of-mq-notify.png
 
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/35ae4f44c3bd3f7a7d725e0115148742.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/fdfc1dbaa5e3de751d33b97b01d89525.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/dd6ea269101dfdfb45aafb39608da73e.png
+[img04]: https://img-blog.csdnimg.cn/img_convert/44419c6b2210226dfb47b400c03581cb.gif
+[img05]: https://img-blog.csdnimg.cn/img_convert/ae7ca452c717fc2e56d836d128933146.png
+-->

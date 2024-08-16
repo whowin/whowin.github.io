@@ -525,8 +525,8 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系
 [libdbus_api]: https://dbus.freedesktop.org/doc/api/html/group__DBus.html
 [dbus_specification]: https://dbus.freedesktop.org/doc/dbus-specification.html
 
-[src01]: https://whowin.gitee.io/sourcecodes/190021/dbus-objects.c
-[src02]: https://whowin.gitee.io/sourcecodes/190021/dbus-methods.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190021/dbus-objects.c
+[src02]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190021/dbus-methods.c
 
 
 [img01]: https://whowin.gitee.io/images/190021/d-bus.png
@@ -534,4 +534,9 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系
 [img03]: https://whowin.gitee.io/images/190021/screenshot-of-pkg-config.png
 [img04]: https://whowin.gitee.io/images/190021/screenshot-of-dbus-methods.png
 
-
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/05d12d4fe2a47f4be5d5205a904d87f4.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/aa7d8f4186c577836d5a3fdb3d22abe0.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/a326a27215017dabc9fa2475d8f62001.png
+[img04]: https://img-blog.csdnimg.cn/img_convert/8aa344cf8a3c0a63ad86cf6f3d90c0cf.png
+-->

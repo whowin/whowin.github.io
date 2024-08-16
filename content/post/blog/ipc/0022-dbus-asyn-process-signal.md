@@ -265,8 +265,10 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本 IPC 系
 [libdbus_api]: https://dbus.freedesktop.org/doc/api/html/group__DBus.html
 [dbus_specification]: https://dbus.freedesktop.org/doc/dbus-specification.html
 
-[src01]: https://whowin.gitee.io/sourcecodes/190022/dbus-signals.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190022/dbus-signals.c
 
 [img01]:https://whowin.gitee.io/images/190022/screenshot-of-dbus-signals.png
 
-
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/1f471241524c2480acd086b5b73a3d02.png
+-->

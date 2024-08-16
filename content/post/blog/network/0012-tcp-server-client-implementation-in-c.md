@@ -341,13 +341,20 @@ postid: 180012
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:https://whowin.gitee.io/sourcecodes/180012/tcp-client.c
-[src02]:https://whowin.gitee.io/sourcecodes/180012/tcp-server.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180012/tcp-client.c
+[src02]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180012/tcp-server.c
 
 [img01]:https://whowin.gitee.io/images/180012/tcp_server_testing.png
 [img02]:https://whowin.gitee.io/images/180012/tcp_netcat_testing.png
 [img03]:https://whowin.gitee.io/images/180012/screenshot_tcpclient.png
 [img04]:https://whowin.gitee.io/images/180012/screenshot_tcpserver.png
+
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/180c46cf82c0610e6ad9774884ccdc38.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/22305de32989c318ca3384172bd88729.png
+[img03]:https://img-blog.csdnimg.cn/img_convert/0f109838d422eee721d72d3cdb29ff0d.png
+[img04]:https://img-blog.csdnimg.cn/img_convert/f3e99f1fc63fcce264d731731cee9c79.png
+-->
 
 <!--gitee
 [article1]:https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/

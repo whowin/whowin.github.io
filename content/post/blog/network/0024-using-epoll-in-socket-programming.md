@@ -235,7 +235,10 @@ postid: 180024
 [article03]: https://blog.csdn.net/whowin/article/details/136454503
 
 
-[src01]: https://whowin.gitee.io/sourcecodes/180024/epoll-server.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180024/epoll-server.c
 
 [img01]: https://whowin.gitee.io/images/180024/screenshot-of-epoll-server.png
 
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/1d624912b6c5c7c6f4c61925006293e7.png
+-->

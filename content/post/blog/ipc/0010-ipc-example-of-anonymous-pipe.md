@@ -318,12 +318,12 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article05]: https://blog.csdn.net/whowin/article/details/134869636
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/190010/pipe.c
-[src02]: https://whowin.gitee.io/sourcecodes/190010/pipe-dup-stdin.c
-[src03]: https://whowin.gitee.io/sourcecodes/190010/pipe-dup-stdout.c
-[src04]: https://whowin.gitee.io/sourcecodes/190010/pipe-popen.c
-[src05]: https://whowin.gitee.io/sourcecodes/190010/pipe-popen2.c
-[src06]: https://whowin.gitee.io/sourcecodes/190010/pipe-popen3.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe.c
+[src02]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe-dup-stdin.c
+[src03]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe-dup-stdout.c
+[src04]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe-popen.c
+[src05]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe-popen2.c
+[src06]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe-popen3.c
 
 
 [img01]: https://whowin.gitee.io/images/190010/pipe-process-kernel.png
@@ -331,3 +331,9 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [img03]: https://whowin.gitee.io/images/190010/data-from-child-to-parent.png
 [img04]: https://whowin.gitee.io/images/190010/pipe-with-dup.png
 
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/fca2c50ac5250408b48adcafd118595c.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/99baefca021c879ac587b625e815d461.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/8cdda105b707b332a6b05c9a48524e51.png
+[img04]: https://img-blog.csdnimg.cn/img_convert/45dd62313ff5435233326ddc0eb12739.png
+-->

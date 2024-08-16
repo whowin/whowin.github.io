@@ -224,6 +224,10 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 I
 [article10]: https://blog.csdn.net/whowin/article/details/135212050
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/190020/ipc-files.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190020/ipc-files.c
 
 [img01]: https://whowin.gitee.io/images/190020/ipc-files.gif
+
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/a4fd05f9090b34421dea6e7167fa433d.gif
+-->

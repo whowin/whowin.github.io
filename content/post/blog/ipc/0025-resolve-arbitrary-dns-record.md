@@ -254,7 +254,10 @@ postid: 190025
 [systemd-resolved_api]: https://www.freedesktop.org/software/systemd/man/latest/org.freedesktop.resolve1.html
 
 
-[src01]: https://whowin.gitee.io/sourcecodes/190025/dbus-dns-record.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190025/dbus-dns-record.c
 
 [img01]: https://whowin.gitee.io/images/190025/screenshot-of-dbus-dns-record.png
 
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/d8138da7294ab4f3f75f5da6302f4f4d.png
+-->

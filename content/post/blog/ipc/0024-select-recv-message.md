@@ -372,8 +372,11 @@ postid: 190024
 [systemd-resolved_api]: https://www.freedesktop.org/software/systemd/man/latest/org.freedesktop.resolve1.html
 
 
-[src01]: https://whowin.gitee.io/sourcecodes/190024/dbus-select.c
-[src02]: https://whowin.gitee.io/sourcecodes/190021/dbus-methods.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190024/dbus-select.c
+[src02]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190021/dbus-methods.c
 
 [img01]: https://whowin.gitee.io/images/190024/dbus-select.gif
 
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/47ba719630bf63ad68877dfbdada0a73.gif
+-->

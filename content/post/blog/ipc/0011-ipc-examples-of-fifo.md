@@ -332,13 +332,18 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主�
 [article05]: https://blog.csdn.net/whowin/article/details/134869636
 -->
 
-[src01]: https://whowin.gitee.io/sourcecodes/190011/fifo-server.c
-[src02]: https://whowin.gitee.io/sourcecodes/190011/fifo-client.c
-[src03]: https://whowin.gitee.io/sourcecodes/190011/fifo-sigpipe.c
-[src04]: https://whowin.gitee.io/sourcecodes/190011/fifo-eof.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-server.c
+[src02]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-client.c
+[src03]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-sigpipe.c
+[src04]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190011/fifo-eof.c
 
 
 [img01]: https://whowin.gitee.io/images/190011/screenshot-ls-fifo.png
 [img02]: https://whowin.gitee.io/images/190011/screenshot-of-umask.png
 [img03]: https://whowin.gitee.io/images/190011/screenshot-fifo-server.png
 
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/8b0a919f4084f7941e8b4913b6d0f4db.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/16fb2f26b1d50451540fa8642ac56fbb.png
+[img03]: https://img-blog.csdnimg.cn/img_convert/d76ec9eba314ac0095e83d3e2395ec59.png
+-->

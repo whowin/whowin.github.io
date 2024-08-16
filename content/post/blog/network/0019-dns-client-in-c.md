@@ -434,9 +434,12 @@ DNS可以帮助我们把域名映射到一个IP地址上，或者查询一个IP�
 [article01]:https://www.ietf.org/rfc/rfc1034.txt
 [article02]:https://www.ietf.org/rfc/rfc1035.txt
 
-[src01]:https://whowin.gitee.io/sourcecodes/180019/dns-client.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180019/dns-client.c
 
 [img01]:https://whowin.gitee.io/images/180019/screenshot-dns-baidu.com.png
 [img02]:https://whowin.gitee.io/images/180019/screenshot-dns-www-baidu-com.png
 
-
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/e2ff0752d649f48e0901e8860ea029cb.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/a728716ba050995a057ce144eb10d483.png
+-->

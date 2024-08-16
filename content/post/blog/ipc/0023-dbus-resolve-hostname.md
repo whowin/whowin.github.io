@@ -364,10 +364,13 @@ dbus_bool_t dbus_message_iter_next(DBusMessageIter *iter);
 [dbus_specification]: https://dbus.freedesktop.org/doc/dbus-specification.html
 [systemd-resolved_api]: https://www.freedesktop.org/software/systemd/man/latest/org.freedesktop.resolve1.html
 
-[src01]: https://whowin.gitee.io/sourcecodes/190023/dbus-hostname.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190023/dbus-hostname.c
 
 
 [img01]: https://whowin.gitee.io/images/190023/screenshot-of-systemctl.png
 [img02]: https://whowin.gitee.io/images/190023/screen-of-dbus-hostname.png
 
-
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/e8ef158765dea0aa98b1d762427aaf3e.png
+[img02]: https://img-blog.csdnimg.cn/img_convert/13d138d8c642f3cd049fbafa9474714b.png
+-->

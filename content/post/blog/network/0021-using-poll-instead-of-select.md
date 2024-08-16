@@ -244,7 +244,10 @@ postid: 180021
 [article02]: https://blog.csdn.net/whowin/article/details/129685842
 
 
-[src01]: https://whowin.gitee.io/sourcecodes/180021/poll-server.c
+[src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180021/poll-server.c
 
 [img01]: https://whowin.gitee.io/images/180021/screenshot-of-poll-server.png
 
+<!-- CSDN
+[img01]: https://img-blog.csdnimg.cn/img_convert/77672b962e220c5185dc3a49f0123a4a.png
+-->

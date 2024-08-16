@@ -575,12 +575,19 @@ postid: 180009
 
 [img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
 
-[src01]:https://whowin.gitee.io/sourcecodes/180009/get-gateway-netlink.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180009/get-gateway-netlink.c
 
 [img01]:https://whowin.gitee.io/images/180009/netlink-message-format.png
 [img02]:https://whowin.gitee.io/images/180009/rtnetlink-request_message.png
 [img03]:https://whowin.gitee.io/images/180009/rtnetlink-routing-table.png
 [img04]:https://whowin.gitee.io/images/180009/route-of-routing-table.png
+
+<!-- CSDN
+[img01]:https://img-blog.csdnimg.cn/img_convert/3ae07ec8c1811bde08555be1530ddb05.png
+[img02]:https://img-blog.csdnimg.cn/img_convert/10d396db0ad696c2ec0d0a8745cfaafd.png
+[img03]:https://img-blog.csdnimg.cn/img_convert/d35277d37941f00fddee641a51557939.png
+[img04]:https://img-blog.csdnimg.cn/img_convert/a0c34be7072ac1daccd73a0caa17c1f8.png
+-->
 
 <!--gitee
 [article1]:https://whowin.gitee.io/post/blog/network/0008-get-gateway-ip-from-proc-filesys/
