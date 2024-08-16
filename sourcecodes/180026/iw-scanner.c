@@ -57,6 +57,7 @@ int main(int argc, char **argv) {
     result = head.result;
     while (result != NULL) {
         conf = &result->b;
+        // ESSID
         if (conf->has_essid) {
             printf("\nESSID: %s\n", conf->essid);
         }
@@ -64,6 +65,7 @@ int main(int argc, char **argv) {
         if (conf->has_nwid) {
             printf("NWID: %d\n", conf->nwid.value);
         }
+        // Frequency
         if (conf->has_freq) {
             if (conf->freq < 1000) {
                 printf("Channel: %d\n", (int)conf->freq);
@@ -71,11 +73,21 @@ int main(int argc, char **argv) {
                 printf("Frequency: %.3f GHz\n", (conf->freq / (1e9)));
             }
         }
+        // MAC address
         if (result->has_ap_addr) {
             printf("MAC: %02X:%02X:%02X:%02X:%02X:%02X\n", 
                     (uint8_t)result->ap_addr.sa_data[0], (uint8_t)result->ap_addr.sa_data[1], 
                     (uint8_t)result->ap_addr.sa_data[2], (uint8_t)result->ap_addr.sa_data[3], 
                     (uint8_t)result->ap_addr.sa_data[4], (uint8_t)result->ap_addr.sa_data[5]);
+        }
+        // Max. bitrate
+        if (result->has_maxbitrate) {
+            printf("Max. bitrate: %d Mb/s\n", result->maxbitrate.value/(int)(1e6));
+        }
+        //
+        if (result->has_stats) {
+            printf("Signal quality: %d/70\n", result->stats.qual.qual);
+            printf("Signal level: %d dBm\n", (int8_t)result->stats.qual.level);
         }
         
         result = result->next;

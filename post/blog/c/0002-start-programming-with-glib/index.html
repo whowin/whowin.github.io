@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>使用glib进行C语言编程的实例(一) - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="本文将讨论使用GLib进行编程的基本步骤，GLib是一个跨平台的，用C语言编写的3个底层库(以前是5个)的集合，GLib提供了多种高级的数据结构，如内存块、双向和单向链表、哈希表等，GLib还实现了线程相关的函数、多线程编程以及相关的工具，例如原始变量访问、互斥锁、异步队列等，GLib主要由GNOME开发；本文是使用GLib编程的入门文章，旨在通过实例帮助希望学习GLib编程的读者较快地入门，本文将给出多个使用GLib库编程范例的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/c/0002-start-programming-with-glib/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="使用glib进行C语言编程的实例(一)" />
+<meta property="og:description" content="本文将讨论使用GLib进行编程的基本步骤，GLib是一个跨平台的，用C语言编写的3个底层库(以前是5个)的集合，GLib提供了多种高级的数据结构，如内存块、双向和单向链表、哈希表等，GLib还实现了线程相关的函数、多线程编程以及相关的工具，例如原始变量访问、互斥锁、异步队列等，GLib主要由GNOME开发；本文是使用GLib编程的入门文章，旨在通过实例帮助希望学习GLib编程的读者较快地入门，本文将给出多个使用GLib库编程范例的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/c/0002-start-programming-with-glib/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2024-07-10T23:48:29+08:00" />
+<meta property="article:modified_time" content="2024-07-10T23:48:29+08:00" />
+
+<meta itemprop="name" content="使用glib进行C语言编程的实例(一)">
+<meta itemprop="description" content="本文将讨论使用GLib进行编程的基本步骤，GLib是一个跨平台的，用C语言编写的3个底层库(以前是5个)的集合，GLib提供了多种高级的数据结构，如内存块、双向和单向链表、哈希表等，GLib还实现了线程相关的函数、多线程编程以及相关的工具，例如原始变量访问、互斥锁、异步队列等，GLib主要由GNOME开发；本文是使用GLib编程的入门文章，旨在通过实例帮助希望学习GLib编程的读者较快地入门，本文将给出多个使用GLib库编程范例的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。"><meta itemprop="datePublished" content="2024-07-10T23:48:29+08:00" />
+<meta itemprop="dateModified" content="2024-07-10T23:48:29+08:00" />
+<meta itemprop="wordCount" content="4075">
+<meta itemprop="keywords" content="C语言,glib," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用glib进行C语言编程的实例(一)"/>
+<meta name="twitter:description" content="本文将讨论使用GLib进行编程的基本步骤，GLib是一个跨平台的，用C语言编写的3个底层库(以前是5个)的集合，GLib提供了多种高级的数据结构，如内存块、双向和单向链表、哈希表等，GLib还实现了线程相关的函数、多线程编程以及相关的工具，例如原始变量访问、互斥锁、异步队列等，GLib主要由GNOME开发；本文是使用GLib编程的入门文章，旨在通过实例帮助希望学习GLib编程的读者较快地入门，本文将给出多个使用GLib库编程范例的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">使用glib进行C语言编程的实例(一)</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2024-07-10 </span>
+        <div class="post-category">
+            <a href="/categories/c-language/"> C Language </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-前言">1 前言</a></li>
+        <li><a href="#2-如何将一个程序按-glib-的方式改写">2 如何将一个程序按 GLib 的方式改写</a></li>
+        <li><a href="#3-安装和编译基于-glib-的程序">3 安装和编译基于 GLib 的程序</a></li>
+        <li><a href="#4-基于-glib-的-gstring-的一些基本用法">4 基于 GLib 的 GString 的一些基本用法</a></li>
+        <li><a href="#5-结束语">5 结束语</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>本文将讨论使用GLib进行编程的基本步骤，GLib是一个跨平台的，用C语言编写的3个底层库(以前是5个)的集合，GLib提供了多种高级的数据结构，如内存块、双向和单向链表、哈希表等，GLib还实现了线程相关的函数、多线程编程以及相关的工具，例如原始变量访问、互斥锁、异步队列等，GLib主要由GNOME开发；本文是使用GLib编程的入门文章，旨在通过实例帮助希望学习GLib编程的读者较快地入门，本文将给出多个使用GLib库编程范例的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。</p>
+<h2 id="1-前言">1 前言</h2>
+<ul>
+<li>GLib 与 glibc 不是一个东西，glibc 是 GNU 实现的一套标准 C 的库函数，而 GLib 是 GTK+ 的一套函数库，如果非要扯上点关系，GLib 依赖于 glibc，不过 Linux 下几乎所有的应用程序都是依赖于 glibc 的；</li>
+<li>GLib 最初是 GTK+ 项目(现名为 GTK)的一部分；在发布 GTK+ 版本 2 时，该项目的开发人员决定将非图形用户界面(GUI)的代码从 GTK+ 中分离出来，作为一个单独的库(GLib)发布，以使不需要使用 GUI 的开发人员可以使用这些功能，而无需依赖完整的 GUI 库，这就产生了 GLib 库；</li>
+<li>GLib 是一个跨平台库，使用 GLib 编写的应用程序无需进行重大修改即可移植到不同的操作系统上，所以 GLib 不仅可以用在 Linux 下，也可以在 Windows 下使用；</li>
+<li>GLib 仍然在不断地开发中，截止到 2024 年 7 月，GNOME 已经发布了 GLib 2.9版。</li>
+<li>GLib 包由五个库组成：
+<ul>
+<li>GObject</li>
+<li>GLib</li>
+<li>GModule</li>
+<li>GThread</li>
+<li>GIO</li>
+</ul>
+</li>
+<li>这 5 个库全部合并在一个库里，称为 GLib；目前在源代码中，还保留着三个目录：GLib、GObject 和 GIO，GModule、GThread 已经放在 GLib 中了，所以现在通常认为 GLib 是 3 个底层库的集合；</li>
+<li>C 语言有一些令程序员头疼的数据类型，比如指针、字符串(以nul为结束符)，GLib 拥有一系列自身的数据类型，较好地解决了这个问题；</li>
+<li>GLib 的设计很多都是面向对象的，所有可以使用面向对象的概念进行 C 语言编程。</li>
+</ul>
+<h2 id="2-如何将一个程序按-glib-的方式改写">2 如何将一个程序按 GLib 的方式改写</h2>
+<ul>
+<li>
+<p>先使用标准 C 语言按照题目要求编写一个简单的程序，这个题目的原型出自 <a href="https://adventofcode.com/2019/day/1">Advent of Code - 2019</a></p>
+</li>
+<li>
+<p>题目：宇宙飞船飞回地球需要多少燃料？飞船所需的燃料与飞船的质量有直接的关系，计算方式为：飞船质量 ÷ 3，结果向下取整，再减 2，若结果小于 0，则为 0；</p>
+<ul>
+<li>如果飞船质量为 12，除以 3 为 4，再减 2 则结果为 2；</li>
+<li>如果飞船质量为 14，除以 3 向下取整为 4，再减 2 其结果为 2；</li>
+<li>如果飞船质量为 1969，则所需燃料为 654；</li>
+</ul>
+</li>
+<li>
+<p>这个问题的难点在于当我们计算出所需燃料后，实际上飞船的总质量已经改变，变成了飞船质量 + 燃料质量，需要为增加的燃料再补充适当的燃料，所以这实际上是一个递归计算；</p>
+</li>
+<li>
+<p>按照标准 C 语言编写的源程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/130002/puzzle-2019.c">puzzle-2019.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;math.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Calculate the fuel required
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="nf">calculate_fuel</span><span class="p">(</span><span class="kt">int</span> <span class="n">weight</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">additional_weight</span> <span class="o">=</span> <span class="n">fmax</span><span class="p">(</span><span class="n">weight</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Weight: %d</span><span class="se">\t</span><span class="s">Additional weight(Fuel required): %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">additional_weight</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">additional_weight</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">additional_weight</span> <span class="o">+=</span> <span class="n">calculate_fuel</span><span class="p">(</span><span class="n">additional_weight</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">additional_weight</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;USAGE: %s &lt;mass&gt;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">mass</span> <span class="o">=</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">mass</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">printf</span><span class="p">(</span><span class="s">&#34;The mass can not be zero.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">fuel_required</span> <span class="o">=</span> <span class="n">calculate_fuel</span><span class="p">(</span><span class="n">mass</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Total fuel reqired: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">fuel_required</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>编译：<code>gcc -Wall -g puzzle-2019.c -o puzzle-2019 -lm</code></p>
+</li>
+<li>
+<p>因为该程序使用了 fmax()，所以需要连接数学函数库，也就是 <code>-lm</code>；</p>
+</li>
+<li>
+<p>运行：<code>./puzzle-2019 2024</code> (后面跟的参数为飞船质量)</p>
+<p><img src="/images/130002/screenshot-of-puzzle2019.png" alt="Screenshot of puzzle-2019"></p>
+</li>
+<li>
+<p>把这个程序使用基于 GLib 的方式改写，源程序为：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/130002/puzzle-2019-glib.c">puzzle-2019-glib.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;glib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Calculate the fuel required
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">gint</span> <span class="nf">calculate_fuel</span><span class="p">(</span><span class="n">gint</span> <span class="n">weight</span><span class="p">,</span> <span class="n">GString</span> <span class="o">*</span><span class="n">message</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">gint</span> <span class="n">additional_weight</span> <span class="o">=</span> <span class="n">MAX</span><span class="p">(</span><span class="n">weight</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">g_autoptr</span><span class="p">(</span><span class="n">GString</span><span class="p">)</span> <span class="n">temp_str</span> <span class="o">=</span> <span class="n">g_string_new</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">g_string_printf</span><span class="p">(</span><span class="n">temp_str</span><span class="p">,</span> <span class="s">&#34;Weight: %d</span><span class="se">\t</span><span class="s">Additional weight(Fuel required): %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">additional_weight</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">g_string_append</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">temp_str</span><span class="o">-&gt;</span><span class="n">str</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">additional_weight</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">additional_weight</span> <span class="o">+=</span> <span class="n">calculate_fuel</span><span class="p">(</span><span class="n">additional_weight</span><span class="p">,</span> <span class="n">message</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">additional_weight</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">gint</span> <span class="nf">main</span><span class="p">(</span><span class="n">gint</span> <span class="n">argc</span><span class="p">,</span> <span class="n">gchar</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">g_print</span><span class="p">(</span><span class="s">&#34;USAGE: %s &lt;mass&gt;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">gint</span> <span class="n">mass</span> <span class="o">=</span> <span class="n">g_ascii_strtoll</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>         <span class="c1">// Convert an ASCII string to a number
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">mass</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">g_print</span><span class="p">(</span><span class="s">&#34;The mass can not be zero.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">GString</span> <span class="o">*</span><span class="n">message</span> <span class="o">=</span> <span class="n">g_string_new</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>                  <span class="c1">// Create a string object
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">gint</span> <span class="n">fuel_required</span> <span class="o">=</span> <span class="n">calculate_fuel</span><span class="p">(</span><span class="n">mass</span><span class="p">,</span> <span class="n">message</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">g_print</span><span class="p">(</span><span class="s">&#34;%sTotal fuel required: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">message</span><span class="o">-&gt;</span><span class="n">str</span><span class="p">,</span> <span class="n">fuel_required</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">g_string_free</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">);</span>                           <span class="c1">// Release the string object
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>将这个程序转换成基于 GLib 的程序首先要增加头文件 glib.h</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;glib.h&gt;</span><span class="cp">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>原程序中使用 <code>fmax()</code> 函数求两个数的最大值，这里可以使用 <code>MAX(a, b)</code> 来代替，这样，原来的头文件 <code>#include &lt;math.h&gt;</code> 可以去掉，编译时的 <code>-lm</code> 也就不需要了；</p>
+</li>
+<li>
+<p>后面的修改主要是修改数据类型，GLib 定义了一系列的基本数据类型，一些是明确带有类型长度的，比如：gint8、gint16、guint32、gint64，分别为 8 位整数、16 位整数、32 位无符号整数和 64 位整数；</p>
+</li>
+<li>
+<p>还有一些数据类型可以直接替换标准 C 中的类型，比如：gint 替换 int，guint 替换 <code>unsigned int</code> 等；</p>
+</li>
+<li>
+<p>C 语言的字符串是以一个 nul 结尾的字节数组，这其实是有隐患的，比如如果不小心将字符串结尾处的 nul 覆盖，将可能导致灾难性的后果，而且这个字符串在使用上也不方便，比如不知道字符串的长度，添加字符时可能超过定义的数组长度等，为此，GLib 定义了一个新的字符串类型 GString；</p>
+<ul>
+<li>这其实就是一个字符串对象，GString 是一个结构，其定义为：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">_GString</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">gchar</span>  <span class="o">*</span><span class="n">str</span><span class="p">;</span>            <span class="c1">// 以 nul 结尾的字符串
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">gsize</span> <span class="n">len</span><span class="p">;</span>              <span class="c1">// 字符串的长度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">gsize</span> <span class="n">allocated_len</span><span class="p">;</span>    <span class="c1">// 为字符串 str 实际申请的内存长度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>GLib 提供了一系列初始化和操作这个字符串对象的方法</li>
+<li><code>g_string_new()</code> 用于初始化一个字符串对象，<code>g_string_append()</code> 用于在字符串后面添加一个新字符串，<code>g_string_insert()</code> 在一个字符串中插入一个新字符串，等等；</li>
+<li>在对字符串对象进行操作时，用于存放字符串 str 的内存空间会被重新分配，不会导致内存溢出的问题；</li>
+<li>在使用完字符串对象之后，要使用 <code>g_string_free()</code> 将字符串对象释放掉；</li>
+<li>这个程序中，在主程序中建立了字符串对象 message，在子程序 <code>calculate_fuel()</code> 中，使用 <code>g_string_append()</code> 向 message 中添加了内容，然后在主程序中显示了 message 的内容，最后使用 <code>g_string_free()</code> 释放了字符串对象 message；</li>
+<li>在 <code>calculate_fuel()</code> 中，建立了一个字符串对象 temp_str，用于生成一个临时字符串，并将其追加到字符串对象 message 的后边，该字符串对象的建立与 message 略有不同，并且也没有使用 <code>g_string_free()</code> 去释放，这一点下面介绍；</li>
+</ul>
+</li>
+<li>
+<p>GLib 提供了内存自动管理功能</p>
+<ul>
+<li>GLib 有一个类型 g_autoptr，它可以自动释放所引用对象的内存：系统跟踪对该对象的所有引用，如果删除最后一个引用或者函数退出，则释放内存；</li>
+<li>程序中在 <code>calculate_fuel()</code> 中，在建立字符串对象 temp_str 时，使用了 <code>g_autoptr()</code>，使 temp_str 对象成为一个可以自动释放内存的对象，当函数 <code>calculate_fuel()</code> 退出时，temp_str 所占用的内存被自动释放；</li>
+</ul>
+</li>
+<li>
+<p>程序中所有字符串对象的操作都不是必需的，仅用于演示 GLib 的一些特性；</p>
+</li>
+<li>
+<p>程序中还使用 <code>g_ascii_strtoll()</code> 取代了 <code>atoi()</code> 函数将一个字符串变量转换成数字，<code>g_ascii_strtoll()</code> 与 <code>strtol()</code> 基本相同；</p>
+</li>
+<li>
+<p>程序中还使用 GLib 的 <code>g_print()</code> 替换了 <code>printf()</code>，这两个函数基本是相同的功能；</p>
+</li>
+<li>
+<p>编译(下面有关于编译的一些说明)：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gcc -Wall -g puzzle-2019-glib.c -o puzzle-2019-glib `pkg-config --cflags --libs glib-2.0`
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>运行：<code>./puzzle-2019-glib 2024</code></p>
+</li>
+</ul>
+<h2 id="3-安装和编译基于-glib-的程序">3 安装和编译基于 GLib 的程序</h2>
+<ul>
+<li>在 Ubuntu 下检查是否安装了 GLib：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">dpkg -l <span class="p">|</span> grep libglib2.0-dev
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>如果没有安装，可按照下面方法安装：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt update
+</span></span><span class="line"><span class="cl">sudo apt install libglib2.0-dev
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>还可以编一个小程序显示一下 GLib 的版本号
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;glib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">g_print</span><span class="p">(</span><span class="s">&#34;Glib version: %d.%d.%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">GLIB_MAJOR_VERSION</span><span class="p">,</span> <span class="n">GLIB_MINOR_VERSION</span><span class="p">,</span> <span class="n">GLIB_MICRO_VERSION</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>把这段程序命名为 glib-ver.c，用下面的方式进行编译：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc glib-ver.c -o glib-ver <span class="sb">`</span>pkg-config --cflags --libs glib-2.0<span class="sb">`</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>GLib 支持 <code>pkg-config</code>，亦即可以使用 <code>pkg-config</code> 导出其编译环境，可以在命令行下单独运行 <code>pkg-config --cflags --libs glib-2.0</code> 看看可以得到什么结果；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">pkg-config --cflags --libs glib-2.0
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>这个命令又可以分为两个部分，一部分是编译(compile)所需的环境，另一部分是连接(link)所需的环境，可以在命令行分别运行下列两个命令看看会得到什么结果；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">pkg-config --cflags glib-2.0
+</span></span><span class="line"><span class="cl">pkg-config --libs glib-2.0
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>Glib 对 pkg-config 的支持使得编译基于 Glib 的应用程序变得比较简单，在编译时只要加上下面的命令即可；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="sb">`</span>pkg-config --cflags --libs glib-2.0<span class="sb">`</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id="4-基于-glib-的-gstring-的一些基本用法">4 基于 GLib 的 GString 的一些基本用法</h2>
+<ul>
+<li>
+<p>前面已经对 GString 做了简单的介绍，其基本使用方法非常简单，下面程序演示了如何在 GString 中添加、删除、插入以及截断字符串，与标准 C 库中的字符串不同，GString 会自动管理内存，在对 GString 操作时不必关心内存的重新分配问题；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;glib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 创建一个新的 GString
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">GString</span> <span class="o">*</span><span class="n">gstring</span> <span class="o">=</span> <span class="n">g_string_new</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 追加字符串到 GString
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_string_append</span><span class="p">(</span><span class="n">gstring</span><span class="p">,</span> <span class="s">&#34;Hello, &#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">g_string_append</span><span class="p">(</span><span class="n">gstring</span><span class="p">,</span> <span class="s">&#34;GString!&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 打印 GString 的内容
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_print</span><span class="p">(</span><span class="s">&#34;Initial GString content: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">gstring</span><span class="o">-&gt;</span><span class="n">str</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 在 GString 的指定位置插入字符串
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_string_insert</span><span class="p">(</span><span class="n">gstring</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="s">&#34;GLib &#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 再次打印 GString 的内容
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_print</span><span class="p">(</span><span class="s">&#34;GString content after insert: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">gstring</span><span class="o">-&gt;</span><span class="n">str</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 替换 GString 中的子串
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_string_erase</span><span class="p">(</span><span class="n">gstring</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>          <span class="c1">// 删除 &#34;GLib &#34;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_string_insert</span><span class="p">(</span><span class="n">gstring</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="s">&#34;World &#34;</span><span class="p">);</span>  <span class="c1">// 在指定位置插入“World ”
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 再次打印 GString 的内容
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_print</span><span class="p">(</span><span class="s">&#34;GString content after replace: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">gstring</span><span class="o">-&gt;</span><span class="n">str</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 截断 GString 到指定长度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_string_truncate</span><span class="p">(</span><span class="n">gstring</span><span class="p">,</span> <span class="mi">12</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 打印截断后的 GString 内容
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_print</span><span class="p">(</span><span class="s">&#34;GString content after truncate: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">gstring</span><span class="o">-&gt;</span><span class="n">str</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 释放 GString 及其内容
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_string_free</span><span class="p">(</span><span class="n">gstring</span><span class="p">,</span> <span class="n">TRUE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>GString 在使用完后必需使用 g_string_free() 进行释放，g_string_free() 的定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">gchar</span> <span class="o">*</span><span class="n">g_string_free</span><span class="p">(</span><span class="n">GString</span> <span class="o">*</span><span class="n">string</span><span class="p">,</span> <span class="n">gboolean</span> <span class="n">free_segment</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>GString 的数据结构在前面已经介绍过了；</li>
+<li>当 free_segment 为 TRUE 时，这个函数不仅会释放 GString 结构本身，也会释放掉 GString 中的 str 占用的内存，否则该函数仅释放 GString 结构本身，而不释放其中的字符串 str；</li>
+</ul>
+</li>
+<li>
+<p>下面的这段程序演示了在释放了 GString 后如何继续使用原 GString 中以 nul 结尾的字符串；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;glib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 创建一个新的 GString
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">GString</span> <span class="o">*</span><span class="n">gstring</span> <span class="o">=</span> <span class="n">g_string_new</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 追加字符串到 GString
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_string_append</span><span class="p">(</span><span class="n">gstring</span><span class="p">,</span> <span class="s">&#34;Hello World!&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">g_print</span><span class="p">(</span><span class="s">&#34;Initial GString content: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">gstring</span><span class="o">-&gt;</span><span class="n">str</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 取出 GString 中字符串的指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">gchar</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">gstring</span><span class="o">-&gt;</span><span class="n">str</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 以 FALSE 的方式释放 GString
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_string_free</span><span class="p">(</span><span class="n">gstring</span><span class="p">,</span> <span class="n">FALSE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 释放 GString 后再次显示原 GString 中的字符串
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_print</span><span class="p">(</span><span class="s">&#34;String after releasing GString: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id="5-结束语">5 结束语</h2>
+<ul>
+<li>此篇文章仅仅是 GLib 的介绍文章，远没有涉及 GLib 的重要部分，GLib 能做的远不止像本文介绍的那样去替代 C 标准库中的函数；</li>
+<li>GLib 的 GObject 可以让程序员使用 C 进行面向对象的编程，听起来有点天方夜谭的感觉；</li>
+<li>C 语言中最令人头疼的无疑是指针，内存指针的操作失误会使 C 语言的程序崩溃，最近波及全球的微软蓝屏事件据初步报道就和 C 语言的内存指针相关，GLib 提供了一些宏来辅助指针的操作，同时，GLib 还提供了一系列内存管理的函数和宏，使得内存管理和指针应用更加安全；</li>
+<li>GLib 提供了一套丰富的类型系统，能够有效地减少编程错误，提高代码的可读性和可维护性，GLib 还提供了多种丰富的数据结构，如链表(单向链表、双向链表)、哈希表、动态数组等，这些数据结构能够高效地存储和管理数据，提升程序的性能；</li>
+<li>GLib 还提供了许多实用的功能支持，如事件循环、线程操作、动态链接库的操作、出错处理和日志等，这些功能使得基于 GLib 开发的应用程序能够更加方便地处理并发事件、管理资源、处理错误等，提高了程序的健壮性和稳定性；</li>
+<li>GLib 良好的可移植性也是广受赞誉的，基于 GLib 编写的应用程序可以轻松地在 Linux、Unix 以及 Windows 下运行，如果你要编写跨平台的应用程序，可以选择基于 GLib 编程。</li>
+<li>在以后得文章中奖尽可能地介绍更多的基于 GLib 编程的方法和范例。</li>
+</ul>
+<hr>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2024-07-10
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/c%E8%AF%AD%E8%A8%80/">C语言</a>
+          <a href="/tags/glib/">glib</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/blog/network/0026-wifi-scanner-with-libiw/">
+            <span class="next-text nav-default">Linux下使用libiw进行无线信号扫描的实例</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/c/0002-start-programming-with-glib/" class="leancloud_visitors" data-flag-title="使用glib进行C语言编程的实例(一)">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

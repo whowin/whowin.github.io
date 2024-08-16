@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>glib on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/glib/</link>
+    <description>Recent content in glib on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 10 Jul 2024 23:48:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/glib/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用glib进行C语言编程的实例(一)</title>
+      <link>https://whowin.gitee.io/post/blog/c/0002-start-programming-with-glib/</link>
+      <pubDate>Wed, 10 Jul 2024 23:48:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/c/0002-start-programming-with-glib/</guid>
+      <description>&lt;p&gt;本文将讨论使用GLib进行编程的基本步骤，GLib是一个跨平台的，用C语言编写的3个底层库(以前是5个)的集合，GLib提供了多种高级的数据结构，如内存块、双向和单向链表、哈希表等，GLib还实现了线程相关的函数、多线程编程以及相关的工具，例如原始变量访问、互斥锁、异步队列等，GLib主要由GNOME开发；本文是使用GLib编程的入门文章，旨在通过实例帮助希望学习GLib编程的读者较快地入门，本文将给出多个使用GLib库编程范例的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
