@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>使用glib进行C语言编程的实例(一) - whowin - 发表我个人原创作品的技术博客</title>
+  <title>使用GLib进行C语言编程的实例 - whowin - 发表我个人原创作品的技术博客</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -40,19 +40,19 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
-<meta property="og:title" content="使用glib进行C语言编程的实例(一)" />
+<meta property="og:title" content="使用GLib进行C语言编程的实例" />
 <meta property="og:description" content="本文将讨论使用GLib进行编程的基本步骤，GLib是一个跨平台的，用C语言编写的3个底层库(以前是5个)的集合，GLib提供了多种高级的数据结构，如内存块、双向和单向链表、哈希表等，GLib还实现了线程相关的函数、多线程编程以及相关的工具，例如原始变量访问、互斥锁、异步队列等，GLib主要由GNOME开发；本文是使用GLib编程的入门文章，旨在通过实例帮助希望学习GLib编程的读者较快地入门，本文将给出多个使用GLib库编程范例的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/c/0002-start-programming-with-glib/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2024-07-10T23:48:29+08:00" />
-<meta property="article:modified_time" content="2024-07-10T23:48:29+08:00" />
+<meta property="article:published_time" content="2024-08-10T23:48:29+08:00" />
+<meta property="article:modified_time" content="2024-08-10T23:48:29+08:00" />
 
-<meta itemprop="name" content="使用glib进行C语言编程的实例(一)">
-<meta itemprop="description" content="本文将讨论使用GLib进行编程的基本步骤，GLib是一个跨平台的，用C语言编写的3个底层库(以前是5个)的集合，GLib提供了多种高级的数据结构，如内存块、双向和单向链表、哈希表等，GLib还实现了线程相关的函数、多线程编程以及相关的工具，例如原始变量访问、互斥锁、异步队列等，GLib主要由GNOME开发；本文是使用GLib编程的入门文章，旨在通过实例帮助希望学习GLib编程的读者较快地入门，本文将给出多个使用GLib库编程范例的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。"><meta itemprop="datePublished" content="2024-07-10T23:48:29+08:00" />
-<meta itemprop="dateModified" content="2024-07-10T23:48:29+08:00" />
-<meta itemprop="wordCount" content="4075">
+<meta itemprop="name" content="使用GLib进行C语言编程的实例">
+<meta itemprop="description" content="本文将讨论使用GLib进行编程的基本步骤，GLib是一个跨平台的，用C语言编写的3个底层库(以前是5个)的集合，GLib提供了多种高级的数据结构，如内存块、双向和单向链表、哈希表等，GLib还实现了线程相关的函数、多线程编程以及相关的工具，例如原始变量访问、互斥锁、异步队列等，GLib主要由GNOME开发；本文是使用GLib编程的入门文章，旨在通过实例帮助希望学习GLib编程的读者较快地入门，本文将给出多个使用GLib库编程范例的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。"><meta itemprop="datePublished" content="2024-08-10T23:48:29+08:00" />
+<meta itemprop="dateModified" content="2024-08-10T23:48:29+08:00" />
+<meta itemprop="wordCount" content="4088">
 <meta itemprop="keywords" content="C语言,glib," /><meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="使用glib进行C语言编程的实例(一)"/>
+<meta name="twitter:title" content="使用GLib进行C语言编程的实例"/>
 <meta name="twitter:description" content="本文将讨论使用GLib进行编程的基本步骤，GLib是一个跨平台的，用C语言编写的3个底层库(以前是5个)的集合，GLib提供了多种高级的数据结构，如内存块、双向和单向链表、哈希表等，GLib还实现了线程相关的函数、多线程编程以及相关的工具，例如原始变量访问、互斥锁、异步队列等，GLib主要由GNOME开发；本文是使用GLib编程的入门文章，旨在通过实例帮助希望学习GLib编程的读者较快地入门，本文将给出多个使用GLib库编程范例的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。"/>
 
 <!--[if lte IE 9]>
@@ -138,10 +138,10 @@
           <article class="post">
     
     <header class="post-header">
-      <h1 class="post-title">使用glib进行C语言编程的实例(一)</h1>
+      <h1 class="post-title">使用GLib进行C语言编程的实例</h1>
 
       <div class="post-meta">
-        <span class="post-time"> 2024-07-10 </span>
+        <span class="post-time"> 2024-08-10 </span>
         <div class="post-category">
             <a href="/categories/c-language/"> C Language </a>
             </div>
@@ -186,7 +186,8 @@
 </li>
 <li>这 5 个库全部合并在一个库里，称为 GLib；目前在源代码中，还保留着三个目录：GLib、GObject 和 GIO，GModule、GThread 已经放在 GLib 中了，所以现在通常认为 GLib 是 3 个底层库的集合；</li>
 <li>C 语言有一些令程序员头疼的数据类型，比如指针、字符串(以nul为结束符)，GLib 拥有一系列自身的数据类型，较好地解决了这个问题；</li>
-<li>GLib 的设计很多都是面向对象的，所有可以使用面向对象的概念进行 C 语言编程。</li>
+<li>GLib 的设计很多都是面向对象的，所有可以使用面向对象的概念进行 C 语言编程；</li>
+<li><a href="https://docs.gtk.org/glib/index.html">GLib API version 2.0</a> (<strong>点击查看 API 手册</strong>)</li>
 </ul>
 <h2 id="2-如何将一个程序按-glib-的方式改写">2 如何将一个程序按 GLib 的方式改写</h2>
 <ul>
@@ -709,7 +710,7 @@
   <p class="copyright-item">
     <span class="item-title">上次更新</span>
     <span class="item-content">
-        2024-07-10
+        2024-08-10
         
     </span>
   </p>
@@ -722,7 +723,11 @@
           <a href="/tags/glib/">glib</a>
           </div>
       <nav class="post-nav">
-        
+        <a class="prev" href="/post/blog/c/0003-singly-linked-lists-in-glib/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">如何使用GLib的单向链表GSList</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
         <a class="next" href="/post/blog/network/0026-wifi-scanner-with-libiw/">
             <span class="next-text nav-default">Linux下使用libiw进行无线信号扫描的实例</span>
             <span class="next-text nav-mobile">下一篇</span>
@@ -734,7 +739,7 @@
         </div>
         
 
-  <span id="/post/blog/c/0002-start-programming-with-glib/" class="leancloud_visitors" data-flag-title="使用glib进行C语言编程的实例(一)">
+  <span id="/post/blog/c/0002-start-programming-with-glib/" class="leancloud_visitors" data-flag-title="使用GLib进行C语言编程的实例">
 		<span class="post-meta-item-text">文章阅读量 </span>
 		<span class="leancloud-visitors-count">0</span>
 		<p></p>
