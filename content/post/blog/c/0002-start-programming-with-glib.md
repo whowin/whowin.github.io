@@ -1,6 +1,6 @@
 ---
-title: "使用glib进行C语言编程的实例(一)"
-date: 2024-07-10T23:48:29+08:00
+title: "使用GLib进行C语言编程的实例"
+date: 2024-08-10T23:48:29+08:00
 author: whowin
 sidebar: false
 authorbox: false
@@ -46,7 +46,8 @@ postid: 130002
     - GIO
 * 这 5 个库全部合并在一个库里，称为 GLib；目前在源代码中，还保留着三个目录：GLib、GObject 和 GIO，GModule、GThread 已经放在 GLib 中了，所以现在通常认为 GLib 是 3 个底层库的集合；
 * C 语言有一些令程序员头疼的数据类型，比如指针、字符串(以nul为结束符)，GLib 拥有一系列自身的数据类型，较好地解决了这个问题；
-* GLib 的设计很多都是面向对象的，所有可以使用面向对象的概念进行 C 语言编程。
+* GLib 的设计很多都是面向对象的，所有可以使用面向对象的概念进行 C 语言编程；
+* [GLib API version 2.0][glib_api_v2.0] (**点击查看 API 手册**)
 
 ## 2 如何将一个程序按 GLib 的方式改写
 * 先使用标准 C 语言按照题目要求编写一个简单的程序，这个题目的原型出自 [Advent of Code - 2019][advent_of_code]
@@ -298,6 +299,7 @@ postid: 130002
 **email: hengch@163.com**
 
 
+[glib_api_v2.0]:https://docs.gtk.org/glib/index.html
 
 [advent_of_code]:https://adventofcode.com/2019/day/1
 
@@ -305,3 +307,5 @@ postid: 130002
 [src02]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/130002/puzzle-2019-glib.c
 
 [img01]:/images/130002/screenshot-of-puzzle2019.png
+<!-- CSDN -->
+https://i-blog.csdnimg.cn/direct/c201409abb9e4b01b1781f2bbe3155cc.png
