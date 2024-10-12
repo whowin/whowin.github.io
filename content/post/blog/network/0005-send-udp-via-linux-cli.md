@@ -132,20 +132,20 @@ postid: 180005
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
-[img01]:https://whowin.gitee.io/images/180005/server_client_connection.png
-[img02]:https://whowin.gitee.io/images/180005/start_server_with_nc.png
-[img03]:https://whowin.gitee.io/images/180005/screenshot_for_started_server.png
-[img04]:https://whowin.gitee.io/images/180005/send_udp_packet_client.png
-[img05]:https://whowin.gitee.io/images/180005/receive_udp_packet_server.png
-[img06]:https://whowin.gitee.io/images/180005/send_udp_packet_server.png
-[img07]:https://whowin.gitee.io/images/180005/receive_udp_packet_client.png
-[img08]:https://whowin.gitee.io/images/180005/send_udp_packet_client_echo.png
-[img09]:https://whowin.gitee.io/images/180005/receive_udp_packet_server_echo.png
-[img10]:https://whowin.gitee.io/images/180005/send_udp_packet_client_cat.png
-[img11]:https://whowin.gitee.io/images/180005/receive_udp_packet_server_cat.png
+[img01]:/images/180005/server_client_connection.png
+[img02]:/images/180005/start_server_with_nc.png
+[img03]:/images/180005/screenshot_for_started_server.png
+[img04]:/images/180005/send_udp_packet_client.png
+[img05]:/images/180005/receive_udp_packet_server.png
+[img06]:/images/180005/send_udp_packet_server.png
+[img07]:/images/180005/receive_udp_packet_client.png
+[img08]:/images/180005/send_udp_packet_client_echo.png
+[img09]:/images/180005/receive_udp_packet_server_echo.png
+[img10]:/images/180005/send_udp_packet_client_cat.png
+[img11]:/images/180005/receive_udp_packet_server_cat.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/369c015ee73c25e930c97f28feff97fe.png

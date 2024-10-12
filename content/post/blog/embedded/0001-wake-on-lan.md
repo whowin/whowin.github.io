@@ -659,25 +659,25 @@ postid: 110001
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
-[img01]:https://whowin.gitee.io/images/110001/money_maker.png
-[img02]:https://whowin.gitee.io/images/110001/money_maker_board.jpg
-[img03]:https://whowin.gitee.io/images/110001/openwrt_version.png
-[img04]:https://whowin.gitee.io/images/110001/toolschain_test.png
-[img05]:https://whowin.gitee.io/images/110001/wake_on_lan_architecture.png
-[img06]:https://whowin.gitee.io/images/110001/login_openwrt_first.png
-[img07]:https://whowin.gitee.io/images/110001/web_openwrt_1.png
-[img08]:https://whowin.gitee.io/images/110001/web_openwrt_2.png
-[img09]:https://whowin.gitee.io/images/110001/openwrt_fixed_ip_config.png
-[img10]:https://whowin.gitee.io/images/110001/openwrt_fixed_ip_web_1.png
-[img11]:https://whowin.gitee.io/images/110001/openwrt_fixed_ip_web_2.png
-[img12]:https://whowin.gitee.io/images/110001/openwrt_fixed_ip_web_3.png
-[img13]:https://whowin.gitee.io/images/110001/openwrt_fixed_ip_router.png
-[img14]:https://whowin.gitee.io/images/110001/openwrt_run_wakeonlan.png
-[img15]:https://whowin.gitee.io/images/110001/listen_magic_packet.png
-[img16]:https://whowin.gitee.io/images/110001/connectbot_setting.jpg
-[img17]:https://whowin.gitee.io/images/110001/connectbot_login_openwrt.jpg
-[img18]:https://whowin.gitee.io/images/110001/connectbot_run_wakeonlan.jpg
-[img19]:https://whowin.gitee.io/images/110001/luci_wake_on_lan.png
+[img01]:/images/110001/money_maker.png
+[img02]:/images/110001/money_maker_board.jpg
+[img03]:/images/110001/openwrt_version.png
+[img04]:/images/110001/toolschain_test.png
+[img05]:/images/110001/wake_on_lan_architecture.png
+[img06]:/images/110001/login_openwrt_first.png
+[img07]:/images/110001/web_openwrt_1.png
+[img08]:/images/110001/web_openwrt_2.png
+[img09]:/images/110001/openwrt_fixed_ip_config.png
+[img10]:/images/110001/openwrt_fixed_ip_web_1.png
+[img11]:/images/110001/openwrt_fixed_ip_web_2.png
+[img12]:/images/110001/openwrt_fixed_ip_web_3.png
+[img13]:/images/110001/openwrt_fixed_ip_router.png
+[img14]:/images/110001/openwrt_run_wakeonlan.png
+[img15]:/images/110001/listen_magic_packet.png
+[img16]:/images/110001/connectbot_setting.jpg
+[img17]:/images/110001/connectbot_login_openwrt.jpg
+[img18]:/images/110001/connectbot_run_wakeonlan.jpg
+[img19]:/images/110001/luci_wake_on_lan.png

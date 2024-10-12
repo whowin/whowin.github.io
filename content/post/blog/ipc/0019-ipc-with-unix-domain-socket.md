@@ -352,24 +352,24 @@ socket 编程是一种用于网络通信的编程方式，在 socket 的协议�
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
-[article01]: https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/
-[article02]: https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/
-[article03]: https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/
-[article04]: https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/
-[article05]: https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/
-[article06]: https://whowin.gitee.io/post/blog/ipc/0016-posix-semaphores/
-[article07]: https://whowin.gitee.io/post/blog/ipc/0017-systemv-shared-memory/
-[article08]: https://whowin.gitee.io/post/blog/ipc/0018-posix-shared-memory/
-[article09]: https://whowin.gitee.io/post/blog/ipc/0019-ipc-with-unix-domain-socket/
-[article10]: https://whowin.gitee.io/post/blog/ipc/0020-ipc-using-files/
-[article11]: https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/
-[article12]: https://whowin.gitee.io/post/blog/ipc/0022-dbus-asyn-process-signal/
-[article13]: https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/
-[article14]: https://whowin.gitee.io/post/blog/ipc/0024-select-recv-message/
-[article15]: https://whowin.gitee.io/post/blog/ipc/0025-resolve-arbitrary-dns-record/
+[article01]: /post/blog/ipc/0010-ipc-example-of-anonymous-pipe/
+[article02]: /post/blog/ipc/0011-ipc-examples-of-fifo/
+[article03]: /post/blog/ipc/0013-systemv-message-queue/
+[article04]: /post/blog/ipc/0014-posix-message-queue/
+[article05]: /post/blog/ipc/0015-systemv-semaphore-sets/
+[article06]: /post/blog/ipc/0016-posix-semaphores/
+[article07]: /post/blog/ipc/0017-systemv-shared-memory/
+[article08]: /post/blog/ipc/0018-posix-shared-memory/
+[article09]: /post/blog/ipc/0019-ipc-with-unix-domain-socket/
+[article10]: /post/blog/ipc/0020-ipc-using-files/
+[article11]: /post/blog/ipc/0021-ipc-using-dbus/
+[article12]: /post/blog/ipc/0022-dbus-asyn-process-signal/
+[article13]: /post/blog/ipc/0023-dbus-resolve-hostname/
+[article14]: /post/blog/ipc/0024-select-recv-message/
+[article15]: /post/blog/ipc/0025-resolve-arbitrary-dns-record/
 
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
@@ -389,11 +389,11 @@ socket 编程是一种用于网络通信的编程方式，在 socket 的协议�
 [src04]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190019/seqpacket.c
 [src05]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190019/socketpair.c
 
-[img01]: https://whowin.gitee.io/images/190019/screenshot-sendto-recvfrom.png
-[img02]: https://whowin.gitee.io/images/190019/screenshot-sendmsg-recvmsg.png
-[img03]: https://whowin.gitee.io/images/190019/screenshot-abstract-socket.png
-[img04]: https://whowin.gitee.io/images/190019/screenshot-of-seqpacket.png
-[img05]: https://whowin.gitee.io/images/190019/screenshot-of-socketpair.png
+[img01]: /images/190019/screenshot-sendto-recvfrom.png
+[img02]: /images/190019/screenshot-sendmsg-recvmsg.png
+[img03]: /images/190019/screenshot-abstract-socket.png
+[img04]: /images/190019/screenshot-of-seqpacket.png
+[img05]: /images/190019/screenshot-of-socketpair.png
 
 <!-- CSDN
 [img01]: https://img-blog.csdnimg.cn/img_convert/3395170c306ff90363229182e7f90cd0.png

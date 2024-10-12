@@ -573,14 +573,14 @@ postid: 180009
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180009/get-gateway-netlink.c
 
-[img01]:https://whowin.gitee.io/images/180009/netlink-message-format.png
-[img02]:https://whowin.gitee.io/images/180009/rtnetlink-request_message.png
-[img03]:https://whowin.gitee.io/images/180009/rtnetlink-routing-table.png
-[img04]:https://whowin.gitee.io/images/180009/route-of-routing-table.png
+[img01]:/images/180009/netlink-message-format.png
+[img02]:/images/180009/rtnetlink-request_message.png
+[img03]:/images/180009/rtnetlink-routing-table.png
+[img04]:/images/180009/route-of-routing-table.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/3ae07ec8c1811bde08555be1530ddb05.png

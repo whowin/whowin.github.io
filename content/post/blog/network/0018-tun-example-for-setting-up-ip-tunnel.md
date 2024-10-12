@@ -320,7 +320,7 @@ postid: 180018
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180018/tun-01.c
@@ -328,25 +328,26 @@ postid: 180018
 [src03]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180018/app-client.c
 [src04]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180018/app-server.c
 
-<!--gitee
 [article01]:https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/
--->
-[article01]:https://blog.csdn.net/whowin/article/details/128891255
 
-[img01]:https://whowin.gitee.io/images/180018/screenshot-of-setting-up-tun0.png
-[img02]:https://whowin.gitee.io/images/180018/send-data-tun-local.png
-[img03]:https://whowin.gitee.io/images/180018/send-data-tun-remote.png
-[img04]:https://whowin.gitee.io/images/180018/screenshot-for-source-ip.png
-[img05]:https://whowin.gitee.io/images/180018/screenshot-of-ip-route.png
-[img06]:https://whowin.gitee.io/images/180018/simple-ip-tunnel.png
-[img07]:https://whowin.gitee.io/images/180018/screenshot-of-1st-termianl-for-client.png
-[img08]:https://whowin.gitee.io/images/180018/screenshot-of-2nd-terminal-for-client.png
-[img09]:https://whowin.gitee.io/images/180018/diagram-for-testing.png
-[img10]:https://whowin.gitee.io/images/180018/screenshot-server-1st-terminal-for-testing.png
-[img11]:https://whowin.gitee.io/images/180018/screenshot-client-1st-terminal-for-testing.png
-[img12]:https://whowin.gitee.io/images/180018/screenshot-server-2nd-terminal-for-testing.png
-[img13]:https://whowin.gitee.io/images/180018/screenshot-client-2nd-terminal-for-testing.png
-[img14]:https://whowin.gitee.io/images/180018/vpn.png
+<!--CSDN
+[article01]:https://blog.csdn.net/whowin/article/details/128891255
+-->
+
+[img01]:/images/180018/screenshot-of-setting-up-tun0.png
+[img02]:/images/180018/send-data-tun-local.png
+[img03]:/images/180018/send-data-tun-remote.png
+[img04]:/images/180018/screenshot-for-source-ip.png
+[img05]:/images/180018/screenshot-of-ip-route.png
+[img06]:/images/180018/simple-ip-tunnel.png
+[img07]:/images/180018/screenshot-of-1st-termianl-for-client.png
+[img08]:/images/180018/screenshot-of-2nd-terminal-for-client.png
+[img09]:/images/180018/diagram-for-testing.png
+[img10]:/images/180018/screenshot-server-1st-terminal-for-testing.png
+[img11]:/images/180018/screenshot-client-1st-terminal-for-testing.png
+[img12]:/images/180018/screenshot-server-2nd-terminal-for-testing.png
+[img13]:/images/180018/screenshot-client-2nd-terminal-for-testing.png
+[img14]:/images/180018/vpn.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/ebd984e31848ac92b1bd298d5ee258f6.png

@@ -369,7 +369,7 @@ postid: 180006
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180006/send-raw-udp-packet.c
 

@@ -703,13 +703,18 @@ postid: 180027
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
-[src01]:https://whowin.gitee.io/sourcecodes/180025/wifi-new-scanner.c
+[src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180025/wifi-new-scanner.c
 
+[article01]:/post/blog/network/0022-how-to-scan-wifi-signal/
+[article02]:/post/blog/network/0025-another-wifi-scanner-example/
+
+<!--CSDN
 [article01]:https://blog.csdn.net/whowin/article/details/131504380
 [article02]:https://blog.csdn.net/whowin/article/details/137711398
+-->
 
 [article03]:https://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html
 [article04]:https://github.com/HewlettPackard/wireless-tools

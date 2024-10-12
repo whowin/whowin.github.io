@@ -236,17 +236,22 @@ postid: 180021
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [net_category]: https://blog.csdn.net/whowin/category_12180345.html
+
+[article01]: /post/blog/network/0010-tcp-and-udp-server-using-select/
+[article02]: /post/blog/network/0011-handling-multiple-clients-on-server-with-select/
+
+<!--CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/129410476
 [article02]: https://blog.csdn.net/whowin/article/details/129685842
-
+-->
 
 [src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180021/poll-server.c
 
-[img01]: https://whowin.gitee.io/images/180021/screenshot-of-poll-server.png
+[img01]: /images/180021/screenshot-of-poll-server.png
 
 <!-- CSDN
 [img01]: https://img-blog.csdnimg.cn/img_convert/77672b962e220c5185dc3a49f0123a4a.png

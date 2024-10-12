@@ -388,24 +388,25 @@ SOCK_DGRAM类型的socket常用于UDP通信，本文将尝试把这种socket用�
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180020/ping-dgram.c
 
-<!--gitee
-[article01]:https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/
-[article02]:https://whowin.gitee.io/post/blog/network/0004-checksum-of-ip-header/
-[article03]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
--->
+[article01]:/post/blog/network/0003-checksum-of-udp-header/
+[article02]:/post/blog/network/0004-checksum-of-ip-header/
+[article03]:/post/blog/network/0002-link-layer-programming/
+
+<!--CSDN
 [article01]:https://blog.csdn.net/whowin/article/details/128766194
 [article02]:https://blog.csdn.net/whowin/article/details/128846658
 [article03]:https://blog.csdn.net/whowin/article/details/128766145
+-->
 
-[img01]:https://whowin.gitee.io/images/180020/screenshot-for-testing-sock-rdm.png
-[img02]:https://whowin.gitee.io/images/180019/structure-of-icmp-packet.png
-[img03]:https://whowin.gitee.io/images/180020/screenshot-of-ping-statistics.png
-[img04]:https://whowin.gitee.io/images/180020/screenshot-of-ping-dgram.png
+[img01]:/images/180020/screenshot-for-testing-sock-rdm.png
+[img02]:/images/180019/structure-of-icmp-packet.png
+[img03]:/images/180020/screenshot-of-ping-statistics.png
+[img04]:/images/180020/screenshot-of-ping-dgram.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/255e010e19c0378b34781fc13af4afdb.png

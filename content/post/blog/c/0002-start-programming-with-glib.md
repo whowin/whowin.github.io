@@ -298,6 +298,10 @@ postid: 130002
 -------------
 **email: hengch@163.com**
 
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+
 
 [glib_api_v2.0]:https://docs.gtk.org/glib/index.html
 

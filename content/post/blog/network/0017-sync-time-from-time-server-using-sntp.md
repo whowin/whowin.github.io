@@ -301,7 +301,7 @@ postid: 180017
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180017/sntp-client.c
 
@@ -311,10 +311,10 @@ postid: 180017
 [article04]:https://www.rfc-editor.org/rfc/rfc4330
 
 
-[img01]:https://whowin.gitee.io/images/180017/process-of-time-synchronization.png
-[img02]:https://whowin.gitee.io/images/180017/screenshot-of-sntp-client.png
-[img03]:https://whowin.gitee.io/images/180017/ntp-packet-structure.png
-[img04]:https://whowin.gitee.io/images/180017/ntp-timestamp-structure.png
+[img01]:/images/180017/process-of-time-synchronization.png
+[img02]:/images/180017/screenshot-of-sntp-client.png
+[img03]:/images/180017/ntp-packet-structure.png
+[img04]:/images/180017/ntp-timestamp-structure.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/f2ce11d74bbd7545ab57d366ed662128.png

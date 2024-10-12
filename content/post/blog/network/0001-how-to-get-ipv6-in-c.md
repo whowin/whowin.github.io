@@ -492,12 +492,12 @@ postid: 180001
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
-[img01]:https://whowin.gitee.io/images/180001/ipv6_ioctl.png
-[img02]:https://whowin.gitee.io/images/180001/file_if_inet6.png
-[img03]:https://whowin.gitee.io/images/180001/ipv6_getnameinfo.png
+[img01]:/images/180001/ipv6_ioctl.png
+[img02]:/images/180001/file_if_inet6.png
+[img03]:/images/180001/ipv6_getnameinfo.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/861c7ee3174767506c120e3d07b83082.png

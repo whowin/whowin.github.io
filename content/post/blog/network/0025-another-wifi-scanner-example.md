@@ -360,7 +360,7 @@ postid: 180025
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180025/wifi-new-scanner.c
@@ -371,13 +371,13 @@ postid: 180025
 [article03]:https://blog.csdn.net/whowin/article/details/131504380
 [article04]:https://people.iith.ac.in/tbr/teaching/docs/802.11-2007.pdf
 
-[img01]: https://whowin.gitee.io/images/180025/screenshot-of-iwlist-scan.png
-[img02]: https://whowin.gitee.io/images/180025/screenshot-of-driver-string.png
-[img03]: https://whowin.gitee.io/images/180025/screenshot-of-IE-data.png
-[img04]: https://whowin.gitee.io/images/180025/screenshot-of-80211-2007-1.png
-[img05]: https://whowin.gitee.io/images/180025/screenshot-of-IE-structure.png
-[img06]: https://whowin.gitee.io/images/180025/screenshot-of-rates.png
-[img07]: https://whowin.gitee.io/images/180025/wifi-new-scanner.gif
+[img01]: /images/180025/screenshot-of-iwlist-scan.png
+[img02]: /images/180025/screenshot-of-driver-string.png
+[img03]: /images/180025/screenshot-of-IE-data.png
+[img04]: /images/180025/screenshot-of-80211-2007-1.png
+[img05]: /images/180025/screenshot-of-IE-structure.png
+[img06]: /images/180025/screenshot-of-rates.png
+[img07]: /images/180025/wifi-new-scanner.gif
 
 <!-- CSDN
 [img01]: https://img-blog.csdnimg.cn/img_convert/7d6fc4505697687bb568f4dea1e7f7e3.png

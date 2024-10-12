@@ -193,23 +193,23 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 I
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
-[article01]: https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/
-[article02]: https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/
-[article03]: https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/
-[article04]: https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/
-[article05]: https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/
-[article06]: https://whowin.gitee.io/post/blog/ipc/0016-posix-semaphores/
-[article07]: https://whowin.gitee.io/post/blog/ipc/0017-systemv-shared-memory/
-[article08]: https://whowin.gitee.io/post/blog/ipc/0018-posix-shared-memory/
-[article09]: https://whowin.gitee.io/post/blog/ipc/0019-ipc-with-unix-domain-socket/
-[article10]: https://whowin.gitee.io/post/blog/ipc/0020-ipc-using-files/
-[article11]: https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/
-[article12]: https://whowin.gitee.io/post/blog/ipc/0022-dbus-asyn-process-signal/
-[article13]: https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/
-[article14]: https://whowin.gitee.io/post/blog/ipc/0024-select-recv-message/
-[article15]: https://whowin.gitee.io/post/blog/ipc/0025-resolve-arbitrary-dns-record/
+[article01]: /post/blog/ipc/0010-ipc-example-of-anonymous-pipe/
+[article02]: /post/blog/ipc/0011-ipc-examples-of-fifo/
+[article03]: /post/blog/ipc/0013-systemv-message-queue/
+[article04]: /post/blog/ipc/0014-posix-message-queue/
+[article05]: /post/blog/ipc/0015-systemv-semaphore-sets/
+[article06]: /post/blog/ipc/0016-posix-semaphores/
+[article07]: /post/blog/ipc/0017-systemv-shared-memory/
+[article08]: /post/blog/ipc/0018-posix-shared-memory/
+[article09]: /post/blog/ipc/0019-ipc-with-unix-domain-socket/
+[article10]: /post/blog/ipc/0020-ipc-using-files/
+[article11]: /post/blog/ipc/0021-ipc-using-dbus/
+[article12]: /post/blog/ipc/0022-dbus-asyn-process-signal/
+[article13]: /post/blog/ipc/0023-dbus-resolve-hostname/
+[article14]: /post/blog/ipc/0024-select-recv-message/
+[article15]: /post/blog/ipc/0025-resolve-arbitrary-dns-record/
 
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
@@ -226,7 +226,7 @@ IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，常用的 I
 
 [src01]: https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190020/ipc-files.c
 
-[img01]: https://whowin.gitee.io/images/190020/ipc-files.gif
+[img01]: /images/190020/ipc-files.gif
 
 <!-- CSDN
 [img01]: https://img-blog.csdnimg.cn/img_convert/a4fd05f9090b34421dea6e7167fa433d.gif

@@ -613,7 +613,7 @@ postid: 180022
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180022/wifi-scanner.c
@@ -621,9 +621,9 @@ postid: 180022
 [article01]:https://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html
 [article02]:https://github.com/HewlettPackard/wireless-tools
 
-[img01]:https://whowin.gitee.io/images/180022/SIOCGIWSCAN.png
-[img02]:https://whowin.gitee.io/images/180022/screenshot-of-iwevent-test.png
-[img03]:https://whowin.gitee.io/images/180022/screenshot-of-wifi-scanner.png
+[img01]:/images/180022/SIOCGIWSCAN.png
+[img02]:/images/180022/screenshot-of-iwevent-test.png
+[img03]:/images/180022/screenshot-of-wifi-scanner.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/3201e2cda95a16e8bc37d3e5a4cdbc05.png

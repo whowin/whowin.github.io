@@ -372,10 +372,10 @@ postid: 160011
 ![donation][img_sponsor_qrcode]
 
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
-[img01]:https://whowin.gitee.io/images/160011/dpmi-controller_registers.jpg
+[img01]:/images/160011/dpmi-controller_registers.jpg
 
 
 

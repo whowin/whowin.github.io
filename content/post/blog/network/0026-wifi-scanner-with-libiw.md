@@ -195,21 +195,35 @@ postid: 180026
 -------------
 **email: hengch@163.com**
 
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+
+
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180026/iw-scanner.c
 
 [proj01]:https://github.com/HewlettPackard/wireless-tools
 
 
-<!-- 使用ioctl扫描wifi信号获取信号属性的实例(一) -->
+[article01]:/post/blog/network/0022-how-to-scan-wifi-signal/
+[article02]:/post/blog/network/0025-another-wifi-scanner-example/
+
+<!--CSDN
 [article01]:https://blog.csdn.net/whowin/article/details/131504380
-<!-- 使用ioctl扫描wifi信号获取信号属性的实例(二) -->
 [article02]:https://blog.csdn.net/whowin/article/details/137711398
+-->
 
 [article03]:https://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html
 [article04]:https://github.com/HewlettPackard/wireless-tools
 [article05]:https://people.iith.ac.in/tbr/teaching/docs/802.11-2007.pdf
 <!-- libiw中的函数说明 -->
+[article06]:/post/blog/network/0027-libiw-functions/
+<!--CSDN
 [article06]:https://blog.csdn.net/whowin/article/details/140196003
+-->
 
 [img01]:/images/180026/screenshot-of-iwscanner.png
 
+<!-- CSDN
+[img01]:https://i-blog.csdnimg.cn/direct/b4c58b69bdd346cc96b7310fd78235c2.png
+-->

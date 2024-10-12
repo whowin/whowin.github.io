@@ -437,29 +437,29 @@ Ubuntu 桌面是 Linux 发行版中比较流行的桌面；Ubuntu 是开放源�
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
-[img01]: https://whowin.gitee.io/images/100007/select-language-region-language.png
-[img02]: https://whowin.gitee.io/images/100007/select-language.png
-[img03]: https://whowin.gitee.io/images/100007/select-language-restart.png
-[img04]: https://whowin.gitee.io/images/100007/region-language-1.png
-[img05]: https://whowin.gitee.io/images/100007/install-language-support.png
-[img06]: https://whowin.gitee.io/images/100007/apply-whole-system.png
-[img07]: https://whowin.gitee.io/images/100007/region-language-2.png
-[img08]: https://whowin.gitee.io/images/100007/keep-old-names.png
-[img09]: https://whowin.gitee.io/images/100007/region-language-3.png
-[img10]: https://whowin.gitee.io/images/100007/add-input-source.png
-[img11]: https://whowin.gitee.io/images/100007/add-pinyin.png
-[img12]: https://whowin.gitee.io/images/100007/dock.png
-[img13]: https://whowin.gitee.io/images/100007/dock-on-bottom.png
-[img14]: https://whowin.gitee.io/images/100007/qv2ray-doubleclick.png
-[img15]: https://whowin.gitee.io/images/100007/qv2ray-new-connection.png
-[img16]: https://whowin.gitee.io/images/100007/qv2ray-core-settings.png
-[img17]: https://whowin.gitee.io/images/100007/qv2ray-regular-settings.png
-[img18]: https://whowin.gitee.io/images/100007/qv2ray-subscribe-setting.png
-[img19]: https://whowin.gitee.io/images/100007/sogou-fcitx.png
-[img20]: https://whowin.gitee.io/images/100007/not-install-language-support.png
+[img01]: /images/100007/select-language-region-language.png
+[img02]: /images/100007/select-language.png
+[img03]: /images/100007/select-language-restart.png
+[img04]: /images/100007/region-language-1.png
+[img05]: /images/100007/install-language-support.png
+[img06]: /images/100007/apply-whole-system.png
+[img07]: /images/100007/region-language-2.png
+[img08]: /images/100007/keep-old-names.png
+[img09]: /images/100007/region-language-3.png
+[img10]: /images/100007/add-input-source.png
+[img11]: /images/100007/add-pinyin.png
+[img12]: /images/100007/dock.png
+[img13]: /images/100007/dock-on-bottom.png
+[img14]: /images/100007/qv2ray-doubleclick.png
+[img15]: /images/100007/qv2ray-new-connection.png
+[img16]: /images/100007/qv2ray-core-settings.png
+[img17]: /images/100007/qv2ray-regular-settings.png
+[img18]: /images/100007/qv2ray-subscribe-setting.png
+[img19]: /images/100007/sogou-fcitx.png
+[img20]: /images/100007/not-install-language-support.png
 
 <!-- CSDN
 [img01]: https://img-blog.csdnimg.cn/img_convert/cbd80b8259c7773dfbf8c0b81bdeb35c.png

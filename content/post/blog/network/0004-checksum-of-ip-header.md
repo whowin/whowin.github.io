@@ -134,16 +134,16 @@ postid: 180004
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
-<!--gitee
-[article01]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
--->
+[article01]:/post/blog/network/0002-link-layer-programming/
+<!--CSDN
 [article01]:https://blog.csdn.net/whowin/article/details/128766145
+-->
 [article02]:https://www.thegeekstuff.com/2012/03/ip-protocol-header/
 
-[img01]:https://whowin.gitee.io/images/180004/ip_header.png
+[img01]:/images/180004/ip_header.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/176fd230a8176aecd4620991e778f4c8.png

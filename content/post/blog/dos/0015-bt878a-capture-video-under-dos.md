@@ -429,7 +429,7 @@ BT878A是目前广泛采用的一种视频采集芯片，市面上可以很容�
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [article01]:/specification/bt878.pdf

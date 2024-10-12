@@ -57,5 +57,5 @@ PCI BIOS 在 PCI 编程中起着一定的作用，PCI BIOS 的资料也不是很
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 

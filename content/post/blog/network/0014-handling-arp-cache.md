@@ -224,7 +224,7 @@ arp cache中存放着局域网内IP地址和MAC地址的对应关系，对socket
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180014/arp-get.c
@@ -232,10 +232,10 @@ arp cache中存放着局域网内IP地址和MAC地址的对应关系，对socket
 [src03]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180014/arp-set.c
 [src04]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180014/arp-del.c
 
-[img01]:https://whowin.gitee.io/images/180014/screenshot_arp_get.png
-[img02]:https://whowin.gitee.io/images/180014/screenshot_of_arp_get_all.png
-[img03]:https://whowin.gitee.io/images/180014/screenshot_of_arp_set.png
-[img04]:https://whowin.gitee.io/images/180014/screenshot_of_arp_del.png
+[img01]:/images/180014/screenshot_arp_get.png
+[img02]:/images/180014/screenshot_of_arp_get_all.png
+[img03]:/images/180014/screenshot_of_arp_set.png
+[img04]:/images/180014/screenshot_of_arp_del.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/4d71776c4b22204b03c5e2f1143f2973.png

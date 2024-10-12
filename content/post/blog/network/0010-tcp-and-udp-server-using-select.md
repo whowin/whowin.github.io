@@ -349,18 +349,18 @@ postid: 180010
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180010/tu-server.c
 [src02]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180010/t-client.c
 [src03]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180010/u-client.c
 
-[img01]:https://whowin.gitee.io/images/180010/server_test.png
-[img02]:https://whowin.gitee.io/images/180010/tcpclient_test.png
-[img03]:https://whowin.gitee.io/images/180010/udpclient_test.png
-[img04]:https://whowin.gitee.io/images/180010/screenshot_of_server.png
-[img05]:https://whowin.gitee.io/images/180010/screenshot_of_client.png
+[img01]:/images/180010/server_test.png
+[img02]:/images/180010/tcpclient_test.png
+[img03]:/images/180010/udpclient_test.png
+[img04]:/images/180010/screenshot_of_server.png
+[img05]:/images/180010/screenshot_of_client.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/c2e13118d7c5db84c26cd9014f8f4507.png

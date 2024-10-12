@@ -171,7 +171,7 @@ postid: 100003
 
 
 
-[article01]: https://whowin.gitee.io/post/blog/linux/0001-environment-variables-and-shell-variables/
+[article01]: /post/blog/linux/0001-environment-variables-and-shell-variables/
 [article02]: https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#CSI%E5%BA%8F%E5%88%97
 [article03]: https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#%E9%80%89%E6%8B%A9%E5%9B%BE%E5%BD%A2%E5%86%8D%E7%8E%B0%EF%BC%88SGR%EF%BC%89%E5%8F%82%E6%95%B0
 [article04]: https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97#%E9%A2%9C%E8%89%B2

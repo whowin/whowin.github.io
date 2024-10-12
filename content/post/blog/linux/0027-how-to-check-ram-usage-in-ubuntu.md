@@ -246,13 +246,13 @@ postid: 100027
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
-[img01]: https://whowin.gitee.io/images/100027/screenshot-of-htop.png
-[img02]: https://whowin.gitee.io/images/100027/screenshot-of-application-menu.png
-[img03]: https://whowin.gitee.io/images/100027/screenshot-of-system-monitor.png
-[img04]: https://whowin.gitee.io/images/100027/screenshot-of-resources.png
-[img05]: https://whowin.gitee.io/images/100027/sreenshot-of-glances.png
-[img06]: https://whowin.gitee.io/images/100027/screenshot-of-nmon-1.png
-[img07]: https://whowin.gitee.io/images/100027/screenshot-of-nmon-2.png
+[img01]: /images/100027/screenshot-of-htop.png
+[img02]: /images/100027/screenshot-of-application-menu.png
+[img03]: /images/100027/screenshot-of-system-monitor.png
+[img04]: /images/100027/screenshot-of-resources.png
+[img05]: /images/100027/sreenshot-of-glances.png
+[img06]: /images/100027/screenshot-of-nmon-1.png
+[img07]: /images/100027/screenshot-of-nmon-2.png
 

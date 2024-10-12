@@ -72,7 +72,7 @@ Allegro本身不能对jpeg图片进行处理，比如把生成的图形存储成
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [web01]:http://wiki.allegro.cc/JpgAlleg/

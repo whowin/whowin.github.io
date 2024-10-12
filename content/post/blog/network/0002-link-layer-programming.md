@@ -515,15 +515,15 @@ postid: 180002
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
-[img01]:https://whowin.gitee.io/images/180002/sending_data_from_app_with_socket.png
-[img02]:https://whowin.gitee.io/images/180002/receiving_data_in_app_with_socket.png
-[img03]:https://whowin.gitee.io/images/180002/app_receive_data_with_raw_socket.png
-[img04]:https://whowin.gitee.io/images/180002/a_generic_representation_of_a_network_packet.png
-[img05]:https://whowin.gitee.io/images/180002/ip_header.png
-[img06]:https://whowin.gitee.io/images/180002/receive_udp_packet.png
+[img01]:/images/180002/sending_data_from_app_with_socket.png
+[img02]:/images/180002/receiving_data_in_app_with_socket.png
+[img03]:/images/180002/app_receive_data_with_raw_socket.png
+[img04]:/images/180002/a_generic_representation_of_a_network_packet.png
+[img05]:/images/180002/ip_header.png
+[img06]:/images/180002/receive_udp_packet.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/87f88f8da43e7323539e5ee03e6eba2b.png

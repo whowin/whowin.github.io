@@ -87,9 +87,9 @@ postid: 100008
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
-[img01]:https://whowin.gitee.io/images/100008/apt-update-screen.png
+[img01]:/images/100008/apt-update-screen.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/c65fff9e72d37ebc52a7de1f0b2a1ec9.png

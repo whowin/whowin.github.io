@@ -57,7 +57,7 @@ PS1变量是在 shell 下用于定义提示符的变量，本文列出了可用�
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 

@@ -135,26 +135,26 @@ Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的�
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180015/magic-packet.c
 
-<!--gitee
-[article01]:https://whowin.gitee.io/post/blog/embedded/0001-wake-on-lan/
-[article02]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
-[article03]:https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/
--->
+[article01]:/post/blog/embedded/0001-wake-on-lan/
+[article02]:/post/blog/network/0002-link-layer-programming/
+[article03]:/post/blog/network/0006-send-udp-with-raw-socket/
+
+<!--CSDN
 [article01]:https://blog.csdn.net/whowin/article/details/126502495
 [article02]:https://blog.csdn.net/whowin/article/details/128766145
 [article03]:https://blog.csdn.net/whowin/article/details/128891255
-
+-->
 [article04]:https://wiki.wireshark.org/WakeOnLAN
 [article05]:https://zh.wikipedia.org/zh-cn/%E7%B6%B2%E8%B7%AF%E5%96%9A%E9%86%92
 [article06]:https://en.wikipedia.org/wiki/Wake-on-LAN
 
-[img01]:https://whowin.gitee.io/images/180002/sending_data_from_app_with_socket.png
-[img02]:https://whowin.gitee.io/images/180015/screenshot-magic-packet.png
+[img01]:/images/180002/sending_data_from_app_with_socket.png
+[img02]:/images/180015/screenshot-magic-packet.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/4b53b2ccfda26d20a8e656ae96a577ed.png

@@ -144,22 +144,23 @@ postid: 180016
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180016/rt-lookup.c
 
-<!--gitee
-[article01]:https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/
--->
-[article01]:https://blog.csdn.net/whowin/article/details/129409890
+[article01]:/post/blog/network/0009-get-gateway-ip-via-netlink/
 
-[img01]:https://whowin.gitee.io/images/180016/screenshot-cat-rt_tables.png
-[img02]:https://whowin.gitee.io/images/180016/screenshot-default-routing-table.png
-[img03]:https://whowin.gitee.io/images/180016/screenshot-routing-policy.png
-[img04]:https://whowin.gitee.io/images/180016/screenshot-of-main-routing-table.png
-[img05]:https://whowin.gitee.io/images/180016/example.png
-[img06]:https://whowin.gitee.io/images/180016/content-of-routing-txt.png
+<!--CSDN
+[article01]:https://blog.csdn.net/whowin/article/details/129409890
+-->
+
+[img01]:/images/180016/screenshot-cat-rt_tables.png
+[img02]:/images/180016/screenshot-default-routing-table.png
+[img03]:/images/180016/screenshot-routing-policy.png
+[img04]:/images/180016/screenshot-of-main-routing-table.png
+[img05]:/images/180016/example.png
+[img06]:/images/180016/content-of-routing-txt.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/7340ec35329fd11f23a1c436214f190c.png

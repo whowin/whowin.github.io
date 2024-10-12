@@ -199,11 +199,11 @@ Allegro是一个用于编写游戏和多媒体程序的库，我发现它时是�
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
-[img01]:https://whowin.gitee.io/images/160012/author-of-allegro.jpg
-[img02]:https://whowin.gitee.io/images/160012/set-using-allegro-under-rhide.jpg
+[img01]:/images/160012/author-of-allegro.jpg
+[img02]:/images/160012/set-using-allegro-under-rhide.jpg
 
 [web01]:https://shawnhargreaves.com/
 [web02]:https://shawnhargreaves.com/
@@ -212,6 +212,6 @@ Allegro是一个用于编写游戏和多媒体程序的库，我发现它时是�
 [web05]:http://ftp.delorie.com/pub/djgpp/current/unzip32.exe
 
 
-[article01]:https://whowin.gitee.io/post/blog/dos/0004-install-djgpp-rhide-under-dos/
+[article01]:/post/blog/dos/0004-install-djgpp-rhide-under-dos/
 
 

@@ -235,14 +235,14 @@ AC'97大多数应该听说过，可能有些人把它当成一种声卡，或者
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
-[img01]:https://whowin.gitee.io/images/160010/three-parts-of-sound-card.jpg
-[img02]:https://whowin.gitee.io/images/160010/prd-format.jpg
+[img01]:/images/160010/three-parts-of-sound-card.jpg
+[img02]:/images/160010/prd-format.jpg
 
-[spec01]:https://whowin.gitee.io/specification/ac97_r23.pdf
-[spec02]:https://whowin.gitee.io/specification/33238f_cs5536_ds.pdf
-[spec03]:https://whowin.gitee.io/specification/alc202.pdf
+[spec01]:/specification/ac97_r23.pdf
+[spec02]:/specification/33238f_cs5536_ds.pdf
+[spec03]:/specification/alc202.pdf
 
 [src01]:https://whowin.gitee.io/sourcecodes/160010/playwave.cc
 [src02]:https://whowin.gitee.io/sourcecodes/160010/ac97.h
@@ -250,6 +250,6 @@ AC'97大多数应该听说过，可能有些人把它当成一种声卡，或者
 [src04]:https://whowin.gitee.io/sourcecodes/160010/typedef.h
 [src05]:https://whowin.gitee.io/sourcecodes/160010/1.wav
 
-[article01]:https://whowin.gitee.io/post/blog/dos/0010-ac97-programing-in-dos/
+[article01]:/post/blog/dos/0010-ac97-programing-in-dos/
 
 

@@ -183,26 +183,27 @@ TCP是一种面向连接的通信方式，一个TCP服务器难免会遇到同�
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180011/select-server.c
 
-[img01]:https://whowin.gitee.io/images/180011/screenshot_of_server.png
-[img02]:https://whowin.gitee.io/images/180011/screenshot_of_client_1.png
+[img01]:/images/180011/screenshot_of_server.png
+[img02]:/images/180011/screenshot_of_client_1.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/4713f268fc8ad765a5f63138b6730596.png
 [img02]:https://img-blog.csdnimg.cn/img_convert/e08da230a8ee8db1a663f2f4d2ada356.png
 -->
 
-<!--gitee
-[article1]:https://whowin.gitee.io/post/blog/network/0010-tcp-and-udp-server-using-select/
-[article2]:https://whowin.gitee.io/post/blog/network/0013-udp-server-client-implementation-in-c/
-[article3]:https://whowin.gitee.io/post/blog/network/0012-tcp-server-client-implementation-in-c/
-[article4]:https://whowin.gitee.io/post/blog/network/0005-send-udp-via-linux-cli/
--->
+[article1]:/post/blog/network/0010-tcp-and-udp-server-using-select/
+[article2]:/post/blog/network/0013-udp-server-client-implementation-in-c/
+[article3]:/post/blog/network/0012-tcp-server-client-implementation-in-c/
+[article4]:/post/blog/network/0005-send-udp-via-linux-cli/
+
+<!--CSDN
 [article1]:https://blog.csdn.net/whowin/article/details/129410476
 [article2]:https://blog.csdn.net/whowin/article/details/129728570
 [article3]:https://blog.csdn.net/whowin/article/details/129688443
 [article4]:https://blog.csdn.net/whowin/article/details/128890866
+-->

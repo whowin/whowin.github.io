@@ -1,5 +1,5 @@
 ---
-title: "如何使用GLib的单向链表GSList"
+title: "单向链表以及如何使用GLib中的GSList实现单向链表"
 date: 2024-08-20T23:48:29+08:00
 author: whowin
 sidebar: false
@@ -11,6 +11,7 @@ categories:
 tags:
   - C语言
   - glib
+  - 单向链表
 
 draft: false
 #references: 
@@ -26,7 +27,7 @@ draft: false
 postid: 130003
 ---
 
-单向链表是一种基础的数据结构，也是一种简单而灵活的数据结构，本文讨论单向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GSList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。
+单向链表是一种基础的数据结构，也是一种简单而灵活的数据结构，本文讨论单向链表的基本概念及实现方法，并着重介绍使用GLib的GSList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GSList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。
 
 
 <!--more-->
@@ -393,6 +394,11 @@ postid: 130003
 **email: hengch@163.com**
 
 
+![donation][img_sponsor_qrcode]
+
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
+
+
 [glib_api_v2.0]:https://docs.gtk.org/glib/index.html
 [glib_api_v2.0_gslist]:https://docs.gtk.org/glib/struct.SList.html
 
@@ -407,4 +413,8 @@ postid: 130003
 [img02]:/images/130003/screenshot-of-sllist-glib.png
 [img03]:/images/130003/screenshot-of-queue-glib.png
 
+<!--CSDN -->
+[img01]:https://i-blog.csdnimg.cn/direct/40a88ebab8f145d39bcacac6fd3af029.png
+[img02]:https://i-blog.csdnimg.cn/direct/8dd305d65a9c4084a3d463fc6558878b.png
+[img03]:https://i-blog.csdnimg.cn/direct/6fd31fc6c6e44881aef014c360e95f95.png
 

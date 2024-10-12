@@ -321,19 +321,19 @@ postid: 100001
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
-[img_01]:https://whowin.gitee.io/images/100001/sh_point_to_dash.png
-[img_02]:https://whowin.gitee.io/images/100001/first_process.png
-[img_03]:https://whowin.gitee.io/images/100001/init_point_to_systemd.png
-[img_04]:https://whowin.gitee.io/images/100001/terminal-bash.png
-[img_05]:https://whowin.gitee.io/images/100001/sshd-bash.png
-[img_06]:https://whowin.gitee.io/images/100001/man-execve.png
-[img_07]:https://whowin.gitee.io/images/100001/strace_print_env.png
-[img_08]:https://whowin.gitee.io/images/100001/command_not_found.png
-[img_09]:https://whowin.gitee.io/images/100001/print_env_successfully.png
-[img_10]:https://whowin.gitee.io/images/100001/source_help.png
+[img_01]:/images/100001/sh_point_to_dash.png
+[img_02]:/images/100001/first_process.png
+[img_03]:/images/100001/init_point_to_systemd.png
+[img_04]:/images/100001/terminal-bash.png
+[img_05]:/images/100001/sshd-bash.png
+[img_06]:/images/100001/man-execve.png
+[img_07]:/images/100001/strace_print_env.png
+[img_08]:/images/100001/command_not_found.png
+[img_09]:/images/100001/print_env_successfully.png
+[img_10]:/images/100001/source_help.png
 
 <!-- CSDN
 [img_01]:https://img-blog.csdnimg.cn/img_convert/e7a727e73f0834c251a4e18f8834eb96.png

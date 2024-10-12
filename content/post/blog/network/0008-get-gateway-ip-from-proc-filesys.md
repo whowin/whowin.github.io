@@ -171,24 +171,25 @@ postid: 180008
 
 ![donation][img_sponsor_qrcode]
 
-[img_sponsor_qrcode]:https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png
+[img_sponsor_qrcode]:/images/qrcode/sponsor-qrcode.png
 
 
 [src01]:https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180008/get-gateway-proc.c
 
-<!--gitee
-[article01]:https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/
-[article02]:https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/
--->
+[article01]:/post/blog/network/0014-handling-arp-cache/
+[article02]:/post/blog/network/0009-get-gateway-ip-via-netlink/
+
+<!--CSDN
 [article01]:https://blog.csdn.net/whowin/article/details/129791465
 [article02]:https://blog.csdn.net/whowin/article/details/129409890
+-->
 
-[img01]:https://whowin.gitee.io/images/180008/cat-proc-net-route.png
-[img02]:https://whowin.gitee.io/images/180008/screenshot-of-ip-route.png
-[img03]:https://whowin.gitee.io/images/180008/screenshot-of-tracing-ip-route.png
-[img04]:https://whowin.gitee.io/images/180008/screenshot-of-route-n.png
-[img05]:https://whowin.gitee.io/images/180008/screenshot-of-tracing-route-n.png
-[img06]:https://whowin.gitee.io/images/180008/screenshot-get-gateway-proc.png
+[img01]:/images/180008/cat-proc-net-route.png
+[img02]:/images/180008/screenshot-of-ip-route.png
+[img03]:/images/180008/screenshot-of-tracing-ip-route.png
+[img04]:/images/180008/screenshot-of-route-n.png
+[img05]:/images/180008/screenshot-of-tracing-route-n.png
+[img06]:/images/180008/screenshot-get-gateway-proc.png
 
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/312c99b788170ca756b88a813f510d5a.png
