@@ -71,12 +71,12 @@ postid: 100014
 
 [article01]:https://betanews.com/2024/04/23/fedora-linux-40/
 
-[ref01]:/post/blog/linx/0005-top-5-linux-distros-for-ditching-windows-11/
-[ref02]:/post/blog/linx/0006-switch-from-windows-11-to-ubuntu-24-04-1/
-[ref03]:/post/blog/linx/0011-linux-mint-22-offers-compelling-reasons-to-switch-from-windows-11/
-[ref04]:/post/blog/linx/0013-system76-pop_os-2204-ubuntu-linux/
-[ref05]:/post/blog/linx/0014-fedora-linux-40/
-[ref06]:/post/blog/linx/0015-manjaro-linux-releases-xahea-24-1-with-gnome-plasma-and-xfce-updates/
+[ref01]:/post/blog/linux/0005-top-5-linux-distros-for-ditching-windows-11/
+[ref02]:/post/blog/linux/0006-switch-from-windows-11-to-ubuntu-24-04-1/
+[ref03]:/post/blog/linux/0011-linux-mint-22-offers-compelling-reasons-to-switch-from-windows-11/
+[ref04]:/post/blog/linux/0013-system76-pop_os-2204-ubuntu-linux/
+[ref05]:/post/blog/linux/0014-fedora-linux-40/
+[ref06]:/post/blog/linux/0015-manjaro-linux-releases-xahea-24-1-with-gnome-plasma-and-xfce-updates/
 
 <!--CSDN
 [ref01]:https://blog.csdn.net/whowin/article/details/142851436
