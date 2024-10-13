@@ -6,7 +6,61 @@
     <description>Recent content in Ubuntu on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 11 Jan 2024 16:43:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 06 Oct 2024 13:30:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/ubuntu/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>5个最佳Linux发行版可取代Windows 11并控制你的PC</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0005-top-5-linux-distros-for-ditching-windows-11/</link>
+      <pubDate>Sun, 06 Oct 2024 13:30:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0005-top-5-linux-distros-for-ditching-windows-11/</guid>
+      <description>&lt;p&gt;本文译自《betanews》，原作者为：Brian Fagioli；本文简单介绍了 5 种不同的 Linux 发行版，当你准备摆脱 windows 的束缚，开启新的电脑人生的时候，这篇文章或许能帮助到你，根据自己的喜好，选择适合自己的 Linux 发行版，从这篇文章开始，文章最后附有原文的网址，原文发表于2024年10月5日。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Manjaro Linux发布Xahea 24.1，包含GNOME、Plasma和XFCE更新</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0015-manjaro-linux-releases-xahea-24-1-with-gnome-plasma-and-xfce-updates/</link>
+      <pubDate>Sun, 06 Oct 2024 13:30:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0015-manjaro-linux-releases-xahea-24-1-with-gnome-plasma-and-xfce-updates/</guid>
+      <description>&lt;p&gt;本文译自《betanews》，原作者为：Brian Fagioli；本文简单介绍了于 2024年10月1日发布的基于Manjaro Xahea 24.1发行版，如果你整准备从windows转移到Linux上时，这篇文章或许会给你一些帮助和建议，文章最后附有原文的网址，原文发表于2024年10月2日。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>System76 通过 Pop!_OS 22.04 LTS 将 Ubuntu Linux 提升到新水平</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0013-system76-pop_os-2204-ubuntu-linux/</link>
+      <pubDate>Sun, 06 Oct 2024 13:30:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0013-system76-pop_os-2204-ubuntu-linux/</guid>
+      <description>&lt;p&gt;本文译自《betanews》，原作者为：Brian Fagioli；本文简单介绍了 System 76 于 2022年4月25日发布的基于Ubuntu 22.04.1 LTS的Pop!_OS发行版，如果你整准备从windows转移到Linux上时，这篇文章或许会给你一些帮助和建议，文章最后附有原文的网址，原文发表于2022年4月25日。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>从Microsoft Windows 11切换到Ubuntu Linux 24.04.1，享受神奇的开源体验</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0006-switch-from-windows-11-to-ubuntu-24-04-1/</link>
+      <pubDate>Sun, 06 Oct 2024 13:30:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0006-switch-from-windows-11-to-ubuntu-24-04-1/</guid>
+      <description>&lt;p&gt;本文译自《betanews》，原作者为：Brian Fagioli；本文简单介绍了2024年8月29日发布的Ubuntu 24.04.1 LTS，如果你整准备从windows转移到Linux上时，这篇文章或许会给你一些帮助和建议，文章最后附有原文的网址，原文发表于2024年8月29日。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>告别微软Windows 11，迎接基于Ubuntu的Linux Mint 22</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0011-linux-mint-22-offers-compelling-reasons-to-switch-from-windows-11/</link>
+      <pubDate>Sun, 06 Oct 2024 13:30:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0011-linux-mint-22-offers-compelling-reasons-to-switch-from-windows-11/</guid>
+      <description>&lt;p&gt;本文译自《betanews》，原作者为：Brian Fagioli；本文简单介绍了基于Ubuntu 24.04的Linux发行版Linux Mint 22，如果你正准备从windows转移到Linux上时，这篇文章或许会给你一些帮助和建议，文章最后附有原文的网址，原文发表于2024年7月25日。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>为Linux爱好者们献上一份祝福：Fedora 40 发布</title>
+      <link>https://whowin.gitee.io/post/blog/linux/0014-fedora-linux-40/</link>
+      <pubDate>Sun, 06 Oct 2024 13:30:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/linux/0014-fedora-linux-40/</guid>
+      <description>&lt;p&gt;本文译自《betanews》，原作者为：Brian Fagioli；本文简单介绍了于 2024年4月23日发布的基于Fedora Linux 40发行版，如果你整准备从windows转移到Linux上时，这篇文章或许会给你一些帮助和建议，文章最后附有原文的网址，原文发表于2024年4月23日。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>在ubuntu上的18个非常实用的命令行工具软件</title>
       <link>https://whowin.gitee.io/post/blog/linux/0010-19-useful-tools-in-ubuntu/</link>

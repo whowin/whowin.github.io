@@ -215,7 +215,7 @@
 </div></li>
 <li>
 <p>运行结果截图</p>
-<p><img src="https://whowin.gitee.io/images/180020/screenshot-for-testing-sock-rdm.png" alt="Screenshot for testing SOCK_RDM"></p>
+<p><img src="/images/180020/screenshot-for-testing-sock-rdm.png" alt="Screenshot for testing SOCK_RDM"></p>
 </li>
 <li>
 <p>SOCK_STREAM这种socket类型显然不适合用在ping程序上，因为这种socket是面向连接的，使用之前要先建立连接，但是如果可以建立了连接就完全没有必要使用ping去测试目的主机是否可用了，SOCK_RAW过于复杂而且必须要有root权限才能运行，我们放弃不用，所以最终我们使用SOCK_DGRAM来尝试发送ICMP数据包以实现一个ping程序；</p>
@@ -256,11 +256,11 @@
 <p>ICMP是那一层的协议其实并不重要，重要的是我们可以理解和使用它；实际上在设计ICMP协议时并没有考虑OSI的网络模型，所以才造成了这种含混的现象，不过这并不影响它的使用；</p>
 </li>
 <li>
-<p>和发送UDP报文相比，发送ICMP报文仅仅是两个协议的报头不一样而已，所以我们先了解ICMP报头结构，如果需要了解以太网报头、IP报头和UDP报头，可以参考文章：<a href="https://blog.csdn.net/whowin/article/details/128766145">《Linux下如何在数据链路层接收原始数据包》</a>；</p>
+<p>和发送UDP报文相比，发送ICMP报文仅仅是两个协议的报头不一样而已，所以我们先了解ICMP报头结构，如果需要了解以太网报头、IP报头和UDP报头，可以参考文章：<a href="/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>；</p>
 </li>
 <li>
 <p>ICMP报文的结构：</p>
-<p><img src="https://whowin.gitee.io/images/180019/structure-of-icmp-packet.png" alt="Structure of ICMP packet"></p>
+<p><img src="/images/180019/structure-of-icmp-packet.png" alt="Structure of ICMP packet"></p>
 </li>
 <li>
 <p>ICMP报头，定义在头文件&lt;netinet/ip_icmp.h&gt;中</p>
@@ -349,7 +349,7 @@
 </div></li>
 <li>本文只关心ICMP_ECHO和ICMP_ECHOREPLY两种报文类型，ping的实现实际上就是发送ICMP_ECHO报文，然后等待目的主机响应ICMP_ECHOREPLY报文，当然出现错误时可能会收到其他类型的报文，但本文的实例中将不予处理；</li>
 <li>code：子类型编码，在我们要用到的这两种类型的ICMP报文中，code都是为0的，也就是用不上这个字段，但有些报文类型是要用到code的，比如ICMP_DEST_UNREACH类型的报文，表示目标不可达，这个报文中的code字段的值将说明目标不可达的原因；</li>
-<li>checksum：ICMP报文的检查和，计算这个检查和时要包括ICMP报头和ICMP数据，其计算方法与internet checksum的计算方法一致，可以参考文章<a href="https://blog.csdn.net/whowin/article/details/128766194">《如何计算UDP头的checksum》</a>和<a href="https://blog.csdn.net/whowin/article/details/128846658">《如何计算IP报头的checksum》</a></li>
+<li>checksum：ICMP报文的检查和，计算这个检查和时要包括ICMP报头和ICMP数据，其计算方法与internet checksum的计算方法一致，可以参考文章<a href="/post/blog/network/0003-checksum-of-udp-header/">《如何计算UDP头的checksum》</a>和<a href="/post/blog/network/0004-checksum-of-ip-header/">《如何计算IP报头的checksum》</a></li>
 <li>由于我们仅关心ICMP_ECHO和ICMP_ECHOREPLY这两类报文，所以在ICMP报头的union中，我们使用echo这个结构：
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -620,7 +620,7 @@
 <li>
 <p><strong>计算ICMP报文的checksum</strong></p>
 <blockquote>
-<p>构建ICMP报文的最后一步就是计算checksum，这里仅给出程序，需要了解计算方法的可以参考文章<a href="https://blog.csdn.net/whowin/article/details/128766194">《如何计算UDP头的checksum》</a>和<a href="https://blog.csdn.net/whowin/article/details/128846658">《如何计算IP报头的checksum》</a></p>
+<p>构建ICMP报文的最后一步就是计算checksum，这里仅给出程序，需要了解计算方法的可以参考文章<a href="/post/blog/network/0003-checksum-of-udp-header/">《如何计算UDP头的checksum》</a>和<a href="/post/blog/network/0004-checksum-of-ip-header/">《如何计算IP报头的checksum》</a></p>
 </blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -793,7 +793,7 @@
 <ul>
 <li>
 <p>我们先看一下Linux(Ubuntu)提供的ping程序的统计结果输出的截屏</p>
-<p><img src="https://whowin.gitee.io/images/180020/screenshot-of-ping-statistics.png" alt="screetshot of ping statistics"></p>
+<p><img src="/images/180020/screenshot-of-ping-statistics.png" alt="screetshot of ping statistics"></p>
 </li>
 <li>
 <p>其统计数据有</p>
@@ -858,7 +858,7 @@ $$</p>
 </li>
 <li>
 <p>运行截图</p>
-<p><img src="https://whowin.gitee.io/images/180020/screenshot-of-ping-dgram.png" alt="screenshot of ping-dgram"></p>
+<p><img src="/images/180020/screenshot-of-ping-dgram.png" alt="screenshot of ping-dgram"></p>
 </li>
 </ul>
 <h2 id="4-后记">4. 后记</h2>
@@ -872,11 +872,11 @@ $$</p>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
-<!--gitee
-[article01]:https://whowin.gitee.io/post/blog/network/0003-checksum-of-udp-header/
-[article02]:https://whowin.gitee.io/post/blog/network/0004-checksum-of-ip-header/
-[article03]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!--CSDN
+[article01]:https://blog.csdn.net/whowin/article/details/128766194
+[article02]:https://blog.csdn.net/whowin/article/details/128846658
+[article03]:https://blog.csdn.net/whowin/article/details/128766145
 -->
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/255e010e19c0378b34781fc13af4afdb.png

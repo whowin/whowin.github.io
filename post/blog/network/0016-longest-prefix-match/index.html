@@ -184,7 +184,7 @@
 </li>
 <li>
 <p>下面是在我的机器上的执行结果</p>
-<p><img src="https://whowin.gitee.io/images/180016/screenshot-cat-rt_tables.png" alt="routing tables"></p>
+<p><img src="/images/180016/screenshot-cat-rt_tables.png" alt="routing tables"></p>
 </li>
 </ul>
 <hr>
@@ -206,12 +206,12 @@
 </li>
 <li>
 <p>尽管有4个路由表，但有的表可以是空的，比如在我的机器上，默认路由表就是空的</p>
-<p><img src="https://whowin.gitee.io/images/180016/screenshot-default-routing-table.png" alt="default routing table"></p>
+<p><img src="/images/180016/screenshot-default-routing-table.png" alt="default routing table"></p>
 </li>
 </ul>
 <hr>
 <ul>
-<li>我的另一篇文章<a href="https://blog.csdn.net/whowin/article/details/129409890">《linux下使用netlink获取gateway的IP地址》</a>中，程序中使用netlink获取了内核路由表，在程序中解析内核发回的信息时，使用了宏 <strong>RT_TABLE_MAIN</strong> 就是路由表的ID号，RT_TABLE_MAIN 显然指的是主路由表(main)，所以它的实际值是 254；</li>
+<li>我的另一篇文章<a href="/post/blog/network/0009-get-gateway-ip-via-netlink/">《linux下使用netlink获取gateway的IP地址》</a>中，程序中使用netlink获取了内核路由表，在程序中解析内核发回的信息时，使用了宏 <strong>RT_TABLE_MAIN</strong> 就是路由表的ID号，RT_TABLE_MAIN 显然指的是主路由表(main)，所以它的实际值是 254；</li>
 </ul>
 <ol start="2">
 <li><strong>Linux系统的路由策略</strong></li>
@@ -225,7 +225,7 @@
 </li>
 <li>
 <p>下面是在我的机器上的执行结果</p>
-<p><img src="https://whowin.gitee.io/images/180016/screenshot-routing-policy.png" alt="routing policy"></p>
+<p><img src="/images/180016/screenshot-routing-policy.png" alt="routing policy"></p>
 </li>
 </ul>
 <hr>
@@ -249,7 +249,7 @@
 <ul>
 <li>
 <p>命令 <code>route -n</code> 可以用比较整齐的方式显示主路由表(main)</p>
-<p><img src="https://whowin.gitee.io/images/180016/screenshot-of-main-routing-table.png" alt="main routing table"></p>
+<p><img src="/images/180016/screenshot-of-main-routing-table.png" alt="main routing table"></p>
 </li>
 </ul>
 <hr>
@@ -262,7 +262,7 @@
 </li>
 <li>
 <p>我们把上面的例子说的再仔细一点</p>
-<p><img src="https://whowin.gitee.io/images/180016/example.png" alt="Example"></p>
+<p><img src="/images/180016/example.png" alt="Example"></p>
 </li>
 </ul>
 <hr>
@@ -309,7 +309,7 @@
 <li>在路由表中，gateway为0.0.0.0表示不需要经过网关；destination为0.0.0.0表示任意IP地址；</li>
 <li>当netmask为0.0.0.0而destination也为0.0.0.0时，任何IP地址与netmask做&quot;与&quot;操作后都将与destination匹配。</li>
 </ul>
-<p><img src="https://whowin.gitee.io/images/180016/content-of-routing-txt.png" alt="routing.txt"></p>
+<p><img src="/images/180016/content-of-routing-txt.png" alt="routing.txt"></p>
 </li>
 </ul>
 <hr>
@@ -351,9 +351,9 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
-<!--gitee
-[article01]:https://whowin.gitee.io/post/blog/network/0009-get-gateway-ip-via-netlink/
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!--CSDN
+[article01]:https://blog.csdn.net/whowin/article/details/129409890
 -->
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/7340ec35329fd11f23a1c436214f190c.png

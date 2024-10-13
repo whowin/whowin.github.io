@@ -174,7 +174,7 @@
       <p>打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中扫描wifi信号其实资料并不多，前面已经有两篇文章介绍了如何使用ioctl()扫描wifi信号，但其实在Linux下有一个简单的库对这些ioctl()的操作进行了封装，这个库就是libiw，使用libiw可以简化编程，本文介绍了如果使用libiw对wifi信号进行扫描的基本方法，本文将给出完整的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；尽管本文内容主要涉及无线网络，但读者并不需要对 802.11 标准有所了解。</p>
 <h2 id="1-前言">1 前言</h2>
 <ul>
-<li>前面已经有两篇文章介绍了如何扫描 wifi 信号，<a href="https://blog.csdn.net/whowin/article/details/131504380">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a>和<a href="https://blog.csdn.net/whowin/article/details/137711398">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a>，这两篇文章均是使用 <code>ioctl()</code> 完成的 wifi 信号扫描；</li>
+<li>前面已经有两篇文章介绍了如何扫描 wifi 信号，<a href="/post/blog/network/0022-how-to-scan-wifi-signal/">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a>和<a href="/post/blog/network/0025-another-wifi-scanner-example/">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a>，这两篇文章均是使用 <code>ioctl()</code> 完成的 wifi 信号扫描；</li>
 <li>本文介绍使用 libiw 库进行 wifi 信号扫描的方法，比较前两篇文章中介绍的方法，编程上更加简单；</li>
 <li>实际上使用 libiw 扫描 wifi 信号，本质上还是使用 <code>ioctl()</code>；</li>
 <li>在大多数以 Linux 内核为基础的操作系统中，都是包含 WE(Wireless Extensions) 的，WE 实际就是一组在用户空间操作无线网卡驱动程序的一组 API，库 libiw 是对 WE 的一个封装；</li>
@@ -250,7 +250,7 @@
 <p>使用 libiw 编写 wifi 扫描程序，比起使用 <code>ioctl()</code> 要容易一些，但可以获得的信息远不如使用 <code>ioct()</code> 直接扫描 wifi 获得的信息多；</p>
 </li>
 <li>
-<p>以下一些 libiw 中的函数和数据结构在本文的实例程序中会使用到，这些函数的更详细的说明，也可以查看另一篇文章<a href="https://blog.csdn.net/whowin/article/details/140196003">《libiw中的函数说明》</a>；</p>
+<p>以下一些 libiw 中的函数和数据结构在本文的实例程序中会使用到，这些函数的更详细的说明，也可以查看另一篇文章<a href="/post/blog/network/0027-libiw-functions/">《libiw中的函数说明》</a>；</p>
 </li>
 <li>
 <p><code>int iw_sockets_open(void)</code></p>
@@ -408,7 +408,7 @@
 <li>
 <p><strong>使用 iw_scan() 获取扫描结果的问题</strong></p>
 <ul>
-<li>与使用 <code>ioctl()</code> 进行 wifi 信号扫描(请参考<a href="https://blog.csdn.net/whowin/article/details/131504380">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a>和<a href="https://blog.csdn.net/whowin/article/details/137711398">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a>)相比，使用 libiw 扫描 wifi 信号得到的信息其实要少一些，这也是这种方法的最主要的不足；</li>
+<li>与使用 <code>ioctl()</code> 进行 wifi 信号扫描(请参考<a href="/post/blog/network/0022-how-to-scan-wifi-signal/">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a>和<a href="/post/blog/network/0025-another-wifi-scanner-example/">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a>)相比，使用 libiw 扫描 wifi 信号得到的信息其实要少一些，这也是这种方法的最主要的不足；</li>
 <li>这主要是因为 <code>struct wireless_scan</code> 这个结构可以容纳的信息十分有限</li>
 <li><code>iw_scan()</code> 需要 4 个参数(见上节关于该函数的说明)，其中第 4 个参数是 <code>wireless_scan_head *context</code>；</li>
 <li>wireless_scan_head 和其中的 wireless_scan 的数据结构在上节已经做了详细的介绍，扫描到的 wifi 信号的数据实际存放在一个 wireless_scan 结构链表中；</li>
@@ -424,7 +424,7 @@
 <p>完整的源代码，文件名：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/180026/iw-scanner.c">iw-scanner.c</a>(<strong>点击文件名下载源程序</strong>)；</p>
 </li>
 <li>
-<p>这个程序比起在文章<a href="https://blog.csdn.net/whowin/article/details/131504380">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a>和<a href="https://blog.csdn.net/whowin/article/details/137711398">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a>的程序要简单得多；</p>
+<p>这个程序比起在文章<a href="/post/blog/network/0022-how-to-scan-wifi-signal/">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a>和<a href="/post/blog/network/0025-another-wifi-scanner-example/">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a>的程序要简单得多；</p>
 </li>
 <li>
 <p>简述一下程序的基本流程：</p>
@@ -437,12 +437,12 @@
 <li>使用 libiw 的 <code>iw_scan()</code> 启动 wifi 信号扫描非常容易，<code>iw_scan()</code> 需要四个参数，第一个是用 <code>iw_sockets_open()</code> 打开的 socket，第二个是我们在上面获取的无线网络接口的名称，第三个是 WE 的版本号，第四个是用于存储扫描结果链表的头指针；</li>
 <li><code>iw_scan()</code> 的执行是需要 root 权限的，所以这个程序要以 sudo 的方式运行，另外 <code>iw_scan()</code> 的执行也需要一定时间；</li>
 <li>获取扫描结果，可以通过检查扫描结果链表的头指针来判断是否有扫描结果，如果这个指针不为空则表示有扫描结果；</li>
-<li>接下来就是遍历整个扫描结果链表，并将其中的信息显示出来，比较文章<a href="https://blog.csdn.net/whowin/article/details/131504380">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a>和<a href="https://blog.csdn.net/whowin/article/details/137711398">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a>中的扫描结果，这里获得的信息比较有限；</li>
+<li>接下来就是遍历整个扫描结果链表，并将其中的信息显示出来，比较文章<a href="/post/blog/network/0022-how-to-scan-wifi-signal/">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a>和<a href="/post/blog/network/0025-another-wifi-scanner-example/">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a>中的扫描结果，这里获得的信息比较有限；</li>
 <li>最后使用 <code>iw_sockets_close()</code> 关闭打开的 socket。</li>
 </ul>
 </li>
 <li>
-<p>程序中有些不明确的概念或做法，请参考文章<a href="https://blog.csdn.net/whowin/article/details/131504380">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a>和<a href="https://blog.csdn.net/whowin/article/details/137711398">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a></p>
+<p>程序中有些不明确的概念或做法，请参考文章<a href="/post/blog/network/0022-how-to-scan-wifi-signal/">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a>和<a href="/post/blog/network/0025-another-wifi-scanner-example/">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a></p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall iw-scanner.c -o iw_scanner -liw</code></p>
@@ -458,9 +458,18 @@
 <h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<!-- 使用ioctl扫描wifi信号获取信号属性的实例(一) -->
-<!-- 使用ioctl扫描wifi信号获取信号属性的实例(二) -->
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!--CSDN
+[article01]:https://blog.csdn.net/whowin/article/details/131504380
+[article02]:https://blog.csdn.net/whowin/article/details/137711398
+-->
 <!-- libiw中的函数说明 -->
+<!--CSDN
+[article06]:https://blog.csdn.net/whowin/article/details/140196003
+-->
+<!-- CSDN
+[img01]:https://i-blog.csdnimg.cn/direct/b4c58b69bdd346cc96b7310fd78235c2.png
+-->
     </div>
 
     <div class="post-copyright">

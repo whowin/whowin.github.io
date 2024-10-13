@@ -434,7 +434,7 @@
 </div></li>
 <li>
 <p>qual 字段为信号连接质量，先看一下使用无线工具 <code>sudo iwlist [wifname] scan</code> 扫描信号看到的信号连接质量是什么样子的，[wifname] 是无线网络接口的名称，在我的电脑上是 <code>wlp1s0</code>，不同电脑可能会不一样；</p>
-<p><img src="https://whowin.gitee.io/images/180025/screenshot-of-iwlist-scan.png" alt="Screenshot of wifi scanning"></p>
+<p><img src="/images/180025/screenshot-of-iwlist-scan.png" alt="Screenshot of wifi scanning"></p>
 </li>
 <li>
 <p>图中红线所示部分就是信号连接质量，其表达方式为 <code>47/70</code>，这是什么含义呢？</p>
@@ -607,7 +607,7 @@
 </li>
 <li>
 <p>有意思的是起初并不知道这个字符串中会有什么内容，但把收到的内容显示出来后，发现是类似下面的内容：</p>
-<p><img src="https://whowin.gitee.io/images/180025/screenshot-of-driver-string.png" alt="Screenshot of driver specific ascii string"></p>
+<p><img src="/images/180025/screenshot-of-driver-string.png" alt="Screenshot of driver specific ascii string"></p>
 </li>
 <li>
 <p>图中红线所示就是收到的字符串，原来这个字符串中藏着与 beacon 帧有关的信息，Last beacon 是最后收到的 beacon 帧时间，TSF 是 Timing Synchronization Function 的缩写，是 beacon 帧中的一个字段，用于 AP 和 Station 之间同步时间；</p>
@@ -629,7 +629,7 @@
 </li>
 <li>
 <p>我们先来看一个实际收到的 IE 数据</p>
-<p><img src="https://whowin.gitee.io/images/180025/screenshot-of-IE-data.png" alt="Real IE data"></p>
+<p><img src="/images/180025/screenshot-of-IE-data.png" alt="Real IE data"></p>
 </li>
 <li>
 <p>数据与普通事件一样，符合 <code>struct iw_event</code> 结构，前两个字节是事件数据的长度，0x00D2(十进制 210)字节，第 3、4 字节为事件类型，0x8C05(IWEVGENIE) 表示这个事件中是 IE 数据；</p>
@@ -648,7 +648,7 @@
 </li>
 <li>
 <p>该标准的 <code>7.3.2 Information elements</code> 定义了 IE 的结构：</p>
-<p><img src="https://whowin.gitee.io/images/180025/screenshot-of-IE-structure.png" alt="IE Structure"></p>
+<p><img src="/images/180025/screenshot-of-IE-structure.png" alt="IE Structure"></p>
 </li>
 <li>
 <p>每个 IE 符合 <code>type-length-value</code> 格式，即：第 1 个字节表示 IE 类型 Element ID，第 2 个字节表示数据的长度 Length，后面若干字节为实际数据 Information，数据长度为 Length；</p>
@@ -705,7 +705,7 @@
 </li>
 <li>
 <p><code>struct ieee80211_ie</code> 中的 eid(Element ID) 字段定义了这个 IE 的类型，这些类型在 <code>802.11-2007</code> 的文档中第 100 页有定义，这里摘录其中的一部分：</p>
-<p><img src="https://whowin.gitee.io/images/180025/screenshot-of-80211-2007-1.png" alt="Parts of IE type definition"></p>
+<p><img src="/images/180025/screenshot-of-80211-2007-1.png" alt="Parts of IE type definition"></p>
 </li>
 <li>
 <p>从上面定义可以看到，当 Element ID 为 0 时，其信息内容为 SSID，以上面的实际数据为例，数据的第二行，也就是第 1 个 IE 的数据为：</p>
@@ -730,7 +730,7 @@
 </li>
 <li>
 <p>根据 Element ID 的定义，当 Element ID 为 1 时，IE 的数据为该信号所支持的传输速率，其结构在 <code>802.11-2007</code> 文档的第 102 页有介绍：</p>
-<p><img src="https://whowin.gitee.io/images/180025/screenshot-of-rates.png" alt="Supported Rates"></p>
+<p><img src="/images/180025/screenshot-of-rates.png" alt="Supported Rates"></p>
 </li>
 <li>
 <p>根据文档，一个 IE 中最多描述 8 个传输速率，单位为 500 kb/s，每个速率占用 1 个字节，其最高位(bit 7)有其它意义，(bit 0 - 6) 表示速率值，所以在计算时要将 bit 7 过滤掉；</p>
@@ -776,14 +776,14 @@
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="https://whowin.gitee.io/images/180025/wifi-new-scanner.gif" alt="GIF of running wifi-new0scanner"></p>
+<p><img src="/images/180025/wifi-new-scanner.gif" alt="GIF of running wifi-new0scanner"></p>
 </li>
 </ul>
 <h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!-- CSDN
 [img01]: https://img-blog.csdnimg.cn/img_convert/7d6fc4505697687bb568f4dea1e7f7e3.png
 [img02]: https://img-blog.csdnimg.cn/img_convert/3052fde5a47530e97638609e2f6cfebf.png

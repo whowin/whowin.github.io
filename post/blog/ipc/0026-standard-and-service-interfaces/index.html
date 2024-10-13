@@ -176,18 +176,18 @@
 <li>
 <p>在阅读本文前，建议先阅读有关 D-Bus 的其它文章，以便对 D-Bus 有个基本了解，本文将不再讨论以下文章已经介绍过的内容，这些文章包括：</p>
 <ul>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/">IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0022-dbus-asyn-process-signal/">IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/">IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0024-select-recv-message/">IPC之十四：使用libdbus通过select()接收D-Bus消息的实例</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0025-resolve-arbitrary-dns-record/">IPC之十五：使用libdbus通过D-Bus请求系统调用实现任意DNS记录解析的实例</a></li>
+<li><a href="/post/blog/ipc/0021-ipc-using-dbus/">IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例</a></li>
+<li><a href="/post/blog/ipc/0022-dbus-asyn-process-signal/">IPC之十二：使用libdbus在D-Bus上异步发送/接收信号的实例</a></li>
+<li><a href="/post/blog/ipc/0023-dbus-resolve-hostname/">IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例</a></li>
+<li><a href="/post/blog/ipc/0024-select-recv-message/">IPC之十四：使用libdbus通过select()接收D-Bus消息的实例</a></li>
+<li><a href="/post/blog/ipc/0025-resolve-arbitrary-dns-record/">IPC之十五：使用libdbus通过D-Bus请求系统调用实现任意DNS记录解析的实例</a></li>
 </ul>
 </li>
 <li>
-<p>在文章 <a href="https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a> 中，我们介绍了 D-Bus 大多数的基本数据类型以及数组(ARRAY)和结构(STRUCT)；</p>
+<p>在文章 <a href="/post/blog/ipc/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a> 中，我们介绍了 D-Bus 大多数的基本数据类型以及数组(ARRAY)和结构(STRUCT)；</p>
 </li>
 <li>
-<p>数组和结构在 <a href="https://dbus.freedesktop.org/doc/dbus-specification.html">D-Bus Specification</a> 中被归类在容器类型(Container Type)中，容器类型中还有两个数据类型：<code>VARIANT</code> 和 <code>DICT_ENTRY</code>，本节将介绍这两种类型，其它数据类型的介绍请参考 <a href="https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a>；</p>
+<p>数组和结构在 <a href="https://dbus.freedesktop.org/doc/dbus-specification.html">D-Bus Specification</a> 中被归类在容器类型(Container Type)中，容器类型中还有两个数据类型：<code>VARIANT</code> 和 <code>DICT_ENTRY</code>，本节将介绍这两种类型，其它数据类型的介绍请参考 <a href="/post/blog/ipc/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a>；</p>
 </li>
 <li>
 <p><font size=5>容器类型：<code>VARIANT</code></font></p>
@@ -246,7 +246,7 @@
 </div></li>
 <li>调用 <code>Introspect</code> 方法没有任何参数，服务端要返回一个 xml 的字符串，这个字符串定义了对象下所有实现的方法(Method)、属性(Property)和信号(Signal);</li>
 <li>这个方法就是 D-Bus 的内省(Introspection)机制，一个对象的实例在实现了这个接口后，客户调用这个接口可以了解这个对象中各个接口的调用方法，调用参数和返回参数；</li>
-<li>在 <a href="https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a> 和 <a href="https://whowin.gitee.io/post/blog/ipc/0025-resolve-arbitrary-dns-record/">《IPC之十五：使用libdbus通过D-Bus请求系统调用实现任意DNS记录解析的实例》</a> 都调用了 <code>systemd-resolved</code> 系统调用的 D-Bus 接口，下面命令调用了<code>systemd-resolved</code> 系统调用中内省(Introspection)接口，可以直观地看一下返回的 XML 数据；
+<li>在 <a href="/post/blog/ipc/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a> 和 <a href="/post/blog/ipc/0025-resolve-arbitrary-dns-record/">《IPC之十五：使用libdbus通过D-Bus请求系统调用实现任意DNS记录解析的实例》</a> 都调用了 <code>systemd-resolved</code> 系统调用的 D-Bus 接口，下面命令调用了<code>systemd-resolved</code> 系统调用中内省(Introspection)接口，可以直观地看一下返回的 XML 数据；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -327,7 +327,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>其实这个格式很容易理解，不需要更多的解释，&ldquo;in&rdquo; 表示输入参数，&ldquo;out&rdquo; 表示输出参数，<code>type</code> 后面的字母是 D-Bus 的数据类型定义，在文章 <a href="https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a> 中有介绍；</li>
+<li>其实这个格式很容易理解，不需要更多的解释，&ldquo;in&rdquo; 表示输入参数，&ldquo;out&rdquo; 表示输出参数，<code>type</code> 后面的字母是 D-Bus 的数据类型定义，在文章 <a href="/post/blog/ipc/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a> 中有介绍；</li>
 <li>本文的实例中将实现该接口；</li>
 </ul>
 </li>
@@ -423,7 +423,7 @@
 <h2 id="3-d-bus-注册服务的基本方法">3 D-Bus 注册服务的基本方法</h2>
 <ul>
 <li>
-<p>在文章 <a href="https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中的实例，已经可以在 D-Bus 上为客户端提供方法调用的服务，大致的流程如下：</p>
+<p>在文章 <a href="/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中的实例，已经可以在 D-Bus 上为客户端提供方法调用的服务，大致的流程如下：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -664,7 +664,7 @@
 <p>编译：<code>gcc -Wall -g dbus-service.c -o dbus-service `pkg-config --libs --cflags dbus-1` </code></p>
 </li>
 <li>
-<p>有关 <code>pkg-config --libs --cflags dbus-1</code> 可以参阅文章 <a href="https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中的简要说明；</p>
+<p>有关 <code>pkg-config --libs --cflags dbus-1</code> 可以参阅文章 <a href="/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中的简要说明；</p>
 </li>
 <li>
 <p>运行：<code>./dbus-service</code></p>
@@ -748,14 +748,14 @@
 </div></li>
 <li>
 <p>标准接口测试运行动图：</p>
-<p><img src="https://whowin.gitee.io/images/190026/dbus-service.gif" alt="GIF of testing for gbus-service"></p>
+<p><img src="/images/190026/dbus-service.gif" alt="GIF of testing for gbus-service"></p>
 </li>
 </ul>
 <h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!-- CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
 [article02]: https://blog.csdn.net/whowin/article/details/132171930

@@ -209,15 +209,15 @@
 </li>
 <li>
 <p>上述三个对消息队列做出限制的当前值可以简单地使用 <code>ipcs -q -l</code> 命令查看；</p>
-<p><img src="https://whowin.gitee.io/images/190013/screenshot-ipcs-l.png" alt="Screenshot of ipc-l command"></p>
+<p><img src="/images/190013/screenshot-ipcs-l.png" alt="Screenshot of ipc-l command"></p>
 </li>
 <li>
 <p>上述三个对消息队列做出限制的当前值，也可以在 <code>proc</code> 文件系统中找到：</p>
-<p><img src="https://whowin.gitee.io/images/190013/screenshot-proc-msg.png" alt="Screenshot of proc file"></p>
+<p><img src="/images/190013/screenshot-proc-msg.png" alt="Screenshot of proc file"></p>
 </li>
 <li>
 <p>使用 sysctl 命令也可以查看消息队列的限制值：</p>
-<p><img src="https://whowin.gitee.io/images/190013/screenshot-sysctl.png" alt="Screenshot of sysctl command"></p>
+<p><img src="/images/190013/screenshot-sysctl.png" alt="Screenshot of sysctl command"></p>
 </li>
 </ul>
 <hr>
@@ -466,7 +466,7 @@
 </li>
 <li>
 <p>运行截图，从截图中可以看出，消息队列中有三条消息：</p>
-<p><img src="https://whowin.gitee.io/images/190013/screenshot-of-msgsend.png" alt="Screenshot of msg-send"></p>
+<p><img src="/images/190013/screenshot-of-msgsend.png" alt="Screenshot of msg-send"></p>
 </li>
 </ul>
 <hr>
@@ -584,7 +584,7 @@
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="https://whowin.gitee.io/images/190013/screenshot-of-msgrecv.png" alt="Screenshot of msg-recv"></p>
+<p><img src="/images/190013/screenshot-of-msgrecv.png" alt="Screenshot of msg-recv"></p>
 </li>
 </ul>
 <hr>
@@ -736,7 +736,7 @@
 </li>
 <li>
 <p>运行截屏：</p>
-<p><img src="https://whowin.gitee.io/images/190013/screenshot-of-msgtool.png" alt="Screenshot of msg-recv"></p>
+<p><img src="/images/190013/screenshot-of-msgtool.png" alt="Screenshot of msg-recv"></p>
 </li>
 </ul>
 <hr>
@@ -774,7 +774,7 @@
 </li>
 <li>
 <p>内核并没有提供一个列出当前系统中所有消息队列的接口，只能依靠 proc 文件系统中的 <code>/proc/sysvipc/msg</code> 文件来查看当前所有消息队列的基本属性和权限，可以使用 <code>cat /proc/sysvipc/msg</code> 来查看消息队列的状态：</p>
-<p><img src="https://whowin.gitee.io/images/190013/screenshot-of-proc-file.png" alt="Screenshot of proc filesystem"></p>
+<p><img src="/images/190013/screenshot-of-proc-file.png" alt="Screenshot of proc filesystem"></p>
 </li>
 </ul>
 <hr>
@@ -790,11 +790,11 @@
 </li>
 <li>有关进程间通信(IPC)的的其它文章：
 <ul>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/">IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘</a></li>
+<li><a href="/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></li>
+<li><a href="/post/blog/ipc/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></li>
+<li><a href="/post/blog/ipc/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></li>
+<li><a href="/post/blog/ipc/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></li>
+<li><a href="/post/blog/ipc/0015-systemv-semaphore-sets/">IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘</a></li>
 </ul>
 </li>
 </ul>
@@ -802,7 +802,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
 [article02]: https://blog.csdn.net/whowin/article/details/132171930

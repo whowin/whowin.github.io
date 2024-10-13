@@ -180,8 +180,8 @@
 <li>信号量与其他形式的 IPC 不同，它并不能完成一般意义上的的数据交换，也就是说，不能使用信号量将信息从一个进程传输到另一个进程；</li>
 <li>信号量通常用于进程间同步或对共享资源的访问同步，也就是说，信号量可以控制可能发生冲突的共享访问的时机；</li>
 <li>POSIX 信号量与 SYSTEM V 信号量集不同，在内核中不是以数组的形式进行管理，所以也就不再称其为 <strong>集</strong>；</li>
-<li>在阅读本文前可以参考文章<a href="https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/">《IPC之五：使用 System V 信号量集解决经典的&rsquo;哲学家就餐问题&rsquo;》</a>，关于信号量的概念都是一致的；</li>
-<li>也可以参考文章<a href="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/">《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》</a>，POSIX 标准下的很多定义都是类似的；</li>
+<li>在阅读本文前可以参考文章<a href="/post/blog/ipc/0015-systemv-semaphore-sets/">《IPC之五：使用 System V 信号量集解决经典的&rsquo;哲学家就餐问题&rsquo;》</a>，关于信号量的概念都是一致的；</li>
+<li>也可以参考文章<a href="/post/blog/ipc/0014-posix-message-queue/">《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》</a>，POSIX 标准下的很多定义都是类似的；</li>
 <li>以下如无特别说明，信号量均指 POSIX 信号量；</li>
 <li>使用 <code>man sem_overview</code> 可以查阅 POSIX 信号量的在线手册；</li>
 <li>POSIX 信号量分为<strong>有名信号量</strong>和<strong>无名信号量</strong>(也称匿名信号量)；</li>
@@ -290,7 +290,7 @@
 <p>SYSTEM V 的信号量集是用 key 或者 ID 来标识的，是没有名称的，POSIX 的有名信号量是有名称的，使用一个唯一的信号量名称来标识一个信号量；</p>
 </li>
 <li>
-<p>和 POSIX 的消息队列(参考文章<a href="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/">《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》</a>)一样，有名信号量的名称是一个以 &ldquo;/&rdquo; 开头的字符串，而且名称中不允许再出现第二个 &ldquo;/&quot;，这个名称字符串以 NULL 结尾；</p>
+<p>和 POSIX 的消息队列(参考文章<a href="/post/blog/ipc/0014-posix-message-queue/">《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》</a>)一样，有名信号量的名称是一个以 &ldquo;/&rdquo; 开头的字符串，而且名称中不允许再出现第二个 &ldquo;/&quot;，这个名称字符串以 NULL 结尾；</p>
 </li>
 <li>
 <p>POSIX 有名信号量的名称最长为 <code>NAME_MAX - 4</code>，宏定义 NAME_MAX 定义在头文件 <code>&lt;linux/limits.h</code> 中，为 255；</p>
@@ -448,7 +448,7 @@
 </li>
 <li>
 <p>下面是这个程序的运行截屏：</p>
-<p><img src="https://whowin.gitee.io/images/190016/screenshot-of-sem-create.png" alt="screenshot of sem-create command"></p>
+<p><img src="/images/190016/screenshot-of-sem-create.png" alt="screenshot of sem-create command"></p>
 </li>
 <li>
 <p>请注意，尽管我们设置了信号量的读/写权限是 <code>0666</code>，但最后显示的信号量的权限却是 <code>0664</code>，这是因为 umask 为 <code>0002</code>。</p>
@@ -515,7 +515,7 @@
 <p><code>sem_timedwait()</code> 在 <code>sem_wait()</code> 的基础上增加了一个超时时间 <code>abs_timeout</code>，当产生阻塞时，到达超时时间则返回 -1，<code>errno=ETIMEDOUT</code>，如果不会产生阻塞，则信号量值减 1 然后返回 0；</p>
 <ul>
 <li>特别要注意的时，<code>abs_timeout</code> 并不是一个时长，而是一个绝对时间，其值表示从 <code>1970-01-01 00:00:00+0000 (UTC)</code> 开始，到函数返回的秒(tv_sec)和纳秒(tv_nsec)的数值；</li>
-<li>请参考文章<a href="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/">《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》</a>中关于 <code>mq_timedsend()</code> 和 <code>mq_timedreceive()</code> 的说明；</li>
+<li>请参考文章<a href="/post/blog/ipc/0014-posix-message-queue/">《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》</a>中关于 <code>mq_timedsend()</code> 和 <code>mq_timedreceive()</code> 的说明；</li>
 </ul>
 </li>
 <li>
@@ -652,7 +652,7 @@
 </li>
 <li>
 <p>下面是这个程序的运行截屏：</p>
-<p><img src="https://whowin.gitee.io/images/190016/screenshot-of-official-exam.png" alt="screenshot of official-exam"></p>
+<p><img src="/images/190016/screenshot-of-official-exam.png" alt="screenshot of official-exam"></p>
 </li>
 </ul>
 <hr>
@@ -719,7 +719,7 @@
 </li>
 <li>
 <p>运行动图：</p>
-<p><img src="https://whowin.gitee.io/images/190016/producer-consumer.gif" alt="GIF of running producer-consumer"></p>
+<p><img src="/images/190016/producer-consumer.gif" alt="GIF of running producer-consumer"></p>
 <ul>
 <li>运行了两次，第一次生产速度小于消费速度，所以会出现提示：The buffer is empty.</li>
 <li>第二次生产速度大于消费速度，所以会出现提示：The buffer is full.</li>
@@ -736,17 +736,17 @@
 </ul>
 <h2 id="8-有关进程间通信ipc的的其它文章">8 有关进程间通信(IPC)的的其它文章：</h2>
 <ul>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/">IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘</a></li>
+<li><a href="/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></li>
+<li><a href="/post/blog/ipc/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></li>
+<li><a href="/post/blog/ipc/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></li>
+<li><a href="/post/blog/ipc/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></li>
+<li><a href="/post/blog/ipc/0015-systemv-semaphore-sets/">IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘</a></li>
 </ul>
 <h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
 [article02]: https://blog.csdn.net/whowin/article/details/132171930

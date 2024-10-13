@@ -205,7 +205,7 @@
 <li>
 <p>向Linux内核注册一个tun设备名称，本例中为tun0</p>
 <blockquote>
-<p>(struct ifreq)定义在头文件&lt;linux/if.h&gt;中，在我的很多文章中都有介绍，比如文章<a href="https://blog.csdn.net/whowin/article/details/128891255">《如何使用raw socket发送UDP报文》</a>，如果需要，可以参考；</p>
+<p>(struct ifreq)定义在头文件&lt;linux/if.h&gt;中，在我的很多文章中都有介绍，比如文章<a href="https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a>，如果需要，可以参考；</p>
 </blockquote>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -275,7 +275,7 @@
 </li>
 <li>
 <p>运行该程序，会构建一个tun设备，打开一个新的终端，使用 <code>ifconfig</code> 将可以看到系统中多了一个虚拟网络接口tun0，使用 <code>route -n</code> 查看路由也会看到增加了一条关于tun0设备的路由</p>
-<p><img src="https://whowin.gitee.io/images/180018/screenshot-of-setting-up-tun0.png" alt="screenshot of setting up tun0 device"></p>
+<p><img src="/images/180018/screenshot-of-setting-up-tun0.png" alt="screenshot of setting up tun0 device"></p>
 <center><b>图1：构建一个tun设备后</b></center>
 <hr>
 </li>
@@ -339,7 +339,7 @@
 <li>当我们发送一个UDP报文到 <strong>192.168.2.114:5678</strong>(也就是本机物理设备enp0s3的IP)时，根据路由，报文被送给enp0s3的驱动程序，驱动程序并不会把这个报文发送到物理网络上，因为enp0s3的驱动程序已经是这个报文最终的目的地，所以enp0s3的驱动程序会将这个报文发到一个正在监听192.168.2.114:5678的用户程序上，如果我们没有编写这个程序，报文将被丢弃，这样我们就收不到这个报文；</li>
 <li>当我们发送一个UDP报文到 <strong>10.0.0.1:5678</strong>(也就是本机虚拟设备tun0的IP)时，根据路由，报文被送给tun0的驱动程序，驱动程序并不会把这个报文发送到 application-tun 上，因为tun0的驱动程序已经是这个报文的最终目的地，所以tun0的驱动程序会将这个报文发到一个正在监听10.0.0.1:5678的用户程序上，和物理设备一样，如果我们没有编写这个程序，报文将被丢弃，我们收不到这个报文；</li>
 </ul>
-<p><img src="https://whowin.gitee.io/images/180018/send-data-tun-local.png" alt="send data to tun&amp;rsquo;s IP"></p>
+<p><img src="/images/180018/send-data-tun-local.png" alt="send data to tun&amp;rsquo;s IP"></p>
 <center><b>图2：发送报文到tun0的IP上</b></center>
 </li>
 </ul>
@@ -351,7 +351,7 @@
 <li>当我们发送一个UDP报文到 <strong>192.168.2.112:5678</strong> 时，根据路由报文会被送给enp0s3的驱动程序，驱动程序会把这个报文发送到物理网络上；</li>
 <li>当我们发送一个UDP报文到 <strong>10.0.0.2:5678</strong> 时，根据路由报文会被送给报文被送给tun0的驱动程序，驱动程序会把这个报文发送到应用程序 <strong>application-tun</strong> 上；</li>
 </ul>
-<p><img src="https://whowin.gitee.io/images/180018/send-data-tun-remote.png" alt="send data to tun&amp;rsquo;s route"></p>
+<p><img src="/images/180018/send-data-tun-remote.png" alt="send data to tun&amp;rsquo;s route"></p>
 <center><b>图3：发送报文到符合tun0路由的其他IP上</b></center>
 </li>
 </ul>
@@ -426,7 +426,7 @@
 </div></li>
 <li>
 <p>在运行tun-02的终端上显示出源IP地址为10.0.0.1</p>
-<p><img src="https://whowin.gitee.io/images/180018/screenshot-for-source-ip.png" alt="screenshot for source IP"></p>
+<p><img src="/images/180018/screenshot-for-source-ip.png" alt="screenshot for source IP"></p>
 <center><b>图4：Linux在多网卡环境下选择源IP</b></center>
 </li>
 </ul>
@@ -439,7 +439,7 @@
 </li>
 <li>
 <p>路由表中有一个src字段，当没有指定源IP地址时，将使用选定路由的src字段作为源IP地址，使用 <code>ip route</code> 可以看到src字段</p>
-<p><img src="https://whowin.gitee.io/images/180018/screenshot-of-ip-route.png" alt="screenshot of &amp;lsquo;ip route&amp;rsquo;"></p>
+<p><img src="/images/180018/screenshot-of-ip-route.png" alt="screenshot of &amp;lsquo;ip route&amp;rsquo;"></p>
 <center><b>图5：ip route命令显示路由表中src字段</b></center>
 </li>
 </ul>
@@ -465,7 +465,7 @@
 </li>
 <li>
 <p>先看一张示意图</p>
-<p><img src="https://whowin.gitee.io/images/180018/simple-ip-tunnel.png" alt="Diagram Simple IP tunnel"></p>
+<p><img src="/images/180018/simple-ip-tunnel.png" alt="Diagram Simple IP tunnel"></p>
 <center><b>图6：简单的IP隧道示意图</b></center>
 </li>
 <li>
@@ -614,9 +614,9 @@
 </li>
 <li>
 <p>下面是截屏</p>
-<p><img src="https://whowin.gitee.io/images/180018/screenshot-of-1st-termianl-for-client.png" alt="screenshot of 1st terminal for client test"></p>
+<p><img src="/images/180018/screenshot-of-1st-termianl-for-client.png" alt="screenshot of 1st terminal for client test"></p>
 <center><b>图7：测试客户端程序时的第一个终端</b></center>
-<p><img src="https://whowin.gitee.io/images/180018/screenshot-of-2nd-terminal-for-client.png" alt="screenshot of 2nd terminal for client test"></p>
+<p><img src="/images/180018/screenshot-of-2nd-terminal-for-client.png" alt="screenshot of 2nd terminal for client test"></p>
 <center><b>图8：测试客户端程序时的第二个终端</b></center>
 </li>
 </ul>
@@ -638,7 +638,7 @@
 </li>
 <li>
 <p>在服务器端和客户端均需要打开两个终端，下面是测试方法示意图</p>
-<p><img src="https://whowin.gitee.io/images/180018/diagram-for-testing.png" alt="diagram for testing"></p>
+<p><img src="/images/180018/diagram-for-testing.png" alt="diagram for testing"></p>
 <center><b>图9：测试示意图</b></center>
 </li>
 <li>
@@ -661,13 +661,13 @@
 </li>
 <li>
 <p>下面是运行截图</p>
-<p><img src="https://whowin.gitee.io/images/180018/screenshot-server-1st-terminal-for-testing.png" alt="screenshot server 1st terminal for testing"></p>
+<p><img src="/images/180018/screenshot-server-1st-terminal-for-testing.png" alt="screenshot server 1st terminal for testing"></p>
 <center><b>图10：服务器端第一个终端</b></center>
-<p><img src="https://whowin.gitee.io/images/180018/screenshot-client-1st-terminal-for-testing.png" alt="screenshot client 1st terminal for testing"></p>
+<p><img src="/images/180018/screenshot-client-1st-terminal-for-testing.png" alt="screenshot client 1st terminal for testing"></p>
 <center><b>图11：客户端第一个终端</b></center>
-<p><img src="https://whowin.gitee.io/images/180018/screenshot-server-2nd-terminal-for-testing.png" alt="screenshot server 2nd terminal for testing"></p>
+<p><img src="/images/180018/screenshot-server-2nd-terminal-for-testing.png" alt="screenshot server 2nd terminal for testing"></p>
 <center><b>图12：服务器端第二个终端</b></center>
-<p><img src="https://whowin.gitee.io/images/180018/screenshot-client-2nd-terminal-for-testing.png" alt="screenshot client 2nd terminal for testing"></p>
+<p><img src="/images/180018/screenshot-client-2nd-terminal-for-testing.png" alt="screenshot client 2nd terminal for testing"></p>
 <center><b>图13：客户端第二个终端</b></center>
 </li>
 </ul>
@@ -677,7 +677,7 @@
 <ul>
 <li>我们实现了一个简单的IP隧道，在这个IP隧道，我们传送一个UDP报文，我们传了一个UDP报文而不是一个TCP报文是为了省去connect()的麻烦；</li>
 <li>这样一个IP隧道并不局限在局域网中，通过互联网一样可以建立一个IP隧道；</li>
-<li>我们的这个服务器端的程序仅处理了一个客户端的连接，如果我们允许多个客户端接入并建立多条IP隧道，如果连接的多个客户端的tun都绑定在同一个网段上，那么通过服务器显然是可以像局域网一样相互通信的，好像多个终端在一个局域网里一样，是不是有点像<img src="https://whowin.gitee.io/images/180018/vpn.png" alt="">，实际上很多<img src="https://whowin.gitee.io/images/180018/vpn.png" alt="">就是使用IP隧道实现的；</li>
+<li>我们的这个服务器端的程序仅处理了一个客户端的连接，如果我们允许多个客户端接入并建立多条IP隧道，如果连接的多个客户端的tun都绑定在同一个网段上，那么通过服务器显然是可以像局域网一样相互通信的，好像多个终端在一个局域网里一样，是不是有点像<img src="/images/180018/vpn.png" alt="">，实际上很多<img src="/images/180018/vpn.png" alt="">就是使用IP隧道实现的；</li>
 <li>IP隧道还可以用于很多场合，如果你的防火墙不允许某些协议通过，那么你可以通过一个防火墙允许的端口与服务器建立一个IP隧道，然后在这个IP隧道里跑那个不被防火墙允许的协议，就像我们在IP隧道里跑UDP协议一样；</li>
 <li>建立隧道也不一定非得使用TCP/IP协议，比如可以使用ICMP协议建立一个ICMP隧道，当你的电脑只能ping通你的服务器，其它的所有协议都无法通过防火墙的情况下，使用ICMP协议建立一个ICMP隧道，然后可以在这个隧道里跑其它协议；</li>
 <li>虚拟网络接口的用途很多，现在的虚拟机、容器等大多使用了虚拟网络接口，希望这篇文章可以让你对虚拟网络接口有个初步的认识。</li>
@@ -686,9 +686,9 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
-<!--gitee
-[article01]:https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!--CSDN
+[article01]:https://blog.csdn.net/whowin/article/details/128891255
 -->
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/ebd984e31848ac92b1bd298d5ee258f6.png

@@ -189,7 +189,7 @@
 <li>在以太网络中，每台机器均有一个ARP cache，里面存着一些IP地址和MAC地址的对应关系，在ubuntu下，内核把ARP cache映射为文件：<code>/proc/net/arp</code>，所以使用 <code>cat /proc/net/arp</code> 是可以看到本机的 ARP cache 的</li>
 <li>在数据链路层需要填MAC地址时，首先查询ARP cache中是否有相应的记录，如果有则直接使用；</li>
 <li>如果在ARP cache中没有记录，则向局域网广播一个ARP请求，里面有需要获取MAC地址的机器所对应的IP地址，当这个IP地址收到这个ARP请求时，则会回应一个ARP回应，将自己的MAC地址告知发送请求的机器，发出请求的机器收到该回应后，应该在ARP cache中添加上这条记录；</li>
-<li>有关ARP cache的操作，请参考文章<a href="https://blog.csdn.net/whowin/article/details/129791465">《如何用C语言操作arp cache》</a>。</li>
+<li>有关ARP cache的操作，请参考文章<a href="/post/blog/network/0014-handling-arp-cache/">《如何用C语言操作arp cache》</a>。</li>
 </ul>
 </li>
 <li>
@@ -197,7 +197,7 @@
 <ul>
 <li>对一个ARP请求的回应被称为ARP回应，ARP请求数据包和回应数据包的结构是一样的；</li>
 </ul>
-<p><img src="https://whowin.gitee.io/images/180007/arp_packet.png" alt="arp request"></p>
+<p><img src="/images/180007/arp_packet.png" alt="arp request"></p>
 </li>
 </ul>
 <hr>
@@ -227,7 +227,7 @@
 <li>h_dest字段为目的MAC地址，h_source字段为源MAC地址；</li>
 <li>h_proto表示当前数据包在网络层使用的协议，Linux支持的协议在头文件linux/if_ether.h中定义；通常在网络层使用的IP协议，这个字段的值是0x0800(宏ETH_P_IP)，<strong>对于ARP报文，这个字段的值为0x0806(ETH_P_ARP)</strong>，表示网络层使用的是ARP协议；</li>
 <li>对于一个ARP请求数据包来说，h_dest通常为6个0xff，这是因为发送者并不知道目的机器的MAC地址，发送者的意图就是通过一个ARP请求包获得目的机器的MAC地址，所以发送者需要把这个数据包广播出去，使每台机器都可以收到，6个0xff表示一个广播地址；</li>
-<li>对于ARP请求的数据包来说，h_source是发送者自己的MAC地址，发送者在发送ARP请求时，自己的MAC地址是显然已知的，如果不知道，可以通过ioctl()获取(请参考文章<a href="https://blog.csdn.net/whowin/article/details/128891255">《如何使用raw socket发送UDP报文》</a>)；</li>
+<li>对于ARP请求的数据包来说，h_source是发送者自己的MAC地址，发送者在发送ARP请求时，自己的MAC地址是显然已知的，如果不知道，可以通过ioctl()获取(请参考文章<a href="/post/blog/network/0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a>)；</li>
 <li>对于ARP回应的数据包来说，目的地址就是发送ARP请求包的机器，h_dest应该就是收到的ARP请求包中的h_source；</li>
 <li>对于ARP回应的数据包来说，h_source就是自己的MAC地址，这个当然是已知的；</li>
 <li>不管是ARP请求还是回应数据包，h_proto都是0x0806(宏ETH_P_ARP)，表示网络层使用的协议是ARP协议</li>
@@ -235,7 +235,7 @@
 </li>
 <li>
 <p><strong>ARP报头(ARP header)</strong></p>
-<p><img src="https://whowin.gitee.io/images/180007/arp_header.png" alt="ARP header"></p>
+<p><img src="/images/180007/arp_header.png" alt="ARP header"></p>
 <hr>
 <ul>
 <li>arp报头定义在头文件linux/if_arp.h中：
@@ -270,7 +270,7 @@
 </li>
 <li>
 <p><strong>ARP Payload</strong></p>
-<p><img src="https://whowin.gitee.io/images/180007/arp_payload.png" alt="ARP payload"></p>
+<p><img src="/images/180007/arp_payload.png" alt="ARP payload"></p>
 <hr>
 <ul>
 <li>对于以太网IPv4而言，ARP payload的定义如下
@@ -304,11 +304,11 @@
 <ul>
 <li>对于习惯于使用socket基于TCP/IP协议的编程来说，arp的请求既无法使用TCP socket(SOCK_STREAM)发送，也无法使用UDP socket(SOCK_DGRAM)发送；接收也是一样，TCP/UDP socket是无法收到ARP的回应信息的；</li>
 <li>前面说过，ARP协议是工作在数据链路层的，而TCP/UDP socket是用在应用层的，应用层发送的数据在传输层要被加上一个TCP/UDP头，在网络层要被加上一个IP头，在数据链路层要被加上一个以太网头，然后才交给物理层(网卡的驱动程序)发送；</li>
-<li>相关概念请参考<a href="https://blog.csdn.net/whowin/article/details/128766145">《Linux下如何在数据链路层接收原始数据包》</a>和<a href="https://blog.csdn.net/whowin/article/details/128891255">《如何使用raw socket发送UDP报文》</a></li>
+<li>相关概念请参考<a href="/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>和<a href="/post/blog/network/0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a></li>
 <li>发送ARP请求、接收ARP回应只能在数据链路层完成，要在数据链路层上编程，需要用到raw socket，相关的知识也请参考上面两篇文章；</li>
-<li>在发送ARP请求时，封装过程与文章<a href="https://blog.csdn.net/whowin/article/details/128891255">《如何使用raw socket发送UDP报文》</a>中类似；</li>
-<li>在接收ARP回应时，拆包过程与文章<a href="https://blog.csdn.net/whowin/article/details/128766145">《Linux下如何在数据链路层接收原始数据包》</a>中类似；</li>
-<li>使用程序获取、添加和删除ARP cache记录的方法，请参考文章<a href="https://blog.csdn.net/whowin/article/details/129791465">《如何用C语言操作arp cache》</a></li>
+<li>在发送ARP请求时，封装过程与文章<a href="/post/blog/network/0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a>中类似；</li>
+<li>在接收ARP回应时，拆包过程与文章<a href="/post/blog/network/0002-link-layer-programming/">《Linux下如何在数据链路层接收原始数据包》</a>中类似；</li>
+<li>使用程序获取、添加和删除ARP cache记录的方法，请参考文章<a href="/post/blog/network/0014-handling-arp-cache/">《如何用C语言操作arp cache》</a></li>
 <li>关于如何构建以太网头、ARP报头和ARP payload，在上一节介绍以太网报头和ARP报文时已经做了介绍。</li>
 </ul>
 <h2 id="3-接收arp请求并发送回应的实例">3. 接收ARP请求并发送回应的实例</h2>
@@ -563,7 +563,7 @@
 </ol>
 </li>
 <li>
-<p>由于ARP工作在数据链路层，所以不能使用普通的socket进行接收和发送，需要使用raw socket，使用raw socket时需要使用一个结构(struct sockaddr_ll)，这个结构的作用类似于IPv4的socket编程中的(struct sockaddr_in)的作用，有关这个结构的简单介绍，可以参考文章<a href="https://blog.csdn.net/whowin/article/details/128891255">《如何使用raw socket发送UDP报文》</a></p>
+<p>由于ARP工作在数据链路层，所以不能使用普通的socket进行接收和发送，需要使用raw socket，使用raw socket时需要使用一个结构(struct sockaddr_ll)，这个结构的作用类似于IPv4的socket编程中的(struct sockaddr_in)的作用，有关这个结构的简单介绍，可以参考文章<a href="/post/blog/network/0006-send-udp-with-raw-socket/">《如何使用raw socket发送UDP报文》</a></p>
 </li>
 <li>
 <p>由于这个程序是使用raw socket在数据链路层上接收数据，所以实际上程序可以收到在局域网上的所有数据包，程序过滤掉了不是ARP协议的数据包，然后又过滤掉了目的IP不是本机的数据包，在ctrl+c退出时，程序会显示收到了多少数据包，其中ARP协议数据包有多少，ARP请求包有多少，程序一共回应了多少个数据包，数据还是有点意思的；</p>
@@ -598,24 +598,24 @@
 </li>
 <li>
 <p>运行截图</p>
-<p><img src="https://whowin.gitee.io/images/180007/screenshot_arp_server.png" alt="screenshot of running arp_server"></p>
+<p><img src="/images/180007/screenshot_arp_server.png" alt="screenshot of running arp_server"></p>
 </li>
 </ul>
 <h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/cbabdf8b58abc96a519821bbff8d6196.png
 [img02]:https://img-blog.csdnimg.cn/img_convert/9338c43a9843115c5309676dafa76713.png
 [img03]:https://img-blog.csdnimg.cn/img_convert/0dfca3ed4940a3c01b708c426c066f66.png
 [img04]:https://img-blog.csdnimg.cn/img_convert/8ba373f0c0c93c4fc0f42bee3a67b3d3.png
 -->
-<!--gitee
-[article1]:https://whowin.gitee.io/post/blog/network/0002-link-layer-programming/
-[article2]:https://whowin.gitee.io/post/blog/network/0006-send-udp-with-raw-socket/
-[article3]:https://whowin.gitee.io/post/blog/network/0014-handling-arp-cache/
+<!--CSDN
+[article1]:https://blog.csdn.net/whowin/article/details/128766145
+[article2]:https://blog.csdn.net/whowin/article/details/128891255
+[article3]:https://blog.csdn.net/whowin/article/details/129791465
 -->
     </div>
 

@@ -134,12 +134,31 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0024-using-epoll-in-socket-programming/">使用epoll()进行socket编程处理多客户连接的TCP服务器实例</a></h1>
+    <h1 class="post-title"><a class="post-link" href="/post/blog/linux/0014-fedora-linux-40/">为Linux爱好者们献上一份祝福：Fedora 40 发布</a></h1>
     <div class="post-meta">
-      <span class="post-time"> 2024-03-10 </span>
+      <span class="post-time"> 2024-10-06 </span>
       <div class="post-category">
-          <a href="/categories/network/"> Network </a>
           <a href="/categories/linux/"> Linux </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      <p>本文译自《betanews》，原作者为：Brian Fagioli；本文简单介绍了于 2024年4月23日发布的基于Fedora Linux 40发行版，如果你整准备从windows转移到Linux上时，这篇文章或许会给你一些帮助和建议，文章最后附有原文的网址，原文发表于2024年4月23日。</p>
+    </div>
+    <div class="read-more">
+      <a href="/post/blog/linux/0014-fedora-linux-40/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/blog/c/0004-doubly-linked-lists-in-glib/">双向链表及如何使用GLib的GList实现双向链表</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2024-09-20 </span>
+      <div class="post-category">
           <a href="/categories/c-language/"> C Language </a>
           </div>
     </div>
@@ -147,22 +166,20 @@
   
   <div class="post-content">
     <div class="post-summary">
-      <p>在网络编程中，当需要使用单线程处理多客户端的连接时，常使用select()或者poll()来处理，但是当并发数量非常大时，select()和poll()的性能并不好，epoll()的性能大大好于select()和poll()，在编写大并发的服务器软件时，epoll()应该是首选的方案，本文介绍epoll()在网络编程中的使用方法，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。</p>
+      <p>双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GSList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。</p>
     </div>
     <div class="read-more">
-      <a href="/post/blog/network/0024-using-epoll-in-socket-programming/" class="read-more-link">阅读更多</a>
+      <a href="/post/blog/c/0004-doubly-linked-lists-in-glib/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
 
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0021-using-poll-instead-of-select/">使用poll()代替select()处理多客户连接的TCP服务器实例</a></h1>
+    <h1 class="post-title"><a class="post-link" href="/post/blog/c/0003-singly-linked-lists-in-glib/">单向链表以及如何使用GLib中的GSList实现单向链表</a></h1>
     <div class="post-meta">
-      <span class="post-time"> 2024-02-27 </span>
+      <span class="post-time"> 2024-08-20 </span>
       <div class="post-category">
-          <a href="/categories/network/"> Network </a>
-          <a href="/categories/linux/"> Linux </a>
           <a href="/categories/c-language/"> C Language </a>
           </div>
     </div>
@@ -170,22 +187,20 @@
   
   <div class="post-content">
     <div class="post-summary">
-      <p>在网络编程中，使用 select() 处理多客户端的连接是非常常用的方法，select() 是一个非常古老的方法，在大量连接下会显得效率不高，而且其对描述符的数值还有一些限制，Linux内核从 2.1.13 版以后提供了 poll() 替代 select()，本文介绍 poll() 在网络编程中的使用方法，并着重介绍 poll() 在编程行与 select() 的区别，旨在帮助熟悉 select() 编程的程序员可以很容易地使用 poll() 编程，本文提供了一个具体的实例，并附有完整的源代码，本文实例在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0。</p>
+      <p>单向链表是一种基础的数据结构，也是一种简单而灵活的数据结构，本文讨论单向链表的基本概念及实现方法，并着重介绍使用GLib的GSList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GSList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。</p>
     </div>
     <div class="read-more">
-      <a href="/post/blog/network/0021-using-poll-instead-of-select/" class="read-more-link">阅读更多</a>
+      <a href="/post/blog/c/0003-singly-linked-lists-in-glib/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
 
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0023-using-signals-with-blocking-socket-apis/">使用signal中止阻塞的socket函数的应用实例</a></h1>
+    <h1 class="post-title"><a class="post-link" href="/post/blog/c/0002-start-programming-with-glib/">使用GLib进行C语言编程的实例</a></h1>
     <div class="post-meta">
-      <span class="post-time"> 2024-01-25 </span>
+      <span class="post-time"> 2024-08-10 </span>
       <div class="post-category">
-          <a href="/categories/network/"> Network </a>
-          <a href="/categories/linux/"> Linux </a>
           <a href="/categories/c-language/"> C Language </a>
           </div>
     </div>
@@ -193,52 +208,33 @@
   
   <div class="post-content">
     <div class="post-summary">
-      <p>在 socket 编程中，有一些函数是阻塞的，为了使程序高效运行，有一些办法可以把这些阻塞函数变成非阻塞的，本文介绍一种使用定时器信号中断阻塞函数的方法，同时介绍了一些信号处理和定时器设置的编程方法，本文附有完整实例的源代码，本文实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文不适合 Linux 编程的初学者阅读。</p>
+      <p>本文将讨论使用GLib进行编程的基本步骤，GLib是一个跨平台的，用C语言编写的3个底层库(以前是5个)的集合，GLib提供了多种高级的数据结构，如内存块、双向和单向链表、哈希表等，GLib还实现了线程相关的函数、多线程编程以及相关的工具，例如原始变量访问、互斥锁、异步队列等，GLib主要由GNOME开发；本文是使用GLib编程的入门文章，旨在通过实例帮助希望学习GLib编程的读者较快地入门，本文将给出多个使用GLib库编程范例的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。</p>
     </div>
     <div class="read-more">
-      <a href="/post/blog/network/0023-using-signals-with-blocking-socket-apis/" class="read-more-link">阅读更多</a>
+      <a href="/post/blog/c/0002-start-programming-with-glib/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
 
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/linux/0010-19-useful-tools-in-ubuntu/">在ubuntu上的18个非常实用的命令行工具软件</a></h1>
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0026-wifi-scanner-with-libiw/">Linux下使用libiw进行无线信号扫描的实例</a></h1>
     <div class="post-meta">
-      <span class="post-time"> 2024-01-11 </span>
+      <span class="post-time"> 2024-07-05 </span>
       <div class="post-category">
           <a href="/categories/linux/"> Linux </a>
+          <a href="/categories/c-language/"> C Language </a>
+          <a href="/categories/network/"> Network </a>
           </div>
     </div>
   </header>
   
   <div class="post-content">
     <div class="post-summary">
-      <p>使用Ubuntu的过程中，在终端上使用命令行工具是非常常见的事情，熟练地掌握命令行工具是使用ubuntu必不可少的技能，即便是Ubuntu的初学者，通常也很熟悉诸如<code>ls</code>、<code>rm</code>、<code>cp</code>等一些文件操作工具，当浏览<code>/bin</code>目录时，你会发现Ubuntu还有许多工具软件，本文将向读者简单介绍18个在Ubuntu上使用的命令行工具软件，本文不会详细介绍每个命令的用法，有对某个命令感兴趣的读者可以自行查找更详细的资料或者使用man在线手册，本文非常适合初学者阅读。</p>
+      <p>打开电脑连接wifi是一件很平常的事情，但这些事情通常都是操作系统下的wifi管理程序替我们完成的，如何在程序中扫描wifi信号其实资料并不多，前面已经有两篇文章介绍了如何使用ioctl()扫描wifi信号，但其实在Linux下有一个简单的库对这些ioctl()的操作进行了封装，这个库就是libiw，使用libiw可以简化编程，本文介绍了如果使用libiw对wifi信号进行扫描的基本方法，本文将给出完整的源代码，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；尽管本文内容主要涉及无线网络，但读者并不需要对 802.11 标准有所了解。</p>
     </div>
     <div class="read-more">
-      <a href="/post/blog/linux/0010-19-useful-tools-in-ubuntu/" class="read-more-link">阅读更多</a>
-    </div>
-  </div>
-</article>
-
-    <article class="post">
-  <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/linux/0027-how-to-check-ram-usage-in-ubuntu/">在ubuntu上检查内存使用情况的九种方法</a></h1>
-    <div class="post-meta">
-      <span class="post-time"> 2024-01-09 </span>
-      <div class="post-category">
-          <a href="/categories/linux/"> Linux </a>
-          </div>
-    </div>
-  </header>
-  
-  <div class="post-content">
-    <div class="post-summary">
-      <p>在 Ubuntu 中，可以通过 GUI(图形用户界面)和命令行使用多种方法来监视系统的内存使用情况，监视 Ubuntu 服务器上的内存使用情况并不复杂；了解已使用和可用的内存量对于故障排除和优化服务器性能至关重要，因为内存对系统 I/O 速度至关重要，定期监控内存使用情况有助于诊断潜在的系统问题和优化服务器性能，还可以帮助使用者确定是否需要扩充内存；本文将简要描述在 Ubuntu 上使用命令和工具监视内存使用情况的各种方法。</p>
-    </div>
-    <div class="read-more">
-      <a href="/post/blog/linux/0027-how-to-check-ram-usage-in-ubuntu/" class="read-more-link">阅读更多</a>
+      <a href="/post/blog/network/0026-wifi-scanner-with-libiw/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

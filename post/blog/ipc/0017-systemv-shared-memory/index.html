@@ -220,22 +220,22 @@
 </li>
 <li>
 <p>可以使用命令行命令 <code>ipcs -m -l</code> 查看这些限制值；</p>
-<p><img src="https://whowin.gitee.io/images/190017/screen-of-ipcs-m-l.png" alt="screenshot of &amp;lsquo;ipcs -m -l&amp;rsquo;"></p>
+<p><img src="/images/190017/screen-of-ipcs-m-l.png" alt="screenshot of &amp;lsquo;ipcs -m -l&amp;rsquo;"></p>
 </li>
 <li>
 <p>也可以在 proc 文件系统中找到这些限制值</p>
-<p><img src="https://whowin.gitee.io/images/190017/screenshot-max-proc.png" alt="screenshot of proc"></p>
+<p><img src="/images/190017/screenshot-max-proc.png" alt="screenshot of proc"></p>
 </li>
 <li>
 <p>还可以使用命令 <code>sysctl kernel.shm{mni,all,max}</code> 查看这些限制值；</p>
-<p><img src="https://whowin.gitee.io/images/190017/screenshot-of-sysctl.png" alt="screenshot of sysctl"></p>
+<p><img src="/images/190017/screenshot-of-sysctl.png" alt="screenshot of sysctl"></p>
 </li>
 </ul>
 <hr>
 <h2 id="2-创建打开共享内存段">2 创建/打开共享内存段</h2>
 <ul>
 <li>
-<p>和 System V 消息队列和信号量集一样，共享内存段也是使用 key_t 和 ID 进行标识，请参考文章<a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>中关于 key 和 ID 的介绍；</p>
+<p>和 System V 消息队列和信号量集一样，共享内存段也是使用 key_t 和 ID 进行标识，请参考文章<a href="/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>中关于 key 和 ID 的介绍；</p>
 </li>
 <li>
 <p>key 一般使用 ftok() 生成；</p>
@@ -261,7 +261,7 @@
 <p>执行成功，shmget() 返回一个与 key 关联的共享内存段的 ID(Identifier)，执行失败则返回 -1，errno 中为错误代码；</p>
 </li>
 <li>
-<p><strong>key</strong>：参考文章<a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>中关于 key 的介绍和生成方法；</p>
+<p><strong>key</strong>：参考文章<a href="/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>中关于 key 的介绍和生成方法；</p>
 </li>
 <li>
 <p><strong>size</strong>：创建的共享内存段的大小，实际分配的内存大小会向上取整到 PAGE_SIZE 的整数倍；</p>
@@ -409,7 +409,7 @@
 </div>
 </div></li>
 <li>
-<p>参考文章<a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>，其调用方法非常接近；</p>
+<p>参考文章<a href="/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>，其调用方法非常接近；</p>
 </li>
 <li>
 <p><code>shmctl()</code> 在 <strong>shmid</strong> 所指定的共享内存段上执行一个由 cmd 指定的操作，包括：获取/设置共享内存段的属性，删除共享内存段等；</p>
@@ -494,7 +494,7 @@
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="https://whowin.gitee.io/images/190017/screenshot-of-shm-ctl.png" alt="Screenshot of running shm-ctl"></p>
+<p><img src="/images/190017/screenshot-of-shm-ctl.png" alt="Screenshot of running shm-ctl"></p>
 </li>
 </ul>
 <hr>
@@ -572,7 +572,7 @@
 </li>
 <li>
 <p>运行动图：</p>
-<p><img src="https://whowin.gitee.io/images/190017/shm-server-client.gif" alt="GIF for running shm-server and shm-client"></p>
+<p><img src="/images/190017/shm-server-client.gif" alt="GIF for running shm-server and shm-client"></p>
 </li>
 </ul>
 <hr>
@@ -607,7 +607,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
 [article02]: https://blog.csdn.net/whowin/article/details/132171930

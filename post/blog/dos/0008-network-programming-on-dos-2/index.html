@@ -173,10 +173,10 @@
 <li>在上一篇中，我们为在 DOS 下进行网络编程做了大量的准备工作，我们在 DJGPP 下安装了 WATT-32 库，同时，配置好了网络环境，下面我们用一个实例来说明在 DOS 下进行网络编程的方法。</li>
 <li>上一篇中，我们编译了 WATT-32 库中的一个范例程序 ftpsrv.c，这是一个 FTP 服务器的范例程序，下面我们也编一个 FTP 服务器的程序，但我们有两点不同，
 <ol>
-<li>我们主要使用 BSD 网络编程的标准函数，这是一个 UNIX 下进行网络编程的规范，WATT-32 库中实现了绝大多数的 BSD 编程函数，在 <a href="https://whowin.gitee.io/post/blog/dos/0007-network-programming-on-dos-1/">《在DOS下进行网络编程（上）》</a> 中介绍了一篇文章 <a href="https://beej.us/guide/bgnet/">《Beej&rsquo;s Guide to Network Programming Using internet Sockets》</a>，这篇文章中介绍的编程方法也是基于这个规范，有关在这个规范下的函数介绍可以从下面这个网址下载，也可以参考 UNIX 下网络编程的书籍。</li>
+<li>我们主要使用 BSD 网络编程的标准函数，这是一个 UNIX 下进行网络编程的规范，WATT-32 库中实现了绝大多数的 BSD 编程函数，在 <a href="/post/blog/dos/0007-network-programming-on-dos-1/">《在DOS下进行网络编程（上）》</a> 中介绍了一篇文章 <a href="https://beej.us/guide/bgnet/">《Beej&rsquo;s Guide to Network Programming Using internet Sockets》</a>，这篇文章中介绍的编程方法也是基于这个规范，有关在这个规范下的函数介绍可以从下面这个网址下载，也可以参考 UNIX 下网络编程的书籍。</li>
 </ol>
 </li>
-<li><a href="https://whowin.gitee.io/references/BSDsocket.pdf">BSD网络编程函数参考</a></li>
+<li><a href="/references/BSDsocket.pdf">BSD网络编程函数参考</a></li>
 <li>下面继续我们的 FTP 服务器，要编写一个 FTP 服务器程序，首先要了解一下 FTP 协议，有关 FTP 协议的完整规范，可以在 [这里][artivle04] 网址下载：http://whowin.gitee.io/references/rtfc765-ftp.pdf</li>
 <li>实际操作上并没有协议中那么复杂，况且我们的实例也并不想完成所有的协议，我们的实例计划完成下面的功能：
 <ol>
@@ -640,7 +640,7 @@
 </li>
 <li>
 <p>按下 “确定” 后，出现下面窗口，我们看到第二行的 “220 FTP&hellip;” 就是我们的程序发过来的</p>
-<p><img src="https://whowin.gitee.io/images/160008/input_ftp_user_on_windows.jpg" alt="输入ftp用户名"></p>
+<p><img src="/images/160008/input_ftp_user_on_windows.jpg" alt="输入ftp用户名"></p>
 <p><strong>图2：在windows下输入ftp用户名</strong></p>
 </li>
 <li>
@@ -650,12 +650,12 @@
 </li>
 <li>
 <p>在第 5 行任意输入几个字母数字，比如 “1234”，按回车，由于是密码，屏幕并不显示你输入的内容，回车后看到如下窗口，其中，第 6 行的内容是我们程序在收到 pass 命令后返回的</p>
-<p><img src="https://whowin.gitee.io/images/160008/ftp_login_ok.jpg" alt="FTP登录成功"></p>
+<p><img src="/images/160008/ftp_login_ok.jpg" alt="FTP登录成功"></p>
 <p><strong>图4：FTP登录成功</strong></p>
 </li>
 <li>
 <p>最后，我们在 ftp&gt; 的后面输入退出命令：quit，按回车后屏幕闪一下就关闭了，所以我们看不清返回的内容</p>
-<p><img src="https://whowin.gitee.io/images/160008/quit_from_ftp.jpg" alt="从ftp客户端退出"></p>
+<p><img src="/images/160008/quit_from_ftp.jpg" alt="从ftp客户端退出"></p>
 <p><strong>图5：从FTP客户端退出</strong></p>
 </li>
 <li>
@@ -668,7 +668,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">

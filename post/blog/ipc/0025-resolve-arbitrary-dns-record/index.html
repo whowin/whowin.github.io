@@ -174,7 +174,7 @@
 <h2 id="1-基本概念">1 基本概念</h2>
 <ul>
 <li>
-<p>在阅读本文之前，建议阅读 <a href="https://whowin.gitee.io/post/blog/ipc/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a> 和文章 <a href="https://whowin.gitee.io/post/blog/network/0019-dns-client-in-c/">《用C语言实现的一个DNS客户端》</a>；</p>
+<p>在阅读本文之前，建议阅读 <a href="/post/blog/ipc/0023-dbus-resolve-hostname/">《IPC之十三：使用libdbus通过D-Bus请求系统调用实现域名解析的实例》</a> 和文章 <a href="https://whowin.gitee.io/post/blog/network/0019-dns-client-in-c/">《用C语言实现的一个DNS客户端》</a>；</p>
 </li>
 <li>
 <p>前一篇参考文章里介绍了如何使用 libdbus 库调用系统调用的概念和方法，本文的调用的系统调用与该文中一样，均是 <code>systemd-resoled</code>，只是请求的方法不同，所以，调用参数和返回参数均不同，但很多概念是一样的；</p>
@@ -552,7 +552,7 @@
 <p>编译：<code>gcc -Wall -g dbus-dns-record.c -o dbus-dns-record `pkg-config --libs --cflags dbus-1` </code></p>
 </li>
 <li>
-<p>有关 <code>pkg-config --libs --cflags dbus-1</code> 可以参阅文章 <a href="https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中的简要说明；</p>
+<p>有关 <code>pkg-config --libs --cflags dbus-1</code> 可以参阅文章 <a href="/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中的简要说明；</p>
 </li>
 <li>
 <p>运行：<code>./dbus-dns-record &lt;domain name&gt; [A/CNAME/MX]</code>，两个参数，第一个参数是要查询的域名，第二个参数是要查询的记录类型，本程序仅支持三种记录类型：A 记录、CNAME 记录和 MX 记录；</p>
@@ -560,14 +560,14 @@
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="https://whowin.gitee.io/images/190025/screenshot-of-dbus-dns-record.png" alt="Screenshot of dbus-dns-record"></p>
+<p><img src="/images/190025/screenshot-of-dbus-dns-record.png" alt="Screenshot of dbus-dns-record"></p>
 </li>
 </ul>
 <h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!-- CSDN
 [article51]: https://blog.csdn.net/whowin/article/details/130181333
 

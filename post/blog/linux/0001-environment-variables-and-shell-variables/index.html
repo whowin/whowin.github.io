@@ -173,7 +173,7 @@
 <ul>
 <li>
 <p><code>shell</code> 是一个 <code>Linux</code> 的命令行解释器，<code>Linux</code> 下有很多 <code>shell</code>，其中 <code>ubuntu</code> 中默认的 <code>shell</code> 应该是 <strong>dash</strong>，因为我们看到 <code>/bin/sh</code> 被链接到了 <strong>dash</strong></p>
-<p><img src="https://whowin.gitee.io/images/100001/sh_point_to_dash.png" alt="/bin/sh&amp;ndash;&gt;dash"></p>
+<p><img src="/images/100001/sh_point_to_dash.png" alt="/bin/sh&amp;ndash;&gt;dash"></p>
 <center><b>图1：/bin/sh指向dash</b></center>
 </li>
 </ul>
@@ -190,9 +190,9 @@
 </li>
 <li>
 <p>你可能用 <code>ps aux(ps -ef)</code> 命令发现 1 号进程是 <strong>/sbin/init</strong>，而不是 <strong>systemd</strong>，但你用 <code>ls -l /sbin/init</code> 看一下就会恍然大悟；</p>
-<p><img src="https://whowin.gitee.io/images/100001/first_process.png" alt="1号进程"></p>
+<p><img src="/images/100001/first_process.png" alt="1号进程"></p>
 <center><b>图2：1号进程</b></center>
-<p><img src="https://whowin.gitee.io/images/100001/init_point_to_systemd.png" alt="init进程指向systemd"></p>
+<p><img src="/images/100001/init_point_to_systemd.png" alt="init进程指向systemd"></p>
 <center><b>图3：/sbin/init指向systemd</b></center>
 </li>
 </ul>
@@ -200,7 +200,7 @@
 <ul>
 <li>
 <p>当你在 <code>ubuntu</code> 桌面版上启动一个终端时，会启动一个 <strong>gnome-terminal</strong> 进程，<code>gnome-terminal</code> 进程启动了 <strong>bash</strong> 进程，这样你就看到可爱的提示符了，这个过程使用 <code>pstree</code> 命令一目了然；</p>
-<p><img src="https://whowin.gitee.io/images/100001/terminal-bash.png" alt="gnome-terminal进程启动bash"></p>
+<p><img src="/images/100001/terminal-bash.png" alt="gnome-terminal进程启动bash"></p>
 <center><b>图4：gnome-terminal进程启动bash</b></center>
 </li>
 </ul>
@@ -208,7 +208,7 @@
 <ul>
 <li>
 <p>当你使用 <code>ssh</code> 客户端远程登录到 <code>Linux</code> 系统时，<strong>bash</strong> 进程是由 <strong>sshd</strong> 进程启动的，这个也可以用 <code>pstree</code> 命令看到</p>
-<p><img src="https://whowin.gitee.io/images/100001/sshd-bash.png" alt="sshd进程启动bash"></p>
+<p><img src="/images/100001/sshd-bash.png" alt="sshd进程启动bash"></p>
 <center><b>图5：sshd进程启动bash</b></center>
 </li>
 </ul>
@@ -393,7 +393,7 @@
 <ul>
 <li>
 <p>我们看一下 <strong>execve()</strong> 的手册</p>
-<p><img src="https://whowin.gitee.io/images/100001/man-execve.png" alt="execve()说明"></p>
+<p><img src="/images/100001/man-execve.png" alt="execve()说明"></p>
 <center><b>图6：execve()手册</b></center>
 </li>
 </ul>
@@ -463,7 +463,7 @@
 <ul>
 <li>
 <p>用 <code>strace ./print_env</code> 可以清楚地看到环境变量被传递给了程序 <code>print_env</code></p>
-<p><img src="https://whowin.gitee.io/images/100001/strace_print_env.png" alt="跟踪程序print_env"></p>
+<p><img src="/images/100001/strace_print_env.png" alt="跟踪程序print_env"></p>
 <center><b>图7：跟踪程序print_env</b></center>
 </li>
 </ul>
@@ -477,7 +477,7 @@
 <ul>
 <li>
 <p>上面这个小程序我们在运行时是使用 <code>./print_env</code> 的方式运行的，其中 <code>&quot;./&quot;</code> 表示当前路径，但是这个程序其实就在当前目录下，我们为什么一定要指定路径呢？我们试一下不指定路径会怎样</p>
-<p><img src="https://whowin.gitee.io/images/100001/command_not_found.png" alt="command not found"></p>
+<p><img src="/images/100001/command_not_found.png" alt="command not found"></p>
 <center><b>图8：命令执行失败</b></center>
 </li>
 </ul>
@@ -485,7 +485,7 @@
 <ul>
 <li>
 <p>这是因为 <code>shell</code> 是沿着环境变量 <strong>PATH</strong> 的顺序来查找命令文件的，而当前目录 <code>./</code> 并不在当前的 <strong>PATH</strong> 中，我们可以试着把 <code>./</code> 加入到环境变量 <strong>PATH</strong> 中，然后再运行一下试试；</p>
-<p><img src="https://whowin.gitee.io/images/100001/print_env_successfully.png" alt="执行print_env成功"></p>
+<p><img src="/images/100001/print_env_successfully.png" alt="执行print_env成功"></p>
 <center><b>图9：执行print_env成功</b></center>
 </li>
 </ul>
@@ -577,7 +577,7 @@
 </li>
 <li>
 <p>其实，<code>shell</code> 也可以不 <code>fork</code> 一个子进程，而是直接在当前进程下执行你的程序，<code>shell</code> 下有一个内建命令 <code>source</code> 就是为此而设计的，我们先来看看这个命令的手册：</p>
-<p><img src="https://whowin.gitee.io/images/100001/source_help.png" alt="source的help手册"></p>
+<p><img src="/images/100001/source_help.png" alt="source的help手册"></p>
 <center><b>图10：source命令的help手册</b></center>
 </li>
 </ul>
@@ -723,7 +723,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!-- CSDN
 [img_01]:https://img-blog.csdnimg.cn/img_convert/e7a727e73f0834c251a4e18f8834eb96.png
 [img_02]:https://img-blog.csdnimg.cn/img_convert/0c652bec4e82d827e93a15be41601465.png

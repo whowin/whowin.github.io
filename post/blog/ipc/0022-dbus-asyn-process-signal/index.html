@@ -173,10 +173,10 @@
 <h2 id="1-d-bus-的信号signal">1 D-Bus 的信号(Signal)</h2>
 <ul>
 <li>
-<p>在阅读本文之前，建议阅读关于 D-Bus 的另一篇文章 <a href="https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a></p>
+<p>在阅读本文之前，建议阅读关于 D-Bus 的另一篇文章 <a href="/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a></p>
 </li>
 <li>
-<p>在文章 <a href="https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中，介绍了服务端如何在 D-Bus 上提供方法调用服务以及客户端如何向服务端请求一个方法调用服务；</p>
+<p>在文章 <a href="/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中，介绍了服务端如何在 D-Bus 上提供方法调用服务以及客户端如何向服务端请求一个方法调用服务；</p>
 </li>
 <li>
 <p>通过 D-Bus 向服务端请求方法调用服务，仅仅是 D-Bus 一半的功能，D-Bus 还支持异步的广播通信方法，这种机制称为信号(Signal)，当服务端需要向大量接收者发送通知时，该机制非常有用；</p>
@@ -226,7 +226,7 @@
 </ol>
 </li>
 <li>
-<p>整个过程与在文章 <a href="https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中描述的客户端向服务端请求一个服务的过程高度相似，但要简单一些：</p>
+<p>整个过程与在文章 <a href="/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中描述的客户端向服务端请求一个服务的过程高度相似，但要简单一些：</p>
 <ol>
 <li>请求服务时是客户端向服务端发出请求，而发送信号时是服务端发送一个广播消息；</li>
 <li>请求服务时，服务端通常要在连接上绑定一个公用的名称(总线名称)，客户端在请求服务时必须要指定这个总线名称，否则 D-Bus 不知道你要向哪个应用程序请求服务，发送信号时，服务端不一定需要在连接上绑定名称，因为通常客户端只需要接收信号，不需要向服务端发送任何消息；</li>
@@ -334,7 +334,7 @@
 </div>
 </div></li>
 <li>
-<p>函数 <code>dbus_connection_read_write_dispatch()</code> 在文章 <a href="https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中做过介绍；</p>
+<p>函数 <code>dbus_connection_read_write_dispatch()</code> 在文章 <a href="/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中做过介绍；</p>
 </li>
 <li>
 <p>显然，这样的编程模式并不高效，尤其是当程序不仅仅是要接收信号，还有其他工作要做时，这种程序架构就显得更加不可接受；</p>
@@ -508,14 +508,14 @@
 <p>编译：<code>gcc -Wall -g dbus-signals.c -o dbus-signals `pkg-config --libs --cflags dbus-1` </code></p>
 </li>
 <li>
-<p>有关 <code>pkg-config --libs --cflags dbus-1</code> 可以参阅文章 <a href="https://whowin.gitee.io/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中的简要说明；</p>
+<p>有关 <code>pkg-config --libs --cflags dbus-1</code> 可以参阅文章 <a href="/post/blog/ipc/0021-ipc-using-dbus/">《IPC之十一：使用D-Bus实现客户端向服务端请求服务的实例》</a> 中的简要说明；</p>
 </li>
 <li>
 <p>运行：<code>./dbus-signals</code></p>
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="https://whowin.gitee.io/images/190022/screenshot-of-dbus-signals.png" alt="Screenshot of running dbus-signals"></p>
+<p><img src="/images/190022/screenshot-of-dbus-signals.png" alt="Screenshot of running dbus-signals"></p>
 </li>
 <li>
 <p>程序运行后，客户端进程的两个过滤器都显示了 &ldquo;Wrong object path&rdquo; 的信息，这条信息是 D-Bus 为客户端连接分配了名称后发送过来的通知信号，虽然我们没有订阅，但 D-Bus 会强行推送过来；</p>
@@ -531,7 +531,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
 [article02]: https://blog.csdn.net/whowin/article/details/132171930

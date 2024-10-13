@@ -176,7 +176,7 @@
       <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍共享内存(Shared Memory)，因为没有像管道、消息队列这样的中介介入，所以通常认为共享内存是迄今为止最快的 IPC 方式；Linux 既支持 UNIX SYSTEM V 的共享内存段，也支持 POSIX 的共享内存对象，本文针对 POSIX 共享内存对象，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文的实例中涉及多进程编程和信号处理等，阅读本文还需要一些基本的内存管理知识，本文对 Linux 编程的初学者有一些难度。</p>
 <h2 id="1-posix-共享内存对象">1 POSIX 共享内存对象</h2>
 <ul>
-<li>在文章<a href="https://whowin.gitee.io/post/blog/ipc/0017-systemv-shared-memory/">《IPC之七：使用 System V 共享内存段进行进程间通信的实例》</a>中介绍 System V 的共享内存段，其概念相似，在阅读本文前可以先阅读这篇文章；</li>
+<li>在文章<a href="/post/blog/ipc/0017-systemv-shared-memory/">《IPC之七：使用 System V 共享内存段进行进程间通信的实例》</a>中介绍 System V 的共享内存段，其概念相似，在阅读本文前可以先阅读这篇文章；</li>
 <li>POSIX 的共享内存与 System V 的共享内存段的使用步骤相似：
 <ul>
 <li>创建并配置共享内存；</li>
@@ -293,7 +293,7 @@
 </ul>
 </li>
 <li>本文将重点介绍：<code>shm_open()</code>、<code>ftruncate()</code>、<code>mmap()</code> 等几个；</li>
-<li>通常情况下，共享内存是和信号量配合使用的，所以建议阅读本文之前阅读另一篇文章<a href="https://whowin.gitee.io/post/blog/ipc/0016-posix-semaphores/">《IPC之六：使用 POSIX 信号量解决经典的&rsquo;生产者-消费者问题&rsquo;》</a>。</li>
+<li>通常情况下，共享内存是和信号量配合使用的，所以建议阅读本文之前阅读另一篇文章<a href="/post/blog/ipc/0016-posix-semaphores/">《IPC之六：使用 POSIX 信号量解决经典的&rsquo;生产者-消费者问题&rsquo;》</a>。</li>
 </ul>
 <hr>
 <h2 id="2-共享内存对象和虚拟文件系统">2 共享内存对象和虚拟文件系统</h2>
@@ -302,7 +302,7 @@
 <p>SYSTEM V 的共享内存段是用 key 或者 ID 来标识的，是没有名称的，POSIX 的共享内存对象是有名称的，使用一个唯一的名称来标识一个共享内存对象；</p>
 </li>
 <li>
-<p>和 POSIX 的消息队列(参考文章<a href="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/">《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》</a>)一样，共享内存对象的名称是一个以 &ldquo;/&rdquo; 开头的字符串，而且名称中不允许再出现第二个 &ldquo;/&quot;，这个名称字符串以 NULL 结尾；</p>
+<p>和 POSIX 的消息队列(参考文章<a href="/post/blog/ipc/0014-posix-message-queue/">《IPC之四：使用 POSIX 消息队列进行进程间通信的实例》</a>)一样，共享内存对象的名称是一个以 &ldquo;/&rdquo; 开头的字符串，而且名称中不允许再出现第二个 &ldquo;/&quot;，这个名称字符串以 NULL 结尾；</p>
 </li>
 <li>
 <p>POSIX 共享内存对象的名称最长为 <code>NAME_MAX</code>，宏定义 NAME_MAX 定义在头文件 <code>&lt;linux/limits.h</code> 中，为 255；</p>
@@ -583,7 +583,7 @@
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="https://whowin.gitee.io/images/190018/screenshot-of-map-offset.png" alt="Screenshot for running map-offset"></p>
+<p><img src="/images/190018/screenshot-of-map-offset.png" alt="Screenshot for running map-offset"></p>
 </li>
 </ul>
 <hr>
@@ -643,7 +643,7 @@
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="https://whowin.gitee.io/images/190018/screenshot-of-shm-unlink.png" alt="Screenshot of running shm-unlink"></p>
+<p><img src="/images/190018/screenshot-of-shm-unlink.png" alt="Screenshot of running shm-unlink"></p>
 </li>
 </ul>
 <hr>
@@ -679,7 +679,7 @@
 </li>
 <li>
 <p>运行动图：</p>
-<p><img src="https://whowin.gitee.io/images/190018/pizzeria-running.gif" alt="GIF of running pizzeria"></p>
+<p><img src="/images/190018/pizzeria-running.gif" alt="GIF of running pizzeria"></p>
 </li>
 </ul>
 <hr>
@@ -728,7 +728,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
 [article02]: https://blog.csdn.net/whowin/article/details/132171930

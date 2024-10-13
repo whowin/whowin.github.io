@@ -189,7 +189,7 @@
 </li>
 <li>
 <p>按照AC97的规范，AC97声卡大致有三个部分：Audio Codec Controller(ACC)、AC Link、Codec，如下图：</p>
-<p><img src="https://whowin.gitee.io/images/160010/three-parts-of-sound-card.jpg" alt="在DOS下针对AC97编程"></p>
+<p><img src="/images/160010/three-parts-of-sound-card.jpg" alt="在DOS下针对AC97编程"></p>
 </li>
 <li>
 <p>ACC负责与系统相连，然后透过AC Link与Codec通讯，在本例中，ACC通过AMD的GLIU与PCI总线相连，其实不用管什么GLIU，只要知道ACC与PCI总线相接就可以了；</p>
@@ -315,7 +315,7 @@
 <li>
 <p>另外，规范还详细定义了CODEC的27个寄存器，AC97声卡，如果作为PCI设备，则这些寄存器可以被映射成I/O地址，也可以被映射成存储器地址，从PCI的配置空间中可以得到基地址，然后加上AC97规范中定义的寄存器的偏移便可寻址到所有的CODEC寄存器，由于内容实在是比较多，让我一个一个汉字敲上去实在是太累，所以有关协议的介绍就暂告一段落，建议大家在完成下面的例子之前还是看看AC97规范的有关章节，可以从下面地址下载。</p>
 <ul>
-<li><a href="https://whowin.gitee.io/specification/ac97_r23.pdf">AC97 Component Specification Revision 2.3 Rev 1.0</a></li>
+<li><a href="/specification/ac97_r23.pdf">AC97 Component Specification Revision 2.3 Rev 1.0</a></li>
 </ul>
 </li>
 </ul>
@@ -327,7 +327,7 @@
 <li>
 <p>如果希望详细了解CS5536这颗芯片，可以在这里下载datasheet，篇幅很长，如果不使用这颗芯片，完全没有必要全部阅读。</p>
 <ul>
-<li><a href="https://whowin.gitee.io/specification/33238f_cs5536_ds.pdf">CS5536 Data Book</a></li>
+<li><a href="/specification/33238f_cs5536_ds.pdf">CS5536 Data Book</a></li>
 </ul>
 </li>
 <li>
@@ -335,7 +335,7 @@
 </li>
 <li>
 <p>首先说如何告诉ACC数据的存储地址以及与其相关的事情，CS5536上的ACC使用一个叫做PRD(Physical Region Descriptor)表作为传输控制信息的表述，表的结构如下：</p>
-<p><img src="https://whowin.gitee.io/images/160010/prd-format.jpg" alt="在DOS下针对AC97编程"></p>
+<p><img src="/images/160010/prd-format.jpg" alt="在DOS下针对AC97编程"></p>
 </li>
 <li>
 <p>每一个PRD表占8个字节(2个DWORD)，前1个DWORD表示数据存储的基地址，后一个DWORD的bit 0&ndash;bit 15表示数据的长度，只16bit能表示的最大值为65535，由于音频采样值为16bit，作为单声道音频流，数据必须与2个字节对齐，所以一个内存区域内存储的最大采样值(数据)为65534字节；对于双声道立体声，一个采样点位两个声道，需要4个字节，所以一个内存区域的最大采样数据为65532字节；</p>
@@ -411,7 +411,7 @@
 <li>
 <p>在本例中，Codec芯片使用的是ALC202，有关ALC202的datasheet可以在下面网址下载。</p>
 <ul>
-<li><a href="https://whowin.gitee.io/specification/alc202.pdf">ALC202 Audio Codec</a></li>
+<li><a href="/specification/alc202.pdf">ALC202 Audio Codec</a></li>
 </ul>
 </li>
 </ul>
@@ -659,10 +659,10 @@
 <p>我们从MYSOUND的构造函数开始；构造函数主要执行了两个内部函数：CheckPCIBios()和FindCS5536()</p>
 </li>
 <li>
-<p>CheckPCIBios：检查BIOS是否支持PCI，这个方法我在另一篇博文<a href="https://whowin.gitee.io/post/blog/dos/0010-ac97-programing-in-dos/">《遍历PCI设备》</a>中曾经介绍过，如果BIOS不支持PCI，程序将无法运行；</p>
+<p>CheckPCIBios：检查BIOS是否支持PCI，这个方法我在另一篇博文<a href="/post/blog/dos/0010-ac97-programing-in-dos/">《遍历PCI设备》</a>中曾经介绍过，如果BIOS不支持PCI，程序将无法运行；</p>
 </li>
 <li>
-<p>FindCS5536：查找Codec控制器是否存在，前面介绍过，Codec控制器集成在CS5536中，ACC的VENDOR是0X1022（表示AMD公司），Device ID是0X2093，如果我们在PCI设备中能找到符合条件的设备，表明存在ACC，程序可以继续，查找PCI设备的方法在我的另一篇博文<a href="https://whowin.gitee.io/post/blog/dos/0010-ac97-programing-in-dos/">《遍历PCI设备》</a>中曾经介绍过；</p>
+<p>FindCS5536：查找Codec控制器是否存在，前面介绍过，Codec控制器集成在CS5536中，ACC的VENDOR是0X1022（表示AMD公司），Device ID是0X2093，如果我们在PCI设备中能找到符合条件的设备，表明存在ACC，程序可以继续，查找PCI设备的方法在我的另一篇博文<a href="/post/blog/dos/0010-ac97-programing-in-dos/">《遍历PCI设备》</a>中曾经介绍过；</p>
 </li>
 <li>
 <p>回到构造函数，在找到ACC后，程序从配置空间中读出一些内容，其中最主要的是基地址，这个变量在后面的程序中经常用到。如何读取PCI的配置空间亦希望读者参考我以前的博文；</p>
@@ -728,7 +728,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
     </div>
 
     <div class="post-copyright">

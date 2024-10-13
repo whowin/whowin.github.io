@@ -134,78 +134,78 @@
           <section id="posts" class="posts">
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0017-sync-time-from-time-server-using-sntp/">使用SNTP协议从时间服务器同步时间</a></h1>
+    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></h1>
     <div class="post-meta">
-      <span class="post-time"> 2023-02-13 </span>
+      <span class="post-time"> 2023-08-05 </span>
       <div class="post-category">
+          <a href="/categories/ipc/"> IPC </a>
           <a href="/categories/linux/"> Linux </a>
           <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
           </div>
     </div>
   </header>
   
   <div class="post-content">
     <div class="post-summary">
-      <p>在互联网上校准时间，是几乎连接在互联网上的每台计算机都要去做的事情，而且很多是在后台完成的，并不需要人工干预；互联网上有很多时间服务器可以发布精确的时间，计算机客户端使用NTP(Network Time Protocol)协议与这些时间服务器进行时间同步，使本机得到精确时间，本文简要描述了NTP协议的原理，对NTP协议的时间同步精度做了简要分析，并具体实现了SNTP(Simple Network Time Protocol)下的客户端，本文附有完整的C语言SNTP客户端的源程序。阅读本文只需掌握基本的socket编程即可，本文对网络编程的初学者难度不大。</p>
+      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍消息队列(Message Queues)，消息队列可以完成同一台计算机上的进程之间的通信，相比较管道，消息队列要复杂一些，但使用起来更加灵活和方便，Linux 既支持 UNIX SYSTEM V 的消息队列，也支持 POSIX 的消息队列，本文针对 System V 消息队列，并给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。</p>
     </div>
     <div class="read-more">
-      <a href="/post/blog/network/0017-sync-time-from-time-server-using-sntp/" class="read-more-link">阅读更多</a>
+      <a href="/post/blog/ipc/0013-systemv-message-queue/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
 
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0016-longest-prefix-match/">简单的路由表查找程序</a></h1>
+    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></h1>
     <div class="post-meta">
-      <span class="post-time"> 2023-02-10 </span>
+      <span class="post-time"> 2023-08-02 </span>
       <div class="post-category">
+          <a href="/categories/ipc/"> IPC </a>
           <a href="/categories/linux/"> Linux </a>
           <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
           </div>
     </div>
   </header>
   
   <div class="post-content">
     <div class="post-summary">
-      <p>在Linux操作系统中，内核中有一个路由表，它包含若干条路由记录，这些记录由子网IP、子网掩码、网关IP和接口名等组成，这些信息用于将数据包转发到其他子网或者连接到互联网；本文介绍了当需要转发数据包时，Linux内核查找路由表的基本算法，并用程序模拟了这个过程，附有完整的源代码。本文对网络编程的初学者难度不大。</p>
+      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍命名管道(FIFO)，命名管道可以完成同一台计算机上的进程之间的通信，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读。</p>
     </div>
     <div class="read-more">
-      <a href="/post/blog/network/0016-longest-prefix-match/" class="read-more-link">阅读更多</a>
+      <a href="/post/blog/ipc/0011-ipc-examples-of-fifo/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
 
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0015-send-magic-packet-via-raw-socket/">使用raw socket发送magic packet</a></h1>
+    <h1 class="post-title"><a class="post-link" href="/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></h1>
     <div class="post-meta">
-      <span class="post-time"> 2023-02-09 </span>
+      <span class="post-time"> 2023-07-28 </span>
       <div class="post-category">
+          <a href="/categories/ipc/"> IPC </a>
           <a href="/categories/linux/"> Linux </a>
           <a href="/categories/c-language/"> C Language </a>
-          <a href="/categories/network/"> Network </a>
           </div>
     </div>
   </header>
   
   <div class="post-content">
     <div class="post-summary">
-      <p>Magic Packet是进行网络唤醒的数据包，将这个数据包以广播的形式发到局域网上，与数据包中所关联的MAC相同的电脑就会被唤醒开机，通常我们都是使用UDP报文的形式来发送这个数据包，但实际上在进行网络唤醒的时候，只要报文中包含Magic Packet应该就可以唤醒相关的计算机，与IP协议、UDP协议没有任何关系，本文将试图抛开网络层(IP层)和传输层(TCP/UDP层)，直接在数据链路层发出Magic Packet，并成功实现网络唤醒，本文将提供完整的源代码。阅读本文需要有较好的网络编程基础，本文对网络编程的初学者有一定难度。</p>
+      <p>IPC 是 Linux 编程中一个重要的概念，IPC 有多种方式，本文主要介绍匿名管道(又称管道、半双工管道)，尽管很多人在编程中使用过管道，但一些特殊的用法还是鲜有文章涉及，本文给出了多个具体的实例，每个实例均附有完整的源代码；本文所有实例在 Ubuntu 20.04 上编译测试通过，gcc版本号为：9.4.0；本文适合 Linux 编程的初学者阅读</p>
     </div>
     <div class="read-more">
-      <a href="/post/blog/network/0015-send-magic-packet-via-raw-socket/" class="read-more-link">阅读更多</a>
+      <a href="/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
 
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0008-get-gateway-ip-from-proc-filesys/">从proc文件系统中获取gateway的IP地址</a></h1>
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0022-how-to-scan-wifi-signal/">使用ioctl扫描wifi信号获取信号属性的实例(一)</a></h1>
     <div class="post-meta">
-      <span class="post-time"> 2023-02-05 </span>
+      <span class="post-time"> 2023-06-26 </span>
       <div class="post-category">
           <a href="/categories/linux/"> Linux </a>
           <a href="/categories/c-language/"> C Language </a>
@@ -216,19 +216,19 @@
   
   <div class="post-content">
     <div class="post-summary">
-      <p>在linux的命令行下获取当前网络环境的gateway的IP并不是一件难事，常用的命令有<code>ip route</code>或者<code>route -n</code>，<code>route -n</code>是通过读取proc文件系统下的文件来从内核获取路由表的，但<code>ip route</code>是通过netlink来获取的路由表；本文将讨论如何编写程序从proc文件系统中获取路由表，并从路由表中获取gateway的IP地址，文章最后给出了完整的源程序，本文对初学者基本没有难度。</p>
+      <p>使用 wifi 是一件再平常不过的是事情，有很多 wifi 工具可以帮助你扫描附近的 wifi 信号，测试信号强度等，但如何通过编程来操作 wifi 却鲜有文章涉及；本文立足实践，不使用任何第三方库，仅使用 ioctl 扫描附近的 wifi 信号，并获取这些 AP 的 ESSID、MAC 地址、占用信道和工作频率，本文将给出完整的源程序，今后还会写一些文章讨论如果编程获取 wifi 信号的其它属性(比如：信号强度、加密方式等)的方法，敬请关注；本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；阅读本文并不需要对 IEEE802.11 协议有所了解。</p>
     </div>
     <div class="read-more">
-      <a href="/post/blog/network/0008-get-gateway-ip-from-proc-filesys/" class="read-more-link">阅读更多</a>
+      <a href="/post/blog/network/0022-how-to-scan-wifi-signal/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>
 
     <article class="post">
   <header class="post-header">
-    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0009-get-gateway-ip-via-netlink/">linux下使用netlink获取gateway的IP地址</a></h1>
+    <h1 class="post-title"><a class="post-link" href="/post/blog/network/0019-dns-client-in-c/">用C语言实现的一个DNS客户端</a></h1>
     <div class="post-meta">
-      <span class="post-time"> 2023-02-04 </span>
+      <span class="post-time"> 2023-03-28 </span>
       <div class="post-category">
           <a href="/categories/linux/"> Linux </a>
           <a href="/categories/c-language/"> C Language </a>
@@ -239,10 +239,10 @@
   
   <div class="post-content">
     <div class="post-summary">
-      <p>要在linux下的程序中获取gateway的IP地址，使用netlink是一种直接、可靠的方法，不需要依赖其它命令，直接从linux内核获取信息，netlink编程的中文资料很少，本文试图用尽可能简单的方式讨论使用netlink获取gataway的IP地址的编程方法，并有大量篇幅介绍netlink的相关数据结构和编程方法，阅读本文需要对linux下编程有一定了解，熟悉IPv4的socket编程；本文对网络编程的初学者有较大难度。</p>
+      <p>DNS可以帮助我们把域名映射到一个IP地址上，或者查询一个IP地址下有那些域名，使用域名访问一个网站或者服务器是一件很平常的事情，很少有人关心域名变成IP地址的实际过程，本文将使用C语言实现一个基本的DNS解析器，通过与DNS服务器的通信完成将一个域名转换成IP地址的过程，本文将提供完整的源程序；阅读本文需要有一定的网络编程基础，熟悉基本的socket编程并对DNS有一些了解，本文对网络编程的初学者难度较大。</p>
     </div>
     <div class="read-more">
-      <a href="/post/blog/network/0009-get-gateway-ip-via-netlink/" class="read-more-link">阅读更多</a>
+      <a href="/post/blog/network/0019-dns-client-in-c/" class="read-more-link">阅读更多</a>
     </div>
   </div>
 </article>

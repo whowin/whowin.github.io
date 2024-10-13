@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>告别微软Windows 11，迎接基于Ubuntu的Linux Mint 22 - whowin - 发表我个人原创作品的技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="whowin" /><meta name="description" content="本文译自《betanews》，原作者为：Brian Fagioli；本文简单介绍了基于Ubuntu 24.04的Linux发行版Linux Mint 22，如果你正准备从windows转移到Linux上时，这篇文章或许会给你一些帮助和建议，文章最后附有原文的网址，原文发表于2024年7月25日。
+" /><meta name="keywords" content="linux, socket, hugo, dos" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.97.3 with theme even" />
+
+
+<link rel="canonical" href="https://whowin.gitee.io/post/blog/linux/0011-linux-mint-22-offers-compelling-reasons-to-switch-from-windows-11/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e3fea119b1980e848b03dffbeddb11dd0fba483eed0e5f11870fb8e31f145bbd.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="告别微软Windows 11，迎接基于Ubuntu的Linux Mint 22" />
+<meta property="og:description" content="本文译自《betanews》，原作者为：Brian Fagioli；本文简单介绍了基于Ubuntu 24.04的Linux发行版Linux Mint 22，如果你正准备从windows转移到Linux上时，这篇文章或许会给你一些帮助和建议，文章最后附有原文的网址，原文发表于2024年7月25日。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://whowin.gitee.io/post/blog/linux/0011-linux-mint-22-offers-compelling-reasons-to-switch-from-windows-11/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2024-10-06T13:30:29+08:00" />
+<meta property="article:modified_time" content="2024-10-06T13:30:29+08:00" />
+
+<meta itemprop="name" content="告别微软Windows 11，迎接基于Ubuntu的Linux Mint 22">
+<meta itemprop="description" content="本文译自《betanews》，原作者为：Brian Fagioli；本文简单介绍了基于Ubuntu 24.04的Linux发行版Linux Mint 22，如果你正准备从windows转移到Linux上时，这篇文章或许会给你一些帮助和建议，文章最后附有原文的网址，原文发表于2024年7月25日。"><meta itemprop="datePublished" content="2024-10-06T13:30:29+08:00" />
+<meta itemprop="dateModified" content="2024-10-06T13:30:29+08:00" />
+<meta itemprop="wordCount" content="1183">
+<meta itemprop="keywords" content="ubuntu,Linux Mint,Pop!_OS,Fedora,Manjaro," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="告别微软Windows 11，迎接基于Ubuntu的Linux Mint 22"/>
+<meta name="twitter:description" content="本文译自《betanews》，原作者为：Brian Fagioli；本文简单介绍了基于Ubuntu 24.04的Linux发行版Linux Mint 22，如果你正准备从windows转移到Linux上时，这篇文章或许会给你一些帮助和建议，文章最后附有原文的网址，原文发表于2024年7月25日。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+  <script async src="/js/busuanzi.pure.mini.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9724909319263152"
+     crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">WhoWin</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">首页</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">文章归档</li>
+      </a><a href="/article-categories/categories/">
+        <li class="mobile-menu-item">文章分类</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">文章标签</li>
+      </a><a href="/about/about/">
+        <li class="mobile-menu-item">关于</li>
+      </a>
+  </ul>
+
+  
+
+
+</nav>
+
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">WhoWin</a>
+  
+  <div style="position:absolute; left: 80px; top: 75px; color: crimson">
+      ———开源和分享是技术发展的源泉和动力；本博客所有文章均为原创
+  </div>
+</div>
+
+
+
+
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">首页</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">文章归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/article-categories/categories/">文章分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">文章标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/about/">关于</a>
+      </li>
+  </ul>
+</nav>
+
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">告别微软Windows 11，迎接基于Ubuntu的Linux Mint 22</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2024-10-06 </span>
+        <div class="post-category">
+            <a href="/categories/linux/"> Linux </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>本文译自《betanews》，原作者为：Brian Fagioli；本文简单介绍了基于Ubuntu 24.04的Linux发行版Linux Mint 22，如果你正准备从windows转移到Linux上时，这篇文章或许会给你一些帮助和建议，文章最后附有原文的网址，原文发表于2024年7月25日。</p>
+<p><img src="/images/100011/linux-mint-windows11.png" alt="Linux Mint"></p>
+<ul>
+<li>
+<p>Linux Mint 22 被称为 “Wilma”，它为用户提供了从 Windows 11 转换的几个理由；最新版本是一个长期支持版本，支持期至 2029 年，它引入了一系列旨在增强桌面体验的改进；Linux Mint 22 改进了本地化，增强了硬件兼容性，并注重安全性，似乎专为从熟悉的 Windows 无缝过渡而设计。</p>
+</li>
+<li>
+<p>Linux Mint 22 的一项关键改进是其语言支持；安装过程已简化，删除了不必要的语言包，从而节省了大量磁盘空间；对于在安装期间具有互联网连接的用户，系统会自动下载所选语言的语言包；此版本支持多种语言，无需互联网连接，包括英语、德语和西班牙语等。</p>
+</li>
+<li>
+<p>Linux Mint 22 建立在新的 Ubuntu 24.04 软件包基础上，并采用最新的 6.8 版 Linux 内核；这确保了与现代硬件的更好兼容性；默认声音服务器已过渡到 Pipewire，有望改善音频处理；重大更新包括对软件源中 Debian DEB822 格式的支持和升级主题以适应 GTK4，从而增强了视觉吸引力和功能性。</p>
+</li>
+<li>
+<p>一个值得注意的功能是将 Thunderbird 排除在 Snap 软件包之外；为了响应 Ubuntu 转向 Snap，Linux Mint 已承担起将 Thunderbird 维护为原生 .deb 软件包的责任，确保用户继续拥有可靠的电子邮件客户端，而无需 Snap 软件包的复杂性。</p>
+</li>
+<li>
+<p>Linux Mint 22 中更新的软件管理器拥有更快的加载时间和更流畅的界面；它具有改进的多线程、新的首选项页面和引人入胜的横幅幻灯片，使软件管理既高效又赏心悦目。</p>
+</li>
+<li>
+<p>安全性是此版本的重要关注点；Linux Mint 团队默认禁用未经验证的 Flatpaks，以减轻潜在的安全风险；我们已向用户发出警告，提醒他们确保软件来源值得信赖。</p>
+</li>
+<li>
+<p>在通信方面，Linux Mint 已将 Hexchat 替换为 Matrix，这是一个开放网络，可提供类似于 Slack 或 Discord 的现代聊天体验；它包括持续讨论、多媒体支持，并可通过预装的 Matrix Web App 访问。</p>
+</li>
+<li>
+<p>此外，Linux Mint 22 中的新 Cinnamon 6.2 环境引入了多项可用性增强功能；其中包括 Nemo 操作的新布局编辑器、改进的小程序精度以及 Clutter polkit 代理中对 Wayland 的支持，这代表着 Linux 桌面环境向前迈出了一步。</p>
+</li>
+<li>
+<p>Linux Mint 22“Wilma”拥有大量新功能，并高度重视用户友好的增强功能，不仅吸引 Windows 11 用户进行切换，还为寻求升级的现有 Linux 爱好者提供了坚实的平台。</p>
+</li>
+<li>
+<p><a href="https://www.linuxmint.com/download.php">点击下载 Linux Mint 22</a></p>
+</li>
+<li>
+<p>原文：<a href="https://betanews.com/2024/07/25/linux-mint-22-offers-compelling-reasons-to-switch-from-windows-11/">Say goodbye to Microsoft Windows 11 and hello to Ubuntu-based Linux Mint 22</a></p>
+</li>
+<li>
+<p>原文发表于 2024 年 7 月 25 日</p>
+</li>
+<li>
+<p>参考文章：</p>
+<ul>
+<li><a href="/post/blog/linx/0005-top-5-linux-distros-for-ditching-windows-11/">5个最佳Linux发行版可取代Windows 11并控制你的PC</a></li>
+<li><a href="/post/blog/linx/0006-switch-from-windows-11-to-ubuntu-24-04-1/">从Microsoft Windows 11切换到Ubuntu Linux 24.04.1，享受神奇的开源体验</a></li>
+</ul>
+  <!-- - [告别微软Windows 11，迎接基于Ubuntu的Linux Mint 22][ref03] -->
+<ul>
+<li><a href="/post/blog/linx/0013-system76-pop_os-2204-ubuntu-linux/">System76 通过 Pop!_OS 22.04 LTS 将 Ubuntu Linux 提升到新水平</a></li>
+<li><a href="/post/blog/linx/0014-fedora-linux-40/">为Linux爱好者们献上一份祝福：Fedora 40 发布</a></li>
+<li><a href="/post/blog/linx/0015-manjaro-linux-releases-xahea-24-1-with-gnome-plasma-and-xfce-updates/">Manjaro Linux发布Xahea 24.1，包含GNOME、Plasma和XFCE更新</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
+<p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!--CSDN
+[ref01]:https://blog.csdn.net/whowin/article/details/142851436
+[ref02]:https://blog.csdn.net/whowin/article/details/142850897
+[ref03]:https://blog.csdn.net/whowin/article/details/142851017
+[ref04]:https://blog.csdn.net/whowin/article/details/142851122
+[ref05]:https://blog.csdn.net/whowin/article/details/142851244
+[ref06]:https://blog.csdn.net/whowin/article/details/142851329
+-->
+<!--CSDN
+[img01]:https://i-blog.csdnimg.cn/direct/5934551ef82e4964b9bd1d81f5f129ad.png#pic_center
+-->
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">whowin</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2024-10-06
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/ubuntu/">ubuntu</a>
+          <a href="/tags/linux-mint/">Linux Mint</a>
+          <a href="/tags/pop_os/">Pop!_OS</a>
+          <a href="/tags/fedora/">Fedora</a>
+          <a href="/tags/manjaro/">Manjaro</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/blog/linux/0006-switch-from-windows-11-to-ubuntu-24-04-1/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">从Microsoft Windows 11切换到Ubuntu Linux 24.04.1，享受神奇的开源体验</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/blog/linux/0014-fedora-linux-40/">
+            <span class="next-text nav-default">为Linux爱好者们献上一份祝福：Fedora 40 发布</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  <span id="/post/blog/linux/0011-linux-mint-22-offers-compelling-reasons-to-switch-from-windows-11/" class="leancloud_visitors" data-flag-title="告别微软Windows 11，迎接基于Ubuntu的Linux Mint 22">
+		<span class="post-meta-item-text">文章阅读量 </span>
+		<span class="leancloud-visitors-count">0</span>
+		<p></p>
+	  </span>
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'OFCGzCfJRUglzOdzrqMGkbTR-gzGzoHsz',
+        appKey: 'v7P29kPAEbsmaavaYPNhGhnF',
+        notify:  false ,
+        verify:  false ,
+        avatar:'mm',
+        placeholder: '说点什么吧...',
+        visitor:  true 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:hengch@163.com" class="iconfont icon-email" title="email"></a>
+  <a href="https://whowin.gitee.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2022 - 
+    2024<span class="heart"><i class="iconfont icon-heart"></i></span><span>whowin</span>
+  </span>
+</div>
+
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.64437849d125a2d603b3e71d6de5225d641a32d17168a58106e0b61852079683.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js" integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

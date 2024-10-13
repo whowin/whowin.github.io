@@ -183,7 +183,7 @@
 <h2 id="1-posix-消息队列概述">1 POSIX 消息队列概述</h2>
 <ul>
 <li>
-<p>文章<a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>介绍了消息队列的基本概念及 UNIX System V 消息队列的编程方法，阅读本文前可以先阅读这篇文章；</p>
+<p>文章<a href="/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>介绍了消息队列的基本概念及 UNIX System V 消息队列的编程方法，阅读本文前可以先阅读这篇文章；</p>
 </li>
 <li>
 <p><code>man mq_overview</code> 可以从在线手册中了解 POSIX 消息队列的更详细的信息；</p>
@@ -478,7 +478,7 @@
 </li>
 <li>
 <p>下面是这个程序的运行截屏：</p>
-<p><img src="https://whowin.gitee.io/images/190014//screenshot-of-mq-create.png" alt="screenshot of mq-create command"></p>
+<p><img src="/images/190014//screenshot-of-mq-create.png" alt="screenshot of mq-create command"></p>
 </li>
 <li>
 <p>请注意，尽管我们设置了消息队列的读/写权限是 <code>0666</code>，但最后显示的消息队列的权限却是 <code>0664</code>，这是因为 umask 为 <code>0002</code>。</p>
@@ -580,7 +580,7 @@
 </li>
 <li>
 <p>下面是运行结果的截屏：</p>
-<p><img src="https://whowin.gitee.io/images/190014/screenshot-of-mqattr.png" alt="Screenshot of mq-attr"></p>
+<p><img src="/images/190014/screenshot-of-mqattr.png" alt="Screenshot of mq-attr"></p>
 </li>
 </ul>
 <hr>
@@ -667,7 +667,7 @@
 </li>
 <li>
 <p>下面是运行截图：</p>
-<p><img src="https://whowin.gitee.io/images/190014/screenshot-of-mq-unlink.png" alt="screenshot of mq-unlink"></p>
+<p><img src="/images/190014/screenshot-of-mq-unlink.png" alt="screenshot of mq-unlink"></p>
 </li>
 </ul>
 <hr>
@@ -714,7 +714,7 @@
 </li>
 <li>
 <p>下面是运行录屏，左边时服务端窗口，右边是客户端窗口：</p>
-<p><img src="https://whowin.gitee.io/images/190014/mq-server-client.gif" alt="Recording screen for running example"></p>
+<p><img src="/images/190014/mq-server-client.gif" alt="Recording screen for running example"></p>
 </li>
 </ul>
 <hr>
@@ -927,13 +927,13 @@
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="https://whowin.gitee.io/images/190014/screenshot-of-mq-notify.png" alt="Screenshot of mq-notify"></p>
+<p><img src="/images/190014/screenshot-of-mq-notify.png" alt="Screenshot of mq-notify"></p>
 </li>
 </ul>
 <hr>
 <h2 id="11-system-v-消息队列-vs-posix-消息队列">11 System V 消息队列 VS POSIX 消息队列</h2>
 <ul>
-<li>文章<a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>介绍了 UNIX System V 消息队列的编程方法；</li>
+<li>文章<a href="/post/blog/ipc/0013-systemv-message-queue/">《IPC之三：使用 System V 消息队列进行进程间通信的实例》</a>介绍了 UNIX System V 消息队列的编程方法；</li>
 <li>POSIX 消息队列的功能与 System V 消息队列类似，很显然调用方法有较大的不同；</li>
 <li>POSIX 消息队列和 System V 消息队列一样，都是在内核中实现的，所以，与 System V 消息队列类似对资源的占用有一定的限制：
 <ul>
@@ -990,10 +990,10 @@
 <h2 id="12-消息队列-vs-管道">12 消息队列 VS 管道</h2>
 <ul>
 <li>
-<p>文章<a href="https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">《IPC之一：使用匿名管道进行父子进程间通信的例子》</a>介绍了匿名管道的编程方法；</p>
+<p>文章<a href="/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">《IPC之一：使用匿名管道进行父子进程间通信的例子》</a>介绍了匿名管道的编程方法；</p>
 </li>
 <li>
-<p>文章<a href="https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/">《IPC之二：使用命名管道(FIFO)进行进程间通信的例子》</a>介绍了命名管道的编程方法；</p>
+<p>文章<a href="/post/blog/ipc/0011-ipc-examples-of-fifo/">《IPC之二：使用命名管道(FIFO)进行进程间通信的例子》</a>介绍了命名管道的编程方法；</p>
 </li>
 <li>
 <p>尽管和消息队列比起来，管道显得简单而且功能较弱，但管道也是有其自身特点的；</p>
@@ -1022,17 +1022,17 @@
 </ul>
 <h2 id="13-有关进程间通信ipc的的其它文章">13 有关进程间通信(IPC)的的其它文章：</h2>
 <ul>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/">IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘</a></li>
+<li><a href="/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></li>
+<li><a href="/post/blog/ipc/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></li>
+<li><a href="/post/blog/ipc/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></li>
+<li><a href="/post/blog/ipc/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></li>
+<li><a href="/post/blog/ipc/0015-systemv-semaphore-sets/">IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘</a></li>
 </ul>
 <h2 id="欢迎订阅-进程间通信专栏httpsblogcsdnnetwhowincategory_12404164html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12404164.html">『进程间通信专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
 [article02]: https://blog.csdn.net/whowin/article/details/132171930

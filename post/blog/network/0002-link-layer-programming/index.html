@@ -238,7 +238,7 @@
 <li>(IP头+UDP头+DATA)从网络层被送到了数据链路层，数据链路层的以太网协议会给这个数据包加上一个以太网头；</li>
 <li>(以太网头+IP头+UDP头+DATA)从数据链路层被送到了物理层，数据就被发送走了。</li>
 </ol>
-<p><img src="https://whowin.gitee.io/images/180002/sending_data_from_app_with_socket.png" alt="使用socket从应用程序发送数据的过程"></p>
+<p><img src="/images/180002/sending_data_from_app_with_socket.png" alt="使用socket从应用程序发送数据的过程"></p>
 <center><b>图1：使用socket从应用程序发送数据的过程</b></center>
 </li>
 </ul>
@@ -284,7 +284,7 @@
 <li>传输层从数据中提取出UDP头，其余部分交给应用程序(DATA)；</li>
 <li>所以我们在应用层收到的就只有数据了，报头已经被各协议层提取出来</li>
 </ol>
-<p><img src="https://whowin.gitee.io/images/180002/receiving_data_in_app_with_socket.png" alt="在应用程序中用socket接收数据的过程"></p>
+<p><img src="/images/180002/receiving_data_in_app_with_socket.png" alt="在应用程序中用socket接收数据的过程"></p>
 <center><b>图2：在应用程序中用socket接收数据的过程</b></center>
 </li>
 </ul>
@@ -299,7 +299,7 @@
 <ul>
 <li>
 <p>raw socket也是一种socket，常用于接收原始数据包，所谓原始数据包指的是从物理层直接传送出来的数据包；使用raw socket可以绕过通常的TCP/IP处理流程，在应用程序中直接收到原始数据包(见图3)。使用raw socket编程，并不需要对Linux内核有深入的了解。</p>
-<p><img src="https://whowin.gitee.io/images/180002/app_receive_data_with_raw_socket.png" alt="在应用程序中使用raw socket接收数据"></p>
+<p><img src="/images/180002/app_receive_data_with_raw_socket.png" alt="在应用程序中使用raw socket接收数据"></p>
 <center><b>图3：在应用程序中使用raw socket接收数据</b></center>
 </li>
 </ul>
@@ -368,7 +368,7 @@
 <ul>
 <li>网络报文的报头分为三个部分：传输层的传输层协议头、网络层的网络层协议头和数据链路层的以太网头，见图4；</li>
 </ul>
-<p><img src="https://whowin.gitee.io/images/180002/a_generic_representation_of_a_network_packet.png" alt="网络报头的通用定义"></p>
+<p><img src="/images/180002/a_generic_representation_of_a_network_packet.png" alt="网络报头的通用定义"></p>
 <center><b>图4：网络报头的通用定义</b></center>
 <hr>
 <ul>
@@ -456,7 +456,7 @@
 </span></span><span class="line"><span class="cl"><span class="p">};</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p><img src="https://whowin.gitee.io/images/180002/ip_header.png" alt="IP 报头"></p>
+</div><p><img src="/images/180002/ip_header.png" alt="IP 报头"></p>
 <center><b>图5：IP 报头</b></center>
 </li>
 </ul>
@@ -1081,7 +1081,7 @@
 </div></li>
 <li>
 <p>在我的电脑上看到的是这样的：</p>
-<p><img src="https://whowin.gitee.io/images/180002/receive_udp_packet.png" alt="收到的 udp 数据包"></p>
+<p><img src="/images/180002/receive_udp_packet.png" alt="收到的 udp 数据包"></p>
 <center><b>图6：收到的 UDP 数据包</b></center>
 </li>
 </ul>
@@ -1091,7 +1091,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!-- CSDN
 [img01]:https://img-blog.csdnimg.cn/img_convert/87f88f8da43e7323539e5ee03e6eba2b.png
 [img02]:https://img-blog.csdnimg.cn/img_convert/50cbd29d4b42b3621fbb587a6d502a86.png

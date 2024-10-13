@@ -197,7 +197,7 @@
 <p>一些常用的 wifi 工具软件是使用 WE 实现的，比如：iwlist、iwconfig 等，由此也可以看出 WE 在 wifi 编程中仍然占有很重要的位置；</p>
 </li>
 <li>
-<p>WE 的基本实现是使用 ioctl()，前面的两篇文章 <a href="https://blog.csdn.net/whowin/article/details/131504380">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a> 和 <a href="https://blog.csdn.net/whowin/article/details/137711398">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a> 都是使用 ioctl() 实现的；</p>
+<p>WE 的基本实现是使用 ioctl()，前面的两篇文章 <a href="/post/blog/network/0022-how-to-scan-wifi-signal/">《使用ioctl扫描wifi信号获取信号属性的实例(一)》</a> 和 <a href="/post/blog/network/0025-another-wifi-scanner-example/">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a> 都是使用 ioctl() 实现的；</p>
 </li>
 <li>
 <p>libiw 是对 WE 的一个封装，使编程者不必直接面对 ioctl() 中复杂的调用方法和返回数据，可以给编程带来一些便利；</p>
@@ -848,7 +848,7 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>关于信号质量以及相关数据结构的说明，请参考文章<a href="https://blog.csdn.net/whowin/article/details/137711398">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a></li>
+<li>关于信号质量以及相关数据结构的说明，请参考文章<a href="/post/blog/network/0025-another-wifi-scanner-example/">《使用ioctl扫描wifi信号获取信号属性的实例(二)》</a></li>
 <li>has_range 为 1 表示 range 参数存在，该函数中将使用 <code>range-&gt;max_qual.qual</code>、<code>range-&gt;max_qual.level</code> 和 <code>range-&gt;max_qual.noise</code></li>
 </ul>
 </li>
@@ -1430,7 +1430,11 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!--CSDN
+[article01]:https://blog.csdn.net/whowin/article/details/131504380
+[article02]:https://blog.csdn.net/whowin/article/details/137711398
+-->
     </div>
 
     <div class="post-copyright">

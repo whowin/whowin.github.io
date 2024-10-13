@@ -175,13 +175,13 @@
 <ul>
 <li>在<a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a>中，有两篇文章都涉及到了使用 <code>select()</code> 处理多个 <code>socket</code> 连接：
 <ul>
-<li><a href="https://blog.csdn.net/whowin/article/details/129410476">《使用select实现的UDP/TCP组合服务器》</a></li>
-<li><a href="https://blog.csdn.net/whowin/article/details/129685842">《TCP服务器如何使用select处理多客户连接》</a></li>
+<li><a href="/post/blog/network/0010-tcp-and-udp-server-using-select/">《使用select实现的UDP/TCP组合服务器》</a></li>
+<li><a href="/post/blog/network/0011-handling-multiple-clients-on-server-with-select/">《TCP服务器如何使用select处理多客户连接》</a></li>
 </ul>
 </li>
 <li>在<a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a>中，有一篇文章都涉及到了使用 <code>poll()</code> 处理多个 <code>socket</code> 连接：
 <ul>
-<li><a href="https://blog.csdn.net/whowin/article/details/136454503">《使用poll()代替select()处理多客户连接的TCP服务器实例》</a></li>
+<li><a href="/post/blog/network/0021-using-poll-instead-of-select">《使用poll()代替select()处理多客户连接的TCP服务器实例》</a></li>
 </ul>
 </li>
 <li><code>poll()</code> 和 <code>select()</code> 的编程方法非常相似，但 epoll 有较大区别；</li>
@@ -506,18 +506,23 @@
 <p>主进程监视客户端进程的退出，当所有客户端进程都已退出后，向服务端进程发送 SIGINT 信号，使服务端进程退出，整个程序运行结束；</p>
 </li>
 <li>
-<p>该程序的客户端进程的程序与文章<a href="https://blog.csdn.net/whowin/article/details/136454503">《使用poll()代替select()处理多客户连接的TCP服务器实例》</a>中的客户端程序完全一样；</p>
+<p>该程序的客户端进程的程序与文章<a href="/post/blog/network/0021-using-poll-instead-of-select">《使用poll()代替select()处理多客户连接的TCP服务器实例》</a>中的客户端程序完全一样；</p>
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="https://whowin.gitee.io/images/180024/screenshot-of-epoll-server.png" alt="Screenshot of epoll-server"></p>
+<p><img src="/images/180024/screenshot-of-epoll-server.png" alt="Screenshot of epoll-server"></p>
 </li>
 </ul>
 <h2 id="欢迎订阅-网络编程专栏httpsblogcsdnnetwhowincategory_12180345html"><strong>欢迎订阅 <a href="https://blog.csdn.net/whowin/category_12180345.html">『网络编程专栏』</a></strong></h2>
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<!--CSDN
+[article01]: https://blog.csdn.net/whowin/article/details/129410476
+[article02]: https://blog.csdn.net/whowin/article/details/129685842
+[article03]: https://blog.csdn.net/whowin/article/details/136454503
+-->
 <!-- CSDN
 [img01]: https://img-blog.csdnimg.cn/img_convert/1d624912b6c5c7c6f4c61925006293e7.png
 -->

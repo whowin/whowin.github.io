@@ -223,7 +223,7 @@
 </li>
 <li>
 <p>下图展示了一个进程创建管道后，进程与内核的关系：</p>
-<p><img src="https://whowin.gitee.io/images/190010/pipe-process-kernel.png" alt="process and kernel"></p>
+<p><img src="/images/190010/pipe-process-kernel.png" alt="process and kernel"></p>
 </li>
 <li>
 <p>从上图中，可以看出以下几点：</p>
@@ -237,14 +237,14 @@
 </li>
 <li>
 <p>下图描述了父进程、子进程和内核的关系</p>
-<p><img src="https://whowin.gitee.io/images/190010/pipe-parent-child-process-kernel.png" alt="parent-child processes and kernel"></p>
+<p><img src="/images/190010/pipe-parent-child-process-kernel.png" alt="parent-child processes and kernel"></p>
 </li>
 <li>
 <p>从上图中，我们可以看到，父进程和子进程都可以访问管道的两个文件描述符，但是很显然，如果父进程和子进程同时向 <code>fd[1]</code> 写入数据，一定会造成混乱，而且如果父、子进程均向 <code>fd[1]</code> 写入数据，当从 <code>fd[0]</code> 读出数据时，并无法区分读到的数据是那个进程写入的；所以必须要做出抉择，这个建立的管道的数据是向那个方向流动，从父进程流向子进程？还是从子进程流向父进程？两个进程必须达成一致，否则会出现混乱；</p>
 </li>
 <li>
 <p>为了讨论方便，我们假定子进程要做一些事务，然后把结果通过管道发送给父进程，如下面图示：</p>
-<p><img src="https://whowin.gitee.io/images/190010/data-from-child-to-parent.png" alt="Data flows from child to parent process"></p>
+<p><img src="/images/190010/data-from-child-to-parent.png" alt="Data flows from child to parent process"></p>
 </li>
 <li>
 <p>至此，管道已经建立完毕，下面就是如何使用管道；前面提到过，管道的文件描述符使用 <code>inode</code>，所以可以使用低级文件 I/O 的系统调用来直接访问管道；</p>
@@ -500,7 +500,7 @@
 </li>
 <li>
 <p>下图或许可以更直观地描述这种使用方法：</p>
-<p><img src="https://whowin.gitee.io/images/190010/pipe-with-dup.png" alt="pipe with dup()"></p>
+<p><img src="/images/190010/pipe-with-dup.png" alt="pipe with dup()"></p>
 </li>
 <li>
 <p>源程序：<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/190010/pipe-dup-stdin.c">pipe-dup-stdin.c</a>(<strong>点击文件名下载源程序</strong>)演示了在管道中使用 <code>dup2()</code> 将 fd[0] 复制到 <code>STDIN</code> 的方法：</p>
@@ -672,11 +672,11 @@
 <li>尽管在本文的所有实例中，从管道传输的数据都是字符串，但管道是可以传输二进制数据的，也就是说，可以把一个结构完整第通过管道进行传输。</li>
 <li>有关进程间通信(IPC)的的其它文章：
 <ul>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></li>
-<li><a href="https://whowin.gitee.io/post/blog/ipc/0015-systemv-semaphore-sets/">IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘</a></li>
+<li><a href="/post/blog/ipc/0010-ipc-example-of-anonymous-pipe/">IPC之一：使用匿名管道进行父子进程间通信的例子</a></li>
+<li><a href="/post/blog/ipc/0011-ipc-examples-of-fifo/">IPC之二：使用命名管道(FIFO)进行进程间通信的例子</a></li>
+<li><a href="/post/blog/ipc/0013-systemv-message-queue/">IPC之三：使用 System V 消息队列进行进程间通信的实例</a></li>
+<li><a href="/post/blog/ipc/0014-posix-message-queue/">IPC之四：使用 POSIX 消息队列进行进程间通信的实例</a></li>
+<li><a href="/post/blog/ipc/0015-systemv-semaphore-sets/">IPC之五：使用 System V 信号量集解决经典的‘哲学家就餐问题‘</a></li>
 </ul>
 </li>
 </ul>
@@ -684,7 +684,7 @@
 <hr>
 <p><strong>欢迎访问我的博客：https://whowin.cn</strong></p>
 <p><strong>email: <a href="mailto:hengch@163.com">hengch@163.com</a></strong></p>
-<p><img src="https://whowin.gitee.io/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
+<p><img src="/images/qrcode/sponsor-qrcode.png" alt="donation"></p>
 <!-- for CSDN
 [article01]: https://blog.csdn.net/whowin/article/details/132171311
 [article02]: https://blog.csdn.net/whowin/article/details/132171930
