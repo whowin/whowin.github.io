@@ -84,6 +84,7 @@ postid: 130003
         + list - 指向单向链表的指针
         + data - 指向添加节点的数据
         + 返回指向单向链表的起始指针；
+        + 说明：在单向链表的最后添加节点，必须要遍历整个链表才能找到链表的尾部，这种做法效率很低，通常的做法是使用 `g_slist_prepend()` 在链表的起始位置添加节点，当所有节点添加完毕后，再使用 `g_slist_reverse()` 将整个链表反转；
     - `g_slist_prepend()` 在单向链表的最前面添加一个新节点；
         ```C
         GSList *g_slist_prepend(GSList *list, gpointer data)
@@ -91,7 +92,6 @@ postid: 130003
         + list - 指向单向链表的指针
         + data - 指向添加节点的数据
         + 返回指向单向链表的指针，在单向链表的开头添加一个节点，单向链表的指针是肯定会变化的；
-        + 返回该单向链表的起始指针；
     - `g_slist_insert()` 在单向链表的中间插入一个新节点；
         ```C
         GSList *g_slist_insert(GSList *list, gpointer data, gint position)
@@ -213,6 +213,12 @@ postid: 130003
         + list1 - 指向第 1 个单向链表的指针；
         + list2 - 指向准备连接到第 1 个单向链表后面的单向链表的指针；
         + 返回连接好的单向链表的指针，
+    - `g_slist_reverse()` 反转装个单向链表
+        ```C
+        GSList *g_slist_reverse(GSList *list)
+        ```
+        + list - 指向单向链表的指针；
+        + 返回该单向链表的起始指针；
 
 ## 3 如何使用 GSList 实现单向链表
 * 文章的一开始有一个使用标准 C 语言函数库的单向链表的实例，使用 GLib 的 GSList 操作单向链表要容易得多；
@@ -255,6 +261,25 @@ postid: 130003
         return 0;
     }
     ```
+* 在这个程序中我们特别要介绍两个宏：`GINT_TO_POINTER()` 和 `GPOINTER_TO_INT()`
+    - 在前面我们介绍过 `GSList` 这个结构，这也是实现单向链表的关键结构，在这个结构中有一个字段 `gpointer data`，gpointer 是 GLib 中的一个数据类型，其实就是一个 `void *`，也就是指针类型；
+    - 一个指针类型在不同的系统和硬件环境下可能长度不同，但至少是 32 位，所以我们可以在这个指针类型的字段上存储一个数字变量，但是这种转换是挺麻烦的，需要概念清晰，否则可能会使程序崩溃；
+    - 这样做的好处是，如果一个单向链表的节点数据是一个数字类型，那我们就没必要再去为这个数字申请内存，然后再把这个数字的指针传给 GSList，那么在释放这个 GSList 时也就不需要释放数据占用的内存了；
+    - 举例说明正常情况下，应该如何在单向链表的一个节点上存储一个数字：
+        ```C
+        GSList item;
+        gint *p = malloc(sizeof(gint));
+        *p = 10;
+        item.data = p;
+        item.next = NULL;
+        ......
+        free(item.data);
+        ......
+        ```
+    - 为了能够在指针类型上存储一个数字变量，GLib 定义了两个宏：
+        1. `GINT_TO_POINTER(value)` 用于将整数类型变量 `value` 的值存储到一个指针类型的变量中：`gpointer p = GINT_TO_POINTER(10)` 将把 10 存放到一个指针类型的变量 p 中，而不是 p 所指向的内存；
+        2. `GPOINTER_TO_INT(p)` 用于将指针类型变量 p 中的值转换为一个整数：`gint value = GPOINTER_TO_INT(p)` 将把指针类型变量 p 中的值存储到整数类型的变量 `value` 中
+
 * 编译：
     ```bash
     gcc -Wall -g sllist-glib.c -o sllist-glib `pkg-config --cflags --libs glib-2.0`
@@ -288,7 +313,7 @@ postid: 130003
 
 ## 5 基于 GLib 的 GSList 实现的 FIFO 队列
 * FIFO(First Input First Output)队列，也就是先进先出队列，是一种简单的机制，操作一个 FIFO 队列需要队列的头指针和尾指针；
-* 当向 FIFO 队列中加入数据时，数据添加到队列的尾指针处，当从队列中取出数据时，要从队列的头指针处取；
+* 当向 FIFO 队列中加入数据时，数据添加到队列的首指针处，当从队列中取出数据时，要从队列的尾指针处取；
 * FIFO 队列的重要参数是队列的最大长度，当队列中数据的数量达到队列的最大长度时，则不能再向队列中添加数据；
 * FIFO 队列的两个重要判断就是判断队列为空(队列中没有数据)或者队列已满(数据数量达到最大长度)；
 * 源程序 [queue-glib.c][src02](**点击文件名下载源程序**) 基于 GLib 的 GSList 实现了一个简单的 FIFO 队列；
@@ -298,40 +323,49 @@ postid: 130003
     #include <glib.h>
 
     #define QUEUE_MAX_LEN           10
-    GSList *queue_head, *queue_tail;        // head and tail pointers of the queue
-    guint32 queue_max_len;                  // Max. length of the queue
 
-    void queue_init(int maxn) {
-        queue_head = queue_tail = NULL;
-        queue_max_len = maxn;
+    typedef struct {
+        GSList *head;               // head pointer of the queue
+        GSList *tail;               // tail pointer of the queue
+        gint size;                  // size of the queue
+        gint max_size;              // max. size of the queue
+    } Queue;
+
+    // Initialize the queue
+    Queue *queue_init(int maxn) {
+        Queue *queue = malloc(sizeof(Queue));
+        queue->head = NULL;
+        queue->tail = NULL;
+        queue->size = 0;
+        queue->max_size = maxn;
+        return queue;
     }
 
-    gboolean queue_put(gpointer data) {
-        guint queue_len = g_slist_length(queue_head);           // length of the queue
-        if (queue_len >= queue_max_len) {
-            // the queue is full
+    // Enqueue operation(Add a node at the head)
+    gboolean enqueue(Queue *queue, gint data) {
+        if (queue->size >= queue->max_size) {
             return FALSE;
-        } else {
-            queue_head = g_slist_append(queue_head, data);      // append a node with data to the queue
-            queue_tail = g_slist_last(queue_head);              // get the pointer of last node
         }
+        queue->head = g_slist_prepend(queue->head, GINT_TO_POINTER(data));
+        if (queue->tail == NULL) {
+            queue->tail = queue->head;
+        }
+        queue->size++;
         return TRUE;
     }
 
-    gpointer queue_get() {
-        guint queue_len = g_slist_length(queue_head);           // length of the queue
-        if (queue_len == 0) {
-            // the queue is empty
-            return NULL;
+    // Dequeue operation(get a node from tail and then delete it)
+    gint dequeue(Queue *queue) {
+        if (queue->tail == NULL) {
+            return -1;                  // the queue is empty
         }
-        gpointer queue_data = queue_tail->data;                 // data pointer of the last node
-        queue_head = g_slist_delete_link(queue_head, queue_tail);   // delete the last node
-        if (queue_head == NULL) {
-            queue_tail = queue_head;                            // the queue is empty
-        } else {
-            queue_tail = g_slist_last(queue_head);              // get the pointer of last node
-        }
-        return queue_data;
+        gint data = GPOINTER_TO_INT(queue->tail->data);
+
+        queue->head = g_slist_delete_link(queue->head, queue->tail);
+        queue->tail = g_slist_last(queue->head);
+        queue->size--;
+        
+        return data;
     }
 
     int main(int argc, char **argv) {
@@ -346,12 +380,12 @@ postid: 130003
         }
 
         printf("Max. length of the queue is %ld.\n", len);
-        queue_init(len);            // Initialize the queue
+        Queue *queue = queue_init(len);            // Initialize the queue
 
         guint16 i;
         // append some data to the queue
-        for (i = 0; i < (queue_max_len << 1); ++i) {
-            if (queue_put(GINT_TO_POINTER(i + 1))) {
+        for (i = 0; i < (queue->max_size << 1); ++i) {
+            if (enqueue(queue, (i + 1))) {
                 printf("Put data %d into the queue.\n", i + 1);
             } else {
                 printf("The queue is full.\n");
@@ -359,15 +393,17 @@ postid: 130003
             }
         }
         // get some data from the queue
-        for (i = 0; i < (queue_max_len << 1); ++i) {
-            gpointer queue_data = queue_get();
-            if (queue_data != NULL) {
-                printf("Get data %d from the queue.\n", GPOINTER_TO_INT(queue_data));
+        for (i = 0; i < (queue->max_size << 1); ++i) {
+            gint queue_data = dequeue(queue);
+            if (queue_data >= 0) {
+                printf("Get data %d from the queue.\n", queue_data);
             } else {
                 printf("The queue is empty.\n");
                 break;
             }
         }
+
+        free(queue);
 
         return 0;
     }
