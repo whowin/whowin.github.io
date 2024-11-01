@@ -6,7 +6,25 @@
     <description>Recent content in Posts on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 06 Oct 2024 13:30:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 30 Oct 2024 23:48:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>双向链表及如何使用GLib的GList实现双向链表</title>
+      <link>https://whowin.gitee.io/post/blog/c/0004-doubly-linked-lists-in-glib/</link>
+      <pubDate>Wed, 30 Oct 2024 23:48:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/c/0004-doubly-linked-lists-in-glib/</guid>
+      <description>&lt;p&gt;双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>C程序员应该知道的最好的8个C编程框架</title>
+      <link>https://whowin.gitee.io/post/blog/c/0005-best-c-programming-frameworks-you-should-know/</link>
+      <pubDate>Sun, 20 Oct 2024 23:48:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/c/0005-best-c-programming-frameworks-you-should-know/</guid>
+      <description>&lt;p&gt;C 编程框架是开发人员必不可少的工具，编程框架可以为构建强大且性能优异的应用程序提供结构化的基础，本文将对 8 个最佳 C 编程框架和库做出简要的介绍，如果您正在寻找适合初学者的 C 编程框架或旨在进行 C 编程框架比较，相信本文可以给您一定的帮助。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>5个最佳Linux发行版可取代Windows 11并控制你的PC</title>
       <link>https://whowin.gitee.io/post/blog/linux/0005-top-5-linux-distros-for-ditching-windows-11/</link>
@@ -59,15 +77,6 @@
       
       <guid>https://whowin.gitee.io/post/blog/linux/0014-fedora-linux-40/</guid>
       <description>&lt;p&gt;本文译自《betanews》，原作者为：Brian Fagioli；本文简单介绍了于 2024年4月23日发布的基于Fedora Linux 40发行版，如果你整准备从windows转移到Linux上时，这篇文章或许会给你一些帮助和建议，文章最后附有原文的网址，原文发表于2024年4月23日。&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>双向链表及如何使用GLib的GList实现双向链表</title>
-      <link>https://whowin.gitee.io/post/blog/c/0004-doubly-linked-lists-in-glib/</link>
-      <pubDate>Fri, 20 Sep 2024 23:48:29 +0800</pubDate>
-      
-      <guid>https://whowin.gitee.io/post/blog/c/0004-doubly-linked-lists-in-glib/</guid>
-      <description>&lt;p&gt;双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GSList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。&lt;/p&gt;</description>
     </item>
     
     <item>

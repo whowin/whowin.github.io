@@ -6,14 +6,14 @@
     <description>Recent content in GList on whowin - 发表我个人原创作品的技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 20 Sep 2024 23:48:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/glist/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 30 Oct 2024 23:48:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/glist/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>双向链表及如何使用GLib的GList实现双向链表</title>
       <link>https://whowin.gitee.io/post/blog/c/0004-doubly-linked-lists-in-glib/</link>
-      <pubDate>Fri, 20 Sep 2024 23:48:29 +0800</pubDate>
+      <pubDate>Wed, 30 Oct 2024 23:48:29 +0800</pubDate>
       
       <guid>https://whowin.gitee.io/post/blog/c/0004-doubly-linked-lists-in-glib/</guid>
-      <description>&lt;p&gt;双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GSList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。&lt;/p&gt;</description>
+      <description>&lt;p&gt;双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。&lt;/p&gt;</description>
     </item>
     
   </channel>

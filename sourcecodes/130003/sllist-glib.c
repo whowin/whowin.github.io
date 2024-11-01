@@ -9,10 +9,10 @@
  * Compiled with gcc version 9.4.0 (Ubuntu 9.4.0-1ubuntu1~20.04.1).
  * Tested on Linux 5.4.0-139-generic #156-Ubuntu SMP Fri Jan 20 17:27:18 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux.
  *
- * To compile: $ gcc -Wall -g sllist-glib.c -o sllist-glib `pkg-config --cflags glib-2.0` 
+ * To compile: $ gcc -Wall -g sllist-glib.c -o sllist-glib `pkg-config --cflags --libs glib-2.0` 
  * Usage: $ ./sllist-glib
  * 
- * Example source code for article 《如何使用GLib的单向链表GList》
+ * Example source code for article 《单向链表以及如何使用GLib中的GSList实现单向链表》
  *
  */
 #include <stdio.h>

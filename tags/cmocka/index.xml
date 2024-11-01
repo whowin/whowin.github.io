@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CMocka on whowin - 发表我个人原创作品的技术博客</title>
+    <link>https://whowin.gitee.io/tags/cmocka/</link>
+    <description>Recent content in CMocka on whowin - 发表我个人原创作品的技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 20 Oct 2024 23:48:29 +0800</lastBuildDate><atom:link href="https://whowin.gitee.io/tags/cmocka/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>C程序员应该知道的最好的8个C编程框架</title>
+      <link>https://whowin.gitee.io/post/blog/c/0005-best-c-programming-frameworks-you-should-know/</link>
+      <pubDate>Sun, 20 Oct 2024 23:48:29 +0800</pubDate>
+      
+      <guid>https://whowin.gitee.io/post/blog/c/0005-best-c-programming-frameworks-you-should-know/</guid>
+      <description>&lt;p&gt;C 编程框架是开发人员必不可少的工具，编程框架可以为构建强大且性能优异的应用程序提供结构化的基础，本文将对 8 个最佳 C 编程框架和库做出简要的介绍，如果您正在寻找适合初学者的 C 编程框架或旨在进行 C 编程框架比较，相信本文可以给您一定的帮助。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

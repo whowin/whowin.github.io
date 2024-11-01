@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="whowin" /><meta name="description" content="双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GSList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。
+<meta name="author" content="whowin" /><meta name="description" content="双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。
 " /><meta name="keywords" content="linux, socket, hugo, dos" />
 
 
@@ -41,19 +41,19 @@
 
 
 <meta property="og:title" content="双向链表及如何使用GLib的GList实现双向链表" />
-<meta property="og:description" content="双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GSList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。" />
+<meta property="og:description" content="双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://whowin.gitee.io/post/blog/c/0004-doubly-linked-lists-in-glib/" /><meta property="article:section" content="post" />
-<meta property="article:published_time" content="2024-09-20T23:48:29+08:00" />
-<meta property="article:modified_time" content="2024-09-20T23:48:29+08:00" />
+<meta property="article:published_time" content="2024-10-30T23:48:29+08:00" />
+<meta property="article:modified_time" content="2024-10-30T23:48:29+08:00" />
 
 <meta itemprop="name" content="双向链表及如何使用GLib的GList实现双向链表">
-<meta itemprop="description" content="双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GSList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。"><meta itemprop="datePublished" content="2024-09-20T23:48:29+08:00" />
-<meta itemprop="dateModified" content="2024-09-20T23:48:29+08:00" />
-<meta itemprop="wordCount" content="4664">
+<meta itemprop="description" content="双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。"><meta itemprop="datePublished" content="2024-10-30T23:48:29+08:00" />
+<meta itemprop="dateModified" content="2024-10-30T23:48:29+08:00" />
+<meta itemprop="wordCount" content="4821">
 <meta itemprop="keywords" content="C语言,glib,GList,双向链表," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="双向链表及如何使用GLib的GList实现双向链表"/>
-<meta name="twitter:description" content="双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GSList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。"/>
+<meta name="twitter:description" content="双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -141,7 +141,7 @@
       <h1 class="post-title">双向链表及如何使用GLib的GList实现双向链表</h1>
 
       <div class="post-meta">
-        <span class="post-time"> 2024-09-20 </span>
+        <span class="post-time"> 2024-10-30 </span>
         <div class="post-category">
             <a href="/categories/c-language/"> C Language </a>
             </div>
@@ -158,9 +158,9 @@
       <ul>
         <li><a href="#1-双向链表及其实现">1 双向链表及其实现</a></li>
         <li><a href="#2-glib-中双向链表结构-glist">2 GLib 中双向链表结构 GList</a></li>
-        <li><a href="#3-如何使用-gslist-实现单向链表">3 如何使用 GSList 实现单向链表</a></li>
-        <li><a href="#4-单向链表的应用场景">4 单向链表的应用场景</a></li>
-        <li><a href="#5-基于-glib-的-gslist-实现的-fifo-队列">5 基于 GLib 的 GSList 实现的 FIFO 队列</a></li>
+        <li><a href="#3-如何使用-glist-实现双向链表">3 如何使用 GList 实现双向链表</a></li>
+        <li><a href="#4-双向链表的应用场景">4 双向链表的应用场景</a></li>
+        <li><a href="#5-基于-glib-的-glist-模拟终端命令的历史记录">5 基于 GLib 的 GList 模拟终端命令的历史记录</a></li>
       </ul>
     </li>
   </ul>
@@ -168,11 +168,14 @@
   </div>
 </div>
     <div class="post-content">
-      <p>双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GSList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。</p>
+      <p>双向链表是一种比单向链表更为灵活的数据结构，与单向链表相比可以有更多的应用场景，本文讨论双向链表的基本概念及实现方法，并着重介绍使用GLib的GList实现单向链表的方法及步骤，本文给出了多个实际范例源代码，旨在帮助学习基于GLib编程的读者较快地掌握GList的使用方法，本文程序在 ubuntu 20.04 下编译测试完成，gcc 版本号 9.4.0；本文适合初学者阅读。</p>
 <h2 id="1-双向链表及其实现">1 双向链表及其实现</h2>
 <ul>
 <li>
 <p>在文章<a href="https://blog.csdn.net/whowin/article/details/142472406">《单向链表以及如何使用GLib中的GSList实现单向链表》</a>中，介绍了单向链表以及基于 GLib 实现单向链表的方法，建议阅读本文前先阅读这篇文章；</p>
+</li>
+<li>
+<p>在文章<a href="https://blog.csdn.net/whowin/article/details/142472383">《使用GLib进行C语言编程的实例》</a>中，简单介绍了 GLib，建议阅读本文前先阅读这篇文章；</p>
 </li>
 <li>
 <p>双向链表(Doubly Linked List)是一种链式数据结构，每个节点包含三个主要部分：</p>
@@ -234,25 +237,25 @@
 <p>总的来说，‌双向链表比单向链表更加灵活，‌适用场景也要多一些。；</p>
 </li>
 <li>
-<p>下面程序是一个简单的单向链表的 C 语言标准库实现，<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/130003/sllist-c.c">dllist-c.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>下面程序是一个简单的双向链表的 C 语言标准库实现，<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/130004/dllist-c.c">dllist-c.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
 <p>编译：<code>gcc -Wall -g dllist-c.c -o dllist-c</code></p>
 </li>
 <li>
-<p>运行：<code>./sdllist-c</code></p>
+<p>运行：<code>./dllist-c</code></p>
 </li>
 <li>
-<p>该程序实现了双向向链表的插入、删除以及正向遍历；</p>
+<p>该程序实现了双向链表的插入、删除以及正向遍历；</p>
 </li>
 <li>
 <p>该程序首先建立一个双向链表，并在链表中加入 4 个节点，数据分别为：1、2、3、5，然后显示整个链表；</p>
 </li>
 <li>
-<p>在第 2 个节点(数据为 3，索引号为 2)的后面插入节点，数据为 4，然后显示整个链表；</p>
+<p>在第 3 个节点(数据为 3，索引号为 2)的后面插入节点，数据为 4，然后显示整个链表；</p>
 </li>
 <li>
-<p>将第 2 个节点(数据为 3，索引号为 2)删除，然后显示整个链表；</p>
+<p>将第 3 个节点(数据为 3，索引号为 2)删除，然后显示整个链表；</p>
 </li>
 <li>
 <p>最后释放整个链表；</p>
@@ -266,7 +269,7 @@
 <ul>
 <li><a href="https://docs.gtk.org/glib/index.html">GLib API version 2.0 手册</a> (<strong>点击查看手册</strong>)</li>
 <li><a href="https://docs.gtk.org/glib/struct.List.html">GLib API 手册中 GList 部分</a>  (<strong>点击查看手册</strong>)</li>
-<li>在 GLib 中，‌单向链表是通过GSList结构体实现的。‌GSList是一个简单的单向链表结构，‌用于存储各种类型的数据；</li>
+<li>在 GLib 中，‌双向链表是通过 GList 结构体实现的，GList 是一个简单的双向链表结构，‌用于存储各种类型的数据；</li>
 <li>GSList 定义如下：
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -274,167 +277,173 @@
 </span><span class="lnt">2
 </span><span class="lnt">3
 </span><span class="lnt">4
+</span><span class="lnt">5
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">GSList</span> <span class="p">{</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">GList</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="n">gpointer</span> <span class="n">data</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">GSList</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">GList</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">GList</span> <span class="o">*</span><span class="n">prev</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
-<li>data 为单向链表的数据指针，可以指向任何类型或结构的数据；</li>
-<li>next 为指向该单向链表下一个节点的指针；</li>
-<li>GLib 为单向链表结构 GSList 的操作提供了大量的函数，本文仅就其中的一部分函数进行介绍；</li>
+<li>data 为双向链表的数据指针，可以指向任何类型或结构的数据；</li>
+<li>next 为指向该双向链表当前节点的下一个节点的指针；</li>
+<li>prev 为指向该双向链表当前节点的前一个节点的指针；</li>
+<li>GLib 为双向链表结构 GList 的操作提供了大量的函数，本文仅就其中的一部分函数进行简单介绍；</li>
 </ul>
 <ol>
-<li><strong>添加、插入新节点</strong>
+<li>
+<p><strong>添加、插入新节点</strong></p>
 <ul>
-<li><code>g_slist_append()</code> 在单向链表的最后添加一个新节点；
+<li><code>g_list_append()</code> 在双向链表的最后添加一个新节点；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GSList</span> <span class="o">*</span><span class="n">g_slist_append</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gpointer</span> <span class="n">data</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GList</span> <span class="o">*</span><span class="n">g_slist_append</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gpointer</span> <span class="n">data</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针</li>
+<li>list - 指向双向链表的指针</li>
 <li>data - 指向添加节点的数据</li>
-<li>返回指向单向链表的起始指针；</li>
+<li>返回指向双向链表的起始指针；</li>
+<li>说明：在双向链表的最后添加节点，必须要遍历整个链表才能找到链表的尾部，这种做法效率很低，通常的做法是使用 <code>g_list_prepend()</code> 在链表的起始位置添加节点，当所有节点添加完毕后，再使用 <code>g_list_reverse()</code> 将整个链表反转；</li>
 </ul>
 </li>
-<li><code>g_slist_prepend()</code> 在单向链表的最前面添加一个新节点；
+<li><code>g_list_prepend()</code> 在双向链表的最前面添加一个新节点；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GSList</span> <span class="o">*</span><span class="n">g_slist_prepend</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gpointer</span> <span class="n">data</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GList</span> <span class="o">*</span><span class="n">g_list_prepend</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gpointer</span> <span class="n">data</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针</li>
+<li>list - 指向双向链表的指针</li>
 <li>data - 指向添加节点的数据</li>
-<li>返回指向单向链表的指针，在单向链表的开头添加一个节点，单向链表的指针是肯定会变化的；</li>
-<li>返回该单向链表的起始指针；</li>
+<li>返回指向双向链表的指针，在双向链表的开头添加一个节点，双向链表的指针是肯定会变化的；</li>
 </ul>
 </li>
-<li><code>g_slist_insert()</code> 在单向链表的中间插入一个新节点；
+<li><code>g_list_insert()</code> 在双向链表的中间插入一个新节点；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GSList</span> <span class="o">*</span><span class="n">g_slist_insert</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gpointer</span> <span class="n">data</span><span class="p">,</span> <span class="n">gint</span> <span class="n">position</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GList</span> <span class="o">*</span><span class="n">g_list_insert</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gpointer</span> <span class="n">data</span><span class="p">,</span> <span class="n">gint</span> <span class="n">position</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针</li>
+<li>list - 指向双向链表的指针</li>
 <li>data - 指向添加节点的数据</li>
-<li>position - 插入节点的位置，如果是负数或者超过了该单向链表的节点的数量，新节点将插到单向链表的最后；</li>
-<li>返回该单向链表的起始指针；</li>
+<li>position - 插入节点的位置，如果是负数或者超过了该双向链表的节点的数量，新节点将插到双向链表的最后；</li>
+<li>返回该双向链表的起始指针；</li>
 </ul>
 </li>
-<li><code>g_slist_insert_before()</code> 在包含指定数据的节点之前插入一个新节点；
+<li><code>g_list_insert_before()</code> 在包含指定数据的节点之前插入一个新节点；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GSList</span> <span class="o">*</span><span class="n">g_slist_insert_before</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">slist</span><span class="p">,</span> <span class="n">GSList</span> <span class="o">*</span><span class="n">sibling</span><span class="p">,</span> <span class="n">gpointer</span> <span class="n">data</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GList</span> <span class="o">*</span><span class="n">g_list_insert_before</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">GSList</span> <span class="o">*</span><span class="n">sibling</span><span class="p">,</span> <span class="n">gpointer</span> <span class="n">data</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>slist - 指向单向链表的指针</li>
+<li>list - 指向双向链表的指针</li>
 <li>data - 指向添加节点的数据</li>
 <li>sibling - 指向一个节点的指针，将在这个节点前插入新节点</li>
-<li>返回该单向链表的起始指针；</li>
+<li>返回该双向链表的起始指针；</li>
 </ul>
 </li>
 </ul>
 </li>
-<li><strong>删除节点</strong>
+<li>
+<p><strong>删除节点</strong></p>
 <ul>
-<li><code>g_slist_remove_link()</code> 从单向链表中删除一个节点，但并不释放该节点占用的内存
+<li><code>g_list_remove_link()</code> 从双向链表中删除一个节点，但并不释放该节点占用的内存
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GSList</span> <span class="o">*</span><span class="n">g_slist_remove_link</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">GSList</span> <span class="o">*</span><span class="n">link_</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GList</span> <span class="o">*</span><span class="n">g_list_remove_link</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">GList</span> <span class="o">*</span><span class="n">llink_</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针；</li>
-<li>link_ - 指向单向链表中一个节点的指针，该节点将被删除；</li>
-<li>返回该单向链表的起始指针；</li>
-<li>该函数并不释放被删除的节点内存，被删除的节点的 next 指针将指向 NULL，所以可以认为被删除的节点变成了一个只有一个节点的新的单向链表；</li>
+<li>list - 指向双向链表的指针；</li>
+<li>llink_ - 指向双向链表中一个节点的指针，该节点将被删除；</li>
+<li>返回该双向链表的起始指针；</li>
+<li>该函数并不释放被删除的节点内存，被删除的节点的 next 和 prev 指针将指向 NULL，所以可以认为被删除的节点变成了一个只有一个节点的新的双向链表；</li>
 </ul>
 </li>
-<li><code>g_slist_delete_link()</code> 从单向链表中删除一个节点，并释放该节点占用的内存；
+<li><code>g_list_delete_link()</code> 从双向链表中删除一个节点，并释放该节点占用的内存；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GSList</span> <span class="o">*</span><span class="n">g_slist_delete_link</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">GSList</span> <span class="o">*</span><span class="n">link_</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GList</span> <span class="o">*</span><span class="n">g_list_delete_link</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">GList</span> <span class="o">*</span><span class="n">link_</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针；</li>
-<li>link_ - 指向单向链表中一个节点的指针，该节点将被删除；</li>
-<li>返回该单向链表的起始指针；</li>
-<li>该函数与 <code>g_slist_remove_link()</code> 的唯一区别是该函数在删除节点后释放了被删除节点占用的内存；</li>
+<li>list - 指向双向链表的指针；</li>
+<li>link_ - 指向双向链表中一个节点的指针，该节点将被删除；</li>
+<li>返回该双向链表的起始指针；</li>
+<li>该函数与 <code>g_list_remove_link()</code> 的唯一区别是该函数在删除节点后释放了被删除节点占用的内存；</li>
 </ul>
 </li>
-<li><code>g_slist_remove()</code> 从单向链表中删除指定数据的一个节点，如果链表中有指定数据的节点有多个，将只删除第一个；
+<li><code>g_list_remove()</code> 从双向链表中删除指定数据的一个节点，如果链表中有指定数据的节点有多个，将只删除第一个；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GSList</span> <span class="o">*</span><span class="n">g_slist_remove</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gconstpointer</span> <span class="n">data</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GList</span> <span class="o">*</span><span class="n">g_list_remove</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gconstpointer</span> <span class="n">data</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针</li>
+<li>list - 指向双向链表的指针</li>
 <li>data - 指向要删除节点的数据</li>
-<li>返回该单向链表的起始指针；</li>
+<li>返回该双向链表的起始指针；</li>
 </ul>
 </li>
-<li><code>g_slist_remove_all()</code> 从单向链表中删除指定数据的所有节点；
+<li><code>g_list_remove_all()</code> 从双向链表中删除指定数据的所有节点；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GSList</span> <span class="o">*</span><span class="n">g_slist_remove_all</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gconstpointer</span> <span class="n">data</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GList</span> <span class="o">*</span><span class="n">g_list_remove_all</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gconstpointer</span> <span class="n">data</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针</li>
+<li>list - 指向双向链表的指针</li>
 <li>data - 指向要删除节点的数据</li>
-<li>返回该单向链表的起始指针；</li>
+<li>返回该双向链表的起始指针；</li>
 </ul>
 </li>
 </ul>
 </li>
-<li><strong>遍历链表</strong>
+<li>
+<p><strong>遍历链表</strong></p>
 <ul>
-<li><code>g_slist_foreach()</code> 遍历单向链表，每个节点都会调用一个指定函数；
+<li><code>g_list_foreach()</code> 遍历双向链表，每个节点都会调用一个指定函数；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">g_slist_foreach</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">GFunc</span> <span class="n">func</span><span class="p">,</span> <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">g_list_foreach</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">GFunc</span> <span class="n">func</span><span class="p">,</span> <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针</li>
-<li>func - 一个指向函数的指针，遍历到单向链表的每个节点时，都会调用这个函数；</li>
+<li>list - 指向双向链表的指针</li>
+<li>func - 一个指向函数的指针，遍历到双向链表的每个节点时，都会调用这个函数；</li>
 <li>GFunc 的定义如下：</li>
 </ul>
 <div class="highlight"><div class="chroma">
@@ -452,84 +461,85 @@
 </li>
 </ul>
 </li>
-<li><strong>查找节点</strong>
+<li>
+<p><strong>查找节点</strong></p>
 <ul>
-<li><code>g_slist_find()</code> 查找链表中包含给定数据的节点；
+<li><code>g_list_find()</code> 查找链表中包含给定数据的节点；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GSList</span> <span class="o">*</span><span class="n">g_slist_find</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gconstpointer</span> <span class="n">data</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GList</span> <span class="o">*</span><span class="n">g_list_find</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gconstpointer</span> <span class="n">data</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针</li>
+<li>list - 指向双向链表的指针</li>
 <li>data - 指向要查找节点的数据</li>
-<li>返回在单向链表中找到的节点的指针，如果没有找到相应节点，返回 NULL;</li>
+<li>返回在双向链表中找到的节点的指针，如果没有找到相应节点，返回 NULL;</li>
 </ul>
 </li>
-<li><code>g_slist_index()</code> 获取包含给定数据的节点的位置(从 0 开始)；
+<li><code>g_list_index()</code> 获取包含给定数据的节点的位置(从 0 开始)；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">gint</span> <span class="n">g_slist_index</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gconstpointer</span> <span class="n">data</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">gint</span> <span class="n">g_list_index</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">gconstpointer</span> <span class="n">data</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针；</li>
+<li>list - 指向双向链表的指针；</li>
 <li>data - 指向要查找节点的数据；</li>
-<li>返回数据为 data 的节点在单向链表中的位置(从 0 开始)，如果没找到相应节点，则返回 -1；</li>
+<li>返回数据为 data 的节点在双向链表中的位置(从 0 开始)，如果没找到相应节点，则返回 -1；</li>
 </ul>
 </li>
-<li><code>g_slist_position()</code> 获取给定节点在链表中的位置(从 0 开始)；
+<li><code>g_list_position()</code> 获取给定节点在链表中的位置(从 0 开始)；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">gint</span> <span class="n">g_slist_position</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">GSList</span> <span class="o">*</span><span class="n">llink</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">gint</span> <span class="n">g_list_position</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">GList</span> <span class="o">*</span><span class="n">llink</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针；</li>
-<li>llink - 指向单向链表中的一个节点的指针；</li>
-<li>返回 llink 指向的节点在单向链表中的位置(从 0 开始)，如果没找到相应节点，则返回 -1；</li>
-<li></li>
+<li>list - 指向双向链表的指针；</li>
+<li>llink - 指向双向链表中的一个节点的指针；</li>
+<li>返回 llink 指向的节点在双向链表中的位置(从 0 开始)，如果没找到相应节点，则返回 -1；</li>
 </ul>
 </li>
 </ul>
 </li>
-<li><strong>释放链表</strong>
+<li>
+<p><strong>释放链表</strong></p>
 <ul>
-<li><code>g_slist_free()</code> 释放链表使用的所有内存，该函数不会释放节点中动态分配的内存；
+<li><code>g_list_free()</code> 释放链表使用的所有内存，该函数不会释放节点中动态分配的内存；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">g_slist_free</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">g_list_free</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针；</li>
-<li>该函数仅释放 GSList 占用的内存，并不释放单向链表中各个节点动态申请的内存，如果链表中有动态申请内存，考虑使用 <code>g_slist_free_full()</code> 或手动释放内存；</li>
+<li>list - 指向双向链表的指针；</li>
+<li>该函数仅释放 GList 占用的内存，并不释放双向链表中各个节点动态申请的内存，如果链表中有动态申请内存，考虑使用 <code>g_list_free_full()</code> 或手动释放内存；</li>
 </ul>
 </li>
-<li><code>g_slist_free_full()</code> 释放链表使用的所有内存，并对每个节点的数据调用指定的销毁函数
+<li><code>g_list_free_full()</code> 释放链表使用的所有内存，并对每个节点的数据调用指定的销毁函数
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">g_slist_free_full</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">GDestroyNotify</span> <span class="n">free_func</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">g_list_free_full</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">GDestroyNotify</span> <span class="n">free_func</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针；</li>
-<li>free_func - 销毁函数，对单向链表中的每个节点数据将调用该函数，可用于释放节点中动态分配的内存；</li>
+<li>list - 指向双向链表的指针；</li>
+<li>free_func - 销毁函数，对双向链表中的每个节点数据将调用该函数，可用于释放节点中动态分配的内存；</li>
 <li>GDestroyNotify 的定义如下：</li>
 </ul>
 <div class="highlight"><div class="chroma">
@@ -546,64 +556,82 @@
 </li>
 </ul>
 </li>
-<li><strong>其它</strong>
+<li>
+<p><strong>其它</strong></p>
 <ul>
-<li><code>g_slist_length()</code> 获取单向链表的长度；
+<li><code>g_list_length()</code> 获取双向链表的长度；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">guint</span> <span class="n">g_slist_length</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">guint</span> <span class="n">g_list_length</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>list - 指向双向链表的指针；</li>
+<li>返回双向链表中节点的数量。</li>
+</ul>
+</li>
+<li><code>g_list_last()</code> 获取双向链表的最后一个节点；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GList</span> <span class="o">*</span><span class="n">g_list_last</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
 <li>list - 指向单向链表的指针；</li>
-<li>返回单向链表中节点的数量。</li>
+<li>返回双向链表的最后一个节点的指针，如果双向链表没有节点，则返回 NULL；</li>
 </ul>
 </li>
-<li><code>g_slist_last()</code> 获取单向链表的最后一个节点；
+<li><code>g_list_concat()</code>  连接两个双向链表；
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GSList</span> <span class="o">*</span><span class="n">g_slist_last</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GList</span> <span class="o">*</span><span class="n">g_list_concat</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list1</span><span class="p">,</span> <span class="n">GList</span> <span class="o">*</span><span class="n">list2</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list - 指向单向链表的指针；</li>
-<li>返回单向链表的最后一个节点的指针，如果单向链表没有节点，则返回 NULL；</li>
+<li>list1 - 指向第 1 个双向链表的指针；</li>
+<li>list2 - 指向准备连接到第 1 个双向链表后面的双向链表的指针；</li>
+<li>返回连接好的双向链表的指针，</li>
 </ul>
 </li>
-<li><code>g_slist_concat()</code>  连接两个单向链表；
+<li><code>g_list_reverse()</code> 反转整个双向链表
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GSList</span> <span class="o">*</span><span class="n">g_slist_concat</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list1</span><span class="p">,</span> <span class="n">GSList</span> <span class="o">*</span><span class="n">list2</span><span class="p">)</span>
+<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">GList</span> <span class="o">*</span><span class="n">g_list_reverse</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><ul>
-<li>list1 - 指向第 1 个单向链表的指针；</li>
-<li>list2 - 指向准备连接到第 1 个单向链表后面的单向链表的指针；</li>
-<li>返回连接好的单向链表的指针，</li>
+<li>list - 指向双向链表的指针；</li>
+<li>返回该双向链表的起始指针；</li>
 </ul>
 </li>
 </ul>
 </li>
 </ol>
-<h2 id="3-如何使用-gslist-实现单向链表">3 如何使用 GSList 实现单向链表</h2>
+<h2 id="3-如何使用-glist-实现双向链表">3 如何使用 GList 实现双向链表</h2>
 <ul>
 <li>
-<p>文章的一开始有一个使用标准 C 语言函数库的单向链表的实例，使用 GLib 的 GSList 操作单向链表要容易得多；</p>
+<p>文章的一开始有一个使用标准 C 语言函数库的双向链表的实例，使用 GLib 的 GList 操作双向链表要容易得多；</p>
 </li>
 <li>
-<p>下面程序是使用 C 语言，基于 GLib 实现的单向链表，<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/130003/sllist-glib.c">sllist-glib.c</a>(<strong>点击文件名下载源程序</strong>)</p>
+<p>下面程序是使用 C 语言，基于 GLib 实现的双向链表，<a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/130004/dllist-glib.c">dllist-glib.c</a>(<strong>点击文件名下载源程序</strong>)</p>
 </li>
 <li>
-<p>该程序实现的功能与文章开头的程序 <a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/130003/sllist-c.c">sllist-c.c</a> 完全一样，但程序看上去要简洁很多，我们不妨把源程序列在这里</p>
+<p>该程序实现的功能与文章开头的程序 <a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/130004/dllist-c.c">dllist-c.c</a> 完全一样，但程序看上去要简洁很多，我们不妨把源程序列在这里</p>
+</li>
+<li>
+<p>该程序与文章<a href="https://blog.csdn.net/whowin/article/details/142472406">《单向链表以及如何使用GLib中的GSList实现单向链表》</a>中使用 GLib 实现单向链表的程序非常相似</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -640,7 +668,6 @@
 </span><span class="lnt">32
 </span><span class="lnt">33
 </span><span class="lnt">34
-</span><span class="lnt">35
 </span></code></pre></td>
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
@@ -649,32 +676,31 @@
 </span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print_node</span><span class="p">(</span><span class="n">gpointer</span> <span class="n">data</span><span class="p">,</span> <span class="n">gpointer</span> <span class="n">user_data</span><span class="p">)</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;%d -&gt; &#34;</span><span class="p">,</span> <span class="n">GPOINTER_TO_INT</span><span class="p">(</span><span class="n">data</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print_list</span><span class="p">(</span><span class="n">GSList</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">g_slist_foreach</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">print_node</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">print_list</span><span class="p">(</span><span class="n">GList</span> <span class="o">*</span><span class="n">list</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">g_list_foreach</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">print_node</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;NULL</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">GSList</span> <span class="o">*</span><span class="n">list</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">GList</span> <span class="o">*</span><span class="n">list</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Append 4 nodes, the data are 1, 2, 3, 5.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">list</span> <span class="o">=</span> <span class="n">g_slist_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">GINT_TO_POINTER</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">    <span class="n">list</span> <span class="o">=</span> <span class="n">g_slist_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">GINT_TO_POINTER</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">    <span class="n">list</span> <span class="o">=</span> <span class="n">g_slist_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">GINT_TO_POINTER</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">    <span class="n">list</span> <span class="o">=</span> <span class="n">g_slist_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">GINT_TO_POINTER</span><span class="p">(</span><span class="mi">5</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">list</span> <span class="o">=</span> <span class="n">g_list_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">GINT_TO_POINTER</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">list</span> <span class="o">=</span> <span class="n">g_list_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">GINT_TO_POINTER</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">list</span> <span class="o">=</span> <span class="n">g_list_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">GINT_TO_POINTER</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">list</span> <span class="o">=</span> <span class="n">g_list_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">GINT_TO_POINTER</span><span class="p">(</span><span class="mi">5</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">    <span class="n">print_list</span><span class="p">(</span><span class="n">list</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Insert a new node after node with the data 3.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">list</span> <span class="o">=</span> <span class="n">g_slist_insert</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">GINT_TO_POINTER</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="mi">3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">list</span> <span class="o">=</span> <span class="n">g_list_insert</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">GINT_TO_POINTER</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="mi">3</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="n">print_list</span><span class="p">(</span><span class="n">list</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Remove node with the data 3.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">list</span> <span class="o">=</span> <span class="n">g_slist_remove</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">GINT_TO_POINTER</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">list</span> <span class="o">=</span> <span class="n">g_list_remove</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">GINT_TO_POINTER</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>
 </span></span><span class="line"><span class="cl">    <span class="n">print_list</span><span class="p">(</span><span class="n">list</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="c1">// Free the list
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_slist_free</span><span class="p">(</span><span class="n">list</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">g_list_free</span><span class="p">(</span><span class="n">list</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
@@ -682,13 +708,16 @@
 </div>
 </div></li>
 <li>
+<p>该程序中涉及到的两个宏：<code>GINT_TO_POINTER(value)</code> 和 <code>GPOINTER_TO_INT(p)</code>，在文章<a href="https://blog.csdn.net/whowin/article/details/142472406">《单向链表以及如何使用GLib中的GSList实现单向链表》</a>中有比较详细的介绍；</p>
+</li>
+<li>
 <p>编译：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall -g sllist-glib.c -o sllist-glib <span class="sb">`</span>pkg-config --cflags --libs glib-2.0<span class="sb">`</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall -g dllist-glib.c -o dllist-glib <span class="sb">`</span>pkg-config --cflags --libs glib-2.0<span class="sb">`</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -696,236 +725,86 @@
 <p>其中，<code>pkg-config --cflags --libs glib-2.0</code> 的含义在文章<a href="https://blog.csdn.net/whowin/article/details/142472383">《使用GLib进行C语言编程的实例》</a>中做过介绍；</p>
 </li>
 <li>
-<p>运行：<code>./sllist-glib</code></p>
+<p>运行：<code>./dllist-glib</code></p>
 </li>
 <li>
-<p>该程序实现了单向链表的插入、删除、遍历和查找；</p>
+<p>该程序实现了双向链表的插入、删除、遍历；</p>
 </li>
 <li>
-<p><code>print_list()</code> 中使用 <code>g_slist_foreach()</code> 对链表进行遍历，对链表中的每个节点数据，将调用函数 <code>print_node()</code>；</p>
+<p><code>print_list()</code> 中使用 <code>g_list_foreach()</code> 对链表进行遍历，对链表中的每个节点数据，将调用函数 <code>print_node()</code>；</p>
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="/images/130003/screenshot-of-sllist-glib.png" alt="screenshot of sllist-glib"></p>
+<p><img src="/images/130004/screenshot-of-dllist-glib.png" alt="screenshot of dllist-glib"></p>
 </li>
 </ul>
-<h2 id="4-单向链表的应用场景">4 单向链表的应用场景</h2>
+<h2 id="4-双向链表的应用场景">4 双向链表的应用场景</h2>
 <ul>
-<li>
-<p>单向链表是一种基础的数据结构，具有节点之间按顺序相连的特性，在特定场景下非常有用，以下是一些典型的应用场景：</p>
+<li>双向链表是一种数据结构，它的每个节点包含对前一个节点和后一个节点的引用；这种结构在许多应用场景中非常有用，以下是一些常见的应用场景：</li>
+</ul>
 <ol>
 <li>
-<p><strong>动态数据集</strong></p>
+<p>浏览器历史记录：</p>
 <blockquote>
-<p>当数据量不确定且频繁增删时，单向链表比数组更适用，它可以方便地在任意位置插入或删除节点，而不需要像数组那样移动大量元素；</p>
+<p>双向链表可以用来实现浏览器的“后退”和“前进”按钮，用户可以在历史记录中前后移动当前指针；</p>
 </blockquote>
 </li>
 <li>
-<p><strong>队列和栈的实现</strong></p>
+<p>音乐播放器：</p>
 <blockquote>
-<p>单向链表常用于实现队列(FIFO)和栈(LIFO)，因为它支持高效的插入和删除操作，尤其在头部或尾部进行操作时性能更好；</p>
+<p>在音乐播放器中，双向链表可以用于管理播放列表，允许用户在歌曲之间前后切换；</p>
 </blockquote>
 </li>
 <li>
-<p><strong>浏览历史记录或撤销操作</strong></p>
+<p>文本编辑器：</p>
 <blockquote>
-<p>在一些应用程序中，如浏览器的历史记录，单向链表可以用来保存用户的浏览路径或操作步骤，方便逐步返回或撤销；</p>
+<p>在实现撤销和重做功能时，双向链表可用于存储编辑历史，方便在不同操作间切换；</p>
 </blockquote>
 </li>
 <li>
-<p><strong>分配器管理内存块</strong></p>
+<p>LRU缓存：</p>
 <blockquote>
-<p>操作系统的内存管理器中，单向链表经常被用于管理空闲的内存块(free lists)，通过链表可以快速地找到可用的内存块；</p>
+<p>在实现最近最少使用(LRU)缓存时，双向链表可以高效地维护访问顺序，以便快速找到和删除最少使用的项；</p>
+</blockquote>
+</li>
+<li>
+<p>操作系统中的进程调度：</p>
+<blockquote>
+<p>在某些调度算法中，双向链表可用于管理就绪队列，使得进程可以方便地添加和移除；</p>
+</blockquote>
+</li>
+<li>
+<p>图形界面中的组件布局：</p>
+<blockquote>
+<p>在某些图形用户界面(GUI)框架中，双向链表用于管理组件的顺序和关系，使得组件之间的插入和删除变得灵活；</p>
+</blockquote>
+</li>
+<li>
+<p>实现栈和队列：</p>
+<blockquote>
+<p>双向链表可以作为基础结构来实现栈和队列，提供灵活的插入和删除操作。</p>
 </blockquote>
 </li>
 </ol>
-</li>
-<li>
-<p>由于单向链表的简单结构，它在上述场景下既灵活又高效，特别是当增删操作频繁时。</p>
-</li>
-</ul>
-<h2 id="5-基于-glib-的-gslist-实现的-fifo-队列">5 基于 GLib 的 GSList 实现的 FIFO 队列</h2>
+<h2 id="5-基于-glib-的-glist-模拟终端命令的历史记录">5 基于 GLib 的 GList 模拟终端命令的历史记录</h2>
 <ul>
 <li>
-<p>FIFO(First Input First Output)队列，也就是先进先出队列，是一种简单的机制，操作一个 FIFO 队列需要队列的头指针和尾指针；</p>
+<p>当我们在 Linux 终端上输入命令时，终端应用程序会记录你输入的命令并形成历史记录，可以使用 <code>history</code> 命令来查看这个历史记录；</p>
 </li>
 <li>
-<p>当向 FIFO 队列中加入数据时，数据添加到队列的尾指针处，当从队列中取出数据时，要从队列的头指针处取；</p>
+<p>在终端上也可以使用上、下箭头键来翻看曾经输入过的前一个或者后一个历史命令，这个命令历史记录给使用终端带来了一定的便利；</p>
 </li>
 <li>
-<p>FIFO 队列的重要参数是队列的最大长度，当队列中数据的数量达到队列的最大长度时，则不能再向队列中添加数据；</p>
+<p>本实例模拟了终端输入命令并使用双向链表生成命令的历史记录，按上下箭头键可以查看上一条或下一条命令；</p>
 </li>
 <li>
-<p>FIFO 队列的两个重要判断就是判断队列为空(队列中没有数据)或者队列已满(数据数量达到最大长度)；</p>
+<p>源程序 <a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/130004/dllist-glib.c">cmd-history.c</a>(<strong>点击文件名下载源程序</strong>) 基于 GLib 的 GList 模拟了终端历史记录；</p>
 </li>
 <li>
-<p>源程序 <a href="https://gitee.com/whowin/whowin/blob/blog/sourcecodes/130003/sllist-glib.c">queue-glib.c</a>(<strong>点击文件名下载源程序</strong>) 基于 GLib 的 GSList 实现了一个简单的 FIFO 队列；</p>
+<p>该程序首先建立了一个双向链表队列，然后模拟输入命令，链表中的每个节点存储一条命令，命令输入完成后显示最后一条命令，然后按上下箭头键可以从链表中取出上一条命令或者下一条命令并显示在屏幕上；</p>
 </li>
 <li>
-<p>该程序实现了 FIFO 队列的两个基本操作：入队操作和出队操作，基于 GLib 使得程序相当的简单；</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span><span class="lnt">54
-</span><span class="lnt">55
-</span><span class="lnt">56
-</span><span class="lnt">57
-</span><span class="lnt">58
-</span><span class="lnt">59
-</span><span class="lnt">60
-</span><span class="lnt">61
-</span><span class="lnt">62
-</span><span class="lnt">63
-</span><span class="lnt">64
-</span><span class="lnt">65
-</span><span class="lnt">66
-</span><span class="lnt">67
-</span><span class="lnt">68
-</span><span class="lnt">69
-</span><span class="lnt">70
-</span><span class="lnt">71
-</span><span class="lnt">72
-</span><span class="lnt">73
-</span><span class="lnt">74
-</span><span class="lnt">75
-</span><span class="lnt">76
-</span><span class="lnt">77
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;glib.h&gt;</span><span class="cp">
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
-</span></span><span class="line"><span class="cl"><span class="cp">#define QUEUE_MAX_LEN           10
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="n">GSList</span> <span class="o">*</span><span class="n">queue_head</span><span class="p">,</span> <span class="o">*</span><span class="n">queue_tail</span><span class="p">;</span>        <span class="c1">// head and tail pointers of the queue
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">guint32</span> <span class="n">queue_max_len</span><span class="p">;</span>                  <span class="c1">// Max. length of the queue
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">queue_init</span><span class="p">(</span><span class="kt">int</span> <span class="n">maxn</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">queue_head</span> <span class="o">=</span> <span class="n">queue_tail</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="n">queue_max_len</span> <span class="o">=</span> <span class="n">maxn</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">gboolean</span> <span class="nf">queue_put</span><span class="p">(</span><span class="n">gpointer</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">guint</span> <span class="n">queue_len</span> <span class="o">=</span> <span class="n">g_slist_length</span><span class="p">(</span><span class="n">queue_head</span><span class="p">);</span>           <span class="c1">// length of the queue
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">queue_len</span> <span class="o">&gt;=</span> <span class="n">queue_max_len</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="c1">// the queue is full
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">return</span> <span class="n">FALSE</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">queue_head</span> <span class="o">=</span> <span class="n">g_slist_append</span><span class="p">(</span><span class="n">queue_head</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>      <span class="c1">// append a node with data to the queue
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">queue_tail</span> <span class="o">=</span> <span class="n">g_slist_last</span><span class="p">(</span><span class="n">queue_head</span><span class="p">);</span>              <span class="c1">// get the pointer of last node
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">TRUE</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="n">gpointer</span> <span class="nf">queue_get</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">guint</span> <span class="n">queue_len</span> <span class="o">=</span> <span class="n">g_slist_length</span><span class="p">(</span><span class="n">queue_head</span><span class="p">);</span>           <span class="c1">// length of the queue
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">queue_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="c1">// the queue is empty
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="n">gpointer</span> <span class="n">queue_data</span> <span class="o">=</span> <span class="n">queue_tail</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>                 <span class="c1">// data pointer of the last node
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">queue_head</span> <span class="o">=</span> <span class="n">g_slist_delete_link</span><span class="p">(</span><span class="n">queue_head</span><span class="p">,</span> <span class="n">queue_tail</span><span class="p">);</span>   <span class="c1">// delete the last node
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">queue_head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">queue_tail</span> <span class="o">=</span> <span class="n">queue_head</span><span class="p">;</span>                            <span class="c1">// the queue is empty
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">queue_tail</span> <span class="o">=</span> <span class="n">g_slist_last</span><span class="p">(</span><span class="n">queue_head</span><span class="p">);</span>              <span class="c1">// get the pointer of last node
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">queue_data</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="n">guint64</span> <span class="n">len</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">len</span> <span class="o">=</span> <span class="n">g_ascii_strtoll</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>           <span class="c1">// Convert string to int
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">len</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">len</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">QUEUE_MAX_LEN</span> <span class="o">*</span> <span class="mi">10</span><span class="p">))</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">len</span> <span class="o">=</span> <span class="n">QUEUE_MAX_LEN</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">len</span> <span class="o">=</span> <span class="n">QUEUE_MAX_LEN</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Max. length of the queue is %ld.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">    <span class="n">queue_init</span><span class="p">(</span><span class="n">len</span><span class="p">);</span>            <span class="c1">// Initialize the queue
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl">    <span class="n">guint16</span> <span class="n">i</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// append some data to the queue
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">queue_max_len</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">);</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">queue_put</span><span class="p">(</span><span class="n">GINT_TO_POINTER</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Put data %d into the queue.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;The queue is full.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="c1">// get some data from the queue
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">queue_max_len</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">);</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">        <span class="n">gpointer</span> <span class="n">queue_data</span> <span class="o">=</span> <span class="n">queue_get</span><span class="p">();</span>
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">queue_data</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;Get data %d from the queue.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">GPOINTER_TO_INT</span><span class="p">(</span><span class="n">queue_data</span><span class="p">));</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">            <span class="n">printf</span><span class="p">(</span><span class="s">&#34;The queue is empty.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl">        <span class="p">}</span>
-</span></span><span class="line"><span class="cl">    <span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div></li>
-<li>
-<p>可以看出，用 GLib 实现的 FIFO 队列非常简洁；</p>
+<p>很显然，使用单向链表实现命令历史记录是不方便的，但使用双向链表就很方便；</p>
 </li>
 <li>
 <p>编译：</p>
@@ -934,7 +813,7 @@
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall -g queue-glib.c -o queue-glib <span class="sb">`</span>pkg-config --cflags --libs glib-2.0<span class="sb">`</span>
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc -Wall -g cmd-history.c -o cmd-history <span class="sb">`</span>pkg-config --cflags --libs glib-2.0<span class="sb">`</span>
 </span></span></code></pre></td></tr></table>
 </div>
 </div></li>
@@ -942,17 +821,23 @@
 <p>其中，<code>pkg-config --cflags --libs glib-2.0</code> 的含义在文章<a href="https://blog.csdn.net/whowin/article/details/142472383">《使用GLib进行C语言编程的实例》</a>中做过介绍；</p>
 </li>
 <li>
-<p>运行：<code>./queue-glib 8</code></p>
+<p>运行：<code>./cmd-history</code></p>
 </li>
 <li>
 <p>运行截图：</p>
-<p><img src="/images/130003/screenshot-of-queue-glib.png" alt="screenshot of queue-glib"></p>
+<p><img src="/images/130004/screenshot-of-cmd-history.png" alt="screenshot of cmd-history"></p>
 </li>
 <li>
-<p>该程序并不完整，如果实际运用，至少要加一个互斥锁，以保证 FIFO 队列的线程安全；</p>
+<p>该程序涉及到终端的操作，使用了结构 <code>struct termios</code>、函数 <code>tcgetattr()</code> 和 <code>tcsetattr()</code>，这些并不在 C 标准库 libc 中，需要启用 GNU 扩展库，所以在程序的开始有 <code>#define _GNU_SOURCE</code></p>
 </li>
 <li>
-<p>使用 GLib 的 GSList 实现的 FIFO 队列，其中的数据并不需要是相同的数据类型，因为队列中存储的数据的指针，这一点在某些应用场景下会带来一些方便，但也会增加开销，而且在数据使用完成后有可能需要释放额外申请的内存空间。</p>
+<p>有关终端操作的相关数据结构、宏定义以及相关函数，并不在本文的讨论之内，请自行参考其它资料；</p>
+</li>
+<li>
+<p>该程序中还涉及到了使用 ESC 转义符对终端屏幕进行清屏操作，有关 ESC 转义符的含义，请参考另一篇文章<a href="https://blog.csdn.net/whowin/article/details/128767730">《ANSI的ESC转义序列》</a></p>
+</li>
+<li>
+<p>该程序中还涉及到了从键盘缓冲区读取上、下箭头键的方法，上箭头键返回的编码为 <code>ESC [ A</code>，下箭头键返回的编码为 <code>ESC [ B</code>，这里说明一下有助于读者更快地读懂程序。</p>
 </li>
 </ul>
 <hr>
@@ -968,7 +853,7 @@
   <p class="copyright-item">
     <span class="item-title">上次更新</span>
     <span class="item-content">
-        2024-09-20
+        2024-10-30
         
     </span>
   </p>
@@ -983,13 +868,9 @@
           <a href="/tags/%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8/">双向链表</a>
           </div>
       <nav class="post-nav">
-        <a class="prev" href="/post/blog/linux/0014-fedora-linux-40/">
-            <i class="iconfont icon-left"></i>
-            <span class="prev-text nav-default">为Linux爱好者们献上一份祝福：Fedora 40 发布</span>
-            <span class="prev-text nav-mobile">上一篇</span>
-          </a>
-        <a class="next" href="/post/blog/c/0003-singly-linked-lists-in-glib/">
-            <span class="next-text nav-default">单向链表以及如何使用GLib中的GSList实现单向链表</span>
+        
+        <a class="next" href="/post/blog/c/0005-best-c-programming-frameworks-you-should-know/">
+            <span class="next-text nav-default">C程序员应该知道的最好的8个C编程框架</span>
             <span class="next-text nav-mobile">下一篇</span>
             <i class="iconfont icon-right"></i>
           </a>

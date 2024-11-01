@@ -12,7 +12,7 @@
  * To compile: $ gcc -Wall -g sllist-c.c -o sllist-c
  * Usage: $ ./sllist-c
  * 
- * Example source code for article 《如何使用GLib的单向链表GList》
+ * Example source code for article 《单向链表以及如何使用GLib中的GSList实现单向链表》
  *
  */
 #include <stdio.h>
